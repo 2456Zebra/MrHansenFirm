@@ -58,12 +58,15 @@ body {
     left: 50%;
     width: 480px;
     height: 480px;
+    max-width: 90vw;
+    max-height: 90vw;
     transform: translate(-50%, -50%);
     opacity: 0.14;
     z-index: 0;
     animation: rotateSeal 80s linear infinite;
     pointer-events: none;
 }
+
 @keyframes rotateSeal {
     from { transform: translate(-50%, -50%) rotate(0deg); }
     to { transform: translate(-50%, -50%) rotate(360deg); }
