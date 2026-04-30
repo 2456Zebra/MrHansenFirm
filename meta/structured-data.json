@@ -1,0 +1,11 @@
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "MR. HANSEN — Boutique Intelligence Firm",
+  "url": "https://www.mrhansenfirm.com/",
+  "logo": "https://www.mrhansenfirm.com/og-image.jpg",
+  "description": "Boutique intelligence firm specializing in motive analysis, behavior decoding, conflict clarity, and decision consulting.",
+  "email": "clarity@mrhansenfirm.com",
+  "areaServed": "Global",
+  "sameAs": []
+}
