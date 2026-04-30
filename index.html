@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<!-- Viewport -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- SEO Title -->
+<title>MR. HANSEN — Boutique Intelligence Firm | Motive & Behavior Analysis</title>
+
+<!-- SEO Description -->
+<meta name="description" content="MR. HANSEN is a boutique intelligence firm specializing in motive analysis, behavior decoding, conflict clarity, and high‑stakes decision consulting. We solve human problems with precision and truth.">
+
+<!-- Canonical URL -->
+<link rel="canonical" href="https://www.mrhansenfirm.com/">
+
+<!-- Robots -->
+<meta name="robots" content="index, follow">
+
+<!-- Theme Color (mobile browser UI) -->
+<meta name="theme-color" content="#0d0d0d">
+
+<!-- OpenGraph (Facebook / LinkedIn) -->
+<meta property="og:title" content="MR. HANSEN — Boutique Intelligence Firm">
+<meta property="og:description" content="Clarity for confusing people, situations, and decisions. Motive analysis, behavior decoding, conflict clarity, and decision consulting.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.mrhansenfirm.com/">
+<meta property="og:image" content="https://www.mrhansenfirm.com/og-image.jpg">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MR. HANSEN — Boutique Intelligence Firm">
+<meta name="twitter:description" content="We decode motives, analyze behavior, and bring clarity to complex human situations.">
+<meta name="twitter:image" content="https://www.mrhansenfirm.com/og-image.jpg">
+
+<!-- Accessibility & Structure Improvements -->
+<meta name="author" content="MR. HANSEN Intelligence Division">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background-color: #0d0d0d;
+    color: #e6e6e6;
+    font-family: Consolas, monospace;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+/* Rotating seal */
+#seal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 480px;
+    height: 480px;
+    transform: translate(-50%, -50%);
+    opacity: 0.14;
+    z-index: 0;
+    animation: rotateSeal 80s linear infinite;
+    pointer-events: none;
+}
+@keyframes rotateSeal {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Boot screen */
+#boot-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #000;
+    color: #33ff33;
+    padding: 40px;
+    font-size: 16px;
+    line-height: 1.5;
+    overflow-y: auto;
+    white-space: pre-line;
+    animation: bootFade 1s ease;
+    z-index: 9999;
+}
+@keyframes bootFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Nav */
+nav {
+    width: 100%;
+    background: #111;
+    padding: 20px;
+    display: none;
+    justify-content: center;
+    border-bottom: 1px solid #222;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+nav a {
+    color: #ccc;
+    margin: 0 15px;
+    text-decoration: none;
+    font-size: 15px;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+    cursor: pointer;
+}
+nav a:hover { color: #4da3ff; }
+
+/* Pages */
+.page {
+    display: none;
+    padding: 40px 20px;
+    max-width: 900px;
+    margin: auto;
+    animation: fadeIn 0.6s ease;
+    position: relative;
+    z-index: 10;
+}
+.active { display: block; }
+
+h1 {
+    font-size: 42px;
+    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+h2 {
+    font-size: 20px;
+    color: #999;
+    text-align: center;
+    margin-bottom: 40px;
+}
+h3 {
+    font-size: 26px;
+    margin-top: 40px;
+    text-align: center;
+}
+.divider {
+    width: 100px;
+    height: 2px;
+    background: #333;
+    margin: 20px auto;
+}
+.service-title {
+    font-size: 20px;
+    margin-top: 25px;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* Submit case */
+textarea {
+    width: 100%;
+    height: 200px;
+    background: #111;
+    color: #4da3ff;
+    border: 1px solid #333;
+    padding: 10px;
+    font-family: Consolas, monospace;
+    font-size: 15px;
+}
+button {
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: #4da3ff;
+    color: #000;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+button:hover { background: #77c0ff; }
+#encrypting {
+    display: none;
+    color: #33ff33;
+    font-size: 18px;
+    margin-top: 20px;
+    white-space: pre-line;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 40px;
+    color: #777;
+    font-size: 14px;
+    border-top: 1px solid #222;
+    margin-top: 60px;
+    position: relative;
+    z-index: 10;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    h1 { font-size: 32px; }
+    nav a { margin: 0 8px; font-size: 13px; }
+    #seal { width: 300px; height: 300px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Rotating seal -->
+<svg id="seal" viewBox="0 0 500 500" aria-hidden="true">
+    <circle cx="250" cy="250" r="230" stroke="#4da3ff" stroke-width="6" fill="none"/>
+    <circle cx="250" cy="250" r="180" stroke="#4da3ff" stroke-width="2" fill="none"/>
+
+    <line x1="250" y1="40" x2="250" y2="110" stroke="#4da3ff" stroke-width="3"/>
+    <line x1="250" y1="460" x2="250" y2="390" stroke="#4da3ff" stroke-width="3"/>
+    <line x1="40" y1="250" x2="110" y2="250" stroke="#4da3ff" stroke-width="3"/>
+    <line x1="460" y1="250" x2="390" y2="250" stroke="#4da3ff" stroke-width="3"/>
+
+    <polygon points="250,180 300,250 250,320 200,250"
+             stroke="#4da3ff" stroke-width="4" fill="none"/>
+    <polygon points="250,210 280,250 250,290 220,250"
+             stroke="#4da3ff" stroke-width="2" fill="none"/>
+
+    <text x="250" y="140" fill="#4da3ff" font-size="20" text-anchor="middle">
+        HANSEN INTELLIGENCE DIVISION
+    </text>
+    <text x="250" y="360" fill="#4da3ff" font-size="18" text-anchor="middle">
+        RESTRICTED ACCESS SYSTEM
+    </text>
+</svg>
+
+<!-- Boot screen -->
+<div id="boot-screen" role="alert" aria-live="polite"></div>
+
+<!-- Nav -->
+<nav aria-label="Primary Navigation">
+    <a onclick="showPage('home')">Home</a>
+    <a onclick="showPage('services')">Services</a>
+    <a onclick="showPage('about')">About</a>
+    <a onclick="showPage('contact')">Contact</a>
+    <a onclick="showPage('submit')">Submit Case</a>
+    <a onclick="showPage('pricing')">Pricing</a>
+</nav>
+
+<!-- Home -->
+<div id="home" class="page active">
+    <h1>MR. HANSEN</h1>
+    <h2>Boutique Intelligence Firm — We Solve Problems.</h2>
+
+    <h3>Clarity for confusing people, situations, and decisions.</h3>
+    <div class="divider"></div>
+
+    <p>Some problems aren’t about data — they’re about people. Motives, insecurities, lies, blind spots, and emotional fog.</p>
+    <p>That’s where we come in. We analyze behavior, decode motives, and deliver clear, actionable insight when things get messy.</p>
+    <p>No drama. No jargon. Just the truth.</p>
+</div>
+
+<!-- Services -->
+<div id="services" class="page">
+    <h1>Our Services</h1>
+    <h2>Clarity. Precision. Truth.</h2>
+
+    <p class="service-title">Motive & Behavior Analysis</p>
+    <p>We decode intentions, patterns, and emotional drivers.</p>
+
+    <p class="service-title">Scam & Fraud Screening</p>
+    <p>We identify deception, manipulation, and hidden risks.</p>
+
+    <p class="service-title">Conflict & Crisis Clarity</p>
+    <p>We bring order and direction to chaotic situations.</p>
+
+    <p class="service-title">Decision Clarity Consulting</p>
+    <p>We help individuals and businesses make confident decisions.</p>
+
+    <p class="service-title">Behavioral Pattern Reports</p>
+    <p>Written intelligence on people, situations, and outcomes.</p>
+</div>
+
+<!-- About -->
+<div id="about" class="page">
+    <h1>About Us</h1>
+    <h2>Boutique Intelligence. Human Clarity.</h2>
+
+    <h3>Who We Are</h3>
+    <div class="divider"></div>
+    <p>We are a boutique intelligence firm specializing in human‑behavior clarity, motive analysis, and conflict resolution. Our work begins where traditional logic ends — in the emotional, psychological, and interpersonal layers of complex situations.</p>
+
+    <h3>What We Believe</h3>
+    <div class="divider"></div>
+    <p>Most problems aren’t about data — they’re about people. We exist to bring clarity where emotions, deception, and confusion cloud judgment.</p>
+
+    <h3>Our Approach</h3>
+    <div class="divider"></div>
+    <p>We analyze behavior, extract signal from noise, and deliver clear, actionable insight. Our method is fast, precise, and grounded in real‑world human patterns.</p>
+</div>
+
+<!-- Contact -->
+<div id="contact" class="page">
+    <h1>Contact Us</h1>
+    <h2>Get Clarity.</h2>
+
+    <p>If you’re facing a confusing person, situation, or decision, we can help.</p>
+    <p><strong>Email:</strong> <a href="mailto:clarity@mrhansenfirm.com">clarity@mrhansenfirm.com</a></p>
+    <p>We respond within 24 hours.</p>
+</div>
+
+<!-- Submit Case -->
+<div id="submit" class="page">
+    <h1>Submit Case</h1>
+    <h2>Encrypted Transmission Interface</h2>
+
+    <p>Describe your situation below. Your case will be encrypted and transmitted securely.</p>
+
+    <textarea id="caseText" placeholder="Enter case details here..."></textarea>
+    <button onclick="transmitCase()">Encrypt & Transmit</button>
+    <div id="encrypting"></div>
+</div>
+
+<!-- Pricing -->
+<div id="pricing" class="page">
+    <h1>Pricing</h1>
+    <h2>Access Levels — Hansen Intelligence Division</h2>
+
+    <h3>LEVEL 1 — Quick Read</h3>
+    <div class="divider"></div>
+    <p><strong>$50–$150</strong></p>
+    <p>Fast clarity on a single situation. You send the details — we decode the truth.</p>
+
+    <h3>LEVEL 2 — Deep Dive Analysis</h3>
+    <div class="divider"></div>
+    <p><strong>$250–$600</strong></p>
+    <p>Full behavioral breakdown: motives, inconsistencies, emotional drivers, predicted outcomes, and recommended actions.</p>
+
+    <h3>LEVEL 3 — Crisis Clarity Session</h3>
+    <div class="divider"></div>
+    <p><strong>$500–$1,500</strong></p>
+    <p>Live session. High‑stakes clarity. Crisis stabilization and immediate direction.</p>
+
+    <h3>Optional Add‑Ons</h3>
+    <div class="divider"></div>
+    <p><strong>Written Behavioral Pattern Report — $150–$400</strong><br>
+       A formal intelligence‑style document summarizing your case.</p>
+
+    <p><strong>Follow‑Up Check‑In — $50–$100</strong><br>
+       Quick update analysis after new developments.</p>
+
+    <p><strong>Ongoing Retainer — $300–$1,000/month</strong><br>
+       Priority access. On‑call clarity.</p>
+</div>
+
+<footer>
+    MR. HANSEN — Boutique Intelligence Firm<br>
+    We Solve Problems.
+</footer>
+
+<script>
+document.body.style.opacity = 1;
+
+/* Boot sequence */
+const bootLines = [
+    "Initializing secure system...",
+    "Loading encrypted modules...",
+    "Verifying cryptographic signatures...",
+    "Establishing secure uplink...",
+    "Authenticating operator credentials...",
+    "Access granted.",
+    "",
+    "Initializing Hansen Clarity Engine™...",
+    "Loading behavioral analysis modules...",
+    "Loading motive‑pattern recognition...",
+    "Loading deception‑detection heuristics...",
+    "System integrity: OK",
+    "",
+    "Launching MR. HANSEN Intelligence Console..."
+];
+
+let index = 0;
+const bootScreen = document.getElementById("boot-screen");
+
+function typeBootLine() {
+    if (index < bootLines.length) {
+        bootScreen.innerHTML += bootLines[index] + "\n";
+        index++;
+        setTimeout(typeBootLine, 200);
+    } else {
+        setTimeout(() => {
+            bootScreen.style.opacity = 0;
+            setTimeout(() => {
+                bootScreen.remove();
+                document.querySelector("nav").style.display = "flex";
+                document.body.style.overflow = "auto";
+            }, 600);
+        }, 800);
+    }
+}
+typeBootLine();
+
+/* Page switching */
+function showPage(pageId) {
+    document.body.style.opacity = 0;
+    setTimeout(() => {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        document.body.style.opacity = 1;
+    }, 300);
+}
+
+/* Submit case */
+function transmitCase() {
+    const text = document.getElementById("caseText").value.trim();
+    const enc = document.getElementById("encrypting");
+
+    if (!text) {
+        enc.style.display = "block";
+        enc.innerText = "Error: No case data detected.";
+        return;
+    }
+
+    enc.style.display = "block";
+    enc.innerText = "Encrypting case data...\n";
+
+    let steps = [
+        "Applying AES‑256 encryption...",
+        "Encoding transmission packet...",
+        "Routing through secure uplink...",
+        "Transmitting to Hansen Intelligence Division...",
+        "Transmission complete."
+    ];
+
+    let i = 0;
+    function nextStep() {
+        if (i < steps.length) {
+            enc.innerText += steps[i] + "\n";
+            i++;
+            setTimeout(nextStep, 500);
+        } else {
+            setTimeout(() => {
+                window.location.href =
+                    "mailto:clarity@mrhansenfirm.com?subject=New Case Submission&body=" +
+                    encodeURIComponent(text);
+            }, 600);
+        }
+    }
+    nextStep();
+}
+</script>
+
+</body>
+</html>
