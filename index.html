@@ -321,8 +321,13 @@ footer {
 
     <p>Describe your situation below. Your case will be encrypted and transmitted securely.</p>
 
-    <!-- ✅ INSERT DROPDOWN RIGHT HERE -->
-    <label for="associate">Select Your Intelligence Associate</label>
+    <!-- ⭐ Decorative Header + Link (GOES HERE) -->
+    <div class="associate-header">
+        <span>Select Your Intelligence Associate</span>
+        <a href="associates.html" class="view-profiles">View Profiles</a>
+    </div>
+
+    <!-- ⭐ Dropdown stays right below the header -->
     <select id="associate" name="associate">
         <option value="">No Preference</option>
         <option value="Raven Hale">Raven Hale</option>
@@ -332,12 +337,14 @@ footer {
         <option value="Lyra Quinn">Lyra Quinn</option>
         <option value="Knox Mercer">Knox Mercer</option>
     </select>
-    <!-- ✅ END INSERT -->
 
+    <!-- Your existing textarea -->
     <textarea id="caseText" placeholder="Enter case details here..."></textarea>
+
     <button onclick="transmitCase()">Encrypt & Transmit</button>
     <div id="encrypting"></div>
 </div>
+
 
 
 <!-- Pricing -->
