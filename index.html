@@ -469,5 +469,18 @@ function transmitCase() {
 }
 </script>
 
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const selected = params.get("associate");
+
+    if (selected) {
+        const dropdown = document.getElementById("associate");
+        if (dropdown) {
+            dropdown.value = selected;
+            document.getElementById("submit").scrollIntoView({ behavior: "smooth" });
+        }
+    }
+</script>
+
 </body>
 </html>
