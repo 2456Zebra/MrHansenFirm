@@ -526,5 +526,16 @@ function transmitCase() {
     }
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    if (window.location.hash === "#submit") {
+        const section = document.getElementById("submit");
+        if (section) {
+            section.scrollIntoView({ behavior: "smooth" });
+        }
+    }
+});
+</script>
+
 </body>
 </html>
