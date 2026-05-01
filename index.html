@@ -321,10 +321,24 @@ footer {
 
     <p>Describe your situation below. Your case will be encrypted and transmitted securely.</p>
 
+    <!-- ✅ INSERT DROPDOWN RIGHT HERE -->
+    <label for="associate">Select Your Intelligence Associate</label>
+    <select id="associate" name="associate">
+        <option value="">No Preference</option>
+        <option value="Raven Hale">Raven Hale</option>
+        <option value="Jax Calder">Jax Calder</option>
+        <option value="Sienna Vale">Sienna Vale</option>
+        <option value="Orion Kade">Orion Kade</option>
+        <option value="Lyra Quinn">Lyra Quinn</option>
+        <option value="Knox Mercer">Knox Mercer</option>
+    </select>
+    <!-- ✅ END INSERT -->
+
     <textarea id="caseText" placeholder="Enter case details here..."></textarea>
     <button onclick="transmitCase()">Encrypt & Transmit</button>
     <div id="encrypting"></div>
 </div>
+
 
 <!-- Pricing -->
 <div id="pricing" class="page">
