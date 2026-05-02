@@ -1,201 +1,310 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meet Our Intelligence Associates</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<title>Hansen Intelligence Associates</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(180deg, #0a0a0a, #111, #0a0a0a);
-            color: #fff;
-        }
+<style>
+    body {
+        margin: 0;
+        background: #000;
+        color: #0f0;
+        font-family: "Courier New", monospace;
+    }
 
-        .container {
-            max-width: 1100px;
-            margin: auto;
-            padding: 40px 20px;
-        }
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 30px 20px 60px;
+    }
 
-        h1 {
-            text-align: center;
-            font-size: 42px;
-            margin-bottom: 40px;
-            letter-spacing: 1px;
-        }
+    .back-home {
+        margin-bottom: 20px;
+    }
 
+    .back-link {
+        color: #0f0;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+
+    h1 {
+        text-align: center;
+        margin: 10px 0 5px;
+        letter-spacing: 2px;
+        font-size: 26px;
+    }
+
+    .subtitle {
+        text-align: center;
+        font-size: 13px;
+        opacity: 0.8;
+        margin-bottom: 25px;
+    }
+
+    .apply-bar {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .apply-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        border: 1px solid #0f0;
+        color: #0f0;
+        text-decoration: none;
+        font-size: 13px;
+        border-radius: 4px;
+    }
+
+    .apply-btn:hover {
+        background: #0f0;
+        color: #000;
+    }
+
+    .status-line {
+        text-align: center;
+        font-size: 12px;
+        opacity: 0.8;
+        margin-bottom: 20px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    @media (min-width: 800px) {
         .grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
+            grid-template-columns: repeat(3, 1fr);
         }
+    }
 
-        @media (min-width: 900px) {
-            .grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
+    .card {
+        border: 1px solid #0f0;
+        border-radius: 6px;
+        padding: 12px;
+        background: #020202;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-height: 260px;
+    }
 
-        .card {
-            background: #151515;
-            border: 1px solid #222;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            transition: 0.3s;
-        }
+    .photo {
+        width: 100%;
+        height: 180px;
+        background: #050505;
+        border: 1px solid #0f0;
+        border-radius: 4px;
+        background-size: cover;
+        background-position: center;
+        margin-bottom: 6px;
+    }
 
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: #444;
-        }
+    .name {
+        font-size: 15px;
+        font-weight: bold;
+    }
 
-        .photo {
-            width: 100%;
-            height: 220px;
-            background: #333;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
+    .specialty {
+        font-size: 12px;
+        opacity: 0.9;
+    }
 
-        .name {
-            font-size: 22px;
-            margin-bottom: 10px;
-        }
+    .bio {
+        font-size: 12px;
+        opacity: 0.85;
+    }
 
-        .bio {
-            font-size: 14px;
-            opacity: 0.85;
-            margin-bottom: 15px;
-        }
+    .links {
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
 
-        .specialties {
-            font-size: 13px;
-            opacity: 0.7;
-            margin-bottom: 15px;
-        }
+    .btn {
+        display: block;
+        text-align: center;
+        padding: 7px;
+        font-size: 12px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+    }
 
-        .cases {
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
+    .btn-instagram {
+        border: 1px solid #0f0;
+        color: #0f0;
+    }
 
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 6px;
-            text-decoration: none;
-            color: #fff;
-            font-weight: bold;
-        }
+    .btn-instagram:hover {
+        background: #0f0;
+        color: #000;
+    }
 
-        .instagram {
-            background: #d6249f;
-        }
+    .btn-select {
+        border: 1px solid #0f0;
+        color: #000;
+        background: #0f0;
+    }
 
-        .select {
-            background: #0077ff;
-        }
+    .btn-select:hover {
+        opacity: 0.85;
+    }
 
-        .btn:hover {
-            opacity: 0.85;
-        }
-    </style>
+    .terminal {
+        font-size: 12px;
+        white-space: pre-line;
+        margin-top: 15px;
+        opacity: 0.9;
+    }
+
+    .muted {
+        opacity: 0.7;
+    }
+</style>
 </head>
 
 <body>
+<div class="container">
 
-    <div class="container">
-
-        <div class="back-home">
-            <a href="index.html" class="back-link">‹ Back to Home</a>
-        </div>
-
-        <h1>Meet Our Intelligence Associates</h1>
-
-
-        <div class="grid">
-
-            <!-- Raven Hale -->
-            <div class="card">
-                <div class="photo"></div>
-                <div class="name">Raven Hale</div>
-                <div class="bio">Pattern-recognition specialist skilled at uncovering hidden connections and digital behavior.</div>
-                <div class="specialties">Digital Footprint • Social Graph • Online Fraud</div>
-                <div class="cases">Cases Solved: 0</div>
-                <a class="btn instagram" href="https://instagram.com/raven.hale.intel" target="_blank">View Instagram</a>
-                <a class="btn select" href="/?associate=Raven%20Hale#submit">Select This Associate & Submit Case</a>
-
-
-
-            </div>
-
-            <!-- Jax Calder -->
-            <div class="card">
-                <div class="photo"></div>
-                <div class="name">Jax Calder</div>
-                <div class="bio">Crisis-response analyst specializing in threat assessment and rapid case triage.</div>
-                <div class="specialties">Behavioral Profiling • Threat Assessment</div>
-                <div class="cases">Cases Solved: 0</div>
-                <a class="btn instagram" href="https://instagram.com/jax.calder.ops" target="_blank">View Instagram</a>
-                <a class="btn select" href="index.html?associate=Jax%20Calder#submit">Select This Associate & Submit Case</a>
-
-            </div>
-
-            <!-- Sienna Vale -->
-            <div class="card">
-                <div class="photo"></div>
-                <div class="name">Sienna Vale</div>
-                <div class="bio">OSINT researcher skilled at recovering missing information and verifying identities.</div>
-                <div class="specialties">OSINT • Identity Verification • Deep Dives</div>
-                <div class="cases">Cases Solved: 0</div>
-                <a class="btn instagram" href="https://instagram.com/sienna.vale.osint" target="_blank">View Instagram</a>
-                <a class="btn select" href="index.html?associate=Sienna%20Vale#submit">Select This Associate & Submit Case</a>
-
-            </div>
-
-            <!-- Orion Kade -->
-            <div class="card">
-                <div class="photo"></div>
-                <div class="name">Orion Kade</div>
-                <div class="bio">Digital forensics specialist focused on device analysis and data reconstruction.</div>
-                <div class="specialties">Forensics • Device Analysis • Data Recovery</div>
-                <div class="cases">Cases Solved: 0</div>
-                <a class="btn instagram" href="https://instagram.com/orion.kade.forensics" target="_blank">View Instagram</a>
-                <a class="btn select" href="index.html?associate=Orion%20Kade#submit">Select This Associate & Submit Case</a>
-
-            </div>
-
-            <!-- Lyra Quinn -->
-            <div class="card">
-                <div class="photo"></div>
-                <div class="name">Lyra Quinn</div>
-                <div class="bio">Communication analyst skilled at decoding motives and identifying manipulation.</div>
-                <div class="specialties">Social Engineering • Communication Analysis</div>
-                <div class="cases">Cases Solved: 0</div>
-                <a class="btn instagram" href="https://instagram.com/lyra.quinn.insight" target="_blank">View Instagram</a>
-                <a class="btn select" href="index.html?associate=Lyra%20Quinn#submit">Select This Associate & Submit Case</a>
-
-            </div>
-
-            <!-- Knox Mercer -->
-            <div class="card">
-                <div class="photo"></div>
-                <div class="name">Knox Mercer</div>
-                <div class="bio">Financial analyst specializing in scam detection and transaction mapping.</div>
-                <div class="specialties">Fraud • Financial Trails • Scam Detection</div>
-                <div class="cases">Cases Solved: 0</div>
-                <a class="btn instagram" href="https://instagram.com/knox.mercer.intel" target="_blank">View Instagram</a>
-                <a class="btn select" href="index.html?associate=Knox%20Mercer#submit">Select This Associate & Submit Case</a>
-
-            </div>
-
-        </div>
+    <div class="back-home">
+        <a href="index.html" class="back-link">‹ Back to Home</a>
     </div>
+
+    <h1>ACTIVE ASSOCIATES</h1>
+    <div class="subtitle">Verified & Approved operatives currently available for case assignment.</div>
+
+    <div class="apply-bar">
+        <a href="associate-apply.html" class="apply-btn">Apply to Become an Associate</a>
+    </div>
+
+    <div class="status-line" id="statusLine">
+        Initializing associate directory...
+    </div>
+
+    <div class="grid" id="associateGrid"></div>
+
+    <div class="terminal" id="terminalLog"></div>
+</div>
+
+<script>
+const GRID = document.getElementById("associateGrid");
+const STATUS = document.getElementById("statusLine");
+const LOG = document.getElementById("terminalLog");
+
+// Your existing Web App URL:
+const BASE_URL = "https://script.google.com/macros/s/AKfycbxWepmyjLfJbiEX67SQRDDdc6_5i76nnN0oExFgqmLAY6ESMcNAOJwQ2uYcPy2K0OiI/exec";
+
+const steps = [
+    "Establishing secure uplink to Hansen Intelligence Database...",
+    "Querying verified & approved associates...",
+    "Decrypting operative profiles...",
+    "Rendering active associate roster..."
+];
+
+let stepIndex = 0;
+
+function logStep(text) {
+    LOG.innerText += text + "\n";
+}
+
+function runBootSequence(callback) {
+    function next() {
+        if (stepIndex < steps.length) {
+            logStep(steps[stepIndex]);
+            stepIndex++;
+            setTimeout(next, 450);
+        } else {
+            callback();
+        }
+    }
+    next();
+}
+
+function fetchAssociates() {
+    STATUS.innerText = "Loading active associates...";
+    fetch(BASE_URL + "?list=1")
+        .then(r => r.json())
+        .then(data => {
+            if (!data || data.length === 0) {
+                STATUS.innerText = "No active associates are currently visible.";
+                logStep("No active associates returned from database.");
+                return;
+            }
+
+            STATUS.innerText = data.length + " active associate(s) online.";
+            renderAssociates(data);
+            logStep("Associate roster rendered successfully.");
+        })
+        .catch(err => {
+            STATUS.innerText = "Error loading associates.";
+            logStep("Error: " + err);
+        });
+}
+
+function renderAssociates(list) {
+    GRID.innerHTML = "";
+    list.forEach(a => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const photo = document.createElement("div");
+        photo.className = "photo";
+        if (a.photoUrl) {
+            photo.style.backgroundImage = "url('" + a.photoUrl + "')";
+        }
+
+        const name = document.createElement("div");
+        name.className = "name";
+        name.innerText = a.name || "Unnamed Associate";
+
+        const spec = document.createElement("div");
+        spec.className = "specialty";
+        spec.innerText = a.specialty || "Specialty undisclosed";
+
+        const bio = document.createElement("div");
+        bio.className = "bio";
+        bio.innerText = a.bio || "No public bio available.";
+
+        const links = document.createElement("div");
+        links.className = "links";
+
+        if (a.instagram) {
+            const ig = document.createElement("a");
+            ig.className = "btn btn-instagram";
+            ig.href = a.instagram.startsWith("http") ? a.instagram : "https://instagram.com/" + a.instagram.replace("@", "");
+            ig.target = "_blank";
+            ig.innerText = "View Instagram Profile";
+            links.appendChild(ig);
+        }
+
+        const select = document.createElement("a");
+        select.className = "btn btn-select";
+        select.href = "index.html?associate=" + encodeURIComponent(a.name || "") + "#submit";
+        select.innerText = "Select This Associate & Submit Case";
+        links.appendChild(select);
+
+        card.appendChild(photo);
+        card.appendChild(name);
+        card.appendChild(spec);
+        card.appendChild(bio);
+        card.appendChild(links);
+
+        GRID.appendChild(card);
+    });
+}
+
+runBootSequence(fetchAssociates);
+</script>
+
 </body>
 </html>
