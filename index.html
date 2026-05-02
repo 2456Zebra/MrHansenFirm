@@ -473,16 +473,16 @@ function showPage(pageId) {
     }, 300);
 }
 
+</script>
+
 <script>
 /* Auto-load correct page based on URL hash */
 document.addEventListener("DOMContentLoaded", function () {
     const hash = window.location.hash;
 
     if (hash === "#submit") {
-        // Activate the Submit Case page instead of Home
         showPage("submit");
 
-        // Scroll AFTER the fade animation completes
         setTimeout(() => {
             const section = document.getElementById("submit");
             if (section) {
@@ -492,6 +492,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 </script>
+
+<script>
+
 
 /* Submit case */
 function transmitCase() {
