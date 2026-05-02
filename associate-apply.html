@@ -34,7 +34,7 @@
         font-size: 14px;
     }
 
-    input, textarea, select {
+    input, textarea {
         width: 100%;
         padding: 10px;
         background: #000;
@@ -137,7 +137,7 @@ document.getElementById("associateForm").addEventListener("submit", function(e) 
         formData.append("bio", document.getElementById("bio").value);
         formData.append("photo", document.getElementById("photo").files[0]);
 
-        fetch("YOUR_GOOGLE_APPS_SCRIPT_URL_HERE", {
+        fetch("https://script.google.com/macros/s/AKfycbxWepmyjLfJbiEX67SQRDDdc6_5i76nnN0oExFgqmLAY6ESMcNAOJwQ2uYcPy2K0OiI/exec", {
             method: "POST",
             body: formData
         })
