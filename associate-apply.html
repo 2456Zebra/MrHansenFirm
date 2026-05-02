@@ -1,155 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Associate Application | Hansen Intelligence Division</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Become an Intelligence Associate</title>
 
-<style>
-    body {
-        background: #000;
-        color: #0f0;
-        font-family: "Courier New", monospace;
-        padding: 20px;
-    }
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #e6e6e6;
+            font-family: Consolas, monospace;
+            padding: 20px;
+        }
 
-    h1 {
-        text-align: center;
-        color: #0f0;
-        margin-bottom: 30px;
-    }
+        h1 {
+            text-align: center;
+            color: #0f0;
+        }
 
-    .container {
-        max-width: 600px;
-        margin: auto;
-        background: #111;
-        padding: 20px;
-        border: 1px solid #0f0;
-        border-radius: 8px;
-    }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #111;
+            padding: 20px;
+            border: 1px solid #0f0;
+            border-radius: 6px;
+        }
 
-    label {
-        display: block;
-        margin-top: 15px;
-        font-size: 14px;
-    }
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            color: #0f0;
+        }
 
-    input, textarea {
-        width: 100%;
-        padding: 10px;
-        background: #000;
-        border: 1px solid #0f0;
-        color: #0f0;
-        margin-top: 5px;
-        border-radius: 4px;
-    }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            background: #000;
+            border: 1px solid #0f0;
+            color: #e6e6e6;
+            border-radius: 4px;
+        }
 
-    input[type="file"] {
-        border: none;
-    }
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            background: #0f0;
+            color: #000;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+        }
 
-    button {
-        margin-top: 20px;
-        width: 100%;
-        padding: 12px;
-        background: #0f0;
-        color: #000;
-        font-weight: bold;
-        border: none;
-        cursor: pointer;
-        border-radius: 4px;
-    }
-
-    #encrypting {
-        white-space: pre-line;
-        margin-top: 20px;
-        display: none;
-        color: #0f0;
-        font-size: 14px;
-    }
-</style>
+        button:hover {
+            background: #9f9;
+        }
+    </style>
 </head>
 
 <body>
 
-<h1>Associate Application</h1>
+    <h1>Become an Intelligence Associate</h1>
 
-<div class="container">
-    <form id="associateForm">
-        <label>Full Name *</label>
-        <input type="text" id="name" required>
+    <form id="associateForm" enctype="multipart/form-data">
+        <label>Name *</label>
+        <input type="text" name="name" required>
 
-        <label>Email Address *</label>
-        <input type="email" id="email" required>
+        <label>Email *</label>
+        <input type="email" name="email" required>
 
-        <label>Instagram Handle *</label>
-        <input type="text" id="instagram" placeholder="@username" required>
+        <label>Instagram Handle</label>
+        <input type="text" name="instagram">
 
         <label>Specialty *</label>
-        <input type="text" id="specialty" required>
+        <input type="text" name="specialty" required>
 
-        <label>Short Bio *</label>
-        <textarea id="bio" rows="4" required></textarea>
+        <label>Bio *</label>
+        <textarea name="bio" rows="5" required></textarea>
 
-        <label>Upload Photo (Required) *</label>
-        <input type="file" id="photo" accept="image/*" required>
+        <label>Upload Photo *</label>
+        <input type="file" name="photo" accept="image/*" required>
 
         <button type="submit">Submit Application</button>
     </form>
 
-    <div id="encrypting"></div>
-</div>
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxOt2pOZySr1pMi8PBB99duXLjF9DwxJcqbVuCMZ2BSK3d_dPYXc0E_iyKhiDyG7n_K/exec";
 
-<script>
-document.getElementById("associateForm").addEventListener("submit", function(e) {
-    e.preventDefault();
+        document.getElementById("associateForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-    const enc = document.getElementById("encrypting");
-    enc.style.display = "block";
-    enc.innerText = "Encrypting application data...\n";
+            const form = document.getElementById("associateForm");
+            const formData = new FormData(form);
 
-    let steps = [
-        "Applying AES‑256 encryption...",
-        "Encoding transmission packet...",
-        "Routing through secure uplink...",
-        "Transmitting to Hansen Intelligence Division...",
-        "Transmission complete."
-    ];
+            try {
+                const response = await fetch(WEB_APP_URL, {
+                    method: "POST",
+                    body: formData
+                });
 
-    let i = 0;
-    function nextStep() {
-        if (i < steps.length) {
-            enc.innerText += steps[i] + "\n";
-            i++;
-            setTimeout(nextStep, 500);
-        } else {
-            setTimeout(sendApplication, 600);
-        }
-    }
-    nextStep();
+                const result = await response.text();
+                console.log(result);
 
-    function sendApplication() {
-        const formData = new FormData();
-        formData.append("name", document.getElementById("name").value);
-        formData.append("email", document.getElementById("email").value);
-        formData.append("instagram", document.getElementById("instagram").value);
-        formData.append("specialty", document.getElementById("specialty").value);
-        formData.append("bio", document.getElementById("bio").value);
-        formData.append("photo", document.getElementById("photo").files[0]);
+                alert("Application submitted successfully. Please check your email to verify.");
+                form.reset();
 
-        fetch("https://script.google.com/macros/s/AKfycbxWepmyjLfJbiEX67SQRDDdc6_5i76nnN0oExFgqmLAY6ESMcNAOJwQ2uYcPy2K0OiI/exec", {
-            method: "POST",
-            body: formData
-        })
-        .then(() => {
-            enc.innerText += "\nApplication submitted.\nCheck your email for verification.";
-        })
-        .catch(() => {
-            enc.innerText += "\nError transmitting application.";
+            } catch (err) {
+                console.error(err);
+                alert("Error submitting application.");
+            }
         });
-    }
-});
-</script>
+    </script>
 
 </body>
 </html>
