@@ -485,7 +485,46 @@ function typeBootLine() {
     }
 }
 typeBootLine();
-</script>   <!-- ⭐ THIS WAS MISSING -->
+</script>
+
+<script>
+/* Page switching */
+function showPage(pageId) {
+    document.body.style.opacity = 0;
+    setTimeout(() => {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        document.body.style.opacity = 1;
+    }, 300);
+}
+</script>
+
+<script>
+/* Clear URL hash and parameters when navigating to any page */
+document.querySelectorAll("nav a").forEach(link => {
+    link.addEventListener("click", function () {
+        history.replaceState(null, "", window.location.pathname);
+    });
+});
+</script>
+
+<script>
+/* Auto-load correct page based on URL hash */
+document.addEventListener("DOMContentLoaded", function () {
+    const hash = window.location.hash;
+
+    if (hash === "#submit") {
+        showPage("submit");
+
+        setTimeout(() => {
+            const section = document.getElementById("submit");
+            if (section) {
+                section.scrollIntoView({ behavior: "smooth" });
+            }
+        }, 350);
+    }
+});
+</script>
 
 <script>
 /* Submit case */
@@ -528,23 +567,22 @@ function transmitCase() {
 }
 </script>
 
-
-
-
 <script>
-    const params = new URLSearchParams(window.location.search);
-    const selected = params.get("associate");
+/* Auto-select associate from URL */
+const params = new URLSearchParams(window.location.search);
+const selected = params.get("associate");
 
-    if (selected) {
-        const dropdown = document.getElementById("associate");
-        if (dropdown) {
-            dropdown.value = selected;
-            document.getElementById("submit").scrollIntoView({ behavior: "smooth" });
-        }
+if (selected) {
+    const dropdown = document.getElementById("associate");
+    if (dropdown) {
+        dropdown.value = selected;
+        document.getElementById("submit").scrollIntoView({ behavior: "smooth" });
     }
+}
 </script>
 
 <script>
+/* Scroll to submit if hash is present */
 document.addEventListener("DOMContentLoaded", function () {
     if (window.location.hash === "#submit") {
         const section = document.getElementById("submit");
@@ -554,6 +592,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 </script>
+
 
 </body>
 </html>
