@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Associate Application | Hansen Intelligence Division</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        background: #000;
+        color: #0f0;
+        font-family: "Courier New", monospace;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #0f0;
+        margin-bottom: 30px;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: auto;
+        background: #111;
+        padding: 20px;
+        border: 1px solid #0f0;
+        border-radius: 8px;
+    }
+
+    label {
+        display: block;
+        margin-top: 15px;
+        font-size: 14px;
+    }
+
+    input, textarea, select {
+        width: 100%;
+        padding: 10px;
+        background: #000;
+        border: 1px solid #0f0;
+        color: #0f0;
+        margin-top: 5px;
+        border-radius: 4px;
+    }
+
+    input[type="file"] {
+        border: none;
+    }
+
+    button {
+        margin-top: 20px;
+        width: 100%;
+        padding: 12px;
+        background: #0f0;
+        color: #000;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    #encrypting {
+        white-space: pre-line;
+        margin-top: 20px;
+        display: none;
+        color: #0f0;
+        font-size: 14px;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Associate Application</h1>
+
+<div class="container">
+    <form id="associateForm">
+        <label>Full Name *</label>
+        <input type="text" id="name" required>
+
+        <label>Email Address *</label>
+        <input type="email" id="email" required>
+
+        <label>Instagram Handle *</label>
+        <input type="text" id="instagram" placeholder="@username" required>
+
+        <label>Specialty *</label>
+        <input type="text" id="specialty" required>
+
+        <label>Short Bio *</label>
+        <textarea id="bio" rows="4" required></textarea>
+
+        <label>Upload Photo (Required) *</label>
+        <input type="file" id="photo" accept="image/*" required>
+
+        <button type="submit">Submit Application</button>
+    </form>
+
+    <div id="encrypting"></div>
+</div>
+
+<script>
+document.getElementById("associateForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const enc = document.getElementById("encrypting");
+    enc.style.display = "block";
+    enc.innerText = "Encrypting application data...\n";
+
+    let steps = [
+        "Applying AES‑256 encryption...",
+        "Encoding transmission packet...",
+        "Routing through secure uplink...",
+        "Transmitting to Hansen Intelligence Division...",
+        "Transmission complete."
+    ];
+
+    let i = 0;
+    function nextStep() {
+        if (i < steps.length) {
+            enc.innerText += steps[i] + "\n";
+            i++;
+            setTimeout(nextStep, 500);
+        } else {
+            setTimeout(sendApplication, 600);
+        }
+    }
+    nextStep();
+
+    function sendApplication() {
+        const formData = new FormData();
+        formData.append("name", document.getElementById("name").value);
+        formData.append("email", document.getElementById("email").value);
+        formData.append("instagram", document.getElementById("instagram").value);
+        formData.append("specialty", document.getElementById("specialty").value);
+        formData.append("bio", document.getElementById("bio").value);
+        formData.append("photo", document.getElementById("photo").files[0]);
+
+        fetch("YOUR_GOOGLE_APPS_SCRIPT_URL_HERE", {
+            method: "POST",
+            body: formData
+        })
+        .then(() => {
+            enc.innerText += "\nApplication submitted.\nCheck your email for verification.";
+        })
+        .catch(() => {
+            enc.innerText += "\nError transmitting application.";
+        });
+    }
+});
+</script>
+
+</body>
+</html>
