@@ -474,15 +474,11 @@ select:focus {
     </div>
 
     <!-- ⭐ Dropdown stays right below the header -->
-    <select id="associate" name="associate">
-        <option value="">No Preference</option>
-        <option value="Raven Hale">Raven Hale</option>
-        <option value="Jax Calder">Jax Calder</option>
-        <option value="Sienna Vale">Sienna Vale</option>
-        <option value="Orion Kade">Orion Kade</option>
-        <option value="Lyra Quinn">Lyra Quinn</option>
-        <option value="Knox Mercer">Knox Mercer</option>
-    </select>
+<label for="associate">Select Intelligence Associate *</label>
+<select id="associate" required>
+    <option value="">Loading associates...</option>
+</select>
+
 
     <!-- Your existing textarea -->
     <textarea id="caseText" placeholder="Enter case details here..."></textarea>
@@ -679,6 +675,56 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<script>
+// Your backend URL
+const BASE_URL = "https://script.google.com/macros/s/AKfycbxWepmyjLfJbiEX67SQRDDdc6_5i76nnN0oExFgqmLAY6ESMcNAOJwQ2uYcPy2K0OiI/exec";
+
+const associateSelect = document.getElementById("associate");
+
+// Load associates into dropdown
+function loadAssociates() {
+    fetch(BASE_URL + "?list=1")
+        .then(r => r.json())
+        .then(data => {
+            associateSelect.innerHTML = "";
+
+            if (!data || data.length === 0) {
+                associateSelect.innerHTML = `<option value="">No active associates available</option>`;
+                return;
+            }
+
+            associateSelect.innerHTML = `<option value="">Select an associate...</option>`;
+
+            data.forEach(a => {
+                const opt = document.createElement("option");
+                opt.value = a.name;
+                opt.textContent = a.name + " — " + (a.specialty || "Specialty");
+                associateSelect.appendChild(opt);
+            });
+
+            autoSelectFromURL();
+        })
+        .catch(err => {
+            associateSelect.innerHTML = `<option value="">Error loading associates</option>`;
+            console.error(err);
+        });
+}
+
+// Auto-select associate from URL (?associate=Name)
+function autoSelectFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const selected = params.get("associate");
+
+    if (selected) {
+        const option = [...associateSelect.options].find(
+            o => o.value.toLowerCase() === selected.toLowerCase()
+        );
+        if (option) option.selected = true;
+    }
+}
+
+loadAssociates();
+</script>
 
 </body>
 </html>
