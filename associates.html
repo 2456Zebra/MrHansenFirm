@@ -20,19 +20,6 @@
             margin-bottom: 30px;
         }
 
-    <h1>INTELLIGENCE ASSOCIATES</h1>
-
-<div style="text-align:center; margin-bottom:25px;">
-    <a href="associate-apply.html"
-       style="display:inline-block; padding:12px 22px; background:#0f0; color:#000; 
-              font-weight:bold; border-radius:4px; text-decoration:none; border:1px solid #0f0;">
-        Apply to Be an Intelligence Associate
-    </a>
-</div>
-
-<div id="associateGrid" class="grid"></div>
-
-
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -102,12 +89,22 @@
 
     <h1>INTELLIGENCE ASSOCIATES</h1>
 
+    <!-- Apply Button -->
+    <div style="text-align:center; margin-bottom:25px;">
+        <a href="associate-apply.html"
+           style="display:inline-block; padding:12px 22px; background:#0f0; color:#000; 
+                  font-weight:bold; border-radius:4px; text-decoration:none; border:1px solid #0f0;">
+            Apply to Be an Intelligence Associate
+        </a>
+    </div>
+
+    <!-- Associates Grid -->
     <div id="associateGrid" class="grid"></div>
 
     <a href="index.html" class="back">← Back to Home</a>
 
     <script>
-        const BASE_URL = "https://script.google.com/macros/s/AKfycbxOt2pOZySr1pMi8PBB99duXLjF9DwxJcqbVuCMZ2BSK3d_dPYXc0E_iyKhiDyG7n_K/exec";
+        const BASE_URL = "https://script.google.com/macros/s/AKfycbxWepmyjLfJbiEX67SQRDDdc6_5i76nnN0oExFgqmLAY6ESMcNAOJwQ2uYcPy2K0OiI/exec";
 
         async function loadAssociates() {
             try {
