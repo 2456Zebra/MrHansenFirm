@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Our Associates</title>
+  <title>Intelligence Associates</title>
 
   <style>
     body {
@@ -15,7 +15,6 @@
       overflow-x: hidden;
     }
 
-    /* Scanline overlay */
     body::before {
       content: "";
       position: fixed;
@@ -36,11 +35,30 @@
     h1 {
       text-align: center;
       font-size: 36px;
-      margin-bottom: 40px;
+      margin-bottom: 10px;
       text-shadow: 0 0 12px #00ff88;
     }
 
-    /* Grid layout */
+    .apply-btn {
+      display: block;
+      width: fit-content;
+      margin: 0 auto 40px auto;
+      padding: 12px 20px;
+      background: #00ff88;
+      color: #000;
+      font-weight: bold;
+      border-radius: 6px;
+      text-decoration: none;
+      box-shadow: 0 0 15px #00ff88;
+      transition: 0.2s;
+    }
+
+    .apply-btn:hover {
+      background: #00ffaa;
+      box-shadow: 0 0 25px #00ffaa;
+      transform: scale(1.05);
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -59,7 +77,6 @@
       }
     }
 
-    /* Associate card */
     .card {
       background: #0a0a0a;
       border: 1px solid #00ff88;
@@ -106,7 +123,6 @@
       color: #baffea;
     }
 
-    /* Pink Instagram button */
     .insta-btn {
       display: inline-block;
       padding: 10px 16px;
@@ -117,6 +133,7 @@
       font-weight: bold;
       box-shadow: 0 0 12px #ff2ea6;
       transition: 0.2s;
+      margin-bottom: 12px;
     }
 
     .insta-btn:hover {
@@ -125,12 +142,45 @@
       transform: scale(1.05);
     }
 
-    /* Loading text */
+    .select-btn {
+      display: inline-block;
+      padding: 10px 16px;
+      background: #00ff88;
+      color: #000;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 0 12px #00ff88;
+      transition: 0.2s;
+    }
+
+    .select-btn:hover {
+      background: #00ffaa;
+      box-shadow: 0 0 18px #00ffaa;
+      transform: scale(1.05);
+    }
+
     #loading {
       text-align: center;
       font-size: 20px;
       margin-top: 40px;
       text-shadow: 0 0 10px #00ff88;
+    }
+
+    .back-home {
+      display: block;
+      margin: 50px auto 0 auto;
+      width: fit-content;
+      color: #00ff88;
+      text-decoration: none;
+      font-size: 16px;
+      text-shadow: 0 0 8px #00ff88;
+      transition: 0.2s;
+    }
+
+    .back-home:hover {
+      color: #00ffaa;
+      text-shadow: 0 0 12px #00ffaa;
     }
   </style>
 </head>
@@ -139,9 +189,13 @@
 
   <h1>INTELLIGENCE ASSOCIATES</h1>
 
+  <a href="/associate-apply.html" class="apply-btn">Apply to Be an Intelligence Associate</a>
+
   <div id="loading">LOADING ASSOCIATES...</div>
 
   <div class="grid" id="grid"></div>
+
+  <a href="/index.html" class="back-home">&lt; Back to Home</a>
 
   <script>
     const BASE_URL =
@@ -157,6 +211,10 @@
 
         loading.style.display = "none";
 
+        if (!data || data.length === 0) {
+          return;
+        }
+
         data.forEach(a => {
           const card = document.createElement("div");
           card.className = "card";
@@ -166,8 +224,15 @@
             <div class="name">${a.name}</div>
             <div class="specialty">${a.specialty}</div>
             <div class="bio">${a.bio}</div>
+
             <a class="insta-btn" href="https://instagram.com/${a.instagram}" target="_blank">
               View Instagram
+            </a>
+
+            <br>
+
+            <a class="select-btn" href="/index.html?associate=${encodeURIComponent(a.name)}#submit">
+              Select This Associate
             </a>
           `;
 
