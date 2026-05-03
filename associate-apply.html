@@ -17,7 +17,6 @@
       position: relative;
     }
 
-    /* Scanline overlay */
     body::before {
       content: "";
       position: fixed;
@@ -35,7 +34,6 @@
       z-index: 999;
     }
 
-    /* BULLETPROOF TYPING EFFECT */
     .typing {
       font-size: 32px;
       margin-bottom: 30px;
@@ -162,7 +160,8 @@
 
   <div class="typing">INITIALIZING ASSOCIATE APPLICATION TERMINAL...</div>
 
-  <form id="applyForm">
+  <!-- ⭐ FIXED: enctype added -->
+  <form id="applyForm" enctype="multipart/form-data">
     <label>Name</label>
     <input type="text" name="name" required />
 
@@ -191,11 +190,9 @@
   <div id="successScreen">APPLICATION RECEIVED — REDIRECTING...</div>
 
   <script>
-    // ⭐ Your updated backend URL
     const BASE_URL =
       "https://script.google.com/macros/s/AKfycbwbFCgXHrIeE-QHLDmCqPUWfilaNjnjun2FWHA_L19ceqjmfm78Jq4z1QD8vvkPpwfk/exec";
 
-    // Photo preview
     document.getElementById("photo").addEventListener("change", function () {
       const file = this.files[0];
       if (file) {
