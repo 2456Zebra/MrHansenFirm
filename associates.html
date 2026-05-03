@@ -1,201 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meet Our Intelligence Associates</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MR. HANSEN INTELLIGENCE ASSOCIATES</title>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(180deg, #0a0a0a, #111, #0a0a0a);
-            color: #fff;
-        }
+<style>
+    body {
+        background: #000;
+        color: #00ff9d;
+        font-family: "Courier New", monospace;
+        margin: 0;
+        padding: 30px;
+        text-align: center;
+    }
 
-        .container {
-            max-width: 1100px;
-            margin: auto;
-            padding: 40px 20px;
-        }
+    h1 {
+        font-size: 28px;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+    }
 
-        h1 {
-            text-align: center;
-            font-size: 42px;
-            margin-bottom: 40px;
-            letter-spacing: 1px;
-        }
+    h2 {
+        font-size: 20px;
+        opacity: 0.9;
+        margin-bottom: 30px;
+    }
 
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-        }
+    /* Apply button (centered) */
+    .apply-btn {
+        display: inline-block;
+        padding: 12px 22px;
+        border: 1px solid #00ff9d;
+        color: #00ff9d;
+        text-decoration: none;
+        font-size: 16px;
+        letter-spacing: 1px;
+        border-radius: 6px;
+        margin-bottom: 40px;
+    }
 
-        @media (min-width: 900px) {
-            .grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
+    .apply-btn:hover {
+        background: #00ff9d;
+        color: #000;
+    }
 
-        .card {
-            background: #151515;
-            border: 1px solid #222;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            transition: 0.3s;
-        }
+    /* Associates list — LEFT aligned, no box */
+    #list {
+        text-align: left;
+        margin: 0 auto;
+        width: 90%;
+        max-width: 700px;
+        font-size: 16px;
+        line-height: 1.6;
+    }
 
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: #444;
-        }
+    /* Back to Home — LEFT aligned, no box */
+    #backHome {
+        display: block;
+        text-align: center;
+        margin: 40px auto 0;
+        width: 90%;
+        max-width: 700px;
+        color: #00ff9d;
+        text-decoration: none;
+        font-size: 14px;
+    }
 
-        .photo {
-            width: 100%;
-            height: 220px;
-            background: #333;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-
-        .name {
-            font-size: 22px;
-            margin-bottom: 10px;
-        }
-
-        .bio {
-            font-size: 14px;
-            opacity: 0.85;
-            margin-bottom: 15px;
-        }
-
-        .specialties {
-            font-size: 13px;
-            opacity: 0.7;
-            margin-bottom: 15px;
-        }
-
-        .cases {
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 6px;
-            text-decoration: none;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .instagram {
-            background: #d6249f;
-        }
-
-        .select {
-            background: #0077ff;
-        }
-
-        .btn:hover {
-            opacity: 0.85;
-        }
-    </style>
+    #backHome:hover {
+        text-decoration: underline;
+    }
+</style>
 </head>
 
 <body>
 
-    <div class="container">
+<h1>MR. HANSEN INTELLIGENCE ASSOCIATES</h1>
+<h2>Approved Associates</h2>
 
-        <div class="back-home">
-            <a href="index.html" class="back-link">‹ Back to Home</a>
-        </div>
+<!-- APPLY BUTTON -->
+<a href="/associates-apply.html" class="apply-btn">APPLY TO BE AN ASSOCIATE</a>
 
-        <h1>Meet Our Intelligence Associates</h1>
+<!-- ASSOCIATES LIST (left aligned, no box) -->
+<div id="list">
+    <div id="loading">Loading associates...</div>
+</div>
 
+<!-- BACK TO HOME (left aligned, no box) -->
+<a id="backHome" href="/">‹ Back to Home</a>
 
-        <div class="grid">
+<script>
+const BACKEND_URL =
+  "https://script.google.com/macros/s/AKfycbwbFCgXHrIeE-QHLDmCqPUWfilaNjnjun2FWHA_L19ceqjmfm78Jq4z1QD8vvkPpwfk/exec";
 
-            <!-- Raven Hale -->
-            <div class="card">
-                <div class="photo"></div>
-                <div class="name">Raven Hale</div>
-                <div class="bio">Pattern-recognition specialist skilled at uncovering hidden connections and digital behavior.</div>
-                <div class="specialties">Digital Footprint • Social Graph • Online Fraud</div>
-                <div class="cases">Cases Solved: 0</div>
-                <a class="btn instagram" href="https://instagram.com/raven.hale.intel" target="_blank">View Instagram</a>
-                <a class="btn select" href="/?associate=Raven%20Hale#submit">Select This Associate & Submit Case</a>
+async function loadAssociates() {
+    try {
+        const res = await fetch(BACKEND_URL + "?list=1");
+        const data = await res.json();
 
+        document.getElementById("loading").style.display = "none";
 
+        const list = document.getElementById("list");
 
-            </div>
+        if (!data || data.length === 0) {
+            list.innerHTML = "No associates available.";
+            return;
+        }
 
-            <!-- Jax Calder -->
-            <div class="card">
-                <div class="photo"></div>
-                <div class="name">Jax Calder</div>
-                <div class="bio">Crisis-response analyst specializing in threat assessment and rapid case triage.</div>
-                <div class="specialties">Behavioral Profiling • Threat Assessment</div>
-                <div class="cases">Cases Solved: 0</div>
-                <a class="btn instagram" href="https://instagram.com/jax.calder.ops" target="_blank">View Instagram</a>
-                <a class="btn select" href="index.html?associate=Jax%20Calder#submit">Select This Associate & Submit Case</a>
+        list.innerHTML = data
+            .map(a => `<p><b>${a.name}</b> — ${a.specialty}</p>`)
+            .join("");
+    } catch (err) {
+        document.getElementById("list").innerHTML =
+            "Error loading associates.";
+    }
+}
 
-            </div>
+loadAssociates();
+</script>
 
-            <!-- Sienna Vale -->
-            <div class="card">
-                <div class="photo"></div>
-                <div class="name">Sienna Vale</div>
-                <div class="bio">OSINT researcher skilled at recovering missing information and verifying identities.</div>
-                <div class="specialties">OSINT • Identity Verification • Deep Dives</div>
-                <div class="cases">Cases Solved: 0</div>
-                <a class="btn instagram" href="https://instagram.com/sienna.vale.osint" target="_blank">View Instagram</a>
-                <a class="btn select" href="index.html?associate=Sienna%20Vale#submit">Select This Associate & Submit Case</a>
-
-            </div>
-
-            <!-- Orion Kade -->
-            <div class="card">
-                <div class="photo"></div>
-                <div class="name">Orion Kade</div>
-                <div class="bio">Digital forensics specialist focused on device analysis and data reconstruction.</div>
-                <div class="specialties">Forensics • Device Analysis • Data Recovery</div>
-                <div class="cases">Cases Solved: 0</div>
-                <a class="btn instagram" href="https://instagram.com/orion.kade.forensics" target="_blank">View Instagram</a>
-                <a class="btn select" href="index.html?associate=Orion%20Kade#submit">Select This Associate & Submit Case</a>
-
-            </div>
-
-            <!-- Lyra Quinn -->
-            <div class="card">
-                <div class="photo"></div>
-                <div class="name">Lyra Quinn</div>
-                <div class="bio">Communication analyst skilled at decoding motives and identifying manipulation.</div>
-                <div class="specialties">Social Engineering • Communication Analysis</div>
-                <div class="cases">Cases Solved: 0</div>
-                <a class="btn instagram" href="https://instagram.com/lyra.quinn.insight" target="_blank">View Instagram</a>
-                <a class="btn select" href="index.html?associate=Lyra%20Quinn#submit">Select This Associate & Submit Case</a>
-
-            </div>
-
-            <!-- Knox Mercer -->
-            <div class="card">
-                <div class="photo"></div>
-                <div class="name">Knox Mercer</div>
-                <div class="bio">Financial analyst specializing in scam detection and transaction mapping.</div>
-                <div class="specialties">Fraud • Financial Trails • Scam Detection</div>
-                <div class="cases">Cases Solved: 0</div>
-                <a class="btn instagram" href="https://instagram.com/knox.mercer.intel" target="_blank">View Instagram</a>
-                <a class="btn select" href="index.html?associate=Knox%20Mercer#submit">Select This Associate & Submit Case</a>
-
-            </div>
-
-        </div>
-    </div>
 </body>
 </html>
