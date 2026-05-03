@@ -1,190 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Associates</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Associates – MR. HANSEN FIRM</title>
 
-  <style>
+<style>
     body {
-      font-family: "Consolas", "Courier New", monospace;
-      background: #000;
-      color: #00ff88;
-      padding: 40px;
-      max-width: 1200px;
-      margin: auto;
-      overflow-x: hidden;
-      position: relative;
-      text-align: center;
+        background-color: #000;
+        color: #00ff9d;
+        font-family: "Courier New", monospace;
+        margin: 0;
+        padding: 0;
     }
 
-    /* Scanline overlay */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      background: repeating-linear-gradient(
-        rgba(0, 255, 136, 0.04) 0px,
-        rgba(0, 255, 136, 0.04) 2px,
-        transparent 2px,
-        transparent 4px
-      );
-      z-index: 999;
+    h1, h2 {
+        text-align: center;
+        margin-top: 30px;
+        letter-spacing: 2px;
     }
 
-    h1 {
-      font-size: 38px;
-      text-shadow: 0 0 14px #00ff88;
-      margin-bottom: 40px;
-      letter-spacing: 2px;
-    }
-
-    .back {
-      display: inline-block;
-      margin-bottom: 30px;
-      color: #00ff88;
-      text-decoration: none;
-      font-size: 18px;
-      text-shadow: 0 0 10px #00ff88;
+    .section {
+        width: 90%;
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 20px;
+        border: 1px solid #00ff9d;
+        border-radius: 8px;
+        background: rgba(0, 255, 157, 0.05);
     }
 
     .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 35px;
-      margin-top: 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
     }
 
     .card {
-      background: #0a0a0a;
-      border: 1px solid #00ff88;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 0 18px #00ff88;
-      text-align: center;
-      transition: 0.25s;
-    }
-
-    .card:hover {
-      transform: scale(1.03);
-      box-shadow: 0 0 25px #00ffaa;
+        border: 1px solid #00ff9d;
+        padding: 15px;
+        border-radius: 8px;
+        background: rgba(0, 255, 157, 0.08);
+        text-align: center;
     }
 
     .card img {
-      width: 100%;
-      height: 320px;
-      object-fit: cover;
-      border-radius: 8px;
-      border: 1px solid #00ff88;
-      margin-bottom: 20px;
-      box-shadow: 0 0 14px #00ff88;
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #00ff9d;
     }
 
-    .name {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      text-shadow: 0 0 10px #00ff88;
+    label {
+        display: block;
+        margin-top: 12px;
+        font-size: 14px;
     }
 
-    .specialty {
-      font-size: 16px;
-      margin-bottom: 12px;
-      opacity: 0.9;
+    input, textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 6px;
+        background: #000;
+        border: 1px solid #00ff9d;
+        color: #00ff9d;
+        border-radius: 4px;
+        font-family: inherit;
     }
 
-    .bio {
-      font-size: 15px;
-      margin-bottom: 18px;
-      opacity: 0.85;
-      line-height: 1.4;
+    button {
+        margin-top: 20px;
+        width: 100%;
+        padding: 12px;
+        background: #00ff9d;
+        color: #000;
+        font-weight: bold;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        letter-spacing: 1px;
     }
 
-    .insta {
-      display: block;
-      margin-bottom: 18px;
-      color: #00ffaa;
-      text-decoration: none;
-      font-size: 15px;
+    button:hover {
+        background: #00e68c;
     }
 
-    .select-btn {
-      display: inline-block;
-      padding: 12px 18px;
-      background: #00ff88;
-      color: #000;
-      font-weight: bold;
-      border-radius: 6px;
-      text-decoration: none;
-      box-shadow: 0 0 15px #00ff88;
-      transition: 0.2s;
+    .loading {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 16px;
+        opacity: 0.8;
     }
-
-    .select-btn:hover {
-      background: #00ffaa;
-      box-shadow: 0 0 25px #00ffaa;
-      transform: scale(1.05);
-    }
-  </style>
+</style>
 </head>
 
 <body>
 
-  <a href="/index.html" class="back">‹ Back to Home</a>
-  <h1>ACTIVE ASSOCIATES</h1>
+<h1>MR. HANSEN FIRM</h1>
+<h2>Associates</h2>
 
-  <div id="grid" class="grid"></div>
+<!-- ASSOCIATES LIST -->
+<div class="section">
+    <h2>Approved Associates</h2>
+    <div id="loading" class="loading">Loading associates...</div>
+    <div id="grid" class="grid"></div>
+</div>
 
-  <script>
-    const DATA_URL =
-      "https://script.google.com/macros/s/AKfycbxOt2pOZySr1pMi8PBB99duXLjF9DwxJcqbVuCMZ2BSK3d_dPYXc0E_iyKhiDyG7n_K/exec?list=1";
+<!-- APPLICATION FORM -->
+<div class="section">
+    <h2>Apply to Become an Associate</h2>
 
-    async function loadAssociates() {
-      try {
-        const response = await fetch(DATA_URL);
-        const associates = await response.json();
+    <form id="associateForm" enctype="multipart/form-data">
+        <label>Name</label>
+        <input type="text" name="name" required />
+
+        <label>Email</label>
+        <input type="email" name="email" required />
+
+        <label>Instagram Handle</label>
+        <input type="text" name="instagram" required />
+
+        <label>Specialty</label>
+        <input type="text" name="specialty" required />
+
+        <label>Bio</label>
+        <textarea name="bio" rows="4" required></textarea>
+
+        <label>Upload Photo</label>
+        <input type="file" name="photo" accept="image/*" required />
+
+        <button type="submit">Submit Application</button>
+    </form>
+
+    <div id="formStatus" class="loading"></div>
+</div>
+
+<script>
+const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwbFCgXHrIeE-QHLDmCqPUWfilaNjnjun2FWHA_L19ceqjmfm78Jq4z1QD8vvkPpwfk/exec";
+
+/* LOAD APPROVED ASSOCIATES */
+async function loadAssociates() {
+    try {
+        const res = await fetch(BACKEND_URL + "?list=1");
+        const data = await res.json();
+
+        document.getElementById("loading").style.display = "none";
 
         const grid = document.getElementById("grid");
         grid.innerHTML = "";
 
-        if (!associates || associates.length === 0) {
-          grid.innerHTML = "<p style='font-size:18px;opacity:0.7;'>No associates available.</p>";
-          return;
+        if (data.length === 0) {
+            grid.innerHTML = "<p>No associates available yet.</p>";
+            return;
         }
 
-        associates.forEach(a => {
-          const card = document.createElement("div");
-          card.className = "card";
+        data.forEach(a => {
+            const card = document.createElement("div");
+            card.className = "card";
 
-          card.innerHTML = `
-            <img src="${a.photoUrl}" alt="${a.name}">
-            <div class="name">${a.name}</div>
-            <div class="specialty">${a.specialty}</div>
-            <a class="insta" href="https://instagram.com/${a.instagram}" target="_blank">
-              @${a.instagram}
-            </a>
-            <div class="bio">${a.bio}</div>
-            <a class="select-btn" href="/associate-apply.html?associate=${encodeURIComponent(a.name)}">
-              SELECT THIS ASSOCIATE
-            </a>
-          `;
+            card.innerHTML = `
+                <img src="${a.photoUrl}" />
+                <h3>${a.name}</h3>
+                <p><b>${a.specialty}</b></p>
+                <p>@${a.instagram}</p>
+            `;
 
-          grid.appendChild(card);
+            grid.appendChild(card);
         });
 
-      } catch (err) {
-        console.error("Error loading associates:", err);
-        document.getElementById("grid").innerHTML =
-          "<p style='font-size:18px;opacity:0.7;'>Error loading associates.</p>";
-      }
+    } catch (err) {
+        document.getElementById("loading").innerText = "Error loading associates.";
     }
+}
 
-    loadAssociates();
-  </script>
+loadAssociates();
+
+/* SUBMIT APPLICATION */
+document.getElementById("associateForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formStatus = document.getElementById("formStatus");
+    formStatus.innerText = "Submitting...";
+
+    const formData = new FormData(e.target);
+
+    try {
+        const res = await fetch(BACKEND_URL, {
+            method: "POST",
+            body: formData
+        });
+
+        const text = await res.text();
+
+        if (text.includes("OK")) {
+            formStatus.innerText = "Application submitted! Check your email to verify.";
+            e.target.reset();
+        } else {
+            formStatus.innerText = "Error: " + text;
+        }
+
+    } catch (err) {
+        formStatus.innerText = "Submission failed.";
+    }
+});
+</script>
 
 </body>
 </html>
