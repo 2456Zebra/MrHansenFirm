@@ -12,12 +12,35 @@
         font-family: "Courier New", monospace;
         margin: 0;
         padding: 0;
+        overflow-x: hidden;
+    }
+
+    /* GLOBAL GLOW */
+    * {
+        text-shadow: 0 0 4px #00ff9d;
+    }
+
+    /* SCANLINES */
+    body::after {
+        content: "";
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+        background: repeating-linear-gradient(
+            to bottom,
+            rgba(0,255,157,0.03) 0px,
+            rgba(0,255,157,0.03) 2px,
+            rgba(0,255,157,0.01) 4px
+        );
+        z-index: 999;
     }
 
     h1, h2 {
         text-align: center;
         margin-top: 30px;
-        letter-spacing: 2px;
+        letter-spacing: 3px;
+        font-size: 28px;
     }
 
     .section {
@@ -28,8 +51,12 @@
         border: 1px solid #00ff9d;
         border-radius: 8px;
         background: rgba(0, 255, 157, 0.05);
+        box-shadow: 0 0 12px rgba(0,255,157,0.2);
+        position: relative;
+        overflow: hidden;
     }
 
+    /* GRID */
     .grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -37,12 +64,20 @@
         margin-top: 20px;
     }
 
+    /* ASSOCIATE CARD */
     .card {
         border: 1px solid #00ff9d;
         padding: 15px;
         border-radius: 8px;
         background: rgba(0, 255, 157, 0.08);
         text-align: center;
+        transition: 0.25s ease;
+        box-shadow: 0 0 10px rgba(0,255,157,0.15);
+    }
+
+    .card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 0 18px rgba(0,255,157,0.4);
     }
 
     .card img {
@@ -51,8 +86,10 @@
         object-fit: cover;
         border-radius: 6px;
         border: 1px solid #00ff9d;
+        box-shadow: 0 0 10px rgba(0,255,157,0.3);
     }
 
+    /* FORM */
     label {
         display: block;
         margin-top: 12px;
@@ -81,10 +118,12 @@
         border-radius: 4px;
         cursor: pointer;
         letter-spacing: 1px;
+        box-shadow: 0 0 10px #00ff9d;
     }
 
     button:hover {
         background: #00e68c;
+        box-shadow: 0 0 16px #00ff9d;
     }
 
     .loading {
@@ -93,13 +132,50 @@
         font-size: 16px;
         opacity: 0.8;
     }
+
+    /* TERMINAL EXTENSION PANEL */
+    #terminalExt {
+        position: fixed;
+        top: 0;
+        right: -420px;
+        width: 400px;
+        height: 100%;
+        background: rgba(0, 255, 157, 0.08);
+        border-left: 2px solid #00ff9d;
+        box-shadow: -4px 0 12px rgba(0,255,157,0.3);
+        padding: 20px;
+        transition: right 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        z-index: 900;
+    }
+
+    #terminalExt.open {
+        right: 0;
+    }
+
+    #terminalExt h3 {
+        margin-top: 0;
+        letter-spacing: 2px;
+    }
+
+    #terminalLog {
+        margin-top: 20px;
+        font-size: 14px;
+        white-space: pre-line;
+        line-height: 1.4;
+    }
 </style>
 </head>
 
 <body>
 
 <h1>MR. HANSEN FIRM</h1>
-<h2>Associates</h2>
+<h2>ASSOCIATES</h2>
+
+<!-- TERMINAL EXTENSION -->
+<div id="terminalExt">
+    <h3>TERMINAL LOG</h3>
+    <div id="terminalLog">Initializing...</div>
+</div>
 
 <!-- ASSOCIATES LIST -->
 <div class="section">
@@ -140,9 +216,22 @@
 <script>
 const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwbFCgXHrIeE-QHLDmCqPUWfilaNjnjun2FWHA_L19ceqjmfm78Jq4z1QD8vvkPpwfk/exec";
 
+/* TERMINAL LOGGING */
+function logToTerminal(msg) {
+    const log = document.getElementById("terminalLog");
+    log.textContent += "\n> " + msg;
+}
+
+/* OPEN TERMINAL EXTENSION */
+setTimeout(() => {
+    document.getElementById("terminalExt").classList.add("open");
+    logToTerminal("Terminal extension online.");
+}, 600);
+
 /* LOAD APPROVED ASSOCIATES */
 async function loadAssociates() {
     try {
+        logToTerminal("Fetching associates...");
         const res = await fetch(BACKEND_URL + "?list=1");
         const data = await res.json();
 
@@ -153,6 +242,7 @@ async function loadAssociates() {
 
         if (data.length === 0) {
             grid.innerHTML = "<p>No associates available yet.</p>";
+            logToTerminal("No associates found.");
             return;
         }
 
@@ -164,14 +254,15 @@ async function loadAssociates() {
                 <img src="${a.photoUrl}" />
                 <h3>${a.name}</h3>
                 <p><b>${a.specialty}</b></p>
-                <p>@${a.instagram}</p>
+                <p>${a.instagram}</p>
             `;
 
             grid.appendChild(card);
         });
 
+        logToTerminal("Associates loaded.");
     } catch (err) {
-        document.getElementById("loading").innerText = "Error loading associates.";
+        logToTerminal("Error loading associates.");
     }
 }
 
@@ -181,10 +272,11 @@ loadAssociates();
 document.getElementById("associateForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const formStatus = document.getElementById("formStatus");
-    formStatus.innerText = "Submitting...";
+    logToTerminal("Submitting application...");
 
     const formData = new FormData(e.target);
+
+    document.getElementById("formStatus").textContent = "Submitting...";
 
     try {
         const res = await fetch(BACKEND_URL, {
@@ -193,16 +285,12 @@ document.getElementById("associateForm").addEventListener("submit", async (e) =>
         });
 
         const text = await res.text();
+        document.getElementById("formStatus").textContent = text;
 
-        if (text.includes("OK")) {
-            formStatus.innerText = "Application submitted! Check your email to verify.";
-            e.target.reset();
-        } else {
-            formStatus.innerText = "Error: " + text;
-        }
-
+        logToTerminal("Application submitted.");
     } catch (err) {
-        formStatus.innerText = "Submission failed.";
+        document.getElementById("formStatus").textContent = "Error submitting.";
+        logToTerminal("Submission error.");
     }
 });
 </script>
