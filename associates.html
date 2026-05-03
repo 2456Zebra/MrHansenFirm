@@ -11,10 +11,11 @@
       background: #000;
       color: #00ff88;
       padding: 40px;
-      max-width: 1000px;
+      max-width: 1200px;
       margin: auto;
       overflow-x: hidden;
       position: relative;
+      text-align: center;
     }
 
     /* Scanline overlay */
@@ -27,8 +28,8 @@
       height: 100%;
       pointer-events: none;
       background: repeating-linear-gradient(
-        rgba(0, 255, 136, 0.05) 0px,
-        rgba(0, 255, 136, 0.05) 2px,
+        rgba(0, 255, 136, 0.04) 0px,
+        rgba(0, 255, 136, 0.04) 2px,
         transparent 2px,
         transparent 4px
       );
@@ -36,88 +37,97 @@
     }
 
     h1 {
-      font-size: 32px;
-      text-shadow: 0 0 10px #00ff88;
-      margin-bottom: 30px;
+      font-size: 38px;
+      text-shadow: 0 0 14px #00ff88;
+      margin-bottom: 40px;
+      letter-spacing: 2px;
     }
 
     .back {
       display: inline-block;
-      margin-bottom: 25px;
+      margin-bottom: 30px;
       color: #00ff88;
       text-decoration: none;
-      font-size: 16px;
-      text-shadow: 0 0 8px #00ff88;
+      font-size: 18px;
+      text-shadow: 0 0 10px #00ff88;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 25px;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 35px;
+      margin-top: 20px;
     }
 
     .card {
       background: #0a0a0a;
       border: 1px solid #00ff88;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 12px #00ff88;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 18px #00ff88;
       text-align: center;
+      transition: 0.25s;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 25px #00ffaa;
     }
 
     .card img {
       width: 100%;
-      height: 260px;
+      height: 320px;
       object-fit: cover;
-      border-radius: 6px;
+      border-radius: 8px;
       border: 1px solid #00ff88;
-      margin-bottom: 15px;
-      box-shadow: 0 0 10px #00ff88;
+      margin-bottom: 20px;
+      box-shadow: 0 0 14px #00ff88;
     }
 
     .name {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold;
-      margin-bottom: 8px;
-      text-shadow: 0 0 8px #00ff88;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px #00ff88;
     }
 
     .specialty {
-      font-size: 15px;
-      margin-bottom: 10px;
+      font-size: 16px;
+      margin-bottom: 12px;
       opacity: 0.9;
     }
 
     .bio {
-      font-size: 14px;
-      margin-bottom: 15px;
+      font-size: 15px;
+      margin-bottom: 18px;
       opacity: 0.85;
+      line-height: 1.4;
     }
 
     .insta {
       display: block;
-      margin-bottom: 15px;
+      margin-bottom: 18px;
       color: #00ffaa;
       text-decoration: none;
-      font-size: 14px;
+      font-size: 15px;
     }
 
     .select-btn {
       display: inline-block;
-      padding: 10px 14px;
+      padding: 12px 18px;
       background: #00ff88;
       color: #000;
       font-weight: bold;
       border-radius: 6px;
       text-decoration: none;
-      box-shadow: 0 0 12px #00ff88;
+      box-shadow: 0 0 15px #00ff88;
       transition: 0.2s;
     }
 
     .select-btn:hover {
       background: #00ffaa;
-      box-shadow: 0 0 20px #00ffaa;
-      transform: scale(1.03);
+      box-shadow: 0 0 25px #00ffaa;
+      transform: scale(1.05);
     }
   </style>
 </head>
@@ -130,7 +140,6 @@
   <div id="grid" class="grid"></div>
 
   <script>
-    // ⭐ Your backend JSON feed
     const DATA_URL =
       "https://script.google.com/macros/s/AKfycbxOt2pOZySr1pMi8PBB99duXLjF9DwxJcqbVuCMZ2BSK3d_dPYXc0E_iyKhiDyG7n_K/exec?list=1";
 
@@ -142,8 +151,8 @@
         const grid = document.getElementById("grid");
         grid.innerHTML = "";
 
-        if (associates.length === 0) {
-          grid.innerHTML = "<p>No associates available.</p>";
+        if (!associates || associates.length === 0) {
+          grid.innerHTML = "<p style='font-size:18px;opacity:0.7;'>No associates available.</p>";
           return;
         }
 
@@ -170,7 +179,7 @@
       } catch (err) {
         console.error("Error loading associates:", err);
         document.getElementById("grid").innerHTML =
-          "<p>Error loading associates.</p>";
+          "<p style='font-size:18px;opacity:0.7;'>Error loading associates.</p>";
       }
     }
 
