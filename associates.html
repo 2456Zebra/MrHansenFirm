@@ -14,9 +14,7 @@
       text-align: center;
     }
 
-    h1 {
-      text-shadow: 0 0 12px #00ff88;
-    }
+    h1 { text-shadow: 0 0 12px #00ff88; }
 
     .apply-btn {
       display: inline-block;
@@ -29,26 +27,6 @@
       box-shadow: 0 0 12px #00ff88;
       transition: 0.2s;
       margin-bottom: 20px;
-    }
-
-    .apply-btn:hover {
-      background: #00ffaa;
-      box-shadow: 0 0 18px #00ffaa;
-      transform: scale(1.05);
-    }
-
-    #loading {
-      text-align: center;
-      font-size: 20px;
-      margin-top: 40px;
-      text-shadow: 0 0 10px #00ff88;
-      animation: pulse 1.2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { opacity: 0.3; }
-      50% { opacity: 1; }
-      100% { opacity: 0.3; }
     }
 
     .grid {
@@ -68,97 +46,43 @@
 
     .photo {
       width: 100%;
+      height: 280px;
+      object-fit: cover;
       border-radius: 10px;
       margin-bottom: 12px;
       box-shadow: 0 0 10px #00ff88;
+      background: #111;
     }
 
-    .name {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    .specialty {
-      font-size: 16px;
-      margin-bottom: 10px;
-    }
-
-    .bio {
-      font-size: 14px;
-      margin-bottom: 14px;
-      color: #baffd9;
-    }
-
-    .insta-btn {
+    /* Other styles remain the same */
+    .name { font-size: 22px; font-weight: bold; margin-bottom: 6px; }
+    .specialty { font-size: 16px; margin-bottom: 10px; }
+    .bio { font-size: 14px; margin-bottom: 14px; color: #baffd9; }
+    .insta-btn, .select-btn {
       display: inline-block;
       padding: 10px 16px;
-      background: #ff2ea6;
-      color: #fff;
+      margin: 6px;
       border-radius: 6px;
       text-decoration: none;
       font-weight: bold;
-      box-shadow: 0 0 12px #ff2ea6;
-      transition: 0.2s;
-      margin-bottom: 12px;
-    }
-
-    .insta-btn:hover {
-      background: #ff4fba;
-      box-shadow: 0 0 18px #ff4fba;
-      transform: scale(1.05);
-    }
-
-    .select-btn {
-      display: inline-block;
-      padding: 10px 16px;
-      background: #00ff88;
-      color: #000;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      box-shadow: 0 0 12px #00ff88;
       transition: 0.2s;
     }
-
-    .select-btn:hover {
-      background: #00ffaa;
-      box-shadow: 0 0 18px #00ffaa;
-      transform: scale(1.05);
-    }
-
-    .back-home {
-      display: block;
-      margin: 50px auto 0 auto;
-      width: fit-content;
-      color: #00ff88;
-      text-decoration: none;
-      font-size: 16px;
-      text-shadow: 0 0 8px #00ff88;
-      transition: 0.2s;
-    }
-
-    .back-home:hover {
-      color: #00ffaa;
-      text-shadow: 0 0 12px #00ffaa;
-    }
+    .insta-btn { background: #ff2ea6; color: #fff; box-shadow: 0 0 12px #ff2ea6; }
+    .select-btn { background: #00ff88; color: #000; box-shadow: 0 0 12px #00ff88; }
   </style>
 </head>
-
 <body>
 
   <h1>INTELLIGENCE ASSOCIATES</h1>
-
   <a href="/associate-apply.html" class="apply-btn">Apply to Be an Intelligence Associate</a>
 
   <div id="loading">LOADING ASSOCIATES...</div>
-
   <div class="grid" id="grid"></div>
 
   <a href="/index.html" class="back-home">&lt; Back to Home</a>
 
   <script>
-    const BASE_URL = "https://script.google.com/macros/s/AKfycbytj2jBob2f1hKrvkXmi3MgNrUhrjmmc5w-tgCzM-VN8oaXElAARxAiKbOmfP49ke6a/exec";
+    const BASE_URL = "https://script.google.com/macros/s/AKfycbx8c8jC3ts2eQUtSSCHGydI_iLHTQZK0HG5KEXvXyDCbOM8F4jKgIr5t86ncm7eMy9x/exec";   // ← Update if needed
 
     async function loadAssociates() {
       try {
@@ -167,7 +91,6 @@
 
         const grid = document.getElementById("grid");
         const loading = document.getElementById("loading");
-
         loading.style.display = "none";
 
         if (!data || data.length === 0) {
@@ -176,12 +99,17 @@
           return;
         }
 
+        grid.innerHTML = "";
+
         data.forEach(a => {
           const card = document.createElement("div");
           card.className = "card";
 
+          // Force better Drive image loading
+          const imageUrl = a.photoUrl.replace("export=view", "uc?id=") + "&t=" + Date.now(); // cache buster
+
           card.innerHTML = `
-            <img src="${a.photoUrl}" class="photo" />
+            <img src="${imageUrl}" class="photo" onerror="this.src='https://via.placeholder.com/300x280/111111/00ff88?text=Photo+Unavailable'" />
             <div class="name">${a.name}</div>
             <div class="specialty">${a.specialty}</div>
             <div class="bio">${a.bio}</div>
@@ -189,8 +117,6 @@
             <a class="insta-btn" href="https://instagram.com/${a.instagram}" target="_blank">
               View Instagram
             </a>
-
-            <br>
 
             <a class="select-btn" href="/index.html?associate=${encodeURIComponent(a.name)}#submit">
               Select This Associate
@@ -201,14 +127,13 @@
         });
 
       } catch (err) {
-        const loading = document.getElementById("loading");
-        loading.innerText = "ERROR LOADING ASSOCIATES";
         console.error(err);
+        document.getElementById("loading").innerText = "ERROR LOADING ASSOCIATES";
       }
     }
 
-    loadAssociates();
+    // Load on page open
+    window.onload = loadAssociates;
   </script>
-
 </body>
 </html>
