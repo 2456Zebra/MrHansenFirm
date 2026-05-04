@@ -162,8 +162,9 @@
     <div style="font-size:18px; margin-top:20px;">REDIRECTING...</div>
   </div>
 
- <script>
-  const BASE_URL = "https://script.google.com/macros/s/AKfycbz_X9KVrI-Pn7lj5QtVVm_TXdLQgo7jo94mKF2yvAFdXTc2L4sVtgVH9vVpIPj5niqi/exec";
+<script>
+  const BASE_URL = "
+https://script.google.com/macros/s/AKfycbx8c8jC3ts2eQUtSSCHGydI_iLHTQZK0HG5KEXvXyDCbOM8F4jKgIr5t86ncm7eMy9x/exec";
 
   // Photo Preview
   document.getElementById("photo").addEventListener("change", function() {
@@ -188,10 +189,10 @@
     const successScreen = document.getElementById("successScreen");
 
     submitBtn.disabled = true;
-    status.innerHTML = `<span>PROCESSING...</span>`;
+    status.innerHTML = `<span>PROCESSING UPLOAD...</span>`;
 
     const formData = new FormData(e.target);
-    let ig = formData.get("instagram").trim();
+    let ig = (formData.get("instagram") || "").trim();
     if (ig.startsWith("@")) ig = ig.slice(1);
 
     // Convert photo to base64
@@ -217,7 +218,7 @@
     try {
       const response = await fetch(BASE_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload)
       });
 
@@ -226,15 +227,13 @@
       if (result.status === "success") {
         status.innerHTML = `<span class="success">✓ Application submitted successfully!</span>`;
         successScreen.style.display = "flex";
-        setTimeout(() => {
-          window.location.href = "/associates.html";
-        }, 2000);
+        setTimeout(() => window.location.href = "/associates.html", 2200);
       } else {
-        throw new Error(result.message || "Server error");
+        throw new Error(result.message || "Unknown error");
       }
     } catch (err) {
       console.error(err);
-      status.innerHTML = `<span class="error">✗ Submission failed: ${err.message}</span>`;
+      status.innerHTML = `<span class="error">✗ Submission failed. Please try again.</span>`;
       submitBtn.disabled = false;
     }
   });
