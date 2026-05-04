@@ -109,7 +109,6 @@
     }
     .success { color: #00ff88; }
     .error { color: #ff3366; }
-
     #successScreen {
       position: fixed;
       inset: 0;
@@ -132,7 +131,7 @@
 </head>
 <body>
   <div class="typing">INITIALIZING ASSOCIATE APPLICATION TERMINAL...</div>
-
+  
   <form id="applyForm">
     <label>Name</label>
     <input type="text" name="name" required />
@@ -162,81 +161,82 @@
     <div style="font-size:18px; margin-top:20px;">REDIRECTING...</div>
   </div>
 
-<script>
-  const BASE_URL = "
-https://script.google.com/macros/s/AKfycbx8c8jC3ts2eQUtSSCHGydI_iLHTQZK0HG5KEXvXyDCbOM8F4jKgIr5t86ncm7eMy9x/exec";
+  <script>
+    const BASE_URL = "https://script.google.com/macros/s/AKfycbx8c8jC3ts2eQUtSSCHGydI_iLHTQZK0HG5KEXvXyDCbOM8F4jKgIr5t86ncm7eMy9x/exec";
 
-  // Photo Preview
-  document.getElementById("photo").addEventListener("change", function() {
-    const file = this.files[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Photo must be smaller than 5MB.");
-        this.value = "";
-        return;
+    // Photo Preview
+    document.getElementById("photo").addEventListener("change", function() {
+      const file = this.files[0];
+      if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+          alert("Photo must be smaller than 5MB.");
+          this.value = "";
+          return;
+        }
+        document.getElementById("preview").src = URL.createObjectURL(file);
+        document.getElementById("preview").style.display = "block";
       }
-      document.getElementById("preview").src = URL.createObjectURL(file);
-      document.getElementById("preview").style.display = "block";
-    }
-  });
+    });
 
-  // Form Submit
-  document.getElementById("applyForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    
-    const submitBtn = document.getElementById("submitBtn");
-    const status = document.getElementById("status");
-    const successScreen = document.getElementById("successScreen");
+    // Form Submit
+    document.getElementById("applyForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById("submitBtn");
+      const status = document.getElementById("status");
+      const successScreen = document.getElementById("successScreen");
 
-    submitBtn.disabled = true;
-    status.innerHTML = `<span>PROCESSING UPLOAD...</span>`;
+      submitBtn.disabled = true;
+      status.innerHTML = `<span>PROCESSING UPLOAD...</span>`;
 
-    const formData = new FormData(e.target);
-    let ig = (formData.get("instagram") || "").trim();
-    if (ig.startsWith("@")) ig = ig.slice(1);
+      const formData = new FormData(e.target);
+      let ig = (formData.get("instagram") || "").trim();
+      if (ig.startsWith("@")) ig = ig.slice(1);
 
-    // Convert photo to base64
-    const file = document.getElementById("photo").files[0];
-    let photoBase64 = "";
-    if (file) {
-      photoBase64 = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.readAsDataURL(file);
-      });
-    }
-
-    const payload = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      instagram: ig,
-      specialty: formData.get("specialty"),
-      bio: formData.get("bio"),
-      photoBase64: photoBase64
-    };
-
-    try {
-      const response = await fetch(BASE_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
-      });
-
-      const result = await response.json();
-
-      if (result.status === "success") {
-        status.innerHTML = `<span class="success">✓ Application submitted successfully!</span>`;
-        successScreen.style.display = "flex";
-        setTimeout(() => window.location.href = "/associates.html", 2200);
-      } else {
-        throw new Error(result.message || "Unknown error");
+      // Convert photo to base64
+      const file = document.getElementById("photo").files[0];
+      let photoBase64 = "";
+      if (file) {
+        photoBase64 = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(file);
+        });
       }
-    } catch (err) {
-      console.error(err);
-      status.innerHTML = `<span class="error">✗ Submission failed. Please try again.</span>`;
-      submitBtn.disabled = false;
-    }
-  });
-</script>
+
+      const payload = {
+        name: formData.get("name"),
+        email: formData.get("email"),
+        instagram: ig,
+        specialty: formData.get("specialty"),
+        bio: formData.get("bio"),
+        photoBase64: photoBase64
+      };
+
+      try {
+        const response = await fetch(BASE_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+          status.innerHTML = `<span class="success">✓ Application submitted successfully!</span>`;
+          successScreen.style.display = "flex";
+          setTimeout(() => {
+            window.location.href = "/associates.html";
+          }, 2200);
+        } else {
+          throw new Error(result.message || "Server rejected request");
+        }
+      } catch (err) {
+        console.error(err);
+        status.innerHTML = `<span class="error">✗ Submission failed. Please try again.</span>`;
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>
