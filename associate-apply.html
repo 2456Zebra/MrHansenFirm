@@ -3,288 +3,254 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Associate Application</title>
 
-  <title>Apply to Be an Intelligence Associate</title>
-
-  <!-- ===========================
-       GLOBAL NEON CONSOLE STYLE
-       =========================== -->
   <style>
     body {
+      font-family: "Consolas", "Courier New", monospace;
       background: #000;
       color: #00ff88;
-      font-family: "Courier New", monospace;
-      padding: 20px;
-      text-align: center;
+      padding: 40px;
+      max-width: 700px;
+      margin: auto;
+      overflow-x: hidden;
+      position: relative;
     }
 
-    h1 {
-      text-shadow: 0 0 12px #00ff88;
-      margin-bottom: 25px;
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        rgba(0, 255, 136, 0.05) 0px,
+        rgba(0, 255, 136, 0.05) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+      z-index: 999;
     }
 
-    /* Form container */
-    .form-wrapper {
-      max-width: 600px;
-      margin: 0 auto;
-      background: #0a0a0a;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px #00ff88;
-    }
-
-    /* Inputs */
-    input, textarea {
-      width: 90%;
-      padding: 12px;
-      margin: 12px 0;
-      background: #0a0a0a;
-      border: 1px solid #00ff88;
+    .typing {
+      font-size: 32px;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px #00ff88;
+      display: inline-block;
+      position: relative;
       color: #00ff88;
-      border-radius: 6px;
-      font-family: inherit;
-      font-size: 15px;
-      outline: none;
-      box-shadow: 0 0 8px #00ff88;
+      clip-path: inset(0 100% 0 0);
+      animation: reveal 3s steps(40) forwards, cursorBlink 0.7s infinite;
+      border-right: 2px solid #00ff88;
     }
 
-    textarea {
-      resize: vertical;
+    @keyframes reveal {
+      from { clip-path: inset(0 100% 0 0); }
+      to { clip-path: inset(0 0 0 0); }
     }
 
-    /* File input wrapper */
-    .file-label {
+    @keyframes cursorBlink {
+      50% { border-color: transparent; }
+    }
+
+    label {
       display: block;
-      margin-top: 15px;
-      margin-bottom: 5px;
-      font-size: 16px;
+      margin-top: 20px;
       font-weight: bold;
+      font-size: 15px;
       text-shadow: 0 0 8px #00ff88;
     }
 
-    /* Submit button */
-    button {
-      padding: 14px 24px;
-      background: #00ff88;
-      color: #000;
-      border: none;
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
       border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 0 12px #00ff88;
-      margin-top: 15px;
-      font-size: 16px;
+      border: 1px solid #00ff88;
+      background: #0a0a0a;
+      color: #00ff88;
+      font-size: 15px;
+      box-shadow: 0 0 10px #00ff88 inset;
       transition: 0.2s;
     }
 
-    button:hover {
-      background: #00d977;
+    input:focus, textarea:focus {
+      outline: none;
       box-shadow: 0 0 18px #00ff88;
     }
 
-    /* Status message */
-    #status {
-      margin-top: 20px;
-      font-size: 18px;
-      min-height: 24px;
-      text-shadow: 0 0 8px #00ff88;
+    #preview {
+      margin-top: 15px;
+      width: 120px;
+      height: 120px;
+      border-radius: 6px;
+      border: 1px solid #00ff88;
+      object-fit: cover;
+      display: none;
+      box-shadow: 0 0 12px #00ff88;
     }
 
-    /* Back link */
-    .back-home {
-      display: block;
-      margin-top: 30px;
-      color: #00ff88;
-      text-decoration: none;
-      font-size: 16px;
-      text-shadow: 0 0 8px #00ff88;
-    }
-
-    .back-home:hover {
-      color: #00ffaa;
-    }
-
-    /* Divider line */
-    .divider {
-      width: 80%;
-      height: 1px;
+    button {
+      margin-top: 35px;
+      width: 100%;
+      padding: 14px;
       background: #00ff88;
-      margin: 25px auto;
-      box-shadow: 0 0 10px #00ff88;
+      border: none;
+      border-radius: 6px;
+      color: #000;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      letter-spacing: 1px;
+      box-shadow: 0 0 15px #00ff88;
+      transition: 0.2s ease-in-out;
+    }
+
+    button:hover {
+      background: #00ffaa;
+      box-shadow: 0 0 25px #00ffaa;
+      transform: scale(1.02);
+    }
+
+    #uploadStatus {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #00ff88;
+      display: none;
+      text-shadow: 0 0 8px #00ff88;
+    }
+
+    .pulse {
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; }
+      50% { opacity: 1; }
+      100% { opacity: 0.4; }
+    }
+
+    #successScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      color: #00ff88;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      font-size: 32px;
+      text-shadow: 0 0 15px #00ff88;
+      z-index: 2000;
+      animation: fadeIn 1s forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ===========================
-       PAGE TITLE
-       =========================== -->
-  <h1>APPLY TO BE AN INTELLIGENCE ASSOCIATE</h1>
+  <div class="typing">INITIALIZING ASSOCIATE APPLICATION TERMINAL...</div>
 
-  <!-- ===========================
-       FORM WRAPPER
-       =========================== -->
-  <div class="form-wrapper">
+  <form id="applyForm">
+    <label>Name</label>
+    <input type="text" name="name" required />
 
-    <!-- ===========================
-         APPLICATION FORM
-         =========================== -->
-    <form id="applyForm">
+    <label>Email</label>
+    <input type="email" name="email" required />
 
-      <!-- NAME -->
-      <input
-        type="text"
-        id="name"
-        placeholder="Your Name"
-        required
-      />
+    <label>Instagram Handle</label>
+    <input type="text" name="instagram" required />
 
-      <!-- EMAIL -->
-      <input
-        type="email"
-        id="email"
-        placeholder="Your Email"
-        required
-      />
+    <label>Specialty</label>
+    <input type="text" name="specialty" required />
 
-      <!-- INSTAGRAM -->
-      <input
-        type="text"
-        id="instagram"
-        placeholder="Instagram Username"
-        required
-      />
+    <label>Bio</label>
+    <textarea name="bio" rows="4" required></textarea>
 
-      <!-- SPECIALTY -->
-      <input
-        type="text"
-        id="specialty"
-        placeholder="Your Specialty"
-        required
-      />
+    <label>Upload Photo</label>
+    <input type="file" id="photo" accept="image/*" required />
 
-      <!-- BIO -->
-      <textarea
-        id="bio"
-        placeholder="Short Bio"
-        rows="5"
-        required
-      ></textarea>
+    <img id="preview" />
 
-      <!-- PHOTO UPLOAD -->
-      <label class="file-label">Upload Your Photo</label>
-      <input
-        type="file"
-        id="photo"
-        accept="image/*"
-        required
-      />
+    <div id="uploadStatus" class="pulse">UPLOADING... PLEASE WAIT</div>
 
-      <!-- SUBMIT BUTTON -->
-      <button type="submit">Submit Application</button>
+    <button type="submit">SUBMIT APPLICATION</button>
+  </form>
 
-    </form>
+  <div id="successScreen">APPLICATION RECEIVED — REDIRECTING...</div>
 
-    <!-- STATUS MESSAGE -->
-    <div id="status"></div>
+<script>
+  const BASE_URL = "https://script.google.com/macros/s/AKfycbw0kgZr94zuZY0_TFBbXafGaga85xsZwW4vAJjWFIX5g6md8a9KJAsjXMPyEPdEcvJr/exec";
 
-  </div>
+  let photoBase64 = null;
 
-  <!-- DIVIDER -->
-  <div class="divider"></div>
-
-  <!-- BACK LINK -->
-  <a href="/associates.html" class="back-home">&lt; Back to Associates</a>
-
-  <!-- ===========================
-       JAVASCRIPT LOGIC
-       =========================== -->
-  <script>
-
-    /* ============================================
-       BACKEND URL (CONFIRMED WORKING)
-       ============================================ */
-    const BACKEND_URL =
-      "https://script.google.com/macros/s/AKfycbyms1KhNkMLWDrbvbaG97Gjc_JsHYoulAuTDXRw69pP9-07aNk6Dh_MSpsANF4ePu5t/exec";
-
-
-    /* ============================================
-       FORM SUBMISSION HANDLER
-       ============================================ */
-    document.getElementById("applyForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const status = document.getElementById("status");
-      status.innerText = "Submitting...";
-      status.style.color = "#00ff88";
-
-      const file = document.getElementById("photo").files[0];
-
-      if (!file) {
-        status.innerText = "Please upload a photo.";
-        status.style.color = "#ff4444";
-        return;
-      }
+  // Photo preview + Base64 conversion
+  document.getElementById("photo").addEventListener("change", function () {
+    const file = this.files[0];
+    if (file) {
+      const preview = document.getElementById("preview");
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = "block";
 
       const reader = new FileReader();
-
-      /* ============================================
-         WHEN FILE IS LOADED AS BASE64
-         ============================================ */
-      reader.onload = async function(event) {
-        const photoBase64 = event.target.result;
-
-        /* ============================================
-           BUILD PAYLOAD
-           ============================================ */
-        const payload = {
-          name: document.getElementById("name").value.trim(),
-          email: document.getElementById("email").value.trim(),
-          instagram: document.getElementById("instagram").value.trim(),
-          specialty: document.getElementById("specialty").value.trim(),
-          bio: document.getElementById("bio").value.trim(),
-          photoBase64
-        };
-
-        /* ============================================
-           SEND TO BACKEND
-           ============================================ */
-        try {
-          const res = await fetch(BACKEND_URL, {
-            method: "POST",
-            body: JSON.stringify(payload),
-            headers: { "Content-Type": "application/json" }
-          });
-
-          const data = await res.json();
-
-          if (data.status === "success") {
-            status.innerText = "Application submitted successfully!";
-            status.style.color = "#00ff88";
-
-            // Optional: clear form
-            document.getElementById("applyForm").reset();
-
-          } else {
-            status.innerText = "Error: " + data.message;
-            status.style.color = "#ff4444";
-          }
-
-        } catch (err) {
-          console.error(err);
-          status.innerText = "Submission failed. Please try again.";
-          status.style.color = "#ff4444";
-        }
+      reader.onload = () => {
+        photoBase64 = reader.result;
       };
-
-      /* ============================================
-         READ FILE AS BASE64
-         ============================================ */
       reader.readAsDataURL(file);
-    });
+    }
+  });
 
-  </script>
+  document.getElementById("applyForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const uploadStatus = document.getElementById("uploadStatus");
+    uploadStatus.style.display = "block";
+
+    const payload = {
+      name: form.name.value,
+      email: form.email.value,
+      instagram: form.instagram.value,
+      specialty: form.specialty.value,
+      bio: form.bio.value,
+      photoBase64: photoBase64
+    };
+
+    try {
+      const response = await fetch(BASE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if (result.status === "success") {
+        document.getElementById("successScreen").style.display = "flex";
+        setTimeout(() => {
+          window.location.href = "/associates.html";
+        }, 2000);
+      } else {
+        alert("Submission failed: " + result.message);
+        uploadStatus.style.display = "none";
+      }
+
+    } catch (err) {
+      alert("Network error submitting application.");
+      console.error(err);
+      uploadStatus.style.display = "none";
+    }
+  });
+</script>
 
 </body>
 </html>
