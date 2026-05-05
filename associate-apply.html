@@ -189,7 +189,7 @@
   <div id="successScreen">APPLICATION RECEIVED — REDIRECTING...</div>
 
 <script>
-  const BASE_URL = "https://script.google.com/macros/s/AKfycbyIlDKD50aSmetSpkG_1RcpR0a-1T4qv2EncNrEdHcGyZkM8_nhYhP6TDpwVfTJsKCb/exec";
+  const BASE_URL = "https://script.google.com/macros/s/AKfycbztFtB2SN52Urmtt_HdzWs0oJlmLjZEe7rTB0ENII0tbgA7sgFifBz1qv1Ysb-uy1Sg/exec";
 
   let photoBase64 = null;
 
@@ -228,8 +228,7 @@
     try {
       const response = await fetch(BASE_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload)   // ⭐ NO HEADERS → NO PREFLIGHT → WORKS
       });
 
       const result = await response.json();
