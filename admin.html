@@ -10,15 +10,8 @@
       background: #000;
       color: #00ff88;
       padding: 20px;
-      margin: 0;
     }
-    h1 { 
-      text-shadow: 0 0 15px #00ff88; 
-      margin-bottom: 5px;
-    }
-    .header {
-      margin-bottom: 30px;
-    }
+    h1 { text-shadow: 0 0 15px #00ff88; }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -30,33 +23,21 @@
       border: 1px solid #00ff88;
       text-align: left;
     }
-    th {
-      background: #111;
-      font-weight: bold;
-    }
+    th { background: #111; }
     .status-paid { color: #00ff88; font-weight: bold; }
-    .status-pending { color: #ffaa00; }
-    .no-data {
-      text-align: center;
-      padding: 40px;
-      color: #666;
-      font-style: italic;
-    }
+    .no-data { text-align: center; padding: 50px; color: #666; }
   </style>
 </head>
 <body>
-
-  <div class="header">
-    <h1>ADMIN DASHBOARD</h1>
-    <p><strong>Mr. Hansen Firm - Intelligence Division</strong></p>
-  </div>
+  <h1>ADMIN DASHBOARD</h1>
+  <p><strong>Mr. Hansen Firm - Intelligence Division</strong></p>
 
   <h2>Recent Cases</h2>
   <table id="casesTable">
     <thead>
       <tr>
         <th>Date</th>
-        <th>Client Name</th>
+        <th>Client</th>
         <th>Email</th>
         <th>Associate</th>
         <th>Tier</th>
@@ -67,43 +48,37 @@
   </table>
 
   <script>
-    // ====================== PASSWORD PROTECTION ======================
-    const enteredPassword = prompt("Enter Admin Password:");
-    
-    if (enteredPassword !== "admin2025") {   // ← CHANGE THIS PASSWORD!
-      document.body.innerHTML = `
-        <h1 style="color:#ff3366; text-align:center; margin-top:100px;">
-          ACCESS DENIED
-        </h1>`;
+    const BASE_URL = "https://script.google.com/macros/s/AKfycbxcU-ADNA0l3KO-Pev4OEdFmWfJVTLA1E8knM3odyhifCC20e17LPD7R4vtQM2_c4Rv/exec";
+
+    // Simple Password Protection
+    const password = prompt("Enter Admin Password:");
+    if (password !== "admin2025") {   // ← CHANGE THIS!
+      document.body.innerHTML = "<h1 style='color:#ff3366;text-align:center;margin-top:100px;'>ACCESS DENIED</h1>";
       throw new Error("Access denied");
     }
 
-    // ====================== MAIN DASHBOARD ======================
-    const BASE_URL = "https://script.google.com/macros/s/AKfycbxcU-ADNA0l3KO-Pev4OEdFmWfJVTLA1E8knM3odyhifCC20e17LPD7R4vtQM2_c4Rv/exec";
-
     async function loadCases() {
       try {
-        const res = await fetch(BASE_URL);
-        const data = await res.json();   // For now we'll show associates, we'll improve later
+        const res = await fetch(BASE_URL + "?type=cases");
+        const cases = await res.json();
 
         const tbody = document.querySelector("#casesTable tbody");
         tbody.innerHTML = "";
 
-        if (!data || data.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" class="no-data">No cases yet.</td></tr>`;
+        if (!cases || cases.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="no-data">No cases received yet.</td></tr>`;
           return;
         }
 
-        // Temporary: Show associates as placeholder until we add cases endpoint
-        data.forEach(item => {
+        cases.forEach(c => {
           const row = document.createElement("tr");
           row.innerHTML = `
-            <td>—</td>
-            <td>—</td>
-            <td>—</td>
-            <td>${item.name || 'N/A'}</td>
-            <td>—</td>
-            <td><span class="status-paid">ACTIVE</span></td>
+            <td>${new Date(c.timestamp).toLocaleString()}</td>
+            <td>${c.clientName}</td>
+            <td>${c.clientEmail}</td>
+            <td>${c.associateName || '—'}</td>
+            <td>${c.tier}</td>
+            <td><span class="status-paid">${c.paymentStatus || 'Paid'}</span></td>
           `;
           tbody.appendChild(row);
         });
@@ -111,9 +86,7 @@
       } catch (err) {
         console.error(err);
         document.querySelector("#casesTable tbody").innerHTML = `
-          <tr><td colspan="6" class="no-data" style="color:#ff3366;">
-            Failed to load data
-          </td></tr>`;
+          <tr><td colspan="6" class="no-data" style="color:#ff3366;">Failed to load cases</td></tr>`;
       }
     }
 
