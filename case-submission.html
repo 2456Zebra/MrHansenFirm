@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submit Case</title>
+  <style>
+    body {
+      font-family: "Courier New", monospace;
+      background: #000;
+      color: #00ff88;
+      padding: 40px 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      text-shadow: 0 0 15px #00ff88;
+      margin-bottom: 10px;
+    }
+    .associate-banner {
+      background: #0a0a0a;
+      padding: 15px 20px;
+      border-left: 5px solid #00ff88;
+      margin-bottom: 30px;
+      font-size: 18px;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      background: #0a0a0a;
+      border: 1px solid #00ff88;
+      color: #00ff88;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 40px;
+      width: 100%;
+      padding: 18px;
+      background: #00ff88;
+      color: #000;
+      font-size: 20px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 0 20px #00ff88;
+    }
+    button:hover {
+      background: #00ffaa;
+      box-shadow: 0 0 30px #00ffaa;
+    }
+    #status {
+      margin-top: 20px;
+      font-size: 16px;
+      min-height: 1.5em;
+    }
+  </style>
+</head>
+<body>
+  <h1>SUBMIT NEW CASE</h1>
+  <div id="associateBanner" class="associate-banner" style="display:none;">
+    Submitting case to: <strong id="selectedAssociate"></strong>
+  </div>
+
+  <form id="caseForm">
+    <input type="hidden" id="associateId" name="associateId">
+
+    <label>Associate</label>
+    <input type="text" id="associateName" readonly />
+
+    <label>Your Name</label>
+    <input type="text" id="clientName" required />
+
+    <label>Your Email</label>
+    <input type="email" id="clientEmail" required />
+
+    <label>Case Title / Subject</label>
+    <input type="text" id="caseTitle" required />
+
+    <label>Case Description</label>
+    <textarea id="caseDescription" rows="8" required></textarea>
+
+    <label>Tier / Priority</label>
+    <select id="tier">
+      <option value="Tier 1">Tier 1 - Standard</option>
+      <option value="Tier 2">Tier 2 - Priority</option>
+      <option value="Tier 3">Tier 3 - Premium / Urgent</option>
+    </select>
+
+    <div id="status"></div>
+    <button type="submit">SUBMIT CASE</button>
+  </form>
+
+  <script>
+    const BASE_URL = "https://script.google.com/macros/s/AKfycbxdfivR3V3XwbfvpFZdKJ4xhIjVLMbid2V55c_JA55kN_t9uwHOQpGAd79MRbu1YVKW/exec";
+
+    // Get associate from URL
+    const params = new URLSearchParams(window.location.search);
+    const associateName = params.get('associate');
+    const associateId = params.get('id');
+
+    if (associateName) {
+      document.getElementById("associateBanner").style.display = "block";
+      document.getElementById("selectedAssociate").textContent = associateName;
+      document.getElementById("associateName").value = associateName;
+      if (associateId) document.getElementById("associateId").value = associateId;
+    }
+
+    document.getElementById("caseForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const status = document.getElementById("status");
+      const btn = e.target.querySelector("button");
+
+      btn.disabled = true;
+      status.innerHTML = "SUBMITTING CASE...";
+
+      const payload = {
+        clientName: document.getElementById("clientName").value,
+        clientEmail: document.getElementById("clientEmail").value,
+        associateName: document.getElementById("associateName").value,
+        associateId: document.getElementById("associateId").value,
+        caseTitle: document.getElementById("caseTitle").value,
+        caseDescription: document.getElementById("caseDescription").value,
+        tier: document.getElementById("tier").value,
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        const res = await fetch(BASE_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await res.json();
+
+        if (result.status === "success") {
+          status.innerHTML = `<span style="color:#00ff88">✓ CASE SUBMITTED SUCCESSFULLY!</span>`;
+          setTimeout(() => {
+            window.location.href = "/associates.html";
+          }, 2500);
+        } else {
+          throw new Error(result.message || "Submission failed");
+        }
+      } catch (err) {
+        console.error(err);
+        status.innerHTML = `<span style="color:#ff3366">✗ Submission failed. Please try again.</span>`;
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
