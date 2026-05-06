@@ -41,357 +41,493 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    background-color: #0d0d0d;
-    color: #e6e6e6;
-    font-family: Consolas, monospace;
-    overflow-x: hidden;
-    overflow-y: auto;
-    opacity: 0;
-    transition: opacity 0.6s ease;
+    background-color: #0d0d0d;
+    color: #e6e6e6;
+    font-family: Consolas, monospace;
+    overflow-x: hidden;
+    overflow-y: auto;
+    opacity: 0;
+    transition: opacity 0.6s ease;
 }
 
-/* Fix for nav bar covering section titles */
-html {
-    scroll-padding-top: 80px;
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background-color: #0d0d0d;
+    color: #e6e6e6;
+    font-family: Consolas, monospace;
+    overflow-x: hidden;
+    overflow-y: auto;
+    opacity: 0;
+    transition: opacity 0.6s ease;
 }
+
+/* ⭐ Fix for nav bar covering section titles */
+html {
+    scroll-padding-top: 80px; /* adjust to match your nav height */
+}
+
+/* ⭐ Optional: push Submit Case title down slightly */
+#submit {
+    padding-top: 40px;
+}
+
 
 /* Rotating seal */
 #seal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 480px;
-    height: 480px;
-    max-width: 90vw;
-    max-height: 90vw;
-    transform: translate(-50%, -50%);
-    opacity: 0.14;
-    z-index: 0;
-    animation: rotateSeal 80s linear infinite;
-    pointer-events: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 480px;
+    height: 480px;
+    max-width: 90vw;
+    max-height: 90vw;
+    transform: translate(-50%, -50%);
+    opacity: 0.14;
+    z-index: 0;
+    animation: rotateSeal 80s linear infinite;
+    pointer-events: none;
 }
 
 @keyframes rotateSeal {
-    from { transform: translate(-50%, -50%) rotate(0deg); }
-    to { transform: translate(-50%, -50%) rotate(360deg); }
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 /* Boot screen */
 #boot-screen {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: #000;
-    color: #33ff33;
-    padding: 40px;
-    font-size: 16px;
-    line-height: 1.5;
-    overflow-y: auto;
-    white-space: pre-line;
-    animation: bootFade 1s ease;
-    z-index: 9999;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #000;
+    color: #33ff33;
+    padding: 40px;
+    font-size: 16px;
+    line-height: 1.5;
+    overflow-y: auto;
+    white-space: pre-line;
+    animation: bootFade 1s ease;
+    z-index: 9999;
 }
 @keyframes bootFade {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* Nav */
 nav {
-    width: 100%;
-    background: #111;
-    padding: 20px;
-    display: none;
-    justify-content: center;
-    border-bottom: 1px solid #222;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    width: 100%;
+    background: #111;
+    padding: 20px;
+    display: none;
+    justify-content: center;
+    border-bottom: 1px solid #222;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 nav a {
-    color: #ccc;
-    margin: 0 15px;
-    text-decoration: none;
-    font-size: 15px;
-    letter-spacing: 1px;
-    transition: color 0.3s ease;
-    cursor: pointer;
+    color: #ccc;
+    margin: 0 15px;
+    text-decoration: none;
+    font-size: 15px;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+    cursor: pointer;
 }
 nav a:hover { color: #4da3ff; }
 
 /* Pages */
 .page {
-    display: none;
-    padding: 40px 20px;
-    max-width: 900px;
-    margin: auto;
-    animation: fadeIn 0.6s ease;
-    position: relative;
-    z-index: 10;
+    display: none;
+    padding: 40px 20px;
+    max-width: 900px;
+    margin: auto;
+    animation: fadeIn 0.6s ease;
+    position: relative;
+    z-index: 10;
 }
 .active { display: block; }
 
-/* Login inputs */
-#login input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    background: #111;
-    border: 1px solid #333;
-    color: #4da3ff;
-    font-family: Consolas, monospace;
+h1 {
+    font-size: 42px;
+    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 10px;
 }
-#login input:focus {
-    outline: none;
-    border-color: #4da3ff;
+h2 {
+    font-size: 20px;
+    color: #999;
+    text-align: center;
+    margin-bottom: 40px;
 }
-</style>
+h3 {
+    font-size: 26px;
+    margin-top: 40px;
+    text-align: center;
+}
 
+h1 {
+    font-size: 42px;
+    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+h2 {
+    font-size: 20px;
+    color: #999;
+    text-align: center;
+    margin-bottom: 40px;
+}
+h3 {
+    font-size: 26px;
+    margin-top: 40px;
+    text-align: center;
+}
+
+/* Improve readability for Home hero section */
+#home h2 {
+    color: #d0d0d0;
+}
+
+#home h3 {
+    color: #d8d8d8;
+}
+
+#home p {
+    color: #d0d0d0;
+    line-height: 1.6;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.divider {
+    width: 100px;
+    height: 2px;
+    background: #333;
+    margin: 20px auto;
+}
+.service-title {
+    font-size: 20px;
+    margin-top: 25px;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* Submit case */
+textarea {
+    width: 100%;
+    height: 200px;
+    background: #111;
+    color: #4da3ff;
+    border: 1px solid #333;
+    padding: 10px;
+    font-family: Consolas, monospace;
+    font-size: 15px;
+}
+button {
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: #4da3ff;
+    color: #000;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+button:hover { background: #77c0ff; }
+#encrypting {
+    display: none;
+    color: #33ff33;
+    font-size: 18px;
+    margin-top: 20px;
+    white-space: pre-line;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 40px;
+    color: #777;
+    font-size: 14px;
+    border-top: 1px solid #222;
+    margin-top: 60px;
+    position: relative;
+    z-index: 10;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    h1 { font-size: 32px; }
+    nav a { margin: 0 8px; font-size: 13px; }
+    #seal { width: 300px; height: 300px; }
+}
+
+.associate-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    margin-top: 20px;
+    font-size: 16px;
+    color: #4da3ff;
+    font-weight: bold;
+}
+
+.view-profiles {
+    color: #77c0ff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.view-profiles:hover {
+    text-decoration: underline;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    background: #111;
+    color: #4da3ff;
+    border: 1px solid #333;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-family: Consolas, monospace;
+}
+select:focus {
+    outline: none;
+    border-color: #4da3ff;
+}
+
+/* Home — Associates Link */
+.home-associates-link {
+    text-align: center;
+    margin-top: 35px;
+}
+
+.intel-link {
+    color: #e6e6e6;
+    text-decoration: none;
+    font-family: Consolas, monospace;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #444;
+    padding-bottom: 3px;
+    transition: 0.3s ease;
+}
+
+.intel-link:hover {
+    color: #ffffff;
+    border-color: #888;
+}
+
+/* Back to Home link (Associates page) */
+.back-home {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.back-link {
+    color: #4da3ff; /* bright, readable blue */
+    text-decoration: none;
+    font-family: Consolas, monospace;
+    font-size: 1.15rem;
+    border-bottom: 1px solid #4da3ff;
+    padding-bottom: 3px;
+    transition: 0.3s ease;
+}
+
+.back-link:hover {
+    color: #a8d8ff;
+    border-color: #a8d8ff;
+}
+
+
+</style>
+   
 </head>
 
 <body>
 
 <!-- Rotating seal -->
 <svg id="seal" viewBox="0 0 500 500" aria-hidden="true">
-    <circle cx="250" cy="250" r="230" stroke="#4da3ff" stroke-width="6" fill="none"/>
-    <circle cx="250" cy="250" r="180" stroke="#4da3ff" stroke-width="2" fill="none"/>
-    <line x1="250" y1="40" x2="250" y2="110" stroke="#4da3ff" stroke-width="3"/>
-    <line x1="250" y1="460" x2="250" y2="390" stroke="#4da3ff" stroke-width="3"/>
-    <line x1="40" y1="250" x2="110" y2="250" stroke="#4da3ff" stroke-width="3"/>
-    <line x1="460" y1="250" x2="390" y2="250" stroke="#4da3ff" stroke-width="3"/>
-    <polygon points="250,180 300,250 250,320 200,250" stroke="#4da3ff" stroke-width="4" fill="none"/>
-    <polygon points="250,210 280,250 250,290 220,250" stroke="#4da3ff" stroke-width="2" fill="none"/>
-    <text x="250" y="140" fill="#4da3ff" font-size="20" text-anchor="middle">HANSEN INTELLIGENCE DIVISION</text>
-    <text x="250" y="360" fill="#4da3ff" font-size="18" text-anchor="middle">RESTRICTED ACCESS SYSTEM</text>
+    <circle cx="250" cy="250" r="230" stroke="#4da3ff" stroke-width="6" fill="none"/>
+    <circle cx="250" cy="250" r="180" stroke="#4da3ff" stroke-width="2" fill="none"/>
+
+    <line x1="250" y1="40" x2="250" y2="110" stroke="#4da3ff" stroke-width="3"/>
+    <line x1="250" y1="460" x2="250" y2="390" stroke="#4da3ff" stroke-width="3"/>
+    <line x1="40" y1="250" x2="110" y2="250" stroke="#4da3ff" stroke-width="3"/>
+    <line x1="460" y1="250" x2="390" y2="250" stroke="#4da3ff" stroke-width="3"/>
+
+    <polygon points="250,180 300,250 250,320 200,250"
+             stroke="#4da3ff" stroke-width="4" fill="none"/>
+    <polygon points="250,210 280,250 250,290 220,250"
+             stroke="#4da3ff" stroke-width="2" fill="none"/>
+
+    <text x="250" y="140" fill="#4da3ff" font-size="20" text-anchor="middle">
+        HANSEN INTELLIGENCE DIVISION
+    </text>
+    <text x="250" y="360" fill="#4da3ff" font-size="18" text-anchor="middle">
+        RESTRICTED ACCESS SYSTEM
+    </text>
 </svg>
 
 <!-- Boot screen -->
 <div id="boot-screen" role="alert" aria-live="polite"></div>
 
-<!-- NAV -->
+<!-- Nav -->
 <nav aria-label="Primary Navigation">
-    <a onclick="showPage('home')">Home</a>
-    <a onclick="showPage('services')">Services</a>
-    <a onclick="showPage('about')">About</a>
-    <a onclick="showPage('contact')">Contact</a>
-    <a onclick="showPage('submit')">Submit Case</a>
-    <a onclick="showPage('pricing')">Pricing</a>
-    <a onclick="showPage('login')">Associate Sign‑In</a>
+    <a onclick="showPage('home')">Home</a>
+    <a onclick="showPage('services')">Services</a>
+    <a onclick="showPage('about')">About</a>
+    <a onclick="showPage('contact')">Contact</a>
+    <a onclick="showPage('submit')">Submit Case</a>
+    <a onclick="showPage('pricing')">Pricing</a>
 </nav>
 
-<!-- LOGIN PAGE -->
-<div id="login" class="page">
-    <h1>Associate Sign‑In</h1>
-    <h2>Secure Access Portal</h2>
-
-    <input type="email" id="loginEmail" placeholder="Email" required>
-    <input type="password" id="loginPassword" placeholder="Password" required>
-
-    <button onclick="login()">Sign In</button>
-
-    <p id="loginError" style="color:#ff6666; margin-top:15px;"></p>
-
-    <p style="margin-top:25px; text-align:center; color:#999;">
-        Forgot password? Email <a href="mailto:admin@MrHansenFirm.com">admin@MrHansenFirm.com</a>
-    </p>
-</div>
-
-<!-- HOME -->
+<!-- Home -->
 <div id="home" class="page active">
-    <h1>MR. HANSEN</h1>
-    <h2>Boutique Intelligence Firm — We Solve Problems.</h2>
+    <h1>MR. HANSEN</h1>
+    <h2>Boutique Intelligence Firm — We Solve Problems.</h2>
 
-    <h3>Clarity for confusing people, situations, and decisions.</h3>
-    <div class="divider"></div>
+    <h3>Clarity for confusing people, situations, and decisions.</h3>
+    <div class="divider"></div>
 
-    <p>Some problems aren’t about data — they’re about people. Motives, insecurities, lies, blind spots, and emotional fog.</p>
-    <p>That’s where we come in. We analyze behavior, decode motives, and deliver clear, actionable insight when things get messy.</p>
-    <p>No drama. No jargon. Just the truth.</p>
+    <p>Some problems aren’t about data — they’re about people. Motives, insecurities, lies, blind spots, and emotional fog.</p>
+    <p>That’s where we come in. We analyze behavior, decode motives, and deliver clear, actionable insight when things get messy.</p>
+    <p>No drama. No jargon. Just the truth.</p>
 
-    <div class="home-associates-link">
-        <a href="associates.html" class="intel-link">› Meet Our Intelligence Associates</a>
-    </div>
+    <!-- ⭐ Associates Link (perfect placement) -->
+    <div class="home-associates-link">
+        <a href="associates.html" class="intel-link">› Meet Our Intelligence Associates</a>
+    </div>
 </div>
 
-<!-- SERVICES -->
+
+<!-- Services -->
 <div id="services" class="page">
-    <h1>Our Services</h1>
-    <h2>Clarity. Precision. Truth.</h2>
+    <h1>Our Services</h1>
+    <h2>Clarity. Precision. Truth.</h2>
 
-    <p class="service-title">Motive & Behavior Analysis</p>
-    <p>We decode intentions, patterns, and emotional drivers.</p>
+    <p class="service-title">Motive & Behavior Analysis</p>
+    <p>We decode intentions, patterns, and emotional drivers.</p>
 
-    <p class="service-title">Scam & Fraud Screening</p>
-    <p>We identify deception, manipulation, and hidden risks.</p>
+    <p class="service-title">Scam & Fraud Screening</p>
+    <p>We identify deception, manipulation, and hidden risks.</p>
 
-    <p class="service-title">Conflict & Crisis Clarity</p>
-    <p>We bring order and direction to chaotic situations.</p>
+    <p class="service-title">Conflict & Crisis Clarity</p>
+    <p>We bring order and direction to chaotic situations.</p>
 
-    <p class="service-title">Decision Clarity Consulting</p>
-    <p>We help individuals and businesses make confident decisions.</p>
+    <p class="service-title">Decision Clarity Consulting</p>
+    <p>We help individuals and businesses make confident decisions.</p>
 
-    <p class="service-title">Behavioral Pattern Reports</p>
-    <p>Written intelligence on people, situations, and outcomes.</p>
+    <p class="service-title">Behavioral Pattern Reports</p>
+    <p>Written intelligence on people, situations, and outcomes.</p>
 </div>
 
-<!-- ABOUT -->
+<!-- About -->
 <div id="about" class="page">
-    <h1>About Us</h1>
-    <h2>Boutique Intelligence. Human Clarity.</h2>
+    <h1>About Us</h1>
+    <h2>Boutique Intelligence. Human Clarity.</h2>
 
-    <h3>Who We Are</h3>
-    <div class="divider"></div>
-    <p>We are a boutique intelligence firm specializing in human‑behavior clarity, motive analysis, and conflict resolution. Our work begins where traditional logic ends — in the emotional, psychological, and interpersonal layers of complex situations.</p>
+    <h3>Who We Are</h3>
+    <div class="divider"></div>
+    <p>We are a boutique intelligence firm specializing in human‑behavior clarity, motive analysis, and conflict resolution. Our work begins where traditional logic ends — in the emotional, psychological, and interpersonal layers of complex situations.</p>
 
-    <h3>What We Believe</h3>
-    <div class="divider"></div>
-    <p>Most problems aren’t about data — they’re about people. We exist to bring clarity where emotions, deception, and confusion cloud judgment.</p>
+    <h3>What We Believe</h3>
+    <div class="divider"></div>
+    <p>Most problems aren’t about data — they’re about people. We exist to bring clarity where emotions, deception, and confusion cloud judgment.</p>
 
-    <h3>Our Approach</h3>
-    <div class="divider"></div>
-    <p>We analyze behavior, extract signal from noise, and deliver clear, actionable insight. Our method is fast, precise, and grounded in real‑world human patterns.</p>
+    <h3>Our Approach</h3>
+    <div class="divider"></div>
+    <p>We analyze behavior, extract signal from noise, and deliver clear, actionable insight. Our method is fast, precise, and grounded in real‑world human patterns.</p>
 </div>
 
-<!-- CONTACT -->
+<!-- Contact -->
 <div id="contact" class="page">
-    <h1>Contact Us</h1>
-    <h2>Get Clarity.</h2>
+    <h1>Contact Us</h1>
+    <h2>Get Clarity.</h2>
 
-    <p>If you’re facing a confusing person, situation, or decision, we can help.</p>
-    <p><strong>Email:</strong> <a href="mailto:clarity@mrhansenfirm.com">clarity@mrhansenfirm.com</a></p>
-    <p>We respond within 24 hours.</p>
+    <p>If you’re facing a confusing person, situation, or decision, we can help.</p>
+    <p><strong>Email:</strong> <a href="mailto:clarity@mrhansenfirm.com">clarity@mrhansenfirm.com</a></p>
+    <p>We respond within 24 hours.</p>
 </div>
 
-<!-- SUBMIT CASE -->
+<!-- Submit Case -->
 <div id="submit" class="page">
-    <h1>Submit Case</h1>
-    <h2>Encrypted Transmission Interface</h2>
+    <h1>Submit Case</h1>
+    <h2>Encrypted Transmission Interface</h2>
 
-    <p>Describe your situation below. Your case will be encrypted and transmitted securely.</p>
+    <p>Describe your situation below. Your case will be encrypted and transmitted securely.</p>
 
-    <div class="associate-header">
-        <span>Select Your Intelligence Associate</span>
-        <a href="associates.html" class="view-profiles">View Profiles</a>
-    </div>
+    <!-- ⭐ Decorative Header + Link (GOES HERE) -->
+    <div class="associate-header">
+        <span>Select Your Intelligence Associate</span>
+        <a href="associates.html" class="view-profiles">View Profiles</a>
+    </div>
 
-    <label for="associate">Select Intelligence Associate *</label>
-    <select id="associate" required>
-        <option value="">Loading associates...</option>
-    </select>
+    <!-- ⭐ Dropdown stays right below the header -->
+<label for="associate">Select Intelligence Associate *</label>
+<select id="associate" required>
+    <option value="">Loading associates...</option>
+</select>
 
-    <textarea id="caseText" placeholder="Enter case details here..."></textarea>
 
-    <button onclick="transmitCase()">Encrypt & Transmit</button>
-    <div id="encrypting"></div>
+    <!-- Your existing textarea -->
+    <textarea id="caseText" placeholder="Enter case details here..."></textarea>
+
+    <button onclick="transmitCase()">Encrypt & Transmit</button>
+    <div id="encrypting"></div>
 </div>
 
-<!-- PRICING -->
+
+
+<!-- PRICING PAGE -->
 <div id="pricing" class="page">
-    <h1>Pricing</h1>
-    <h2>Access Levels — Hansen Intelligence Division</h2>
+    <h1>Pricing</h1>
+    <h2>Access Levels — Hansen Intelligence Division</h2>
 
-    <h3>LEVEL 1 — Quick Read</h3>
-    <div class="divider"></div>
-    <p><strong>$35</strong></p>
-    <p>Fast clarity on a single situation.<br>
-       A brief intelligence read to confirm instincts, decode behavior, or validate concerns.</p>
+    <h3>LEVEL 1 — Quick Read</h3>
+    <div class="divider"></div>
+    <p><strong>$35</strong></p>
+    <p>Fast clarity on a single situation.<br>
+       A brief intelligence read to confirm instincts, decode behavior, or validate concerns.</p>
 
-    <h3>LEVEL 2 — Deep Dive Analysis</h3>
-    <div class="divider"></div>
-    <p><strong>$95</strong></p>
-    <p>Full behavioral breakdown including:<br>
-       motives, inconsistencies, emotional drivers,<br>
-       predicted outcomes, and recommended actions.<br>
-       Ideal for complex or emotionally charged situations.</p>
+    <h3>LEVEL 2 — Deep Dive Analysis</h3>
+    <div class="divider"></div>
+    <p><strong>$95</strong></p>
+    <p>Full behavioral breakdown including:<br>
+       motives, inconsistencies, emotional drivers,<br>
+       predicted outcomes, and recommended actions.<br>
+       Ideal for complex or emotionally charged situations.</p>
 
-    <h3>LEVEL 3 — Crisis Session</h3>
-    <div class="divider"></div>
-    <p><strong>$195</strong></p>
-    <p>High‑stakes clarity.<br>
-       Priority handling for urgent or time‑sensitive cases.<br>
-       Immediate direction and stabilization from a senior associate.</p>
+    <h3>LEVEL 3 — Crisis Session</h3>
+    <div class="divider"></div>
+    <p><strong>$195</strong></p>
+    <p>High‑stakes clarity.<br>
+       Priority handling for urgent or time‑sensitive cases.<br>
+       Immediate direction and stabilization from a senior associate.</p>
 
-    <h3>Optional Add‑Ons</h3>
-    <div class="divider"></div>
-    <p><strong>Written Behavioral Pattern Report — $75</strong><br>
-       A formal intelligence‑style document summarizing your case.</p>
+    <h3>Optional Add‑Ons</h3>
+    <div class="divider"></div>
+    <p><strong>Written Behavioral Pattern Report — $75</strong><br>
+       A formal intelligence‑style document summarizing your case.</p>
 
-    <p><strong>Follow‑Up Check‑In — $25</strong><br>
-       Quick update analysis after new developments.</p>
+    <p><strong>Follow‑Up Check‑In — $25</strong><br>
+       Quick update analysis after new developments.</p>
 </div>
 
-<!-- ASSOCIATE DASHBOARD -->
-<div id="associate-dashboard" class="page">
-    <h1>Associate Dashboard</h1>
-    <h2>Your Intelligence Assignments</h2>
 
-    <p id="associateWelcome" style="text-align:center; margin-bottom:20px;"></p>
-
-    <div class="divider"></div>
-
-    <h3 class="dashboard-section-title">Your Open Cases</h3>
-    <div id="associateCases"></div>
-
-    <h3 class="dashboard-section-title">Your Payouts</h3>
-    <div id="associatePayouts"></div>
-
-    <button onclick="logout()">Sign Out</button>
-</div>
-
-<!-- ADMIN DASHBOARD -->
-<div id="admin-dashboard" class="page">
-    <h1>Admin Dashboard</h1>
-    <h2>Hansen Intelligence Division — Internal Console</h2>
-
-    <p id="adminWelcome" style="text-align:center; margin-bottom:20px;"></p>
-
-    <div class="divider"></div>
-
-    <h3 class="dashboard-section-title">All Cases</h3>
-    <div id="adminCases"></div>
-
-    <h3 class="dashboard-section-title">Payout Overview</h3>
-    <div id="adminPayouts"></div>
-
-    <button onclick="logout()">Sign Out</button>
-</div>
-
-<!-- TIER SELECTION MODAL -->
-<div id="tier-modal-overlay" style="display:none;">
-    <div id="tier-modal">
-        <h2>Select Tier for Case</h2>
-        <p id="tierModalCaseId" style="margin-bottom:15px; color:#aaa;"></p>
-
-        <button class="tier-button" onclick="sendTierPaymentLink('quick')">
-            LEVEL 1 — Quick Read — $35
-        </button>
-
-        <button class="tier-button" onclick="sendTierPaymentLink('deep')">
-            LEVEL 2 — Deep Dive Analysis — $95
-        </button>
-
-        <button class="tier-button" onclick="sendTierPaymentLink('crisis')">
-            LEVEL 3 — Crisis Session — $195
-        </button>
-
-        <div class="divider"></div>
-
-        <button class="tier-button" onclick="sendTierPaymentLink('report')">
-            Add‑On — Written Behavioral Pattern Report — $75
-        </button>
-
-        <button class="tier-button" onclick="sendTierPaymentLink('followup')">
-            Add‑On — Follow‑Up Check‑In — $25
-        </button>
-
-        <button style="margin-top:20px; width:100%;" onclick="closeTierModal()">Cancel</button>
-    </div>
-</div>
-
-<!-- FOOTER -->
 <footer>
-    MR. HANSEN — Boutique Intelligence Firm<br>
-    We Solve Problems.
+    MR. HANSEN — Boutique Intelligence Firm<br>
+    We Solve Problems.
 </footer>
 
 <script>
@@ -399,40 +535,40 @@ document.body.style.opacity = 1;
 
 /* Boot sequence */
 const bootLines = [
-    "Initializing secure system...",
-    "Loading encrypted modules...",
-    "Verifying cryptographic signatures...",
-    "Establishing secure uplink...",
-    "Authenticating operator credentials...",
-    "Access granted.",
-    "",
-    "Initializing Hansen Clarity Engine™...",
-    "Loading behavioral analysis modules...",
-    "Loading motive‑pattern recognition...",
-    "Loading deception‑detection heuristics...",
-    "System integrity: OK",
-    "",
-    "Launching MR. HANSEN Intelligence Console..."
+    "Initializing secure system...",
+    "Loading encrypted modules...",
+    "Verifying cryptographic signatures...",
+    "Establishing secure uplink...",
+    "Authenticating operator credentials...",
+    "Access granted.",
+    "",
+    "Initializing Hansen Clarity Engine™...",
+    "Loading behavioral analysis modules...",
+    "Loading motive‑pattern recognition...",
+    "Loading deception‑detection heuristics...",
+    "System integrity: OK",
+    "",
+    "Launching MR. HANSEN Intelligence Console..."
 ];
 
 let index = 0;
 const bootScreen = document.getElementById("boot-screen");
 
 function typeBootLine() {
-    if (index < bootLines.length) {
-        bootScreen.innerHTML += bootLines[index] + "\n";
-        index++;
-        setTimeout(typeBootLine, 200);
-    } else {
-        setTimeout(() => {
-            bootScreen.style.opacity = 0;
-            setTimeout(() => {
-                bootScreen.remove();
-                document.querySelector("nav").style.display = "flex";
-                document.body.style.overflow = "auto";
-            }, 600);
-        }, 800);
-    }
+    if (index < bootLines.length) {
+        bootScreen.innerHTML += bootLines[index] + "\n";
+        index++;
+        setTimeout(typeBootLine, 200);
+    } else {
+        setTimeout(() => {
+            bootScreen.style.opacity = 0;
+            setTimeout(() => {
+                bootScreen.remove();
+                document.querySelector("nav").style.display = "flex";
+                document.body.style.overflow = "auto";
+            }, 600);
+        }, 800);
+    }
 }
 typeBootLine();
 </script>
@@ -440,81 +576,80 @@ typeBootLine();
 <script>
 /* Page switching */
 function showPage(pageId) {
-    document.body.style.opacity = 0;
-    setTimeout(() => {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        const target = document.getElementById(pageId);
-        if (target) target.classList.add('active');
-        document.body.style.opacity = 1;
-    }, 300);
+    document.body.style.opacity = 0;
+    setTimeout(() => {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        document.body.style.opacity = 1;
+    }, 300);
 }
 </script>
 
 <script>
 /* Clear URL hash and parameters when navigating to any page */
 document.querySelectorAll("nav a").forEach(link => {
-    link.addEventListener("click", function () {
-        history.replaceState(null, "", window.location.pathname);
-    });
+    link.addEventListener("click", function () {
+        history.replaceState(null, "", window.location.pathname);
+    });
 });
 </script>
 
 <script>
 /* Auto-load correct page based on URL hash */
 document.addEventListener("DOMContentLoaded", function () {
-    const hash = window.location.hash;
+    const hash = window.location.hash;
 
-    if (hash === "#submit") {
-        showPage("submit");
+    if (hash === "#submit") {
+        showPage("submit");
 
-        setTimeout(() => {
-            const section = document.getElementById("submit");
-            if (section) {
-                section.scrollIntoView({ behavior: "smooth" });
-            }
-        }, 350);
-    }
+        setTimeout(() => {
+            const section = document.getElementById("submit");
+            if (section) {
+                section.scrollIntoView({ behavior: "smooth" });
+            }
+        }, 350);
+    }
 });
 </script>
 
 <script>
 /* Submit case */
 function transmitCase() {
-    const text = document.getElementById("caseText").value.trim();
-    const enc = document.getElementById("encrypting");
+    const text = document.getElementById("caseText").value.trim();
+    const enc = document.getElementById("encrypting");
 
-    if (!text) {
-        enc.style.display = "block";
-        enc.innerText = "Error: No case data detected.";
-        return;
-    }
+    if (!text) {
+        enc.style.display = "block";
+        enc.innerText = "Error: No case data detected.";
+        return;
+    }
 
-    enc.style.display = "block";
-    enc.innerText = "Encrypting case data...\n";
+    enc.style.display = "block";
+    enc.innerText = "Encrypting case data...\n";
 
-    let steps = [
-        "Applying AES‑256 encryption...",
-        "Encoding transmission packet...",
-        "Routing through secure uplink...",
-        "Transmitting to Hansen Intelligence Division...",
-        "Transmission complete."
-    ];
+    let steps = [
+        "Applying AES‑256 encryption...",
+        "Encoding transmission packet...",
+        "Routing through secure uplink...",
+        "Transmitting to Hansen Intelligence Division...",
+        "Transmission complete."
+    ];
 
-    let i = 0;
-    function nextStep() {
-        if (i < steps.length) {
-            enc.innerText += steps[i] + "\n";
-            i++;
-            setTimeout(nextStep, 500);
-        } else {
-            setTimeout(() => {
-                window.location.href =
-                    "mailto:clarity@mrhansenfirm.com?subject=New Case Submission&body=" +
-                    encodeURIComponent(text);
-            }, 600);
-        }
-    }
-    nextStep();
+    let i = 0;
+    function nextStep() {
+        if (i < steps.length) {
+            enc.innerText += steps[i] + "\n";
+            i++;
+            setTimeout(nextStep, 500);
+        } else {
+            setTimeout(() => {
+                window.location.href =
+                    "mailto:clarity@mrhansenfirm.com?subject=New Case Submission&body=" +
+                    encodeURIComponent(text);
+            }, 600);
+        }
+    }
+    nextStep();
 }
 </script>
 
@@ -524,242 +659,75 @@ const params = new URLSearchParams(window.location.search);
 const selected = params.get("associate");
 
 if (selected) {
-    const dropdown = document.getElementById("associate");
-    if (dropdown) {
-        dropdown.value = selected;
-        document.getElementById("submit").scrollIntoView({ behavior: "smooth" });
-    }
+    const dropdown = document.getElementById("associate");
+    if (dropdown) {
+        dropdown.value = selected;
+        document.getElementById("submit").scrollIntoView({ behavior: "smooth" });
+    }
 }
 </script>
 
 <script>
 /* Scroll to submit if hash is present */
 document.addEventListener("DOMContentLoaded", function () {
-    if (window.location.hash === "#submit") {
-        const section = document.getElementById("submit");
-        if (section) {
-            section.scrollIntoView({ behavior: "smooth" });
-        }
-    }
+    if (window.location.hash === "#submit") {
+        const section = document.getElementById("submit");
+        if (section) {
+            section.scrollIntoView({ behavior: "smooth" });
+        }
+    }
 });
 </script>
 
 <script>
-// Backend URL
+// Your backend URL
 const BASE_URL = "https://script.google.com/macros/s/AKfycbxdfivR3V3XwbfvpFZdKJ4xhIjVLMbid2V55c_JA55kN_t9uwHOQpGAd79MRbu1YVKW/exec";
 
 const associateSelect = document.getElementById("associate");
 
 // Load associates into dropdown
 function loadAssociates() {
-    fetch(BASE_URL + "?list=1")
-        .then(r => r.json())
-        .then(data => {
-            associateSelect.innerHTML = "";
+    fetch(BASE_URL + "?list=1")
+        .then(r => r.json())
+        .then(data => {
+            associateSelect.innerHTML = "";
 
-            if (!data || data.length === 0) {
-                associateSelect.innerHTML = `<option value="">No active associates available</option>`;
-                return;
-            }
+            if (!data || data.length === 0) {
+                associateSelect.innerHTML = `<option value="">No active associates available</option>`;
+                return;
+            }
 
-            associateSelect.innerHTML = `<option value="">Select an associate...</option>`;
+            associateSelect.innerHTML = `<option value="">Select an associate...</option>`;
 
-            data.forEach(a => {
-                const opt = document.createElement("option");
-                opt.value = a.name;
-                opt.textContent = a.name + " — " + (a.specialty || "Specialty");
-                associateSelect.appendChild(opt);
-            });
+            data.forEach(a => {
+                const opt = document.createElement("option");
+                opt.value = a.name;
+                opt.textContent = a.name + " — " + (a.specialty || "Specialty");
+                associateSelect.appendChild(opt);
+            });
 
-            autoSelectFromURL();
-        })
-        .catch(err => {
-            associateSelect.innerHTML = `<option value="">Error loading associates</option>`;
-            console.error(err);
-        });
+            autoSelectFromURL();
+        })
+        .catch(err => {
+            associateSelect.innerHTML = `<option value="">Error loading associates</option>`;
+            console.error(err);
+        });
 }
 
+// Auto-select associate from URL (?associate=Name)
 function autoSelectFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    const selected = params.get("associate");
+    const params = new URLSearchParams(window.location.search);
+    const selected = params.get("associate");
 
-    if (selected) {
-        const option = [...associateSelect.options].find(
-            o => o.value.toLowerCase() === selected.toLowerCase()
-        );
-        if (option) option.selected = true;
-    }
+    if (selected) {
+        const option = [...associateSelect.options].find(
+            o => o.value.toLowerCase() === selected.toLowerCase()
+        );
+        if (option) option.selected = true;
+    }
 }
 
 loadAssociates();
-</script>
-
-<script>
-/* AUTH + DASHBOARDS + TIER SELECTION */
-
-let currentTierCaseId = null;
-
-// Stripe links (TEST mode)
-const STRIPE_LINKS = {
-    quick: "https://buy.stripe.com/test_aFadR9c403TR98u9TY77O00",
-    deep: "https://buy.stripe.com/test_4gM00j5FC4XVbgCc2677O01",
-    crisis: "https://buy.stripe.com/test_5kQaEX9VSgGDbgCgim77O02",
-    report: "https://buy.stripe.com/test_bJe28rc409eb4Se1ns77O03",
-    followup: "https://buy.stripe.com/test_3cIdR9gkg61ZdoKc2677O04"
-};
-
-function getSessionRole() {
-    return localStorage.getItem("role");
-}
-function getSessionEmail() {
-    return localStorage.getItem("email");
-}
-function getSessionName() {
-    return localStorage.getItem("name");
-}
-
-function login() {
-    const email = document.getElementById("loginEmail").value.trim();
-    const password = document.getElementById("loginPassword").value.trim();
-    const errorEl = document.getElementById("loginError");
-    errorEl.textContent = "";
-
-    if (!email || !password) {
-        errorEl.textContent = "Enter both email and password.";
-        return;
-    }
-
-    fetch(`${BASE_URL}?login=1&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`)
-        .then(r => r.json())
-        .then(data => {
-            if (!data || data.status !== "ok") {
-                errorEl.textContent = data && data.message ? data.message : "Invalid credentials.";
-                return;
-            }
-
-            localStorage.setItem("role", data.role);
-            localStorage.setItem("email", data.email);
-            localStorage.setItem("name", data.name || "");
-
-            if (data.role === "admin") {
-                showPage("admin-dashboard");
-                loadAdminDashboard();
-            } else {
-                showPage("associate-dashboard");
-                loadAssociateDashboard();
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            errorEl.textContent = "Login error. Try again.";
-        });
-}
-
-function logout() {
-    localStorage.removeItem("role");
-    localStorage.removeItem("email");
-    localStorage.removeItem("name");
-    showPage("home");
-}
-
-function openAssociateDashboard() {
-    const role = getSessionRole();
-    if (role !== "associate") {
-        showPage("login");
-        const err = document.getElementById("loginError");
-        if (err) err.textContent = "Associate access only. Please sign in.";
-        return;
-    }
-    showPage("associate-dashboard");
-    loadAssociateDashboard();
-}
-
-function openAdminDashboard() {
-    const role = getSessionRole();
-    if (role !== "admin") {
-        showPage("login");
-        const err = document.getElementById("loginError");
-        if (err) err.textContent = "Admin access only. Please sign in.";
-        return;
-    }
-    showPage("admin-dashboard");
-    loadAdminDashboard();
-}
-
-// Placeholder: load associate dashboard data
-function loadAssociateDashboard() {
-    const name = getSessionName() || "Associate";
-    const email = getSessionEmail() || "";
-    const welcome = document.getElementById("associateWelcome");
-    if (welcome) {
-        welcome.textContent = `Signed in as ${name} (${email})`;
-    }
-
-    const casesEl = document.getElementById("associateCases");
-    const payoutsEl = document.getElementById("associatePayouts");
-
-    casesEl.innerHTML = "<p class='dashboard-meta'>Your assigned cases will appear here.</p>";
-    payoutsEl.innerHTML = "<p class='dashboard-meta'>Your payout history will appear here.</p>";
-}
-
-// Placeholder: load admin dashboard data
-function loadAdminDashboard() {
-    const name = getSessionName() || "Admin";
-    const email = getSessionEmail() || "";
-    const welcome = document.getElementById("adminWelcome");
-    if (welcome) {
-        welcome.textContent = `Signed in as ${name} (${email})`;
-    }
-
-    const casesEl = document.getElementById("adminCases");
-    const payoutsEl = document.getElementById("adminPayouts");
-
-    casesEl.innerHTML = "<p class='dashboard-meta'>All cases will be listed here.</p>";
-    payoutsEl.innerHTML = "<p class='dashboard-meta'>All payouts will be listed here.</p>";
-}
-
-// Case actions (stubs to be wired to backend)
-function acceptCase(caseId) {
-    console.log("Accept case:", caseId);
-}
-
-function openTierSelection(caseId) {
-    currentTierCaseId = caseId;
-    document.getElementById("tierModalCaseId").textContent = "Case: " + caseId;
-    document.getElementById("tier-modal-overlay").style.display = "flex";
-}
-
-function closeTierModal() {
-    currentTierCaseId = null;
-    document.getElementById("tier-modal-overlay").style.display = "none";
-}
-
-function sendTierPaymentLink(tierKey) {
-    const link = STRIPE_LINKS[tierKey];
-    if (!link) {
-        alert("Unknown tier.");
-        return;
-    }
-
-    alert("This would email the client the Stripe link.\nOpening link for testing.");
-    window.open(link, "_blank");
-
-    closeTierModal();
-}
-
-function markPayoutPaid(caseId) {
-    console.log("Mark payout as paid for case:", caseId);
-}
-
-// Auto-load dashboard if session exists
-document.addEventListener("DOMContentLoaded", function () {
-    const role = getSessionRole();
-    if (role === "admin") {
-        // Admin can choose when to open dashboard
-    } else if (role === "associate") {
-        // Associate can choose when to open dashboard
-    }
-});
 </script>
 
 </body>
