@@ -13,10 +13,7 @@
       max-width: 800px;
       margin: auto;
     }
-    h1 { 
-      text-shadow: 0 0 15px #00ff88; 
-      margin-bottom: 10px; 
-    }
+    h1 { text-shadow: 0 0 15px #00ff88; margin-bottom: 10px; }
     .associate-banner {
       background: #0a0a0a;
       padding: 15px 20px;
@@ -24,11 +21,7 @@
       margin-bottom: 30px;
       font-size: 18px;
     }
-    label { 
-      display: block; 
-      margin-top: 20px; 
-      font-weight: bold; 
-    }
+    label { display: block; margin-top: 20px; font-weight: bold; }
     input, textarea, select {
       width: 100%;
       padding: 12px;
@@ -52,15 +45,8 @@
       cursor: pointer;
       box-shadow: 0 0 25px #00ff88;
     }
-    button:hover {
-      background: #00ffaa;
-      box-shadow: 0 0 35px #00ffaa;
-    }
-    #status { 
-      margin-top: 20px; 
-      font-size: 16px; 
-      min-height: 1.5em; 
-    }
+    button:hover { background: #00ffaa; box-shadow: 0 0 35px #00ffaa; }
+    #status { margin-top: 20px; font-size: 16px; min-height: 1.5em; }
   </style>
 </head>
 <body>
@@ -71,7 +57,7 @@
   </div>
 
   <form id="caseForm">
-    <input type="hidden" id="associateId" name="associateId">
+    <input type="hidden" id="associateId">
 
     <label>Associate</label>
     <input type="text" id="associateName" readonly />
@@ -82,7 +68,7 @@
     <label>Your Email</label>
     <input type="email" id="clientEmail" required />
 
-    <label>Case Title / Subject</label>
+    <label>Case Title</label>
     <input type="text" id="caseTitle" required />
 
     <label>Case Description</label>
@@ -91,15 +77,9 @@
     <label>Service Tier</label>
     <select id="tier" required>
       <option value="">— Select Tier —</option>
-      <option value="Level 1 - Quick Read" data-link="https://buy.stripe.com/test_aFadR9c403TR98u9TY77O00">
-        Level 1 — Quick Read ($35)
-      </option>
-      <option value="Level 2 - Deep Dive Analysis" data-link="https://buy.stripe.com/test_4gM00j5FC4XVbgCc2677O01">
-        Level 2 — Deep Dive Analysis ($95)
-      </option>
-      <option value="Level 3 - Crisis Session" data-link="https://buy.stripe.com/test_5kQaEX9VSgGDbgCgim77O02">
-        Level 3 — Crisis Session ($195)
-      </option>
+      <option value="Level 1 - Quick Read" data-link="https://buy.stripe.com/test_aFadR9c403TR98u9TY77O00">Level 1 — Quick Read ($35)</option>
+      <option value="Level 2 - Deep Dive Analysis" data-link="https://buy.stripe.com/test_4gM00j5FC4XVbgCc2677O01">Level 2 — Deep Dive Analysis ($95)</option>
+      <option value="Level 3 - Crisis Session" data-link="https://buy.stripe.com/test_5kQaEX9VSgGDbgCgim77O02">Level 3 — Crisis Session ($195)</option>
     </select>
 
     <div id="status"></div>
@@ -109,7 +89,6 @@
   <script>
     const BASE_URL = "https://script.google.com/macros/s/AKfycbxdfivR3V3XwbfvpFZdKJ4xhIjVLMbid2V55c_JA55kN_t9uwHOQpGAd79MRbu1YVKW/exec";
 
-    // Auto-fill associate from profile
     const params = new URLSearchParams(window.location.search);
     const associateName = params.get('associate');
     const associateId = params.get('id');
@@ -136,9 +115,8 @@
       }
 
       btn.disabled = true;
-      status.innerHTML = "SAVING CASE & REDIRECTING TO SECURE PAYMENT...";
+      status.innerHTML = `<span style="color:#00ff88">SAVING CASE...</span>`;
 
-      // Save case details to Google Sheets
       const payload = {
         clientName: document.getElementById("clientName").value,
         clientEmail: document.getElementById("clientEmail").value,
@@ -151,14 +129,19 @@
       };
 
       try {
+        // Save to sheet
         await fetch(BASE_URL, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(payload)
         });
 
-        // Redirect to Stripe Checkout
-        window.location.href = stripeLink;
+        status.innerHTML = `<span style="color:#00ff88">REDIRECTING TO SECURE PAYMENT...</span>`;
+
+        // Small delay so user sees the message
+        setTimeout(() => {
+          window.location.href = stripeLink;
+        }, 1200);
 
       } catch (err) {
         console.error(err);
