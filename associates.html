@@ -3,156 +3,174 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Associate Profile</title>
+  <title>Intelligence Associates</title>
   <style>
     body {
-      font-family: "Courier New", monospace;
       background: #000;
       color: #00ff88;
-      padding: 40px 20px;
-      max-width: 1000px;
-      margin: auto;
-      line-height: 1.6;
+      font-family: "Courier New", monospace;
+      padding: 20px;
+      text-align: center;
     }
-    .back-link {
-      color: #00ff88;
-      text-decoration: none;
-      font-size: 18px;
-      margin-bottom: 30px;
+    h1 { 
+      text-shadow: 0 0 12px #00ff88; 
+      margin-bottom: 10px;
+    }
+
+    .apply-btn {
       display: inline-block;
-    }
-    .back-link:hover {
-      text-shadow: 0 0 12px #00ff88;
-    }
-    .profile-container {
-      display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 50px;
-      margin-top: 20px;
-    }
-    .photo {
-      width: 100%;
-      border-radius: 12px;
-      border: 3px solid #00ff88;
-      box-shadow: 0 0 30px #00ff88;
-      background: #111;
-    }
-    .info h1 {
-      font-size: 42px;
-      margin: 0 0 8px 0;
-      text-shadow: 0 0 15px #00ff88;
-    }
-    .specialty {
-      font-size: 24px;
-      color: #00ffaa;
-      margin-bottom: 25px;
-    }
-    .bio {
-      font-size: 17px;
-      background: #0a0a0a;
-      padding: 30px;
-      border-radius: 10px;
-      border-left: 5px solid #00ff88;
-      box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
-    }
-    .btn {
-      display: inline-block;
-      margin-top: 25px;
-      padding: 16px 32px;
-      font-size: 18px;
-      font-weight: bold;
-      border-radius: 6px;
-      text-decoration: none;
-      transition: all 0.3s;
-    }
-    .insta-btn {
-      background: #ff2ea6;
-      color: #fff;
-      box-shadow: 0 0 20px #ff2ea6;
-    }
-    .case-btn {
+      padding: 12px 20px;
       background: #00ff88;
       color: #000;
-      box-shadow: 0 0 20px #00ff88;
-      margin-left: 15px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 0 12px #00ff88;
+      transition: 0.2s;
+      margin-bottom: 30px;
     }
-    .btn:hover {
-      transform: scale(1.05);
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
     }
-    @media (max-width: 768px) {
-      .profile-container {
-        grid-template-columns: 1fr;
-      }
+
+    .card {
+      background: #0a0a0a;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px #00ff88;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 25px #00ff88;
+    }
+
+    .photo {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 0 10px #00ff88;
+      background: #111;
+    }
+
+    .name { 
+      font-size: 22px; 
+      font-weight: bold; 
+      margin-bottom: 6px; 
+    }
+    .specialty { 
+      font-size: 16px; 
+      margin-bottom: 10px; 
+      color: #00ffaa;
+    }
+    .bio { 
+      font-size: 14px; 
+      margin-bottom: 16px; 
+      color: #baffd9;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .insta-btn, .select-btn {
+      display: inline-block;
+      padding: 10px 16px;
+      margin: 6px 4px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .insta-btn { 
+      background: #ff2ea6; 
+      color: #fff; 
+      box-shadow: 0 0 12px #ff2ea6; 
+    }
+    .select-btn { 
+      background: #00ff88; 
+      color: #000; 
+      box-shadow: 0 0 12px #00ff88; 
+    }
+
+    .back-home {
+      display: block;
+      margin: 60px auto 0;
+      color: #00ff88;
+      text-decoration: none;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
-  <a href="/associates.html" class="back-link">← BACK TO ALL ASSOCIATES</a>
 
-  <div id="loading">LOADING PROFILE...</div>
+  <h1>INTELLIGENCE ASSOCIATES</h1>
+  <a href="/associate-apply.html" class="apply-btn">Apply to Be an Intelligence Associate</a>
 
-  <div id="profileContent" style="display: none;">
-    <div class="profile-container">
-      <div>
-        <img id="profilePhoto" class="photo" alt="Associate Photo">
-      </div>
-      <div class="info">
-        <h1 id="profileName"></h1>
-        <div id="profileSpecialty" class="specialty"></div>
-        <div id="profileBio" class="bio"></div>
+  <div id="loading">LOADING ASSOCIATES...</div>
+  <div class="grid" id="grid"></div>
 
-        <div>
-          <a id="instaBtn" class="btn insta-btn" target="_blank">VIEW INSTAGRAM</a>
-          <a id="caseBtn" class="btn case-btn">SUBMIT CASE TO THIS ASSOCIATE</a>
-        </div>
-      </div>
-    </div>
-  </div>
+  <a href="/index.html" class="back-home">&lt; Back to Home</a>
 
   <script>
     const BASE_URL = "https://script.google.com/macros/s/AKfycbxdfivR3V3XwbfvpFZdKJ4xhIjVLMbid2V55c_JA55kN_t9uwHOQpGAd79MRbu1YVKW/exec";
 
-    async function loadProfile() {
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get('id');
-
-      if (!id) {
-        document.getElementById("loading").innerHTML = "<span class='error'>Error: No profile ID provided.</span>";
-        return;
-      }
-
+    async function loadAssociates() {
       try {
         const res = await fetch(BASE_URL);
-        const associates = await res.json();
+        const data = await res.json();
 
-        const associate = associates.find(a => a.id === id);
+        console.log("Associates loaded:", data);   // For debugging
 
-        if (!associate) {
-          document.getElementById("loading").innerHTML = "Associate not found.";
+        const grid = document.getElementById("grid");
+        const loading = document.getElementById("loading");
+        loading.style.display = "none";
+
+        if (!data || data.length === 0) {
+          loading.style.display = "block";
+          loading.innerText = "NO ASSOCIATES FOUND";
           return;
         }
 
-        // Populate the profile
-        document.getElementById("profileName").textContent = associate.name;
-        document.getElementById("profileSpecialty").textContent = associate.specialty;
-        document.getElementById("profileBio").innerHTML = associate.bio.replace(/\n/g, '<br>');
-        document.getElementById("profilePhoto").src = associate.photoUrl;
-        document.getElementById("instaBtn").href = `https://instagram.com/${associate.instagram}`;
+        grid.innerHTML = "";
 
-        // Submit case button with pre-filled associate
-        document.getElementById("caseBtn").href = `/case-submission.html?associate=${encodeURIComponent(associate.name)}&id=${associate.id}`;
+        data.forEach(a => {
+          const card = document.createElement("div");
+          card.className = "card";
 
-        // Show content
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("profileContent").style.display = "block";
+          card.innerHTML = `
+            <img src="${a.photoUrl}" class="photo" 
+                 onerror="this.src='https://via.placeholder.com/300x280/111111/00ff88?text=Photo+Unavailable'" />
+            <div class="name">${a.name}</div>
+            <div class="specialty">${a.specialty}</div>
+            <div class="bio">${a.bio}</div>
+            
+            <a class="insta-btn" href="https://instagram.com/${a.instagram}" target="_blank">
+              View Instagram
+            </a>
+            
+            <a class="select-btn" href="/profile.html?id=${a.id}">
+              View Full Profile
+            </a>
+          `;
+
+          grid.appendChild(card);
+        });
 
       } catch (err) {
         console.error(err);
-        document.getElementById("loading").innerHTML = "Failed to load profile. Please try again.";
+        document.getElementById("loading").innerText = "ERROR LOADING ASSOCIATES";
       }
     }
 
-    window.onload = loadProfile;
+    window.onload = loadAssociates;
   </script>
 </body>
 </html>
