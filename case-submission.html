@@ -65,6 +65,7 @@
 </head>
 <body>
   <h1>SUBMIT NEW CASE</h1>
+  
   <div id="associateBanner" class="associate-banner" style="display:none;">
     Submitting case to: <strong id="selectedAssociate"></strong>
   </div>
@@ -87,11 +88,11 @@
     <label>Case Description</label>
     <textarea id="caseDescription" rows="8" required></textarea>
 
-    <label>Tier / Priority</label>
-    <select id="tier">
-      <option value="Tier 1">Tier 1 - Standard</option>
-      <option value="Tier 2">Tier 2 - Priority</option>
-      <option value="Tier 3">Tier 3 - Premium / Urgent</option>
+    <label>Service Tier</label>
+    <select id="tier" required>
+      <option value="Tier 1">Tier 1 - Standard Investigation ($2,500)</option>
+      <option value="Tier 2">Tier 2 - Priority Investigation ($4,500)</option>
+      <option value="Tier 3">Tier 3 - Premium / Urgent ($7,500)</option>
     </select>
 
     <div id="status"></div>
@@ -101,7 +102,7 @@
   <script>
     const BASE_URL = "https://script.google.com/macros/s/AKfycbxdfivR3V3XwbfvpFZdKJ4xhIjVLMbid2V55c_JA55kN_t9uwHOQpGAd79MRbu1YVKW/exec";
 
-    // Get associate from URL
+    // Auto-fill associate from URL
     const params = new URLSearchParams(window.location.search);
     const associateName = params.get('associate');
     const associateId = params.get('id');
@@ -143,9 +144,7 @@
 
         if (result.status === "success") {
           status.innerHTML = `<span style="color:#00ff88">✓ CASE SUBMITTED SUCCESSFULLY!</span>`;
-          setTimeout(() => {
-            window.location.href = "/associates.html";
-          }, 2500);
+          setTimeout(() => window.location.href = "/associates.html", 2800);
         } else {
           throw new Error(result.message || "Submission failed");
         }
