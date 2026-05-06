@@ -10,68 +10,69 @@
       background: #000;
       color: #00ff88;
       padding: 40px 20px;
-      max-width: 900px;
+      max-width: 1000px;
       margin: auto;
       line-height: 1.6;
     }
+    .back-link {
+      color: #00ff88;
+      text-decoration: none;
+      font-size: 18px;
+      margin-bottom: 30px;
+      display: inline-block;
+    }
+    .error { color: #ff3366; }
     .profile-container {
       display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 40px;
-      margin-top: 30px;
+      grid-template-columns: 380px 1fr;
+      gap: 50px;
+      margin-top: 20px;
     }
     .photo {
       width: 100%;
-      max-width: 380px;
       border-radius: 12px;
       border: 3px solid #00ff88;
-      box-shadow: 0 0 25px #00ff88;
+      box-shadow: 0 0 30px #00ff88;
     }
     .info h1 {
       font-size: 42px;
-      margin: 0 0 10px 0;
+      margin: 0 0 8px 0;
       text-shadow: 0 0 15px #00ff88;
     }
     .specialty {
-      font-size: 22px;
+      font-size: 24px;
       color: #00ffaa;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
     .bio {
       font-size: 17px;
-      color: #baffd9;
       background: #0a0a0a;
-      padding: 25px;
-      border-radius: 8px;
-      border-left: 4px solid #00ff88;
+      padding: 30px;
+      border-radius: 10px;
+      border-left: 5px solid #00ff88;
     }
     .btn {
       display: inline-block;
       margin-top: 25px;
       padding: 16px 32px;
-      background: #00ff88;
-      color: #000;
+      font-size: 18px;
       font-weight: bold;
       border-radius: 6px;
       text-decoration: none;
-      box-shadow: 0 0 20px #00ff88;
       transition: all 0.3s;
     }
-    .btn:hover {
-      transform: scale(1.05);
-      background: #00ffaa;
-    }
-    @media (max-width: 768px) {
-      .profile-container { grid-template-columns: 1fr; }
-    }
+    .insta-btn { background: #ff2ea6; color: #fff; }
+    .case-btn { background: #00ff88; color: #000; }
+    .btn:hover { transform: scale(1.05); }
   </style>
 </head>
 <body>
-  <h1><a href="/associates.html" style="color:#00ff88; text-decoration:none;">← BACK TO ASSOCIATES</a></h1>
+  <a href="/associates.html" class="back-link">← BACK TO ALL ASSOCIATES</a>
 
   <div id="loading">LOADING PROFILE...</div>
-  <div id="profileContent" style="display:none;">
+  <div id="errorMessage" class="error" style="display:none;"></div>
 
+  <div id="profileContent" style="display: none;">
     <div class="profile-container">
       <div>
         <img id="profilePhoto" class="photo" alt="Associate Photo">
@@ -81,52 +82,65 @@
         <div id="profileSpecialty" class="specialty"></div>
         <div id="profileBio" class="bio"></div>
 
-        <a id="instaLink" class="btn" target="_blank">VIEW INSTAGRAM</a>
-        <a id="submitCaseBtn" class="btn" style="background:#ff2ea6; margin-left:15px;">SUBMIT CASE TO THIS ASSOCIATE</a>
+        <div>
+          <a id="instaBtn" class="btn insta-btn" target="_blank">VIEW INSTAGRAM</a>
+          <a id="caseBtn" class="btn case-btn">SUBMIT CASE TO THIS ASSOCIATE</a>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    const BASE_URL = "https://script.google.com/macros/s/YOUR_LATEST_URL_HERE/exec";
+    const BASE_URL = "https://script.google.com/macros/s/AKfycbxdfivR3V3XwbfvpFZdKJ4xhIjVLMbid2V55c_JA55kN_t9uwHOQpGAd79MRbu1YVKW/exec";
 
     async function loadProfile() {
       const params = new URLSearchParams(window.location.search);
       const id = params.get('id');
 
+      console.log("Profile ID from URL:", id);   // Debug
+
       if (!id) {
-        document.getElementById("loading").innerHTML = "Error: No profile ID";
+        showError("No profile ID in URL. Go back and click 'View Full Profile'.");
         return;
       }
 
       try {
         const res = await fetch(BASE_URL);
+        console.log("Fetch status:", res.status);
+        
         const associates = await res.json();
+        console.log("All associates received:", associates);
 
         const associate = associates.find(a => a.id === id);
 
         if (!associate) {
-          document.getElementById("loading").innerHTML = "Associate not found.";
+          showError(`Associate with ID "${id}" not found.`);
+          console.log("Available IDs:", associates.map(a => a.id));
           return;
         }
 
-        // Populate profile
+        // Success - Populate profile
         document.getElementById("profileName").textContent = associate.name;
         document.getElementById("profileSpecialty").textContent = associate.specialty;
-        document.getElementById("profileBio").textContent = associate.bio;
+        document.getElementById("profileBio").innerHTML = associate.bio.replace(/\n/g, '<br>');
         document.getElementById("profilePhoto").src = associate.photoUrl;
-        document.getElementById("instaLink").href = `https://instagram.com/${associate.instagram}`;
-
-        // Submit case button
-        document.getElementById("submitCaseBtn").href = `/case-submission.html?associate=${encodeURIComponent(associate.name)}&id=${associate.id}`;
+        document.getElementById("instaBtn").href = `https://instagram.com/${associate.instagram}`;
+        document.getElementById("caseBtn").href = `/case-submission.html?associate=${encodeURIComponent(associate.name)}&id=${associate.id}`;
 
         document.getElementById("loading").style.display = "none";
         document.getElementById("profileContent").style.display = "block";
 
       } catch (err) {
-        console.error(err);
-        document.getElementById("loading").innerHTML = "Failed to load profile.";
+        console.error("Load error:", err);
+        showError("Failed to load profile. Check console for details.");
       }
+    }
+
+    function showError(msg) {
+      document.getElementById("loading").style.display = "none";
+      const errDiv = document.getElementById("errorMessage");
+      errDiv.style.display = "block";
+      errDiv.innerHTML = msg;
     }
 
     window.onload = loadProfile;
