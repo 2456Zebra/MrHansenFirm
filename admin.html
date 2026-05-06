@@ -10,8 +10,15 @@
       background: #000;
       color: #00ff88;
       padding: 20px;
+      margin: 0;
     }
-    h1 { text-shadow: 0 0 15px #00ff88; }
+    h1 { 
+      text-shadow: 0 0 15px #00ff88; 
+      margin-bottom: 5px;
+    }
+    .header {
+      margin-bottom: 30px;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -19,34 +26,37 @@
       background: #0a0a0a;
     }
     th, td {
-      padding: 12px;
+      padding: 14px;
       border: 1px solid #00ff88;
       text-align: left;
     }
     th {
       background: #111;
+      font-weight: bold;
     }
+    .status-paid { color: #00ff88; font-weight: bold; }
     .status-pending { color: #ffaa00; }
-    .status-paid { color: #00ff88; }
-    .btn {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
+    .no-data {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+      font-style: italic;
     }
   </style>
 </head>
 <body>
-  <h1>ADMIN DASHBOARD</h1>
-  <p><strong>Mr. Hansen Firm - Intelligence Division</strong></p>
+
+  <div class="header">
+    <h1>ADMIN DASHBOARD</h1>
+    <p><strong>Mr. Hansen Firm - Intelligence Division</strong></p>
+  </div>
 
   <h2>Recent Cases</h2>
   <table id="casesTable">
     <thead>
       <tr>
         <th>Date</th>
-        <th>Client</th>
+        <th>Client Name</th>
         <th>Email</th>
         <th>Associate</th>
         <th>Tier</th>
@@ -57,25 +67,43 @@
   </table>
 
   <script>
+    // ====================== PASSWORD PROTECTION ======================
+    const enteredPassword = prompt("Enter Admin Password:");
+    
+    if (enteredPassword !== "admin2025") {   // ← CHANGE THIS PASSWORD!
+      document.body.innerHTML = `
+        <h1 style="color:#ff3366; text-align:center; margin-top:100px;">
+          ACCESS DENIED
+        </h1>`;
+      throw new Error("Access denied");
+    }
+
+    // ====================== MAIN DASHBOARD ======================
     const BASE_URL = "https://script.google.com/macros/s/AKfycbxdfivR3V3XwbfvpFZdKJ4xhIjVLMbid2V55c_JA55kN_t9uwHOQpGAd79MRbu1YVKW/exec";
 
     async function loadCases() {
       try {
-        const res = await fetch(BASE_URL + "?action=cases"); // We'll update backend later
-        const cases = await res.json();
+        const res = await fetch(BASE_URL);
+        const data = await res.json();   // For now we'll show associates, we'll improve later
 
         const tbody = document.querySelector("#casesTable tbody");
         tbody.innerHTML = "";
 
-        cases.forEach(c => {
+        if (!data || data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="no-data">No cases yet.</td></tr>`;
+          return;
+        }
+
+        // Temporary: Show associates as placeholder until we add cases endpoint
+        data.forEach(item => {
           const row = document.createElement("tr");
           row.innerHTML = `
-            <td>${new Date(c.timestamp).toLocaleDateString()}</td>
-            <td>${c.clientName}</td>
-            <td>${c.clientEmail}</td>
-            <td>${c.associateName || 'Unassigned'}</td>
-            <td>${c.tier}</td>
-            <td><span class="status-paid">PAID</span></td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>${item.name || 'N/A'}</td>
+            <td>—</td>
+            <td><span class="status-paid">ACTIVE</span></td>
           `;
           tbody.appendChild(row);
         });
@@ -83,7 +111,9 @@
       } catch (err) {
         console.error(err);
         document.querySelector("#casesTable tbody").innerHTML = `
-          <tr><td colspan="6" style="text-align:center; color:#ff3366;">Failed to load cases</td></tr>`;
+          <tr><td colspan="6" class="no-data" style="color:#ff3366;">
+            Failed to load data
+          </td></tr>`;
       }
     }
 
