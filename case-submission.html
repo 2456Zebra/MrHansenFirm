@@ -13,9 +13,9 @@
       max-width: 800px;
       margin: auto;
     }
-    h1 {
-      text-shadow: 0 0 15px #00ff88;
-      margin-bottom: 10px;
+    h1 { 
+      text-shadow: 0 0 15px #00ff88; 
+      margin-bottom: 10px; 
     }
     .associate-banner {
       background: #0a0a0a;
@@ -24,10 +24,10 @@
       margin-bottom: 30px;
       font-size: 18px;
     }
-    label {
-      display: block;
-      margin-top: 20px;
-      font-weight: bold;
+    label { 
+      display: block; 
+      margin-top: 20px; 
+      font-weight: bold; 
     }
     input, textarea, select {
       width: 100%;
@@ -50,16 +50,16 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      box-shadow: 0 0 20px #00ff88;
+      box-shadow: 0 0 25px #00ff88;
     }
     button:hover {
       background: #00ffaa;
-      box-shadow: 0 0 30px #00ffaa;
+      box-shadow: 0 0 35px #00ffaa;
     }
-    #status {
-      margin-top: 20px;
-      font-size: 16px;
-      min-height: 1.5em;
+    #status { 
+      margin-top: 20px; 
+      font-size: 16px; 
+      min-height: 1.5em; 
     }
   </style>
 </head>
@@ -90,19 +90,26 @@
 
     <label>Service Tier</label>
     <select id="tier" required>
-      <option value="Tier 1">Tier 1 - Standard Investigation ($2,500)</option>
-      <option value="Tier 2">Tier 2 - Priority Investigation ($4,500)</option>
-      <option value="Tier 3">Tier 3 - Premium / Urgent ($7,500)</option>
+      <option value="">— Select Tier —</option>
+      <option value="Level 1 - Quick Read" data-link="https://buy.stripe.com/test_aFadR9c403TR98u9TY77O00">
+        Level 1 — Quick Read ($35)
+      </option>
+      <option value="Level 2 - Deep Dive Analysis" data-link="https://buy.stripe.com/test_4gM00j5FC4XVbgCc2677O01">
+        Level 2 — Deep Dive Analysis ($95)
+      </option>
+      <option value="Level 3 - Crisis Session" data-link="https://buy.stripe.com/test_5kQaEX9VSgGDbgCgim77O02">
+        Level 3 — Crisis Session ($195)
+      </option>
     </select>
 
     <div id="status"></div>
-    <button type="submit">SUBMIT CASE</button>
+    <button type="submit" id="submitBtn">PAY NOW & SUBMIT CASE</button>
   </form>
 
   <script>
     const BASE_URL = "https://script.google.com/macros/s/AKfycbxdfivR3V3XwbfvpFZdKJ4xhIjVLMbid2V55c_JA55kN_t9uwHOQpGAd79MRbu1YVKW/exec";
 
-    // Auto-fill associate from URL
+    // Auto-fill associate from profile
     const params = new URLSearchParams(window.location.search);
     const associateName = params.get('associate');
     const associateId = params.get('id');
@@ -116,12 +123,22 @@
 
     document.getElementById("caseForm").addEventListener("submit", async (e) => {
       e.preventDefault();
+      
       const status = document.getElementById("status");
-      const btn = e.target.querySelector("button");
+      const btn = document.getElementById("submitBtn");
+      const tierSelect = document.getElementById("tier");
+      const selectedOption = tierSelect.options[tierSelect.selectedIndex];
+      const stripeLink = selectedOption.getAttribute("data-link");
+
+      if (!stripeLink) {
+        status.innerHTML = `<span style="color:#ff3366">Please select a tier.</span>`;
+        return;
+      }
 
       btn.disabled = true;
-      status.innerHTML = "SUBMITTING CASE...";
+      status.innerHTML = "SAVING CASE & REDIRECTING TO SECURE PAYMENT...";
 
+      // Save case details to Google Sheets
       const payload = {
         clientName: document.getElementById("clientName").value,
         clientEmail: document.getElementById("clientEmail").value,
@@ -129,28 +146,23 @@
         associateId: document.getElementById("associateId").value,
         caseTitle: document.getElementById("caseTitle").value,
         caseDescription: document.getElementById("caseDescription").value,
-        tier: document.getElementById("tier").value,
+        tier: tierSelect.value,
         timestamp: new Date().toISOString()
       };
 
       try {
-        const res = await fetch(BASE_URL, {
+        await fetch(BASE_URL, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(payload)
         });
 
-        const result = await res.json();
+        // Redirect to Stripe Checkout
+        window.location.href = stripeLink;
 
-        if (result.status === "success") {
-          status.innerHTML = `<span style="color:#00ff88">✓ CASE SUBMITTED SUCCESSFULLY!</span>`;
-          setTimeout(() => window.location.href = "/associates.html", 2800);
-        } else {
-          throw new Error(result.message || "Submission failed");
-        }
       } catch (err) {
         console.error(err);
-        status.innerHTML = `<span style="color:#ff3366">✗ Submission failed. Please try again.</span>`;
+        status.innerHTML = `<span style="color:#ff3366">Error saving case. Please try again.</span>`;
         btn.disabled = false;
       }
     });
