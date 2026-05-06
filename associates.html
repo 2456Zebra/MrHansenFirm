@@ -60,16 +60,8 @@
       background: #111;
     }
 
-    .name { 
-      font-size: 22px; 
-      font-weight: bold; 
-      margin-bottom: 6px; 
-    }
-    .specialty { 
-      font-size: 16px; 
-      margin-bottom: 10px; 
-      color: #00ffaa;
-    }
+    .name { font-size: 22px; font-weight: bold; margin-bottom: 6px; }
+    .specialty { font-size: 16px; margin-bottom: 10px; color: #00ffaa; }
     .bio { 
       font-size: 14px; 
       margin-bottom: 16px; 
@@ -89,16 +81,8 @@
       font-weight: bold;
       transition: 0.2s;
     }
-    .insta-btn { 
-      background: #ff2ea6; 
-      color: #fff; 
-      box-shadow: 0 0 12px #ff2ea6; 
-    }
-    .select-btn { 
-      background: #00ff88; 
-      color: #000; 
-      box-shadow: 0 0 12px #00ff88; 
-    }
+    .insta-btn { background: #ff2ea6; color: #fff; box-shadow: 0 0 12px #ff2ea6; }
+    .select-btn { background: #00ff88; color: #000; box-shadow: 0 0 12px #00ff88; }
 
     .back-home {
       display: block;
@@ -107,6 +91,20 @@
       text-decoration: none;
       font-size: 16px;
     }
+
+    /* Animated Loading */
+    #loading {
+      font-size: 20px;
+      margin: 50px 0;
+      text-shadow: 0 0 10px #00ff88;
+      animation: pulse 1.5s infinite, typing 3s steps(30) infinite alternate;
+      min-height: 30px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -114,7 +112,7 @@
   <h1>INTELLIGENCE ASSOCIATES</h1>
   <a href="/associate-apply.html" class="apply-btn">Apply to Be an Intelligence Associate</a>
 
-  <div id="loading">LOADING ASSOCIATES...</div>
+  <div id="loading">INITIALIZING ASSOCIATES NETWORK...</div>
   <div class="grid" id="grid"></div>
 
   <a href="/index.html" class="back-home">&lt; Back to Home</a>
@@ -123,14 +121,12 @@
     const BASE_URL = "https://script.google.com/macros/s/AKfycbxdfivR3V3XwbfvpFZdKJ4xhIjVLMbid2V55c_JA55kN_t9uwHOQpGAd79MRbu1YVKW/exec";
 
     async function loadAssociates() {
+      const loading = document.getElementById("loading");
+      
       try {
         const res = await fetch(BASE_URL);
         const data = await res.json();
 
-        console.log("Associates loaded:", data);   // For debugging
-
-        const grid = document.getElementById("grid");
-        const loading = document.getElementById("loading");
         loading.style.display = "none";
 
         if (!data || data.length === 0) {
@@ -139,6 +135,7 @@
           return;
         }
 
+        const grid = document.getElementById("grid");
         grid.innerHTML = "";
 
         data.forEach(a => {
@@ -166,7 +163,8 @@
 
       } catch (err) {
         console.error(err);
-        document.getElementById("loading").innerText = "ERROR LOADING ASSOCIATES";
+        loading.style.display = "block";
+        loading.innerHTML = "ERROR LOADING ASSOCIATES NETWORK";
       }
     }
 
