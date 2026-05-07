@@ -349,6 +349,31 @@ select:focus {
     border-color: #a8d8ff;
 }
 
+/* Make nav responsive on mobile */
+nav[aria-label="Primary Navigation"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+/* Prevent sideways scrolling on mobile */
+body {
+    overflow-x: hidden;
+}
+
+/* Ensure Admin Portal dropdown aligns correctly */
+#adminPortalTrigger {
+    position: relative;
+}
+
+#adminDropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    white-space: nowrap;
+}
 
 </style>
 
