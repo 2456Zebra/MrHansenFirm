@@ -425,6 +425,7 @@ const auth = firebase.auth();
                 left:0;
                 margin-top:4px;
                 background:transparent;
+                white-space:nowrap;
              ">
             <a onclick="openLoginModal('client')" style="display:block; cursor:pointer;">
                 Client Admin
@@ -438,6 +439,7 @@ const auth = firebase.auth();
         </div>
     </span>
 </nav>
+
 
 
 
@@ -732,17 +734,26 @@ document.addEventListener("DOMContentLoaded", function () {
 <!-- 🔥 ADMIN PORTAL JS (MUST COME FIRST) -->
 <script>
 // Dropdown
+<script>
 function toggleAdminDropdown() {
   const dropdown = document.getElementById('adminDropdown');
   dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
 }
 
-
-// Close dropdown when clicking outside
 document.addEventListener('click', function(e) {
   const dropdown = document.getElementById('adminDropdown');
-  if (!e.target.closest('.group')) dropdown.classList.add('hidden');
+  const trigger = document.getElementById('adminPortalTrigger');
+
+  if (!trigger.contains(e.target)) {
+    dropdown.style.display = 'none';
+  }
 });
+
+const originalShowPage = window.showPage;
+window.showPage = function(page) {
+  document.getElementById('adminDropdown').style.display = 'none';
+  originalShowPage(page);
+};
 
 // Modal
 let currentPortalType = 'client';
@@ -751,7 +762,7 @@ function openLoginModal(type) {
   currentPortalType = type;
   document.getElementById('loginModal').classList.remove('hidden');
   switchPortalType(type);
-  document.getElementById('adminDropdown').classList.add('hidden');
+  document.getElementById('adminDropdown').style.display = 'none';
 }
 
 function switchPortalType(type) {
@@ -765,7 +776,6 @@ function switchPortalType(type) {
   });
 }
 
-// Handle Login
 async function handleLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
@@ -777,7 +787,6 @@ async function handleLogin() {
 
   try {
     const userCredential = await auth.signInWithEmailAndPassword(email, password);
-    console.log("Signed in:", userCredential.user);
     alert("Login successful! Redirecting...");
     window.location.href = "/dashboard.html"; 
   } catch (error) {
@@ -800,6 +809,7 @@ function goToSignup() {
   alert("We'll build the signup page next. For now, you can create accounts in Firebase console.");
 }
 </script>
+
 
 
 <!-- 🔥 YOUR EXISTING ASSOCIATE SCRIPT (KEEP AS IS) -->
