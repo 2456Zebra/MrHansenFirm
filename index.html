@@ -351,7 +351,27 @@ select:focus {
 
 
 </style>
-   
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
+<script>
+// Your Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyCXijSyw_EqvRSKwJH0M-xPs5piNfiCiYI",
+  authDomain: "mrhansenfirm-b57c1.firebaseapp.com",
+  projectId: "mrhansenfirm-b57c1",
+  storageBucket: "mrhansenfirm-b57c1.firebasestorage.app",
+  messagingSenderId: "1007101301706",
+  appId: "1:1007101301706:web:bbbac146ca9411e41af533"
+};
+
+// Initialize Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+</script>
+    
 </head>
 
 <body>
