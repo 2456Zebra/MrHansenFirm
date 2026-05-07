@@ -411,22 +411,41 @@ const auth = firebase.auth();
     <a onclick="showPage('submit')">Submit Case</a>
     <a onclick="showPage('pricing')">Pricing</a>
 
-    <!-- 🔑 ADMIN PORTAL BUTTON (INSERTED HERE) -->
-    <div class="relative group" style="display:inline-block; margin-left:20px;">
-      <button onclick="toggleAdminDropdown()" 
-              class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg flex items-center gap-2 transition">
-        <span>🔑</span>
-        <span>Admin Portal</span>
-      </button>
+    <!-- 🔑 Admin Tab (clean, simple, matches your nav) -->
+    <div class="relative" style="display:inline-block; margin-left:20px;">
+        <a onclick="toggleAdminDropdown()" style="cursor:pointer;">
+            Admin ▾
+        </a>
 
-      <!-- Dropdown -->
-      <div id="adminDropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl py-2 z-50 border">
-        <a href="#" onclick="openLoginModal('client')" class="block px-6 py-3 hover:bg-gray-100">👤 Client Admin</a>
-        <a href="#" onclick="openLoginModal('associate')" class="block px-6 py-3 hover:bg-gray-100">👔 Associates Admin</a>
-        <a href="#" onclick="openLoginModal('firm')" class="block px-6 py-3 hover:bg-gray-100">🏛️ Firm Admin</a>
-      </div>
+        <!-- Simple Dropdown -->
+        <div id="adminDropdown"
+             class="hidden"
+             style="
+                position:absolute;
+                right:0;
+                background:white;
+                border:1px solid #ccc;
+                border-radius:6px;
+                margin-top:6px;
+                min-width:150px;
+                z-index:9999;
+             ">
+            <a onclick="openLoginModal('client')"
+               style="display:block; padding:8px 12px; cursor:pointer;">
+               Client Admin
+            </a>
+            <a onclick="openLoginModal('associate')"
+               style="display:block; padding:8px 12px; cursor:pointer;">
+               Associate Admin
+            </a>
+            <a onclick="openLoginModal('firm')"
+               style="display:block; padding:8px 12px; cursor:pointer;">
+               Firm Admin
+            </a>
+        </div>
     </div>
 </nav>
+
 
 
 <!-- Home -->
