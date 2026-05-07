@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Hansen Intelligence</title>
+  <style>
+    body {
+      font-family: "Courier New", monospace;
+      background: #000;
+      color: #00ff88;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+    .login-box {
+      background: #0a0a0a;
+      padding: 40px;
+      border: 1px solid #00ff88;
+      box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 10px 0;
+      text-shadow: 0 0 15px #00ff88;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 15px 0;
+      background: #111;
+      border: 1px solid #00ff88;
+      color: #00ff88;
+      font-family: "Courier New", monospace;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #00ff88;
+      color: #000;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #00cc6a;
+    }
+    .error {
+      color: #ff3366;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h1>HANSEN INTELLIGENCE</h1>
+    <p>Admin Division Access</p>
+    
+    <input type="password" id="password" placeholder="Enter Admin Password" />
+    <button onclick="login()">LOGIN</button>
+    <div id="error" class="error"></div>
+  </div>
+
+  <script>
+    function login() {
+      const pass = document.getElementById("password").value;
+      const error = document.getElementById("error");
+
+      if (pass === "admin2025") {   // ← Change this password immediately!
+        localStorage.setItem("adminToken", "valid");
+        window.location.href = "dashboard.html";
+      } else {
+        error.textContent = "ACCESS DENIED";
+      }
+    }
+
+    // Allow pressing Enter
+    document.getElementById("password").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") login();
+    });
+  </script>
+</body>
+</html>
