@@ -119,20 +119,20 @@ html {
 nav {
     width: 100%;
     background: #111;
-    padding: 10px 20px;   /* ⭐ reduce vertical padding */
+    padding: 12px 20px; /* slightly shorter bar so dropdown sits below */
     justify-content: center;
     border-bottom: 1px solid #222;
     position: sticky;
     top: 0;
     z-index: 1000;
 
+    /* Critical fixes */
     display: flex;
     flex-wrap: wrap;
-    overflow-x: hidden;
-    overflow-y: visible;  /* ⭐ allow dropdown to extend */
+    overflow: visible; /* ⭐ allow dropdown to escape the bar */
 }
 
-
+/* Nav links */
 nav a {
     color: #ccc;
     margin: 0 15px;
@@ -144,6 +144,16 @@ nav a {
 }
 
 nav a:hover { color: #4da3ff; }
+
+/* Dropdown fix */
+#adminDropdown {
+    position: absolute;
+    top: calc(100% + 6px); /* ⭐ forces dropdown BELOW the bar */
+    left: 0;
+    white-space: nowrap;
+    z-index: 5000; /* above nav */
+}
+
 
 
 /* Pages */
