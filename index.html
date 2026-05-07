@@ -119,17 +119,27 @@ html {
 nav {
     width: 100%;
     background: #111;
-    padding: 12px 20px; /* slightly shorter bar so dropdown sits below */
+    padding: 12px 20px;
     justify-content: center;
     border-bottom: 1px solid #222;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
 
-    /* Critical fixes */
+    /* ⭐ Replace sticky with fixed to stop clipping */
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    z-index: 2000;
+
     display: flex;
     flex-wrap: wrap;
-    overflow: visible; /* ⭐ allow dropdown to escape the bar */
+
+    /* ⭐ Absolutely required */
+    overflow: visible !important;
+}
+
+/* Push page content down so nav doesn't cover it */
+body {
+    padding-top: 70px; /* adjust if needed */
 }
 
 /* Nav links */
@@ -151,7 +161,7 @@ nav a:hover { color: #4da3ff; }
     top: calc(100% + 6px); /* ⭐ forces dropdown BELOW the bar */
     left: 0;
     white-space: nowrap;
-    z-index: 5000; /* above nav */
+    z-index: 5000;
 }
 
 
