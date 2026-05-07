@@ -411,12 +411,13 @@ const auth = firebase.auth();
     <a onclick="showPage('submit')">Submit Case</a>
     <a onclick="showPage('pricing')">Pricing</a>
 
-    <!-- Admin Portal tab with simple pulldown -->
+    <!-- Admin Portal tab -->
     <span id="adminPortalTrigger" style="margin-left:20px; position:relative; display:inline-block;">
         <a onclick="toggleAdminDropdown()" style="cursor:pointer;">
             Admin Portal ▾
         </a>
 
+        <!-- Dropdown -->
         <div id="adminDropdown"
              style="
                 display:none;
@@ -425,17 +426,15 @@ const auth = firebase.auth();
                 margin-top:4px;
                 background:transparent;
              ">
-            <div style="display:flex; flex-direction:column; gap:2px;">
-                <a onclick="openLoginModal('client')" style="cursor:pointer; display:block;">
-                    Client Admin
-                </a>
-                <a onclick="openLoginModal('associate')" style="cursor:pointer; display:block;">
-                    Associate Admin
-                </a>
-                <a onclick="openLoginModal('firm')" style="cursor:pointer; display:block;">
-                    Firm Admin
-                </a>
-            </div>
+            <a onclick="openLoginModal('client')" style="display:block; cursor:pointer;">
+                Client Admin
+            </a>
+            <a onclick="openLoginModal('associate')" style="display:block; cursor:pointer;">
+                Associate Admin
+            </a>
+            <a onclick="openLoginModal('firm')" style="display:block; cursor:pointer;">
+                Firm Admin
+            </a>
         </div>
     </span>
 </nav>
