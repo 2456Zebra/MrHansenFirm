@@ -1,116 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard - Hansen Intelligence</title>
-  <style>
-    body {
-      font-family: "Courier New", monospace;
-      background: #000;
-      color: #00ff88;
-      padding: 20px;
-      margin: 0;
-    }
-    h1 { text-shadow: 0 0 15px #00ff88; }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background: #0a0a0a;
-    }
-    th, td {
-      padding: 14px;
-      border: 1px solid #00ff88;
-      text-align: left;
-    }
-    th { background: #111; }
-    .status-paid { color: #00ff88; font-weight: bold; }
-    .no-data { text-align: center; padding: 50px; color: #666; }
-    button.logout {
-      background: #ff3366;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr. H — Admin Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #0d0d0d;
+            color: #e6e6e6;
+            font-family: Consolas, monospace;
+            overflow-x: hidden;
+        }
+        nav {
+            background: #111;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #222;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .nav-left a {
+            color: #ccc;
+            margin-right: 25px;
+            text-decoration: none;
+        }
+        .nav-left a:hover { color: #4da3ff; }
+        .nav-right {
+            color: #4da3ff;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #999;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: #111;
+            border: 1px solid #222;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #222;
+        }
+        th {
+            color: #4da3ff;
+        }
+        .btn {
+            padding: 8px 16px;
+            background: #4da3ff;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-danger {
+            background: #ff4444;
+            color: white;
+        }
+        .status {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .active { background: #006600; color: #99ff99; }
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #555;
+            font-size: 14px;
+            margin-top: 60px;
+        }
+    </style>
 </head>
 <body>
-  <div class="header">
-    <div>
-      <h1>ADMIN DASHBOARD</h1>
-      <p><strong>Mr. Hansen Firm - Intelligence Division</strong></p>
+
+<nav>
+    <div class="nav-left">
+        <a href="index.html">← Back to Website</a>
+        <a href="#" onclick="showSection('overview')">Overview</a>
+        <a href="#" onclick="showSection('associates')">Manage Associates</a>
+        <a href="#" onclick="showSection('cases')">All Cases</a>
     </div>
-    <button class="logout" onclick="logout()">LOGOUT</button>
-  </div>
+    <div class="nav-right">
+        Mr. H Dashboard
+    </div>
+</nav>
 
-  <h2>Recent Cases</h2>
-  <table id="casesTable">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Client</th>
-        <th>Email</th>
-        <th>Associate</th>
-        <th>Tier</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+<div class="container">
 
-  <script>
-    // Check if logged in
-    if (!localStorage.getItem("adminToken")) {
-      window.location.href = "login.html";
+    <!-- Overview -->
+    <div id="overview" class="section">
+        <h1>Admin Overview</h1>
+        <h2>Welcome back, Mr. Hansen</h2>
+        
+        <div class="card">
+            <h3>Quick Stats</h3>
+            <p><strong>Active Cases:</strong> 7 &nbsp;&nbsp; | &nbsp;&nbsp; 
+               <strong>Associates:</strong> 4 &nbsp;&nbsp; | &nbsp;&nbsp; 
+               <strong>Pending Applications:</strong> 2</p>
+        </div>
+    </div>
+
+    <!-- Manage Associates -->
+    <div id="associates" class="section" style="display:none;">
+        <h1>Manage Associates</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Rating</th>
+                    <th>Cases Solved</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>John Reyes</td>
+                    <td>9.2 / 10</td>
+                    <td>18</td>
+                    <td><span class="status active">Active</span></td>
+                    <td>
+                        <button class="btn" onclick="editAssociate(1)">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteAssociate(1)">Delete</button>
+                    </td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- All Cases -->
+    <div id="cases" class="section" style="display:none;">
+        <h1>All Cases</h1>
+        <p>Case management table will go here in the future.</p>
+    </div>
+
+</div>
+
+<footer>
+    MR. HANSEN — Intelligence Division • Admin Console
+</footer>
+
+<script>
+// Simple section switching
+function showSection(section) {
+    document.querySelectorAll('.section').forEach(sec => {
+        sec.style.display = 'none';
+    });
+    document.getElementById(section).style.display = 'block';
+}
+
+// Basic protection
+if (localStorage.getItem('userRole') !== 'admin') {
+    window.location.href = "login.html?role=admin";
+}
+
+// Placeholder functions
+function editAssociate(id) {
+    alert("Edit associate #" + id + " — Feature coming soon");
+}
+
+function deleteAssociate(id) {
+    if (confirm("Delete this associate permanently?")) {
+        alert("Associate #" + id + " deleted.");
     }
+}
 
-    const BASE_URL = "https://script.google.com/macros/s/AKfycbxcU-ADNA0l3KO-Pev4OEdFmWfJVTLA1E8knM3odyhifCC20e17LPD7R4vtQM2_c4Rv/exec";
+// Show Overview by default
+showSection('overview');
+</script>
 
-    async function loadCases() {
-      try {
-        const res = await fetch(BASE_URL + "?type=cases");
-        const cases = await res.json();
-        const tbody = document.querySelector("#casesTable tbody");
-        tbody.innerHTML = "";
-
-        if (!cases || cases.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" class="no-data">No cases received yet.</td></tr>`;
-          return;
-        }
-
-        cases.forEach(c => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${new Date(c.timestamp).toLocaleString()}</td>
-            <td>${c.clientName || ''}</td>
-            <td>${c.clientEmail || ''}</td>
-            <td>${c.associateName || '—'}</td>
-            <td>${c.tier || ''}</td>
-            <td><span class="status-paid">${c.paymentStatus || 'Paid'}</span></td>
-          `;
-          tbody.appendChild(row);
-        });
-      } catch (err) {
-        console.error(err);
-        document.querySelector("#casesTable tbody").innerHTML = `
-          <tr><td colspan="6" class="no-data" style="color:#ff3366;">Failed to load data</td></tr>`;
-      }
-    }
-
-    function logout() {
-      localStorage.removeItem("adminToken");
-      window.location.href = "login.html";
-    }
-
-    window.onload = loadCases;
-  </script>
 </body>
 </html>
