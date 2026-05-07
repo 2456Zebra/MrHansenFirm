@@ -733,8 +733,10 @@ document.addEventListener("DOMContentLoaded", function () {
 <script>
 // Dropdown
 function toggleAdminDropdown() {
-  document.getElementById('adminDropdown').classList.toggle('hidden');
+  const dropdown = document.getElementById('adminDropdown');
+  dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
 }
+
 
 // Close dropdown when clicking outside
 document.addEventListener('click', function(e) {
