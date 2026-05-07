@@ -731,28 +731,29 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
-<!-- 🔥 ADMIN PORTAL JS (MUST COME FIRST) -->
+<!-- 🔥 ADMIN PORTAL JS -->
 <script>
-// Dropdown
-<script>
+// Toggle dropdown
 function toggleAdminDropdown() {
-  const dropdown = document.getElementById('adminDropdown');
-  dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
+    const dropdown = document.getElementById('adminDropdown');
+    dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
 }
 
+// Close dropdown when clicking anywhere else
 document.addEventListener('click', function(e) {
-  const dropdown = document.getElementById('adminDropdown');
-  const trigger = document.getElementById('adminPortalTrigger');
+    const dropdown = document.getElementById('adminDropdown');
+    const trigger = document.getElementById('adminPortalTrigger');
 
-  if (!trigger.contains(e.target)) {
-    dropdown.style.display = 'none';
-  }
+    if (!trigger.contains(e.target)) {
+        dropdown.style.display = 'none';
+    }
 });
 
+// Close dropdown when switching pages
 const originalShowPage = window.showPage;
 window.showPage = function(page) {
-  document.getElementById('adminDropdown').style.display = 'none';
-  originalShowPage(page);
+    document.getElementById('adminDropdown').style.display = 'none';
+    originalShowPage(page);
 };
 
 // Modal
