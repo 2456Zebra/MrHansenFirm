@@ -716,6 +716,78 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<!-- 🔥 ADMIN PORTAL JS (MUST COME FIRST) -->
+<script>
+// Dropdown
+function toggleAdminDropdown() {
+  document.getElementById('adminDropdown').classList.toggle('hidden');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  const dropdown = document.getElementById('adminDropdown');
+  if (!e.target.closest('.group')) dropdown.classList.add('hidden');
+});
+
+// Modal
+let currentPortalType = 'client';
+
+function openLoginModal(type) {
+  currentPortalType = type;
+  document.getElementById('loginModal').classList.remove('hidden');
+  switchPortalType(type);
+  document.getElementById('adminDropdown').classList.add('hidden');
+}
+
+function switchPortalType(type) {
+  currentPortalType = type;
+  ['client','associate','firm'].forEach(t => {
+    const tab = document.getElementById(`tab-${t}`);
+    if (tab) tab.classList.toggle('border-b-2', t === type);
+    if (tab) tab.classList.toggle('border-blue-600', t === type);
+    if (tab) tab.classList.toggle('text-blue-600', t === type);
+    if (tab) tab.classList.toggle('text-gray-500', t !== type);
+  });
+}
+
+// Handle Login
+async function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+
+  if (!email || !password) {
+    alert("Please enter email/username and password");
+    return;
+  }
+
+  try {
+    const userCredential = await auth.signInWithEmailAndPassword(email, password);
+    console.log("Signed in:", userCredential.user);
+    alert("Login successful! Redirecting...");
+    window.location.href = "/dashboard.html"; 
+  } catch (error) {
+    alert("Login failed: " + error.message);
+  }
+}
+
+function forgotPassword() {
+  const email = document.getElementById('loginEmail').value.trim();
+  if (!email) {
+    alert("Enter your email first");
+    return;
+  }
+  auth.sendPasswordResetEmail(email)
+    .then(() => alert("Password reset email sent!"))
+    .catch(err => alert(err.message));
+}
+
+function goToSignup() {
+  alert("We'll build the signup page next. For now, you can create accounts in Firebase console.");
+}
+</script>
+
+
+<!-- 🔥 YOUR EXISTING ASSOCIATE SCRIPT (KEEP AS IS) -->
 <script>
 // Your backend URL
 const BASE_URL = "https://script.google.com/macros/s/AKfycbxucgPwkZdJgEiKhVUICxUKgsNfmQ4i3KZXTropomrFM15s2fwru5_LEjUEsLKRoW-n/exec";
