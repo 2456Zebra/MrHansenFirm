@@ -119,19 +119,19 @@ html {
 nav {
     width: 100%;
     background: #111;
-    padding: 20px;
+    padding: 10px 20px;   /* ⭐ reduce vertical padding */
     justify-content: center;
     border-bottom: 1px solid #222;
     position: sticky;
     top: 0;
     z-index: 1000;
 
-    /* ⭐ Critical mobile + dropdown fixes */
     display: flex;
     flex-wrap: wrap;
     overflow-x: hidden;
-    overflow-y: visible; /* <-- THIS fixes the clipping */
+    overflow-y: visible;  /* ⭐ allow dropdown to extend */
 }
+
 
 nav a {
     color: #ccc;
