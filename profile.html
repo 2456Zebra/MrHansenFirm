@@ -9,7 +9,7 @@
       font-family: "Courier New", monospace;
       background: #000;
       color: #00ff88;
-      padding: 40px 20px;
+      padding: 20px;
       max-width: 1000px;
       margin: auto;
       line-height: 1.6;
@@ -22,28 +22,38 @@
       display: inline-block;
     }
     .error { color: #ff3366; }
+    
     .profile-container {
-      display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 50px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
       margin-top: 20px;
     }
+    
+    .photo-container {
+      text-align: center;
+    }
+    
     .photo {
       width: 100%;
+      max-width: 380px;
       border-radius: 12px;
       border: 3px solid #00ff88;
       box-shadow: 0 0 30px #00ff88;
     }
+    
     .info h1 {
-      font-size: 42px;
+      font-size: 2.4rem;
       margin: 0 0 8px 0;
       text-shadow: 0 0 15px #00ff88;
     }
+    
     .specialty {
-      font-size: 24px;
+      font-size: 1.5rem;
       color: #00ffaa;
       margin-bottom: 25px;
     }
+    
     .bio {
       font-size: 17px;
       background: #0a0a0a;
@@ -51,9 +61,10 @@
       border-radius: 10px;
       border-left: 5px solid #00ff88;
     }
+    
     .btn {
       display: inline-block;
-      margin-top: 25px;
+      margin: 10px 8px 10px 0;
       padding: 16px 32px;
       font-size: 18px;
       font-weight: bold;
@@ -61,27 +72,63 @@
       text-decoration: none;
       transition: all 0.3s;
     }
+    
     .insta-btn { background: #ff2ea6; color: #fff; }
     .case-btn { background: #00ff88; color: #000; }
     .btn:hover { transform: scale(1.05); }
+
+    /* Desktop - Side by side */
+    @media (min-width: 768px) {
+      .profile-container {
+        flex-direction: row;
+        gap: 50px;
+      }
+      .photo-container {
+        flex-shrink: 0;
+        width: 380px;
+      }
+      .info {
+        flex: 1;
+      }
+      body {
+        padding: 40px 20px;
+      }
+    }
+
+    /* Extra small phones */
+    @media (max-width: 480px) {
+      body { padding: 15px; }
+      .info h1 { font-size: 2rem; }
+      .specialty { font-size: 1.3rem; }
+      .bio { padding: 20px; font-size: 16px; }
+      .btn {
+        display: block;
+        margin: 12px 0;
+        text-align: center;
+      }
+    }
   </style>
 </head>
 <body>
   <a href="/associates.html" class="back-link">← BACK TO ALL ASSOCIATES</a>
-
+  
   <div id="loading">LOADING PROFILE...</div>
   <div id="errorMessage" class="error" style="display:none;"></div>
-
+  
   <div id="profileContent" style="display: none;">
     <div class="profile-container">
-      <div>
+      
+      <!-- Photo -->
+      <div class="photo-container">
         <img id="profilePhoto" class="photo" alt="Associate Photo">
       </div>
+      
+      <!-- Info -->
       <div class="info">
         <h1 id="profileName"></h1>
         <div id="profileSpecialty" class="specialty"></div>
         <div id="profileBio" class="bio"></div>
-
+        
         <div>
           <a id="instaBtn" class="btn insta-btn" target="_blank">VIEW INSTAGRAM</a>
           <a id="caseBtn" class="btn case-btn">SUBMIT CASE TO THIS ASSOCIATE</a>
@@ -96,9 +143,7 @@
     async function loadProfile() {
       const params = new URLSearchParams(window.location.search);
       const id = params.get('id');
-
-      console.log("Profile ID from URL:", id);   // Debug
-
+      
       if (!id) {
         showError("No profile ID in URL. Go back and click 'View Full Profile'.");
         return;
@@ -106,20 +151,15 @@
 
       try {
         const res = await fetch(BASE_URL);
-        console.log("Fetch status:", res.status);
-        
         const associates = await res.json();
-        console.log("All associates received:", associates);
-
         const associate = associates.find(a => a.id === id);
 
         if (!associate) {
           showError(`Associate with ID "${id}" not found.`);
-          console.log("Available IDs:", associates.map(a => a.id));
           return;
         }
 
-        // Success - Populate profile
+        // Populate profile
         document.getElementById("profileName").textContent = associate.name;
         document.getElementById("profileSpecialty").textContent = associate.specialty;
         document.getElementById("profileBio").innerHTML = associate.bio.replace(/\n/g, '<br>');
@@ -129,7 +169,6 @@
 
         document.getElementById("loading").style.display = "none";
         document.getElementById("profileContent").style.display = "block";
-
       } catch (err) {
         console.error("Load error:", err);
         showError("Failed to load profile. Check console for details.");
