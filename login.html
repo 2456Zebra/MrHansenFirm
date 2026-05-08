@@ -22,23 +22,15 @@
       width: 380px; 
       text-align: center; 
     }
-    h2 { color: #1e3a8a; margin-bottom: 5px; }
+    h2 { color: #1e3a8a; }
     select, input, button { 
-      width: 100%; 
-      padding: 12px; 
-      margin: 10px 0; 
-      border-radius: 6px; 
-      font-size: 16px; 
+      width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px; font-size: 16px; 
     }
     button { 
-      background: #1e3a8a; 
-      color: white; 
-      border: none; 
-      cursor: pointer; 
-      font-weight: bold; 
+      background: #1e3a8a; color: white; border: none; cursor: pointer; font-weight: bold; 
     }
     button:hover { background: #2e5bcc; }
-    .error { color: red; margin-top: 10px; }
+    .error { color: red; margin-top: 10px; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -59,28 +51,38 @@
   <button onclick="handleLogin()">Login →</button>
   
   <div id="errorMsg" class="error"></div>
+  <p style="margin-top:20px; font-size:14px;">Demo Mode - No password required</p>
 </div>
 
 <script>
+console.log("✅ Login page script loaded");
+
 function handleLogin() {
+  console.log("🔄 handleLogin() function called");
+  
   const role = document.getElementById('roleSelect').value;
   const username = document.getElementById('username').value.trim();
   const errorMsg = document.getElementById('errorMsg');
 
   if (!username) {
     errorMsg.textContent = "Please enter an email";
+    console.log("❌ No username entered");
     return;
   }
 
-  // Save to localStorage
-  localStorage.setItem('userRole', role);
-  localStorage.setItem('userName', username.split('@')[0]);
-
   console.log("✅ Login successful - Role:", role);
+
+  localStorage.setItem('userRole', role);
+  localStorage.setItem('userName', username.split('@')[0] || 'Admin');
 
   // Redirect
   window.location.href = 'dashboard.html';
 }
+
+// Fallback: Allow pressing Enter key
+document.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') handleLogin();
+});
 </script>
 
 </body>
