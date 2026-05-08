@@ -5,43 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mr. Hansen Firm - Dashboard</title>
   <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      margin: 0; 
-      background: #f4f6f9; 
-    }
-    .header { 
-      background: #1e3a8a; 
-      color: white; 
-      padding: 20px; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-    }
-    .sidebar { 
-      width: 260px; 
-      background: white; 
-      position: fixed; 
-      height: 100vh; 
-      padding: 20px; 
-      box-shadow: 2px 0 10px rgba(0,0,0,0.1); 
-      overflow-y: auto;
-    }
-    .content { 
-      margin-left: 280px; 
-      padding: 30px; 
-    }
-    .menu-item { 
-      padding: 14px; 
-      cursor: pointer; 
-      border-radius: 6px; 
-      margin: 8px 0; 
-      font-size: 16px;
-    }
-    .menu-item:hover { 
-      background: #e6f0ff; 
-    }
+    body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f9; }
+    .header { background: #1e3a8a; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .sidebar { width: 260px; background: white; position: fixed; height: 100vh; padding: 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
+    .content { margin-left: 280px; padding: 30px; }
+    .menu-item { padding: 14px; cursor: pointer; border-radius: 6px; margin: 8px 0; }
+    .menu-item:hover { background: #e6f0ff; }
     h1, h2 { color: #1e3a8a; }
+    .debug { background: #fff3cd; padding: 10px; border-radius: 6px; font-size: 14px; margin: 15px 0; }
   </style>
 </head>
 <body>
@@ -57,22 +28,23 @@
 </div>
 
 <div class="content">
-  <h1 id="pageTitle">Welcome to Dashboard</h1>
+  <div class="debug" id="debugInfo"></div>
+  <h1 id="pageTitle">Welcome</h1>
   <div id="contentArea">
-    <p>Select an option from the left menu to begin.</p>
+    <p>Select an option from the left menu.</p>
   </div>
 </div>
 
 <script>
-console.log("✅ Dashboard script loaded");
-
-// Get role from login
-const role = localStorage.getItem('userRole') || 'client_admin';
+const role = localStorage.getItem('userRole');
 const userName = localStorage.getItem('userName') || 'Admin';
 
 document.getElementById('userDisplay').textContent = userName;
+document.getElementById('debugInfo').innerHTML = `
+  <strong>Debug Info:</strong><br>
+  Selected Role: <strong>${role || 'NONE (defaulting to client_admin)'}</strong>
+`;
 
-// Role-based setup
 let title = '';
 let menuHTML = '';
 
@@ -81,17 +53,17 @@ if (role === 'firm_admin') {
   menuHTML = `
     <div class="menu-item" onclick="showSection('users')">👥 All Users</div>
     <div class="menu-item" onclick="showSection('clients')">📋 All Clients</div>
-    <div class="menu-item" onclick="showSection('associates')">👔 All Associates</div>
+    <div class="menu-item" onclick="showSection('associates')">👔 Associates</div>
     <div class="menu-item" onclick="showSection('reports')">📊 Reports</div>
-    <div class="menu-item" onclick="showSection('settings')">⚙️ Settings</div>
+    <div class="menu-item" onclick="showSection('settings')">⚙️ Firm Settings</div>
   `;
 } else if (role === 'associates_admin') {
   title = 'Associates Admin Portal';
   menuHTML = `
     <div class="menu-item" onclick="showSection('associates')">👔 Manage Associates</div>
-    <div class="menu-item" onclick="showSection('assignments')">📌 Assignments</div>
-    <div class="menu-item" onclick="showSection('performance')">📈 Performance</div>
-    <div class="menu-item" onclick="showSection('time')">⏱️ Time Entries</div>
+    <div class="menu-item" onclick="showSection('assignments')">📌 Matter Assignments</div>
+    <div class="menu-item" onclick="showSection('performance')">📈 Team Performance</div>
+    <div class="menu-item" onclick="showSection('time')">⏱️ Approve Time</div>
   `;
 } else {
   title = 'Client Admin Portal';
@@ -99,21 +71,16 @@ if (role === 'firm_admin') {
     <div class="menu-item" onclick="showSection('clients')">📋 My Clients</div>
     <div class="menu-item" onclick="showSection('matters')">📁 My Matters</div>
     <div class="menu-item" onclick="showSection('documents')">📄 Documents</div>
-    <div class="menu-item" onclick="showSection('billing')">💰 Billing</div>
+    <div class="menu-item" onclick="showSection('billing')">💰 Billing Summary</div>
   `;
 }
 
 document.getElementById('dashboardTitle').textContent = title;
 document.getElementById('menu').innerHTML = menuHTML;
 
-// Show content
 function showSection(section) {
-  let html = `<h2>${section.replace(/^\w/, c => c.toUpperCase())}</h2>`;
-  html += `<p>This is the <strong>${title}</strong> section.</p>`;
-  
-  if (section === 'billing') html += '<p><strong>Total Billed:</strong> $124,500</p>';
-  if (section === 'reports') html += '<p><strong>Monthly Revenue:</strong> $245,000</p>';
-  
+  let html = `<h2>${section.charAt(0).toUpperCase() + section.slice(1)}</h2>`;
+  html += `<p>Content for <strong>${title}</strong></p>`;
   document.getElementById('contentArea').innerHTML = html;
 }
 </script>
