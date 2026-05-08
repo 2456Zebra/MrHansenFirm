@@ -3,48 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mr. Hansen Firm - Dashboard</title>
+  <title>Admin Dashboard – Mr. Hansen Firm</title>
+
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f9; }
-    .header { background: #1e3a8a; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-    .sidebar { width: 260px; background: white; position: fixed; height: 100vh; padding: 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
-    .content { margin-left: 280px; padding: 30px; }
-    .menu-item { padding: 14px; cursor: pointer; border-radius: 6px; margin: 8px 0; }
-    .menu-item:hover { background: #e6f0ff; }
-    h1, h2 { color: #1e3a8a; }
-    .debug { background: #fff3cd; padding: 10px; border-radius: 6px; font-size: 14px; margin: 15px 0; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a; /* deep navy/charcoal */
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: white;
+      height: 100vh;
+      padding: 25px;
+      box-shadow: 2px 0 12px rgba(0,0,0,0.25);
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      margin-top: 0;
+      color: #1e3a8a;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .menu-item {
+      padding: 12px;
+      border-radius: 8px;
+      margin: 8px 0;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.2s;
+      border: 1px solid #e2e8f0;
+    }
+
+    .menu-item:hover {
+      background: #e8edff;
+      border-color: #1e3a8a;
+    }
+
+    /* Main content */
+    .main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      color: white;
+    }
+
+    .content-card {
+      background: white;
+      color: #1e293b;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+      max-width: 900px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 26px;
+      color: white;
+    }
+
+    .logout {
+      color: #93c5fd;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 16px;
+    }
+
+    .logout:hover {
+      color: #bfdbfe;
+    }
   </style>
 </head>
+
 <body>
 
-<div class="header">
-  <h2 id="dashboardTitle">Mr. Hansen Firm</h2>
-  <div>Welcome, <span id="userDisplay">Admin</span> | <a href="login.html" style="color:white;">Logout</a></div>
-</div>
-
-<div class="sidebar">
-  <h3>Navigation</h3>
-  <div id="menu"></div>
-</div>
-
-<div class="content">
-  <div class="debug" id="debugInfo"></div>
-  <h1 id="pageTitle">Welcome</h1>
-  <div id="contentArea">
-    <p>Select an option from the left menu.</p>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2 id="sidebarTitle">Admin Portal</h2>
+    <div id="menu"></div>
   </div>
-</div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <div class="header">
+      <h1 id="dashboardTitle">Dashboard</h1>
+      <div class="logout" onclick="logout()">Logout</div>
+    </div>
+
+    <div class="content-card">
+      <h2 id="pageTitle">Welcome</h2>
+      <p>Select an option from the left menu.</p>
+      <div id="contentArea"></div>
+    </div>
+  </div>
 
 <script>
+/* Session Protection */
 const role = localStorage.getItem('userRole');
 const userName = localStorage.getItem('userName') || 'Admin';
 
-document.getElementById('userDisplay').textContent = userName;
-document.getElementById('debugInfo').innerHTML = `
-  <strong>Debug Info:</strong><br>
-  Selected Role: <strong>${role || 'NONE (defaulting to client_admin)'}</strong>
-`;
+if (!role) {
+  window.location.href = "login.html";
+}
 
+/* Role-based UI */
 let title = '';
 let menuHTML = '';
 
@@ -58,7 +135,7 @@ if (role === 'firm_admin') {
     <div class="menu-item" onclick="showSection('settings')">⚙️ Firm Settings</div>
   `;
 } else if (role === 'associates_admin') {
-  title = 'Associates Admin Portal';
+  title = 'Associate Admin Portal';
   menuHTML = `
     <div class="menu-item" onclick="showSection('associates')">👔 Manage Associates</div>
     <div class="menu-item" onclick="showSection('assignments')">📌 Matter Assignments</div>
@@ -75,13 +152,24 @@ if (role === 'firm_admin') {
   `;
 }
 
+document.getElementById('sidebarTitle').textContent = title;
 document.getElementById('dashboardTitle').textContent = title;
 document.getElementById('menu').innerHTML = menuHTML;
 
+/* Section Loader */
 function showSection(section) {
-  let html = `<h2>${section.charAt(0).toUpperCase() + section.slice(1)}</h2>`;
-  html += `<p>Content for <strong>${title}</strong></p>`;
-  document.getElementById('contentArea').innerHTML = html;
+  const formatted = section.charAt(0).toUpperCase() + section.slice(1);
+  document.getElementById('pageTitle').textContent = formatted;
+  document.getElementById('contentArea').innerHTML = `
+    <p>Content for <strong>${formatted}</strong> will appear here.</p>
+  `;
+}
+
+/* Logout */
+function logout() {
+  localStorage.removeItem('userRole');
+  localStorage.removeItem('userName');
+  window.location.href = "login.html";
 }
 </script>
 
