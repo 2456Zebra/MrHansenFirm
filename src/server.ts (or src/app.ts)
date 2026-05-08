@@ -1,0 +1,27 @@
+import express from 'express';
+import adminRouter from './routes/index';
+import { AuthRequest } from './middleware/auth.middleware'; // for type
+
+const app = express();
+app.use(express.json());
+
+// Simple fake auth middleware for testing (replace later with real JWT)
+app.use((req: AuthRequest, res, next) => {
+  const roleHeader = req.headers['x-role'] as string;
+  
+  if (roleHeader) {
+    req.user = {
+      id: 'user-123',
+      role: roleHeader as any,
+      firmId: 'firm-456'
+    };
+  }
+  next();
+});
+
+app.use('/api/admin', adminRouter);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`✅ Server running on http://localhost:${PORT}`);
+});
