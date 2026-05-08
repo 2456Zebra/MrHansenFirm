@@ -1,0 +1,29 @@
+import { Router } from 'express';
+import { associatesAdminOnly } from '../middleware/auth.middleware';
+
+const router = Router();
+
+router.get('/associates', associatesAdminOnly, (req, res) => {
+  res.json({ 
+    success: true, 
+    data: { message: "All associates list", count: 42 } 
+  });
+});
+
+router.post('/associates', associatesAdminOnly, (req, res) => {
+  res.status(201).json({ success: true, message: 'Associate added successfully' });
+});
+
+router.post('/assign-matter', associatesAdminOnly, (req, res) => {
+  res.json({ success: true, message: 'Matter assigned to associate' });
+});
+
+router.get('/performance', associatesAdminOnly, (req, res) => {
+  res.json({ success: true, data: { utilizationRate: 87, activeMatters: 156 } });
+});
+
+router.put('/time-entries/:id/approve', associatesAdminOnly, (req, res) => {
+  res.json({ success: true, message: 'Time entry approved' });
+});
+
+export default router;
