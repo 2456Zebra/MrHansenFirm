@@ -3,28 +3,149 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Test</title>
+  <title>Admin Portal Login – Mr. Hansen Firm</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a; /* deep navy/charcoal */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #1e293b;
+    }
+
+    .login-card {
+      background: white;
+      width: 380px;
+      padding: 35px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #1e3a8a;
+      font-size: 24px;
+      margin-bottom: 25px;
+    }
+
+    .role-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .role-btn {
+      padding: 12px;
+      border-radius: 8px;
+      border: 2px solid #1e3a8a;
+      background: white;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.2s;
+    }
+
+    .role-btn:hover {
+      background: #e8edff;
+    }
+
+    .role-btn.selected {
+      background: #1e3a8a;
+      color: white;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0 15px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      font-size: 15px;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background: #1e3a8a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 17px;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 10px;
+    }
+
+    .login-btn:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    .login-btn:hover:not(:disabled) {
+      background: #162c6e;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Login Page Test v4</h1>
-  <p>If you see this, the file is updated.</p>
 
-  <select id="roleSelect">
-    <option value="client_admin">Client Admin</option>
-    <option value="associates_admin">Associates Admin</option>
-    <option value="firm_admin">Firm Admin</option>
-  </select>
+  <div class="login-card">
+    <h1>Admin Portal Login</h1>
 
-  <button onclick="goToDashboard()">Login</button>
+    <div class="role-buttons">
+      <div class="role-btn" data-role="client_admin">Client Admin</div>
+      <div class="role-btn" data-role="associates_admin">Associate Admin</div>
+      <div class="role-btn" data-role="firm_admin">Firm Admin</div>
+    </div>
+
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+
+    <button class="login-btn" id="loginBtn" disabled>Sign In</button>
+  </div>
 
 <script>
-alert("JavaScript is working!");   // This should pop up immediately
+let selectedRole = null;
 
-function goToDashboard() {
-  const role = document.getElementById('roleSelect').value;
-  localStorage.setItem('userRole', role);
-  window.location.href = "dashboard.html";
-}
+// Role button selection logic
+document.querySelectorAll('.role-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedRole = btn.getAttribute('data-role');
+    document.getElementById('loginBtn').disabled = false;
+  });
+});
+
+// Login button logic
+document.getElementById('loginBtn').addEventListener('click', () => {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+
+  // Phase 1: No backend yet — accept any email/password
+  if (!email || !password) {
+    alert("Please enter email and password.");
+    return;
+  }
+
+  // Store session
+  localStorage.setItem('userRole', selectedRole);
+  localStorage.setItem('userName', email);
+
+  // Redirect based on role
+  if (selectedRole === "firm_admin") {
+    window.location.href = "dashboard.html";
+  } else if (selectedRole === "associates_admin") {
+    window.location.href = "dashboard.html";
+  } else {
+    window.location.href = "dashboard.html";
+  }
+});
 </script>
 
 </body>
