@@ -47,34 +47,37 @@
   <h2>Mr. Hansen & Associates</h2>
   <p><strong>Admin Portal</strong></p>
 
-  <select id="roleSelect">
-    <option value="client_admin">Client Admin</option>
-    <option value="associates_admin">Associates Admin</option>
-    <option value="firm_admin">Firm Admin (Full Access)</option>
-  </select>
+  <form id="loginForm">
+    <select id="roleSelect">
+      <option value="client_admin">Client Admin</option>
+      <option value="associates_admin">Associates Admin</option>
+      <option value="firm_admin">Firm Admin (Full Access)</option>
+    </select>
 
-  <input type="text" id="username" value="admin@mrhansenfirm.com" placeholder="Email">
+    <input type="text" id="username" value="admin@mrhansenfirm.com" placeholder="Email">
 
-  <button type="button" onclick="handleLogin()">Login</button>
+    <button type="submit">Login</button>
+  </form>
   
   <p style="font-size:14px; margin-top:15px;">Demo Mode • No password needed</p>
 </div>
 
 <script>
-console.log("Login script loaded successfully");
+console.log("✅ Login page loaded");
 
-function handleLogin() {
-  console.log("Login button clicked!");
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+  e.preventDefault();   // This stops the refresh
+  console.log("✅ Form submitted - preventing default");
 
   const role = document.getElementById('roleSelect').value;
   
   localStorage.setItem('userRole', role);
   localStorage.setItem('userName', 'Admin');
 
-  console.log("Redirecting to dashboard with role:", role);
+  console.log("✅ Redirecting to dashboard with role:", role);
   
   window.location.href = "dashboard.html";
-}
+});
 </script>
 
 </body>
