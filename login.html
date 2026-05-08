@@ -5,11 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mr. Hansen Firm - Login</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f6f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-    .login-box { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 380px; text-align: center; }
-    select, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px; font-size: 16px; }
-    button { background: #1e3a8a; color: white; border: none; cursor: pointer; }
+    body { 
+      font-family: Arial, sans-serif; 
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6); 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      height: 100vh; 
+      margin: 0; 
+    }
+    .login-box { 
+      background: white; 
+      padding: 40px; 
+      border-radius: 12px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+      width: 380px; 
+      text-align: center; 
+    }
+    h2 { color: #1e3a8a; margin-bottom: 5px; }
+    select, input, button { 
+      width: 100%; 
+      padding: 12px; 
+      margin: 10px 0; 
+      border-radius: 6px; 
+      font-size: 16px; 
+    }
+    button { 
+      background: #1e3a8a; 
+      color: white; 
+      border: none; 
+      cursor: pointer; 
+      font-weight: bold; 
+    }
     button:hover { background: #2e5bcc; }
+    .error { color: red; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -18,24 +47,38 @@
   <h2>Mr. Hansen & Associates</h2>
   <p><strong>Admin Portal</strong></p>
 
-  <label>Select Your Role</label><br><br>
+  <label><strong>Select Your Role</strong></label><br><br>
   <select id="roleSelect">
     <option value="client_admin">Client Admin</option>
     <option value="associates_admin">Associates Admin</option>
     <option value="firm_admin">Firm Admin (Full Access)</option>
   </select>
 
-  <input type="text" id="username" placeholder="Username or Email" value="admin@mrhansenfirm.com" style="width:100%; padding:12px; margin:10px 0;"><br>
+  <input type="text" id="username" placeholder="Email Address" value="admin@mrhansenfirm.com">
 
-  <button onclick="login()">Login</button>
+  <button onclick="handleLogin()">Login →</button>
+  
+  <div id="errorMsg" class="error"></div>
 </div>
 
 <script>
-function login() {
+function handleLogin() {
   const role = document.getElementById('roleSelect').value;
+  const username = document.getElementById('username').value.trim();
+  const errorMsg = document.getElementById('errorMsg');
+
+  if (!username) {
+    errorMsg.textContent = "Please enter an email";
+    return;
+  }
+
+  // Save to localStorage
   localStorage.setItem('userRole', role);
-  localStorage.setItem('userName', 'John Hansen');
-  
+  localStorage.setItem('userName', username.split('@')[0]);
+
+  console.log("✅ Login successful - Role:", role);
+
+  // Redirect
   window.location.href = 'dashboard.html';
 }
 </script>
