@@ -3,81 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mr. Hansen Firm - Login</title>
-  <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      background: #1e3a8a; 
-      color: white;
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      height: 100vh; 
-      margin: 0; 
-    }
-    .login-box { 
-      background: white; 
-      color: #1e3a8a;
-      padding: 40px; 
-      border-radius: 12px; 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
-      width: 380px; 
-      text-align: center; 
-    }
-    select, input, button { 
-      width: 100%; 
-      padding: 14px; 
-      margin: 12px 0; 
-      border-radius: 6px; 
-      font-size: 16px; 
-    }
-    button { 
-      background: #1e3a8a; 
-      color: white; 
-      border: none; 
-      font-weight: bold; 
-      cursor: pointer; 
-    }
-    button:hover { background: #2e5bcc; }
-  </style>
+  <title>Login Test</title>
 </head>
 <body>
+  <h1>Login Page Test v4</h1>
+  <p>If you see this, the file is updated.</p>
 
-<div class="login-box">
-  <h2>Mr. Hansen & Associates</h2>
-  <p><strong>Admin Portal</strong></p>
+  <select id="roleSelect">
+    <option value="client_admin">Client Admin</option>
+    <option value="associates_admin">Associates Admin</option>
+    <option value="firm_admin">Firm Admin</option>
+  </select>
 
-  <form id="loginForm">
-    <select id="roleSelect">
-      <option value="client_admin">Client Admin</option>
-      <option value="associates_admin">Associates Admin</option>
-      <option value="firm_admin">Firm Admin (Full Access)</option>
-    </select>
-
-    <input type="text" id="username" value="admin@mrhansenfirm.com" placeholder="Email">
-
-    <button type="submit">Login</button>
-  </form>
-  
-  <p style="font-size:14px; margin-top:15px;">Demo Mode • No password needed</p>
-</div>
+  <button onclick="goToDashboard()">Login</button>
 
 <script>
-console.log("✅ Login page loaded");
+alert("JavaScript is working!");   // This should pop up immediately
 
-document.getElementById('loginForm').addEventListener('submit', function(e) {
-  e.preventDefault();   // This stops the refresh
-  console.log("✅ Form submitted - preventing default");
-
+function goToDashboard() {
   const role = document.getElementById('roleSelect').value;
-  
   localStorage.setItem('userRole', role);
-  localStorage.setItem('userName', 'Admin');
-
-  console.log("✅ Redirecting to dashboard with role:", role);
-  
   window.location.href = "dashboard.html";
-});
+}
 </script>
 
 </body>
