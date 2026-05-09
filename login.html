@@ -3,150 +3,127 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Portal Login – Mr. Hansen Firm</title>
-
+  <title>Sign In — Mr. Hansen Firm</title>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f172a; /* deep navy/charcoal */
+      background-color: #0d0d0d;
+      color: #e6e6e6;
+      font-family: Consolas, monospace;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      color: #1e293b;
+      padding: 20px;
     }
-
     .login-card {
-      background: white;
-      width: 380px;
-      padding: 35px;
-      border-radius: 12px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
-      text-align: center;
-    }
-
-    h1 {
-      margin-top: 0;
-      color: #1e3a8a;
-      font-size: 24px;
-      margin-bottom: 25px;
-    }
-
-    .role-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 25px;
-    }
-
-    .role-btn {
-      padding: 12px;
+      background: #111;
+      width: 100%;
+      max-width: 420px;
+      padding: 40px 30px;
+      border: 1px solid #333;
       border-radius: 8px;
-      border: 2px solid #1e3a8a;
-      background: white;
-      cursor: pointer;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(77, 163, 255, 0.1);
+    }
+    h1 { font-size: 28px; margin-bottom: 8px; color: #4da3ff; }
+    .subtitle { color: #888; margin-bottom: 30px; font-size: 15px; }
+    .role-buttons { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
+    .role-btn {
+      padding: 14px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      color: #ccc;
       font-size: 16px;
-      transition: 0.2s;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-radius: 6px;
     }
-
-    .role-btn:hover {
-      background: #e8edff;
-    }
-
-    .role-btn.selected {
-      background: #1e3a8a;
-      color: white;
-    }
-
+    .role-btn:hover { border-color: #4da3ff; color: #fff; }
+    .role-btn.selected { background: #4da3ff; color: #000; font-weight: bold; }
     input {
       width: 100%;
-      padding: 12px;
-      margin: 8px 0 15px;
-      border-radius: 6px;
-      border: 1px solid #cbd5e1;
+      padding: 14px;
+      margin: 8px 0 18px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      color: #e6e6e6;
+      font-family: Consolas, monospace;
       font-size: 15px;
+      border-radius: 6px;
     }
-
+    input:focus { outline: none; border-color: #4da3ff; }
     .login-btn {
       width: 100%;
-      padding: 12px;
-      background: #1e3a8a;
-      color: white;
+      padding: 14px;
+      background: #4da3ff;
+      color: #000;
       border: none;
-      border-radius: 8px;
       font-size: 17px;
+      font-weight: bold;
       cursor: pointer;
-      transition: 0.2s;
+      border-radius: 6px;
       margin-top: 10px;
     }
-
-    .login-btn:disabled {
-      background: #94a3b8;
-      cursor: not-allowed;
-    }
-
-    .login-btn:hover:not(:disabled) {
-      background: #162c6e;
-    }
+    .login-btn:hover { background: #77c0ff; }
   </style>
 </head>
-
 <body>
-
   <div class="login-card">
-    <h1>Admin Portal Login</h1>
+    <h1>ADMIN PORTAL</h1>
+    <p class="subtitle">Mr. Hansen Intelligence Division</p>
 
-    <div class="role-buttons">
-      <div class="role-btn" data-role="client_admin">Client Admin</div>
-      <div class="role-btn" data-role="associates_admin">Associate Admin</div>
-      <div class="role-btn" data-role="firm_admin">Firm Admin</div>
+    <div class="role-buttons" id="roleButtons">
+      <div class="role-btn" data-role="client">Client Admin</div>
+      <div class="role-btn" data-role="associate">Associate Admin</div>
+      <div class="role-btn" data-role="firm">Firm Admin</div>
     </div>
 
-    <input type="email" id="email" placeholder="Email">
+    <input type="email" id="email" placeholder="Email Address">
     <input type="password" id="password" placeholder="Password">
 
     <button class="login-btn" id="loginBtn" disabled>Sign In</button>
   </div>
 
 <script>
+// Auto-select from URL
+const urlParams = new URLSearchParams(window.location.search);
+const type = urlParams.get('type');
+
 let selectedRole = null;
 
-// Role button selection logic
 document.querySelectorAll('.role-btn').forEach(btn => {
+  const role = btn.getAttribute('data-role');
+  if (role === type) {
+    btn.classList.add('selected');
+    selectedRole = role;
+    document.getElementById('loginBtn').disabled = false;
+  }
+
   btn.addEventListener('click', () => {
     document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
-    selectedRole = btn.getAttribute('data-role');
+    selectedRole = role;
     document.getElementById('loginBtn').disabled = false;
   });
 });
 
-// Login button logic
 document.getElementById('loginBtn').addEventListener('click', () => {
   const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value.trim();
-
-  // Phase 1: No backend yet — accept any email/password
-  if (!email || !password) {
-    alert("Please enter email and password.");
+  if (!email || !selectedRole) {
+    alert("Please fill all fields.");
     return;
   }
 
-  // Store session
+  localStorage.setItem('isLoggedIn', 'true');
   localStorage.setItem('userRole', selectedRole);
-  localStorage.setItem('userName', email);
+  localStorage.setItem('userEmail', email);
 
-  // Redirect based on role
-  if (selectedRole === "firm_admin") {
-    window.location.href = "dashboard.html";
-  } else if (selectedRole === "associates_admin") {
-    window.location.href = "dashboard.html";
-  } else {
-    window.location.href = "dashboard.html";
-  }
+  // Redirect to dedicated admin console
+  if (selectedRole === 'firm') window.location.href = "firm-admin.html";
+  else if (selectedRole === 'associate') window.location.href = "associate-admin.html";
+  else window.location.href = "client-admin.html";
 });
 </script>
-
 </body>
 </html>
