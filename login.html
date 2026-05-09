@@ -96,11 +96,11 @@
             <div id="adminTypeError" class="error-message"></div>
 
             <label for="email">Email</label>
-            <input type="email" id="email" autocomplete="off" placeholder="your@email.com" required>
+            <input type="text" id="email" name="email" autocomplete="off" placeholder="your@email.com" required>
             <div id="emailError" class="error-message"></div>
 
             <label for="password">Password</label>
-            <input type="password" id="password" autocomplete="new-password" placeholder="Enter password" required>
+            <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Enter password" required>
             <div id="passwordError" class="error-message"></div>
 
             <button type="submit">Sign In</button>
@@ -112,15 +112,10 @@
     </div>
 
     <script>
-        // Handle redirect parameter
-        function getRedirectParam() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get('redirect');
-        }
-
-        // Pre-select admin type
+        // Pre-select admin type from redirect
         window.onload = function() {
-            const redirectPage = getRedirectParam();
+            const params = new URLSearchParams(window.location.search);
+            const redirectPage = params.get('redirect');
             if (redirectPage) {
                 document.getElementById('adminType').value = redirectPage;
             }
@@ -170,8 +165,7 @@
 
             if (!isValid) return;
 
-            // Proceed with login
-            console.log(`Login successful → ${adminType}`);
+            console.log(`Login → ${adminType}`);
             window.location.href = adminType;
         });
     </script>
