@@ -120,6 +120,180 @@ function openPanel(panelName) {
 function closePanel() {
     document.getElementById("modalOverlay").style.display = "none";
 }
+
+<script>
+// ===============================
+// CASE MANAGEMENT PANEL
+// ===============================
+
+window.casesPanel = `
+    <h2 style="margin-top:0; color:#9cf;">Case Management</h2>
+
+    <p style="color:#ccc; margin-bottom:15px;">
+        View, filter, and manage all cases. You may approve any case for public view,
+        even if the associate did not recommend it.
+    </p>
+
+    <!-- Filter Buttons -->
+    <div style="margin-bottom:15px;">
+        <button onclick="filterCases('all')" class="filter-btn">All</button>
+        <button onclick="filterCases('open')" class="filter-btn">Open</button>
+        <button onclick="filterCases('review')" class="filter-btn">In Review</button>
+        <button onclick="filterCases('completed')" class="filter-btn">Completed</button>
+        <button onclick="filterCases('closed')" class="filter-btn">Closed</button>
+    </div>
+
+    <!-- Case List Container -->
+    <div id="caseList" style="margin-top:10px;">
+        <p style="color:#777;">Loading cases...</p>
+    </div>
+`;
+
+// ===============================
+// CASE MANAGEMENT LOGIC
+// ===============================
+
+// Fake data for now — replace with backend later
+let allCases = [
+    {
+        id: "2026-001",
+        client: "John Doe",
+        associate: "Raven Hale",
+        status: "completed",
+        recommended: true
+    },
+    {
+        id: "2026-002",
+        client: "Acme Corp",
+        associate: "Marcus V.",
+        status: "open",
+        recommended: false
+    },
+    {
+        id: "2026-003",
+        client: "Sarah L.",
+        associate: "Raven Hale",
+        status: "review",
+        recommended: false
+    }
+];
+
+// Render cases
+function renderCases(list) {
+    const container = document.getElementById("caseList");
+
+    if (!list.length) {
+        container.innerHTML = `<p style="color:#777;">No cases found.</p>`;
+        return;
+    }
+
+    container.innerHTML = list.map(c => `
+        <div style="
+            background:#1a1a1a;
+            border:1px solid #333;
+            padding:15px;
+            margin-bottom:12px;
+            border-radius:6px;
+        ">
+            <div style="font-size:18px; color:#9cf;">Case #${c.id}</div>
+            <div style="color:#ccc; margin-top:5px;">
+                <strong>Client:</strong> ${c.client}<br>
+                <strong>Associate:</strong> ${c.associate}<br>
+                <strong>Status:</strong> ${c.status.toUpperCase()}<br>
+                <strong>Associate Recommendation:</strong>
+                ${c.recommended ? `<span style="color:#6f6;">Recommended</span>` : `<span style="color:#f66;">Not Recommended</span>`}
+            </div>
+
+            <button onclick="openCaseDetails('${c.id}')" 
+                style="
+                    margin-top:12px;
+                    background:#222;
+                    border:1px solid #444;
+                    padding:10px 14px;
+                    color:#ccc;
+                    border-radius:4px;
+                    cursor:pointer;
+                ">
+                Open Case
+            </button>
+        </div>
+    `).join("");
+}
+
+// Filter cases
+function filterCases(type) {
+    if (type === "all") return renderCases(allCases);
+    renderCases(allCases.filter(c => c.status === type));
+}
+
+// Open case details modal
+function openCaseDetails(caseId) {
+    const c = allCases.find(x => x.id === caseId);
+
+    const html = `
+        <h2 style="margin-top:0; color:#9cf;">Case #${c.id}</h2>
+
+        <div style="color:#ccc; margin-bottom:15px;">
+            <strong>Client:</strong> ${c.client}<br>
+            <strong>Associate:</strong> ${c.associate}<br>
+            <strong>Status:</strong> ${c.status.toUpperCase()}<br>
+            <strong>Associate Recommendation:</strong>
+            ${c.recommended ? `<span style="color:#6f6;">Recommended</span>` : `<span style="color:#f66;">Not Recommended</span>`}
+        </div>
+
+        <h3 style="color:#9cf;">Public View Controls</h3>
+
+        <button onclick="approvePublic('${c.id}')" class="approve-btn">
+            Approve for Public View
+        </button>
+
+        <button onclick="rejectPublic('${c.id}')" class="reject-btn">
+            Reject
+        </button>
+
+        <h3 style="color:#9cf; margin-top:20px;">Public Summary (optional)</h3>
+        <textarea id="publicSummary" style="
+            width:100%;
+            height:120px;
+            background:#1a1a1a;
+            border:1px solid #333;
+            color:#ccc;
+            padding:10px;
+            border-radius:6px;
+        "></textarea>
+
+        <button onclick="saveSummary('${c.id}')" class="save-btn">
+            Save Summary
+        </button>
+    `;
+
+    document.getElementById("modalContent").innerHTML = html;
+}
+
+// Approve case
+function approvePublic(id) {
+    alert("Case " + id + " approved for public view.");
+}
+
+// Reject case
+function rejectPublic(id) {
+    alert("Case " + id + " rejected.");
+}
+
+// Save summary
+function saveSummary(id) {
+    const text = document.getElementById("publicSummary").value;
+    alert("Summary saved for case " + id + ".");
+}
+
+// Auto-load all cases when panel opens
+document.addEventListener("click", function(e) {
+    if (e.target && e.target.innerText.includes("Case Management")) {
+        setTimeout(() => renderCases(allCases), 50);
+    }
+});
+
+    
 </script>
 
 </body>
