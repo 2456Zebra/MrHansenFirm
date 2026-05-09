@@ -85,7 +85,7 @@
     <div class="login-container">
         <h2>Admin Login</h2>
         
-        <form id="loginForm">
+        <form id="loginForm" autocomplete="off">
             <label for="adminType">Select Admin Portal</label>
             <select id="adminType" required>
                 <option value="">-- Select Portal --</option>
@@ -96,11 +96,11 @@
             <div id="adminTypeError" class="error-message"></div>
 
             <label for="email">Email</label>
-            <input type="email" id="email" placeholder="your@email.com" required>
+            <input type="email" id="email" autocomplete="off" placeholder="your@email.com" required>
             <div id="emailError" class="error-message"></div>
 
             <label for="password">Password</label>
-            <input type="password" id="password" placeholder="Enter password" required>
+            <input type="password" id="password" autocomplete="new-password" placeholder="Enter password" required>
             <div id="passwordError" class="error-message"></div>
 
             <button type="submit">Sign In</button>
@@ -112,22 +112,20 @@
     </div>
 
     <script>
-        // Handle redirect parameter from dropdown
+        // Handle redirect parameter
         function getRedirectParam() {
             const params = new URLSearchParams(window.location.search);
             return params.get('redirect');
         }
 
-        // Pre-select admin type if coming from dropdown
+        // Pre-select admin type
         window.onload = function() {
             const redirectPage = getRedirectParam();
             if (redirectPage) {
-                const select = document.getElementById('adminType');
-                select.value = redirectPage;
+                document.getElementById('adminType').value = redirectPage;
             }
         };
 
-        // Show error message
         function showError(fieldId, message) {
             const errorDiv = document.getElementById(fieldId + 'Error');
             const input = document.getElementById(fieldId);
@@ -138,7 +136,6 @@
             if (input) input.style.borderColor = '#ff6666';
         }
 
-        // Clear all errors
         function clearErrors() {
             document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
             document.querySelectorAll('select, input').forEach(el => el.style.borderColor = '#555');
@@ -147,7 +144,6 @@
         // Main Login Handler
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
             clearErrors();
 
             const adminType = document.getElementById('adminType').value;
@@ -174,10 +170,8 @@
 
             if (!isValid) return;
 
-            // Fake authentication (replace later with real auth)
-            console.log(`Login attempt - ${adminType} | ${email}`);
-            
-            // Redirect to the selected admin page
+            // Proceed with login
+            console.log(`Login successful → ${adminType}`);
             window.location.href = adminType;
         });
     </script>
