@@ -486,33 +486,24 @@ const auth = firebase.auth();
     <a onclick="showPage('submit')">Submit Case</a>
     <a onclick="showPage('pricing')">Pricing</a>
 
-    <!-- Admin Portal tab -->
-    <span id="adminPortalTrigger" style="margin-left:20px; position:relative; display:inline-block;">
-        <a onclick="toggleAdminDropdown()" style="cursor:pointer;">
-            Admin Portal ▾
-        </a>
+   <!-- Admin Portal Dropdown -->
+<span id="adminPortalTrigger" style="margin-left:20px; position:relative; display:inline-block;">
+    <a onclick="toggleAdminDropdown()" style="cursor:pointer;">
+        Admin Portal ▾
+    </a>
 
-        <!-- Dropdown -->
-        <div id="adminDropdown"
-             style="
-                display:none;
-                position:absolute;
-                left:0;
-                margin-top:4px;
-                background:transparent;
-                white-space:nowrap;
-             ">
-            <a onclick="openLoginModal('client')" style="display:block; cursor:pointer;">
-                Client Admin
-            </a>
-            <a onclick="openLoginModal('associate')" style="display:block; cursor:pointer;">
-                Associate Admin
-            </a>
-            <a onclick="openLoginModal('firm')" style="display:block; cursor:pointer;">
-                Firm Admin
-            </a>
-        </div>
-    </span>
+    <div id="adminDropdown" style="display:none; position:absolute; left:0; margin-top:5px; background:#111; border:1px solid #444; padding:8px 0; z-index:5000; min-width:180px;">
+        <a onclick="goToLogin('client-admin.html')" style="display:block; padding:10px 20px; color:#ddd; text-decoration:none;">
+            Client Admin
+        </a>
+        <a onclick="goToLogin('associate-admin.html')" style="display:block; padding:10px 20px; color:#ddd; text-decoration:none;">
+            Associate Admin
+        </a>
+        <a onclick="goToLogin('firm-admin.html')" style="display:block; padding:10px 20px; color:#ddd; text-decoration:none;">
+            Firm Admin
+        </a>
+    </div>
+</span>
 </nav>
 
 
