@@ -25,16 +25,8 @@
             max-width: 420px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
-        h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #fff;
-        }
-        label {
-            display: block;
-            margin: 15px 0 6px;
-            color: #ccc;
-        }
+        h2 { text-align: center; margin-bottom: 30px; color: #fff; }
+        label { display: block; margin: 15px 0 6px; color: #ccc; }
         select, input {
             width: 100%;
             padding: 12px;
@@ -65,27 +57,21 @@
             margin-top: 25px;
             cursor: pointer;
         }
-        button:hover {
-            background: #3388ff;
-        }
-        .back-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .back-link a {
-            color: #888;
-            text-decoration: none;
-        }
-        .back-link a:hover {
-            color: #ddd;
-        }
+        button:hover { background: #3388ff; }
+        .back-link { text-align: center; margin-top: 20px; }
+        .back-link a { color: #888; text-decoration: none; }
+        .back-link a:hover { color: #ddd; }
     </style>
 </head>
 <body>
     <div class="login-container">
         <h2>Admin Login</h2>
         
-        <form id="loginForm" autocomplete="off">
+        <form id="loginForm" autocomplete="off" novalidate>
+            <!-- Dummy fields to trick password managers -->
+            <input type="text" style="display:none;" aria-hidden="true">
+            <input type="password" style="display:none;" aria-hidden="true">
+
             <label for="adminType">Select Admin Portal</label>
             <select id="adminType" required>
                 <option value="">-- Select Portal --</option>
@@ -96,11 +82,13 @@
             <div id="adminTypeError" class="error-message"></div>
 
             <label for="email">Email</label>
-            <input type="text" id="email" name="email" autocomplete="off" placeholder="your@email.com" required>
+            <input type="text" id="email" autocomplete="off" 
+                   placeholder="your@email.com">
             <div id="emailError" class="error-message"></div>
 
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Enter password" required>
+            <input type="password" id="password" autocomplete="new-password" 
+                   placeholder="Enter password">
             <div id="passwordError" class="error-message"></div>
 
             <button type="submit">Sign In</button>
@@ -112,31 +100,26 @@
     </div>
 
     <script>
-        // Pre-select admin type from redirect
         window.onload = function() {
             const params = new URLSearchParams(window.location.search);
-            const redirectPage = params.get('redirect');
-            if (redirectPage) {
-                document.getElementById('adminType').value = redirectPage;
+            const redirect = params.get('redirect');
+            if (redirect) {
+                document.getElementById('adminType').value = redirect;
             }
         };
 
         function showError(fieldId, message) {
             const errorDiv = document.getElementById(fieldId + 'Error');
-            const input = document.getElementById(fieldId);
             if (errorDiv) {
                 errorDiv.textContent = message;
                 errorDiv.style.display = 'block';
             }
-            if (input) input.style.borderColor = '#ff6666';
         }
 
         function clearErrors() {
             document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('select, input').forEach(el => el.style.borderColor = '#555');
         }
 
-        // Main Login Handler
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             clearErrors();
@@ -165,7 +148,6 @@
 
             if (!isValid) return;
 
-            console.log(`Login → ${adminType}`);
             window.location.href = adminType;
         });
     </script>
