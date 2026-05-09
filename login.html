@@ -67,8 +67,8 @@
     <div class="login-container">
         <h2>Admin Login</h2>
         
-        <form id="loginForm" autocomplete="off" novalidate>
-            <!-- Dummy fields to trick password managers -->
+        <form id="loginForm" autocomplete="off">
+            <!-- Dummy fields to fight password manager -->
             <input type="text" style="display:none;" aria-hidden="true">
             <input type="password" style="display:none;" aria-hidden="true">
 
@@ -83,12 +83,12 @@
 
             <label for="email">Email</label>
             <input type="text" id="email" autocomplete="off" 
-                   placeholder="your@email.com">
+                   placeholder="your@email.com" required>
             <div id="emailError" class="error-message"></div>
 
             <label for="password">Password</label>
             <input type="password" id="password" autocomplete="new-password" 
-                   placeholder="Enter password">
+                   placeholder="Enter password" required>
             <div id="passwordError" class="error-message"></div>
 
             <button type="submit">Sign In</button>
@@ -100,6 +100,7 @@
     </div>
 
     <script>
+        // Pre-select admin type
         window.onload = function() {
             const params = new URLSearchParams(window.location.search);
             const redirect = params.get('redirect');
