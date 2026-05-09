@@ -878,57 +878,79 @@ function goToSignup() {
 </script>
 
 
-
 <!-- 🔥 YOUR EXISTING ASSOCIATE SCRIPT (KEEP AS IS) -->
 <script>
-// Your backend URL
-const BASE_URL = "https://script.google.com/macros/s/AKfycbxucgPwkZdJgEiKhVUICxUKgsNfmQ4i3KZXTropomrFM15s2fwru5_LEjUEsLKRoW-n/exec";
+    // Your backend URL
+    const BASE_URL = "https://script.google.com/macros/s/AKfycbxucgPwkZdJgEiKhVUICxUKgsNfmQ4i3KZXTropomrFM15s2fwru5_LEjUEsLKRoW-n/exec";
+    const associateSelect = document.getElementById("associate");
 
-const associateSelect = document.getElementById("associate");
-
-// Load associates into dropdown
-function loadAssociates() {
-    fetch(BASE_URL + "?list=1")
-        .then(r => r.json())
-        .then(data => {
-            associateSelect.innerHTML = "";
-
-            if (!data || data.length === 0) {
-                associateSelect.innerHTML = `<option value="">No active associates available</option>`;
-                return;
-            }
-
-            associateSelect.innerHTML = `<option value="">Select an associate...</option>`;
-
-            data.forEach(a => {
-                const opt = document.createElement("option");
-                opt.value = a.name;
-                opt.textContent = a.name + " — " + (a.specialty || "Specialty");
-                associateSelect.appendChild(opt);
+    // Load associates into dropdown
+    function loadAssociates() {
+        fetch(BASE_URL + "?list=1")
+            .then(r => r.json())
+            .then(data => {
+                associateSelect.innerHTML = "";
+                if (!data || data.length === 0) {
+                    associateSelect.innerHTML = `<option value="">No active associates available</option>`;
+                    return;
+                }
+                associateSelect.innerHTML = `<option value="">Select an associate...</option>`;
+                data.forEach(a => {
+                    const opt = document.createElement("option");
+                    opt.value = a.name;
+                    opt.textContent = a.name + " — " + (a.specialty || "Specialty");
+                    associateSelect.appendChild(opt);
+                });
+                autoSelectFromURL();
+            })
+            .catch(err => {
+                associateSelect.innerHTML = `<option value="">Error loading associates</option>`;
+                console.error(err);
             });
-
-            autoSelectFromURL();
-        })
-        .catch(err => {
-            associateSelect.innerHTML = `<option value="">Error loading associates</option>`;
-            console.error(err);
-        });
-}
-
-// Auto-select associate from URL (?associate=Name)
-function autoSelectFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    const selected = params.get("associate");
-
-    if (selected) {
-        const option = [...associateSelect.options].find(
-            o => o.value.toLowerCase() === selected.toLowerCase()
-        );
-        if (option) option.selected = true;
     }
-}
 
-loadAssociates();
+    // Auto-select associate from URL (?associate=Name)
+    function autoSelectFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        const selected = params.get("associate");
+        if (selected) {
+            const option = [...associateSelect.options].find(
+                o => o.value.toLowerCase() === selected.toLowerCase()
+            );
+            if (option) option.selected = true;
+        }
+    }
+
+    loadAssociates();
+    typeBootLine();
+</script>
+
+<!-- Admin Portal Dropdown Functions -->
+<script>
+    // Go to login with redirect target
+    function goToLogin(targetPage) {
+        const dropdown = document.getElementById('adminDropdown');
+        if (dropdown) dropdown.style.display = 'none';
+        
+        window.location.href = `login.html?redirect=${encodeURIComponent(targetPage)}`;
+    }
+
+    // Toggle Admin Dropdown
+    function toggleAdminDropdown() {
+        const dropdown = document.getElementById('adminDropdown');
+        if (dropdown) {
+            dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
+        }
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const trigger = document.getElementById('adminPortalTrigger');
+        const dropdown = document.getElementById('adminDropdown');
+        if (trigger && dropdown && !trigger.contains(event.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
 </script>
 
 </body>
