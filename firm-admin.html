@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firm Admin — Mr. Hansen Firm</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background-color: #0d0d0d; color: #e6e6e6; font-family: Consolas, monospace; display: flex; height: 100vh; overflow: hidden; }
+    .sidebar { width: 260px; background: #111; border-right: 1px solid #333; padding: 25px; overflow-y: auto; }
+    .sidebar h2 { color: #4da3ff; margin-bottom: 25px; text-align: center; }
+    .menu-item { padding: 14px 18px; margin: 6px 0; border-radius: 6px; cursor: pointer; transition: all 0.3s; border: 1px solid #222; }
+    .menu-item:hover, .menu-item.active { background: #4da3ff; color: #000; border-color: #4da3ff; }
+    .main { flex: 1; padding: 30px; overflow-y: auto; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 15px; }
+    .header h1 { font-size: 28px; color: #4da3ff; }
+    .logout { color: #ff7777; cursor: pointer; }
+    .content-card { background: #111; border: 1px solid #333; border-radius: 8px; padding: 30px; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #333; }
+    th { color: #4da3ff; }
+    button { background: #4da3ff; color: #000; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; }
+    button:hover { background: #77c0ff; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>FIRM ADMIN</h2>
+    <div class="menu-item active" onclick="showSection('overview')">Overview</div>
+    <div class="menu-item" onclick="showSection('users')">All Users</div>
+    <div class="menu-item" onclick="showSection('clients')">All Clients</div>
+    <div class="menu-item" onclick="showSection('associates')">Associates</div>
+    <div class="menu-item" onclick="showSection('reports')">Reports</div>
+    <div class="menu-item" onclick="showSection('settings')">Settings</div>
+  </div>
+
+  <div class="main">
+    <div class="header">
+      <h1 id="pageTitle">Firm Overview</h1>
+      <div class="logout" onclick="logout()">Logout</div>
+    </div>
+    <div class="content-card" id="contentArea"></div>
+  </div>
+
+<script>
+function showSection(section) {
+  document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('pageTitle').textContent = section.charAt(0).toUpperCase() + section.slice(1);
+
+  let html = `<p>Firm-wide <strong>${section.toUpperCase()}</strong> control panel.</p>`;
+  document.getElementById('contentArea').innerHTML = html;
+}
+
+setTimeout(() => showSection('overview'), 50);
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "sign-in.html";
+}
+</script>
+</body>
+</html>
