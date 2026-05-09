@@ -76,7 +76,6 @@
         background: #222;
         border: 1px solid #444;
         padding: 8px 12px;
-        float: right;
         cursor: pointer;
         border-radius: 4px;
         color: #ccc;
@@ -104,7 +103,11 @@
 
 <div id="modalOverlay" class="modal-overlay">
     <div id="modalPanel" class="modal-panel">
-        <button class="close-btn" onclick="closePanel()">Close</button>
+
+        <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
+            <button class="close-btn" onclick="closePanel()">Close</button>
+        </div>
+
         <div id="modalContent"></div>
     </div>
 </div>
