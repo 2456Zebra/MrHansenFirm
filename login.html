@@ -1,129 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In — Mr. Hansen Firm</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background-color: #0d0d0d;
-      color: #e6e6e6;
-      font-family: Consolas, monospace;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-    .login-card {
-      background: #111;
-      width: 100%;
-      max-width: 420px;
-      padding: 40px 30px;
-      border: 1px solid #333;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: 0 0 30px rgba(77, 163, 255, 0.1);
-    }
-    h1 { font-size: 28px; margin-bottom: 8px; color: #4da3ff; }
-    .subtitle { color: #888; margin-bottom: 30px; font-size: 15px; }
-    .role-buttons { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
-    .role-btn {
-      padding: 14px;
-      background: #1a1a1a;
-      border: 1px solid #333;
-      color: #ccc;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s;
-      border-radius: 6px;
-    }
-    .role-btn:hover { border-color: #4da3ff; color: #fff; }
-    .role-btn.selected { background: #4da3ff; color: #000; font-weight: bold; }
-    input {
-      width: 100%;
-      padding: 14px;
-      margin: 8px 0 18px;
-      background: #1a1a1a;
-      border: 1px solid #333;
-      color: #e6e6e6;
-      font-family: Consolas, monospace;
-      font-size: 15px;
-      border-radius: 6px;
-    }
-    input:focus { outline: none; border-color: #4da3ff; }
-    .login-btn {
-      width: 100%;
-      padding: 14px;
-      background: #4da3ff;
-      color: #000;
-      border: none;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 6px;
-      margin-top: 10px;
-    }
-    .login-btn:hover { background: #77c0ff; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr. Hansen Firm - Login</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #0f0f0f;
+            color: #ddd;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .login-container {
+            background: #1a1a1a;
+            padding: 40px 30px;
+            border-radius: 12px;
+            border: 1px solid #444;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+        label {
+            display: block;
+            margin: 15px 0 6px;
+            color: #ccc;
+        }
+        select, input {
+            width: 100%;
+            padding: 12px;
+            background: #222;
+            border: 1px solid #555;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 16px;
+        }
+        input:focus, select:focus {
+            border-color: #0066ff;
+            outline: none;
+        }
+        .error-message {
+            color: #ff6666;
+            font-size: 0.9em;
+            margin-top: 4px;
+            display: none;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #0066ff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 17px;
+            margin-top: 25px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #3388ff;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-link a {
+            color: #888;
+            text-decoration: none;
+        }
+        .back-link a:hover {
+            color: #ddd;
+        }
+    </style>
 </head>
 <body>
-  <div class="login-card">
-    <h1>ADMIN PORTAL</h1>
-    <p class="subtitle">Mr. Hansen Intelligence Division</p>
+    <div class="login-container">
+        <h2>Admin Login</h2>
+        
+        <form id="loginForm">
+            <label for="adminType">Select Admin Portal</label>
+            <select id="adminType" required>
+                <option value="">-- Select Portal --</option>
+                <option value="client-admin.html">Client Admin</option>
+                <option value="associate-admin.html">Associate Admin</option>
+                <option value="firm-admin.html">Firm Admin</option>
+            </select>
+            <div id="adminTypeError" class="error-message"></div>
 
-    <div class="role-buttons" id="roleButtons">
-      <div class="role-btn" data-role="client">Client Admin</div>
-      <div class="role-btn" data-role="associate">Associate Admin</div>
-      <div class="role-btn" data-role="firm">Firm Admin</div>
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="your@email.com" required>
+            <div id="emailError" class="error-message"></div>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter password" required>
+            <div id="passwordError" class="error-message"></div>
+
+            <button type="submit">Sign In</button>
+        </form>
+
+        <div class="back-link">
+            <a href="index.html">← Back to Main Site</a>
+        </div>
     </div>
 
-    <input type="email" id="email" placeholder="Email Address">
-    <input type="password" id="password" placeholder="Password">
+    <script>
+        // Handle redirect parameter from dropdown
+        function getRedirectParam() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('redirect');
+        }
 
-    <button class="login-btn" id="loginBtn" disabled>Sign In</button>
-  </div>
+        // Pre-select admin type if coming from dropdown
+        window.onload = function() {
+            const redirectPage = getRedirectParam();
+            if (redirectPage) {
+                const select = document.getElementById('adminType');
+                select.value = redirectPage;
+            }
+        };
 
-<script>
-// Auto-select from URL
-const urlParams = new URLSearchParams(window.location.search);
-const type = urlParams.get('type');
+        // Show error message
+        function showError(fieldId, message) {
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            const input = document.getElementById(fieldId);
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+            }
+            if (input) input.style.borderColor = '#ff6666';
+        }
 
-let selectedRole = null;
+        // Clear all errors
+        function clearErrors() {
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('select, input').forEach(el => el.style.borderColor = '#555');
+        }
 
-document.querySelectorAll('.role-btn').forEach(btn => {
-  const role = btn.getAttribute('data-role');
-  if (role === type) {
-    btn.classList.add('selected');
-    selectedRole = role;
-    document.getElementById('loginBtn').disabled = false;
-  }
+        // Main Login Handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            clearErrors();
 
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    selectedRole = role;
-    document.getElementById('loginBtn').disabled = false;
-  });
-});
+            const adminType = document.getElementById('adminType').value;
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
 
-document.getElementById('loginBtn').addEventListener('click', () => {
-  const email = document.getElementById('email').value.trim();
-  if (!email || !selectedRole) {
-    alert("Please fill all fields.");
-    return;
-  }
+            let isValid = true;
 
-  localStorage.setItem('isLoggedIn', 'true');
-  localStorage.setItem('userRole', selectedRole);
-  localStorage.setItem('userEmail', email);
+            if (!adminType) {
+                showError('adminType', 'Please select an Admin Portal');
+                isValid = false;
+            }
+            if (!email) {
+                showError('email', 'Please enter your email');
+                isValid = false;
+            }
+            if (!password) {
+                showError('password', 'Please enter your password');
+                isValid = false;
+            } else if (password.length < 4) {
+                showError('password', 'Password must be at least 4 characters');
+                isValid = false;
+            }
 
-  // Redirect to dedicated admin console
-  if (selectedRole === 'firm') window.location.href = "firm-admin.html";
-  else if (selectedRole === 'associate') window.location.href = "associate-admin.html";
-  else window.location.href = "client-admin.html";
-});
-</script>
+            if (!isValid) return;
+
+            // Fake authentication (replace later with real auth)
+            console.log(`Login attempt - ${adminType} | ${email}`);
+            
+            // Redirect to the selected admin page
+            window.location.href = adminType;
+        });
+    </script>
 </body>
 </html>
