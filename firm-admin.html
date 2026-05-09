@@ -14,7 +14,6 @@
         font-family: Arial, sans-serif;
     }
 
-    /* Header */
     .admin-header {
         background: #111;
         padding: 20px;
@@ -23,7 +22,6 @@
         border-bottom: 1px solid #333;
     }
 
-    /* Action List */
     .admin-actions {
         padding: 20px;
         max-width: 600px;
@@ -49,7 +47,6 @@
         border-color: #555;
     }
 
-    /* Modal Base */
     .modal-overlay {
         display: none;
         position: fixed;
@@ -59,7 +56,7 @@
         z-index: 9999;
         justify-content: center;
         align-items: center;
-        padding: 20px;
+        padding: 10px;
     }
 
     .modal-panel {
@@ -67,10 +64,11 @@
         border: 1px solid #444;
         padding: 20px;
         width: 100%;
-        max-width: 600px;
+        max-width: 95vw;
         max-height: 90vh;
         overflow-y: auto;
         border-radius: 8px;
+        box-sizing: border-box;
     }
 
     .close-btn {
@@ -103,7 +101,6 @@
     <button class="admin-btn" onclick="openPanel('settingsPanel')">System Settings</button>
 </div>
 
-<!-- Modal Overlay -->
 <div id="modalOverlay" class="modal-overlay">
     <div id="modalPanel" class="modal-panel">
         <button class="close-btn" onclick="closePanel()">Close</button>
@@ -111,9 +108,6 @@
     </div>
 </div>
 
-<!-- =============================== -->
-<!-- MODAL SYSTEM (WORKING)          -->
-<!-- =============================== -->
 <script>
 function openPanel(panelName) {
     document.getElementById("modalOverlay").style.display = "flex";
@@ -125,9 +119,6 @@ function closePanel() {
 }
 </script>
 
-<!-- =============================== -->
-<!-- CASE MANAGEMENT PANEL (WORKING) -->
-<!-- =============================== -->
 <script>
 window.casesPanel = `
     <h2 style="margin-top:0; color:#9cf;">Case Management</h2>
@@ -151,9 +142,36 @@ window.casesPanel = `
 `;
 
 let allCases = [
-    { id: "2026-001", client: "John Doe", associate: "Raven Hale", status: "completed", recommended: true },
-    { id: "2026-002", client: "Acme Corp", associate: "Marcus V.", status: "open", recommended: false },
-    { id: "2026-003", client: "Sarah L.", associate: "Raven Hale", status: "review", recommended: false }
+    {
+        id: "2026-001",
+        client: "John Doe",
+        associate: "Raven Hale",
+        status: "completed",
+        recommended: true,
+        clientText: "Over the past month, I’ve noticed irregular access to restricted folders within our internal document system. Several files were opened outside normal business hours, and I have reason to believe an employee may be misusing their credentials.",
+        associateNotes: "Initial review of access logs confirms multiple after-hours entries tied to a single workstation. No corresponding work orders or scheduled tasks justify the activity. Further analysis recommended.",
+        internalNotes: "Potential internal breach. Recommend deeper credential audit and workstation imaging."
+    },
+    {
+        id: "2026-002",
+        client: "Acme Corp",
+        associate: "Marcus V.",
+        status: "open",
+        recommended: false,
+        clientText: "We’ve detected unusual login attempts from an internal account that should be inactive. The activity appears to be escalating.",
+        associateNotes: "Reviewed authentication logs. Activity originates from VPN endpoint. Possible credential compromise.",
+        internalNotes: "Flag for immediate credential reset and endpoint isolation."
+    },
+    {
+        id: "2026-003",
+        client: "Sarah L.",
+        associate: "Raven Hale",
+        status: "review",
+        recommended: false,
+        clientText: "Sensitive HR files were accessed without authorization. I suspect internal misuse.",
+        associateNotes: "Preliminary review shows unauthorized access from shared workstation. Needs deeper audit.",
+        internalNotes: "Possible policy violation. Recommend workstation imaging."
+    }
 ];
 
 function renderCases(list) {
@@ -194,23 +212,34 @@ function openCaseDetails(caseId) {
     const html = `
         <h2 style="margin-top:0; color:#9cf;">Case #${c.id}</h2>
 
-        <div style="color:#ccc; margin-bottom:15px;">
-            <strong>Client:</strong> ${c.client}<br>
-            <strong>Associate:</strong> ${c.associate}<br>
-            <strong>Status:</strong> ${c.status.toUpperCase()}<br>
-            <strong>Associate Recommendation:</strong>
-            ${c.recommended ? `<span style="color:#6f6;">Recommended</span>` : `<span style="color:#f66;">Not Recommended</span>`}
-        </div>
+        <h3 style="color:#9cf;">Client’s Statement</h3>
+        <p style="color:#ccc; white-space:pre-wrap;">${c.clientText}</p>
 
-        <h3 style="color:#9cf;">Public View Controls</h3>
+        <h3 style="color:#9cf;">Associate Notes</h3>
+        <p style="color:#ccc; white-space:pre-wrap;">${c.associateNotes}</p>
 
-        <button onclick="approvePublic('${c.id}')" class="approve-btn">Approve for Public View</button>
-        <button onclick="rejectPublic('${c.id}')" class="reject-btn">Reject</button>
+        <h3 style="color:#9cf;">Internal Notes (Firm Only)</h3>
+        <p style="color:#ccc; white-space:pre-wrap;">${c.internalNotes}</p>
 
-        <h3 style="color:#9cf; margin-top:20px;">Public Summary (optional)</h3>
+        <h3 style="color:#9cf;">Public Summary (this will appear on the View Cases page)</h3>
         <textarea id="publicSummary" style="width:100%; height:120px; background:#1a1a1a; border:1px solid #333; color:#ccc; padding:10px; border-radius:6px;"></textarea>
 
-        <button onclick="saveSummary('${c.id}')" class="save-btn">Save Summary</button>
+        <button onclick="saveSummary('${c.id}')" class="save-btn" 
+            style="margin-top:12px; background:#222; border:1px solid #444; padding:10px 14px; color:#ccc; border-radius:4px; cursor:pointer;">
+            Save Summary
+        </button>
+
+        <h3 style="color:#9cf; margin-top:20px;">Public View Controls</h3>
+
+        <button onclick="approvePublic('${c.id}')" class="approve-btn"
+            style="background:#1f3d1f; border:1px solid #3f6f3f; padding:10px 14px; color:#9f9; border-radius:4px; cursor:pointer; margin-right:10px;">
+            Approve for Public View
+        </button>
+
+        <button onclick="rejectPublic('${c.id}')" class="reject-btn"
+            style="background:#3d1f1f; border:1px solid #6f3f3f; padding:10px 14px; color:#f99; border-radius:4px; cursor:pointer;">
+            Reject
+        </button>
     `;
 
     document.getElementById("modalContent").innerHTML = html;
@@ -236,7 +265,6 @@ document.addEventListener("click", function(e) {
 });
 </script>
 
-<!-- BACK TO HOME -->
 <div style="text-align:center; margin:40px 0;">
     <a href="index.html" style="color:#77c0ff; text-decoration:none; font-family:Consolas, monospace; font-size:1rem; border-bottom:1px solid #444; padding-bottom:2px;">
         ‹ Back to Home
