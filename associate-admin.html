@@ -70,7 +70,7 @@
         border-radius: 8px;
         box-sizing: border-box;
         margin-left: auto;
-        margin-right: 6vw; /* LEFT SHIFT */
+        margin-right: 6vw;
     }
 
     .close-btn {
@@ -84,6 +84,24 @@
 
     .close-btn:hover {
         background: #333;
+    }
+
+    .case-box {
+        background: #1a1a1a;
+        border: 1px solid #333;
+        padding: 15px;
+        margin-bottom: 12px;
+        border-radius: 6px;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 3px 6px;
+        background: #333;
+        border-radius: 4px;
+        color: #ccc;
+        font-size: 12px;
+        margin-left: 6px;
     }
 </style>
 </head>
@@ -101,7 +119,7 @@
 
 <!-- MODAL -->
 <div id="modalOverlay" class="modal-overlay">
-    <div id="modalPanel" class="modal-panel">
+    <div class="modal-panel">
         <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
             <button class="close-btn" onclick="closePanel()">Close</button>
         </div>
@@ -147,7 +165,8 @@ let myCases = [
         status: "completed",
         clientText: "Over the past month, I’ve noticed irregular access...",
         associateNotes: "Initial review of access logs confirms...",
-        internalNotes: "Potential internal breach..."
+        internalNotes: "Potential internal breach...",
+        previousAssociates: []
     },
     {
         id: "2026-003",
@@ -155,7 +174,15 @@ let myCases = [
         status: "review",
         clientText: "Sensitive HR files were accessed...",
         associateNotes: "Preliminary review shows unauthorized access...",
-        internalNotes: "Possible policy violation..."
+        internalNotes: "Possible policy violation...",
+        previousAssociates: [
+            {
+                from: "Marcus V.",
+                to: "Raven Hale",
+                date: "2026-05-10 13:04",
+                reason: "Client requested specialist"
+            }
+        ]
     }
 ];
 
@@ -169,14 +196,36 @@ function renderMyCases() {
     }
 
     container.innerHTML = myCases.map(c => `
-        <div style="background:#1a1a1a; border:1px solid #333; padding:15px; margin-bottom:12px; border-radius:6px;">
+        <div class="case-box">
             <div style="font-size:18px; color:#9cf;">Case #${c.id}</div>
+
+            ${
+                c.previousAssociates && c.previousAssociates.length
+                ? `<span class="badge">Reassigned</span>`
+                : ""
+            }
+
             <div style="color:#ccc; margin-top:5px;">
                 <strong>Client:</strong> ${c.client}<br>
                 <strong>Status:</strong> ${c.status.toUpperCase()}
             </div>
 
-            <button onclick="openMyCaseDetails('${c.id}')" 
+            ${
+                c.previousAssociates && c.previousAssociates.length
+                ? `
+                    <h4 style="color:#9cf; margin-top:10px;">Reassignment History</h4>
+                    <ul style="color:#ccc; padding-left:18px;">
+                        ${
+                            c.previousAssociates.map(r => `
+                                <li>${r.date}: ${r.from} → ${r.to} — ${r.reason}</li>
+                            `).join("")
+                        }
+                    </ul>
+                `
+                : ""
+            }
+
+            <button onclick="openMyCaseDetails('${c.id}')"
                 style="margin-top:12px; background:#222; border:1px solid #444; padding:10px 14px; color:#ccc; border-radius:4px;">
                 View Case
             </button>
@@ -199,6 +248,21 @@ function openMyCaseDetails(caseId) {
 
         <h3 style="color:#9cf;">Internal Notes</h3>
         <p style="color:#ccc;">${c.internalNotes}</p>
+
+        ${
+            c.previousAssociates && c.previousAssociates.length
+            ? `
+                <h3 style="color:#9cf;">Reassignment History</h3>
+                <ul style="color:#ccc; padding-left:18px;">
+                    ${
+                        c.previousAssociates.map(r => `
+                            <li>${r.date}: ${r.from} → ${r.to} — ${r.reason}</li>
+                        `).join("")
+                    }
+                </ul>
+            `
+            : ""
+        }
     `;
 }
 </script>
