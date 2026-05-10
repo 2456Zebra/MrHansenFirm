@@ -47,6 +47,36 @@
         border-color: #555;
     }
 
+    /* TIMELINE CARD FEED */
+    .timeline-card {
+        background: #1a1a1a;
+        border: 1px solid #333;
+        padding: 14px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+        box-sizing: border-box;
+    }
+
+    .timeline-timestamp {
+        color: #77c0ff;
+        font-size: 13px;
+        margin-bottom: 6px;
+        font-family: Consolas, monospace;
+    }
+
+    .timeline-title {
+        font-size: 16px;
+        color: #e5e5e5;
+        margin-bottom: 4px;
+    }
+
+    .timeline-details {
+        color: #bbb;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    /* Badges */
     .badge {
         display: inline-block;
         padding: 3px 6px;
@@ -72,6 +102,7 @@
         color: #ffdd99;
     }
 
+    /* Modal */
     .modal-overlay {
         display: none;
         position: fixed;
@@ -110,6 +141,20 @@
     .close-btn:hover {
         background: #333;
     }
+
+    /* Mobile-first */
+    @media (max-width: 600px) {
+        .admin-btn {
+            font-size: 16px;
+            padding: 14px;
+        }
+        .timeline-card {
+            padding: 12px;
+        }
+        .timeline-title {
+            font-size: 15px;
+        }
+    }
 </style>
 </head>
 
@@ -120,6 +165,7 @@
 <div class="admin-actions">
     <button class="admin-btn" onclick="openPanel('casesPanel')">Case Management</button>
     <button class="admin-btn" onclick="openPanel('associatesPanel')">Associate Management</button>
+    <button class="admin-btn" onclick="openPanel('timelinePanel')">Activity Timeline</button>
     <button class="admin-btn" onclick="openPanel('publicPanel')">Public Case Approval</button>
     <button class="admin-btn" onclick="openPanel('settingsPanel')">System Settings</button>
 </div>
@@ -144,6 +190,7 @@ function openPanel(panelName) {
 
     if (panelName === "casesPanel") setTimeout(() => renderCases(allCases), 10);
     if (panelName === "associatesPanel") setTimeout(() => renderAssociates(), 10);
+    if (panelName === "timelinePanel") setTimeout(() => renderTimeline(), 10);
 }
 
 function closePanel() {
@@ -151,7 +198,76 @@ function closePanel() {
 }
 </script>
 
-<!-- ===================== CASE MANAGEMENT ===================== -->
+<!-- ===================== TIMELINE PANEL ===================== -->
+
+<script>
+window.timelinePanel = `
+    <h2 style="margin-top:0; color:#9cf;">Activity Timeline</h2>
+
+    <p style="color:#ccc; margin-bottom:15px;">
+        A chronological feed of all firm activity — assignments, reassignments, suspensions, flags, and profile updates.
+    </p>
+
+    <div id="timelineFeed">
+        <p style="color:#777;">Loading activity...</p>
+    </div>
+`;
+
+/* 
+   Global activity log — Module 3 core.
+   Every action in the system pushes an event here.
+*/
+let activityLog = [
+    {
+        type: "reassignment",
+        actor: "Firm Admin",
+        target: "Case #2026-003",
+        details: "Reassigned from Marcus V. → Raven Hale",
+        timestamp: "2026-05-10 13:04"
+    },
+    {
+        type: "suspension",
+        actor: "Firm Admin",
+        target: "Associate: Elena S.",
+        details: "Suspended — Reason: Policy Violation",
+        timestamp: "2026-03-22 09:15"
+    },
+    {
+        type: "flag",
+        actor: "Firm Admin",
+        target: "Associate: Marcus V.",
+        details: "Flag added: Under Review",
+        timestamp: "2026-04-10 11:30"
+    }
+];
+
+function renderTimeline() {
+    const container = document.getElementById("timelineFeed");
+    if (!container) return;
+
+    if (!activityLog.length) {
+        container.innerHTML = `<p style="color:#777;">No activity recorded.</p>`;
+        return;
+    }
+
+    container.innerHTML = activityLog
+        .slice()
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+        .map(ev => `
+            <div class="timeline-card">
+                <div class="timeline-timestamp">${ev.timestamp}</div>
+                <div class="timeline-title">${ev.type.toUpperCase()}</div>
+                <div class="timeline-details">
+                    <strong>${ev.target}</strong><br>
+                    ${ev.details}<br>
+                    <span style="color:#888;">By: ${ev.actor}</span>
+                </div>
+            </div>
+        `).join("");
+}
+</script>
+
+<!-- ===================== CASE MANAGEMENT (continues from Chunk 1) ===================== -->
 
 <script>
 window.casesPanel = `
@@ -229,7 +345,7 @@ function renderCases(list) {
                 : ""
             }
 
-            <button onclick="openCaseDetails('${c.id}')" 
+            <button onclick="openCaseDetails('${c.id}')"
                 style="margin-top:12px; background:#222; border:1px solid #444; padding:10px 14px; color:#ccc; border-radius:4px;">
                 Open Case
             </button>
@@ -265,9 +381,7 @@ function openCaseDetails(caseId) {
                 <ul style="color:#ccc; padding-left:18px;">
                     ${
                         c.previousAssociates.map(r => `
-                            <li>
-                                ${r.date}: ${r.from} → ${r.to} — ${r.reason}
-                            </li>
+                            <li>${r.date}: ${r.from} → ${r.to} — ${r.reason}</li>
                         `).join("")
                     }
                 </ul>
@@ -281,6 +395,7 @@ function openCaseDetails(caseId) {
         </button>
     `;
 }
+</script>
 
 <!-- ===================== ASSOCIATE MANAGEMENT ===================== -->
 
@@ -481,6 +596,15 @@ function confirmReassign() {
 
     if (oldA) oldA.cases = Math.max(0, oldA.cases - 1);
     if (newA) newA.cases += 1;
+
+    // Add to timeline
+    activityLog.push({
+        type: "reassignment",
+        actor: "Firm Admin",
+        target: `Case #${caseBeingReassigned.id}`,
+        details: `Reassigned from ${oldAssociate} → ${newAssociate}`,
+        timestamp: new Date().toLocaleString()
+    });
 
     closeReassign();
     closePanel();
