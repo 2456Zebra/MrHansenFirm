@@ -99,13 +99,38 @@
     <button class="admin-btn" onclick="openPanel('settingsPanel')">System Settings</button>
 </div>
 
-<!-- MODAL -->
+<!-- MAIN MODAL -->
 <div id="modalOverlay" class="modal-overlay">
     <div id="modalPanel" class="modal-panel">
         <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
             <button class="close-btn" onclick="closePanel()">Close</button>
         </div>
         <div id="modalContent"></div>
+    </div>
+</div>
+
+<!-- REASSIGN CASE MODAL -->
+<div id="reassignOverlay" class="modal-overlay">
+    <div class="modal-panel">
+        <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
+            <button class="close-btn" onclick="closeReassign()">Close</button>
+        </div>
+
+        <h2 style="color:#9cf; margin-top:0;">Reassign Case</h2>
+
+        <label style="color:#ccc;">Select New Associate</label>
+        <select id="reassignSelect" 
+            style="width:100%; padding:10px; background:#1a1a1a; border:1px solid #333; color:#ccc; border-radius:6px; margin-bottom:12px;">
+        </select>
+
+        <label style="color:#ccc;">Reason for Reassignment</label>
+        <textarea id="reassignReason" 
+            style="width:100%; height:90px; background:#1a1a1a; border:1px solid #333; color:#ccc; border-radius:6px;"></textarea>
+
+        <button onclick="confirmReassign()" 
+            style="margin-top:12px; background:#1f3d1f; border:1px solid #3f6f3f; padding:10px 14px; color:#9f9; border-radius:4px;">
+            Confirm Reassignment
+        </button>
     </div>
 </div>
 
@@ -158,7 +183,8 @@ let allCases = [
         recommended: true,
         clientText: "Over the past month, I’ve noticed irregular access...",
         associateNotes: "Initial review of access logs confirms...",
-        internalNotes: "Potential internal breach..."
+        internalNotes: "Potential internal breach...",
+        previousAssociates: []
     },
     {
         id: "2026-002",
@@ -168,7 +194,8 @@ let allCases = [
         recommended: false,
         clientText: "We’ve detected unusual login attempts...",
         associateNotes: "Reviewed authentication logs...",
-        internalNotes: "Flag for immediate credential reset..."
+        internalNotes: "Flag for immediate credential reset...",
+        previousAssociates: []
     }
 ];
 
@@ -218,6 +245,28 @@ function openCaseDetails(caseId) {
 
         <h3 style="color:#9cf;">Internal Notes</h3>
         <p style="color:#ccc;">${c.internalNotes}</p>
+
+        ${
+            c.previousAssociates && c.previousAssociates.length
+            ? `
+                <h3 style="color:#9cf;">Reassignment History</h3>
+                <ul style="color:#ccc; padding-left:18px;">
+                    ${
+                        c.previousAssociates.map(r => `
+                            <li>
+                                ${r.date}: ${r.from} → ${r.to} — ${r.reason}
+                            </li>
+                        `).join("")
+                    }
+                </ul>
+            `
+            : ""
+        }
+
+        <button onclick="openReassign('${c.id}')"
+            style="margin-top:12px; background:#1f3d1f; border:1px solid #3f6f3f; padding:10px 14px; color:#9f9; border-radius:4px;">
+            Reassign Case
+        </button>
     `;
 }
 </script>
@@ -325,6 +374,83 @@ function openAssociateQuick(id) {
 function openFullProfile(id) {
     window.location.href = `firm-admin-view-associates.html?id=${id}`;
 }
+</script>
+
+<!-- ===================== REASSIGNMENT LOGIC ===================== -->
+
+<script>
+let caseBeingReassigned = null;
+
+function openReassign(caseId) {
+    caseBeingReassigned = allCases.find(c => c.id === caseId);
+    if (!caseBeingReassigned) return;
+
+    const select = document.getElementById("reassignSelect");
+    select.innerHTML = "";
+
+    associates.forEach(a => {
+        if (a.status !== "active") return;
+
+        const opt = document.createElement("option");
+        opt.value = a.name;
+        opt.textContent = a.name;
+        select.appendChild(opt);
+    });
+
+    document.getElementById("reassignReason").value = "";
+    document.getElementById("reassignOverlay").style.display = "flex";
+}
+
+function closeReassign() {
+    document.getElementById("reassignOverlay").style.display = "none";
+}
+
+function confirmReassign() {
+    const newAssociate = document.getElementById("reassignSelect").value;
+    const reason = document.getElementById("reassignReason").value.trim();
+
+    if (!newAssociate) return alert("Select an associate.");
+    if (!reason) return alert("Provide a reason.");
+
+    const oldAssociate = caseBeingReassigned.associate;
+
+    caseBeingReassigned.previousAssociates = caseBeingReassigned.previousAssociates || [];
+    caseBeingReassigned.previousAssociates.push({
+        from: oldAssociate,
+        to: newAssociate,
+        date: new Date().toLocaleString(),
+        reason
+    });
+
+    caseBeingReassigned.associate = newAssociate;
+
+    const oldA = associates.find(a => a.name === oldAssociate);
+    const newA = associates.find(a => a.name === newAssociate);
+
+    if (oldA) oldA.cases = Math.max(0, oldA.cases - 1);
+    if (newA) newA.cases += 1;
+
+    closeReassign();
+    closePanel();
+
+    alert(`Case reassigned from ${oldAssociate} to ${newAssociate}.`);
+
+    renderCases(allCases);
+}
+</script>
+
+<!-- ===================== PLACEHOLDER PANELS ===================== -->
+
+<script>
+window.publicPanel = `
+    <h2 style="margin-top:0; color:#9cf;">Public Case Approval</h2>
+    <p style="color:#ccc;">Placeholder for public case approval workflow.</p>
+`;
+
+window.settingsPanel = `
+    <h2 style="margin-top:0; color:#9cf;">System Settings</h2>
+    <p style="color:#ccc;">Placeholder for system settings.</p>
+`;
 </script>
 
 <!-- ========================= FOOTER ========================= -->
