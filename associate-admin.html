@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Firm Admin — MR. HANSEN FIRM</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Associate Admin — MR. HANSEN FIRM</title>
 
 <style>
     body {
@@ -90,33 +90,34 @@
 
 <body>
 
-<div class="admin-header">
-    FIRM ADMIN PORTAL
-</div>
+<div class="admin-header">ASSOCIATE ADMIN PORTAL</div>
 
 <div class="admin-actions">
-    <button class="admin-btn" onclick="openPanel('casesPanel')">Case Management</button>
-    <button class="admin-btn" onclick="openPanel('associatesPanel')">Associate Management</button>
-    <button class="admin-btn" onclick="openPanel('clientsPanel')">Client Management</button>
-    <button class="admin-btn" onclick="openPanel('publicPanel')">Public Case Approval</button>
-    <button class="admin-btn" onclick="openPanel('settingsPanel')">System Settings</button>
+    <button class="admin-btn" onclick="openPanel('myCasesPanel')">My Cases</button>
+    <button class="admin-btn" onclick="openPanel('profilePanel')">My Profile</button>
+    <button class="admin-btn" onclick="openPanel('messagesPanel')">Messages</button>
+    <button class="admin-btn" onclick="openPanel('settingsPanel')">Settings</button>
 </div>
 
+<!-- MODAL -->
 <div id="modalOverlay" class="modal-overlay">
     <div id="modalPanel" class="modal-panel">
-
         <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
             <button class="close-btn" onclick="closePanel()">Close</button>
         </div>
-
         <div id="modalContent"></div>
     </div>
 </div>
 
 <script>
 function openPanel(panelName) {
-    document.getElementById("modalOverlay").style.display = "flex";
-    document.getElementById("modalContent").innerHTML = window[panelName];
+    const overlay = document.getElementById("modalOverlay");
+    const content = document.getElementById("modalContent");
+
+    overlay.style.display = "flex";
+    content.innerHTML = window[panelName] || "<p style='color:#f88;'>Panel not available.</p>";
+
+    if (panelName === "myCasesPanel") setTimeout(() => renderMyCases(), 10);
 }
 
 function closePanel() {
@@ -124,271 +125,128 @@ function closePanel() {
 }
 </script>
 
-<!-- ========================================================= -->
-<!-- CASE MANAGEMENT (unchanged except modal shift)            -->
-<!-- ========================================================= -->
+<!-- ===================== MY CASES ===================== -->
 
 <script>
-window.casesPanel = `
-    <h2 style="margin-top:0; color:#9cf;">Case Management</h2>
+window.myCasesPanel = `
+    <h2 style="margin-top:0; color:#9cf;">My Cases</h2>
 
     <p style="color:#ccc; margin-bottom:15px;">
-        View, filter, and manage all cases. You may approve any case for public view,
-        even if the associate did not recommend it.
+        These are the cases assigned to you.
     </p>
 
-    <div style="margin-bottom:15px;">
-        <button onclick="filterCases('all')" class="filter-btn">All</button>
-        <button onclick="filterCases('open')" class="filter-btn">Open</button>
-        <button onclick="filterCases('review')" class="filter-btn">In Review</button>
-        <button onclick="filterCases('completed')" class="filter-btn">Completed</button>
-        <button onclick="filterCases('closed')" class="filter-btn">Closed</button>
-    </div>
-
-    <div id="caseList" style="margin-top:10px;">
+    <div id="myCaseList" style="margin-top:10px;">
         <p style="color:#777;">Loading cases...</p>
     </div>
 `;
 
-let allCases = [
+let myCases = [
     {
         id: "2026-001",
         client: "John Doe",
-        associate: "Raven Hale",
         status: "completed",
-        recommended: true,
-        clientText: "Over the past month, I’ve noticed irregular access to restricted folders within our internal document system. Several files were opened outside normal business hours, and I have reason to believe an employee may be misusing their credentials.",
-        associateNotes: "Initial review of access logs confirms multiple after-hours entries tied to a single workstation. No corresponding work orders or scheduled tasks justify the activity. Further analysis recommended.",
-        internalNotes: "Potential internal breach. Recommend deeper credential audit and workstation imaging."
-    },
-    {
-        id: "2026-002",
-        client: "Acme Corp",
-        associate: "Marcus V.",
-        status: "open",
-        recommended: false,
-        clientText: "We’ve detected unusual login attempts from an internal account that should be inactive. The activity appears to be escalating.",
-        associateNotes: "Reviewed authentication logs. Activity originates from VPN endpoint. Possible credential compromise.",
-        internalNotes: "Flag for immediate credential reset and endpoint isolation."
+        clientText: "Over the past month, I’ve noticed irregular access...",
+        associateNotes: "Initial review of access logs confirms...",
+        internalNotes: "Potential internal breach..."
     },
     {
         id: "2026-003",
         client: "Sarah L.",
-        associate: "Raven Hale",
         status: "review",
-        recommended: false,
-        clientText: "Sensitive HR files were accessed without authorization. I suspect internal misuse.",
-        associateNotes: "Preliminary review shows unauthorized access from shared workstation. Needs deeper audit.",
-        internalNotes: "Possible policy violation. Recommend workstation imaging."
+        clientText: "Sensitive HR files were accessed...",
+        associateNotes: "Preliminary review shows unauthorized access...",
+        internalNotes: "Possible policy violation..."
     }
 ];
 
-function renderCases(list) {
-    const container = document.getElementById("caseList");
+function renderMyCases() {
+    const container = document.getElementById("myCaseList");
+    if (!container) return;
 
-    if (!list.length) {
-        container.innerHTML = `<p style="color:#777;">No cases found.</p>`;
+    if (!myCases.length) {
+        container.innerHTML = `<p style="color:#777;">No cases assigned.</p>`;
         return;
     }
 
-    container.innerHTML = list.map(c => `
+    container.innerHTML = myCases.map(c => `
         <div style="background:#1a1a1a; border:1px solid #333; padding:15px; margin-bottom:12px; border-radius:6px;">
             <div style="font-size:18px; color:#9cf;">Case #${c.id}</div>
             <div style="color:#ccc; margin-top:5px;">
                 <strong>Client:</strong> ${c.client}<br>
-                <strong>Associate:</strong> ${c.associate}<br>
-                <strong>Status:</strong> ${c.status.toUpperCase()}<br>
-                <strong>Associate Recommendation:</strong>
-                ${c.recommended ? `<span style="color:#6f6;">Recommended</span>` : `<span style="color:#f66;">Not Recommended</span>`}
+                <strong>Status:</strong> ${c.status.toUpperCase()}
             </div>
 
-            <button onclick="openCaseDetails('${c.id}')" 
-                style="margin-top:12px; background:#222; border:1px solid #444; padding:10px 14px; color:#ccc; border-radius:4px; cursor:pointer;">
-                Open Case
+            <button onclick="openMyCaseDetails('${c.id}')" 
+                style="margin-top:12px; background:#222; border:1px solid #444; padding:10px 14px; color:#ccc; border-radius:4px;">
+                View Case
             </button>
         </div>
     `).join("");
 }
 
-function filterCases(type) {
-    if (type === "all") return renderCases(allCases);
-    renderCases(allCases.filter(c => c.status === type));
-}
+function openMyCaseDetails(caseId) {
+    const c = myCases.find(x => x.id === caseId);
+    if (!c) return;
 
-function openCaseDetails(caseId) {
-    const c = allCases.find(x => x.id === caseId);
-
-    const html = `
+    document.getElementById("modalContent").innerHTML = `
         <h2 style="margin-top:0; color:#9cf;">Case #${c.id}</h2>
 
         <h3 style="color:#9cf;">Client’s Statement</h3>
-        <p style="color:#ccc; white-space:pre-wrap;">${c.clientText}</p>
+        <p style="color:#ccc;">${c.clientText}</p>
 
-        <h3 style="color:#9cf;">Associate Notes</h3>
-        <p style="color:#ccc; white-space:pre-wrap;">${c.associateNotes}</p>
+        <h3 style="color:#9cf;">Your Notes</h3>
+        <p style="color:#ccc;">${c.associateNotes}</p>
 
-        <h3 style="color:#9cf;">Internal Notes (Firm Only)</h3>
-        <p style="color:#ccc; white-space:pre-wrap;">${c.internalNotes}</p>
-
-        <h3 style="color:#9cf;">Public Summary (this will appear on the View Cases page)</h3>
-        <textarea id="publicSummary" style="width:100%; height:120px; background:#1a1a1a; border:1px solid #333; color:#ccc; padding:10px; border-radius:6px;"></textarea>
-
-        <button onclick="saveSummary('${c.id}')" class="save-btn" 
-            style="margin-top:12px; background:#222; border:1px solid #444; padding:10px 14px; color:#ccc; border-radius:4px; cursor:pointer;">
-            Save Summary
-        </button>
-
-        <h3 style="color:#9cf; margin-top:20px;">Public View Controls</h3>
-
-        <button onclick="approvePublic('${c.id}')" class="approve-btn"
-            style="background:#1f3d1f; border:1px solid #3f6f3f; padding:10px 14px; color:#9f9; border-radius:4px; cursor:pointer; margin-right:10px;">
-            Approve for Public View
-        </button>
-
-        <button onclick="rejectPublic('${c.id}')" class="reject-btn"
-            style="background:#3d1f1f; border:1px solid #6f3f3f; padding:10px 14px; color:#f99; border-radius:4px; cursor:pointer;">
-            Reject
-        </button>
+        <h3 style="color:#9cf;">Internal Notes</h3>
+        <p style="color:#ccc;">${c.internalNotes}</p>
     `;
-
-    document.getElementById("modalContent").innerHTML = html;
 }
-
-function approvePublic(id) {
-    alert("Case " + id + " approved for public view.");
-}
-
-function rejectPublic(id) {
-    alert("Case " + id + " rejected.");
-}
-
-function saveSummary(id) {
-    const text = document.getElementById("publicSummary").value;
-    alert("Summary saved for case " + id + ".");
-}
-
-document.addEventListener("click", function(e) {
-    if (e.target && e.target.innerText.includes("Case Management")) {
-        setTimeout(() => renderCases(allCases), 50);
-    }
-});
 </script>
 
-<!-- ========================================================= -->
-<!-- ASSOCIATE MANAGEMENT (NEW MODULE)                         -->
-<!-- ========================================================= -->
+<!-- ===================== PROFILE ===================== -->
 
 <script>
-window.associatesPanel = `
-    <h2 style="margin-top:0; color:#9cf;">Associate Management</h2>
+window.profilePanel = `
+    <h2 style="margin-top:0; color:#9cf;">My Profile</h2>
 
-    <p style="color:#ccc; margin-bottom:15px;">
-        Add, suspend, reactivate, and review associate workloads.
+    <p style="color:#ccc;">
+        <strong>Name:</strong> Raven Hale<br>
+        <strong>Email:</strong> raven@example.com<br>
+        <strong>Username:</strong> ravenhale<br>
+        <strong>Specialty:</strong> Internal Breach & Insider Threats<br>
+        <strong>Instagram:</strong> @ravenintel
     </p>
 
-    <button onclick="openAddAssociate()" 
-        style="background:#222; border:1px solid #444; padding:10px 14px; color:#ccc; border-radius:4px; cursor:pointer; margin-bottom:15px;">
-        Add New Associate
-    </button>
-
-    <div id="associateList" style="margin-top:10px;">
-        <p style="color:#777;">Loading associates...</p>
-    </div>
+    <p style="color:#ccc; white-space:pre-wrap;">
+        Senior intelligence associate focused on internal access anomalies and credential misuse.
+    </p>
 `;
-
-let associates = [
-    { id: "A-001", name: "Raven Hale", status: "active", cases: 4 },
-    { id: "A-002", name: "Marcus V.", status: "active", cases: 2 },
-    { id: "A-003", name: "Elena S.", status: "suspended", cases: 0 }
-];
-
-function renderAssociates() {
-    const container = document.getElementById("associateList");
-
-    container.innerHTML = associates.map(a => `
-        <div style="background:#1a1a1a; border:1px solid #333; padding:15px; margin-bottom:12px; border-radius:6px;">
-            <div style="font-size:18px; color:#9cf;">${a.name}</div>
-            <div style="color:#ccc; margin-top:5px;">
-                <strong>ID:</strong> ${a.id}<br>
-                <strong>Status:</strong> ${a.status}<br>
-                <strong>Assigned Cases:</strong> ${a.cases}
-            </div>
-
-            ${
-                a.status === "active"
-                ? `<button onclick="suspendAssociate('${a.id}')" style="margin-top:12px; background:#3d1f1f; border:1px solid #6f3f3f; padding:10px 14px; color:#f99; border-radius:4px; cursor:pointer;">Suspend</button>`
-                : `<button onclick="reactivateAssociate('${a.id}')" style="margin-top:12px; background:#1f3d1f; border:1px solid #3f6f3f; padding:10px 14px; color:#9f9; border-radius:4px; cursor:pointer;">Reactivate</button>`
-            }
-        </div>
-    `).join("");
-}
-
-function openAddAssociate() {
-    document.getElementById("modalContent").innerHTML = `
-        <h2 style="margin-top:0; color:#9cf;">Add New Associate</h2>
-
-        <label>Name</label>
-        <input id="newName" style="width:100%; padding:10px; margin-bottom:10px; background:#1a1a1a; border:1px solid #333; color:#ccc; border-radius:6px;">
-
-        <label>Cases Assigned (optional)</label>
-        <input id="newCases" type="number" value="0" style="width:100%; padding:10px; margin-bottom:10px; background:#1a1a1a; border:1px solid #333; color:#ccc; border-radius:6px;">
-
-        <button onclick="saveAssociate()" 
-            style="background:#222; border:1px solid #444; padding:10px 14px; color:#ccc; border-radius:4px; cursor:pointer;">
-            Save Associate
-        </button>
-    `;
-}
-
-function saveAssociate() {
-    const name = document.getElementById("newName").value.trim();
-    const cases = parseInt(document.getElementById("newCases").value) || 0;
-
-    if (!name) {
-        alert("Name required.");
-        return;
-    }
-
-    const id = "A-" + String(associates.length + 1).padStart(3, "0");
-
-    associates.push({
-        id,
-        name,
-        status: "active",
-        cases
-    });
-
-    alert("Associate added.");
-    renderAssociates();
-}
-
-function suspendAssociate(id) {
-    const a = associates.find(x => x.id === id);
-    a.status = "suspended";
-    alert(a.name + " suspended.");
-    renderAssociates();
-}
-
-function reactivateAssociate(id) {
-    const a = associates.find(x => x.id === id);
-    a.status = "active";
-    alert(a.name + " reactivated.");
-    renderAssociates();
-}
-
-document.addEventListener("click", function(e) {
-    if (e.target && e.target.innerText.includes("Associate Management")) {
-        setTimeout(() => renderAssociates(), 50);
-    }
-});
 </script>
 
-<!-- ========================================================= -->
-<!-- FOOTER LINK                                               -->
-<!-- ========================================================= -->
+<!-- ===================== MESSAGES ===================== -->
+
+<script>
+window.messagesPanel = `
+    <h2 style="margin-top:0; color:#9cf;">Messages</h2>
+
+    <p style="color:#ccc;">No messages at this time.</p>
+`;
+</script>
+
+<!-- ===================== SETTINGS ===================== -->
+
+<script>
+window.settingsPanel = `
+    <h2 style="margin-top:0; color:#9cf;">Settings</h2>
+
+    <p style="color:#ccc;">Settings panel placeholder.</p>
+`;
+</script>
+
+<!-- ========================= FOOTER ========================= -->
 
 <div style="text-align:center; margin:40px 0;">
-    <a href="index.html" style="color:#77c0ff; text-decoration:none; font-family:Consolas, monospace; font-size:1rem; border-bottom:1px solid #444; padding-bottom:2px;">
+    <a href="index.html" style="color:#77c0ff; text-decoration:none; font-family:Consolas, monospace;">
         ‹ Back to Home
     </a>
 </div>
