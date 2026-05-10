@@ -102,6 +102,42 @@
         color: #ffdd99;
     }
 
+    /* Severity badges */
+    .badge-sev-critical {
+        background: #b30000;
+        color: #fff;
+    }
+    .badge-sev-high {
+        background: #d96d00;
+        color: #fff;
+    }
+    .badge-sev-medium {
+        background: #d9b300;
+        color: #111;
+    }
+    .badge-sev-low {
+        background: #3fa63f;
+        color: #fff;
+    }
+
+    /* Aging badges */
+    .badge-age-fresh {
+        background: #1f3d1f;
+        color: #9f9;
+    }
+    .badge-age-aging {
+        background: #3f3f1f;
+        color: #ffdd99;
+    }
+    .badge-age-stale {
+        background: #5a3f1f;
+        color: #ffbb66;
+    }
+    .badge-age-overdue {
+        background: #5a1f1f;
+        color: #ff9999;
+    }
+
     /* Modal */
     .modal-overlay {
         display: none;
@@ -294,14 +330,100 @@ function renderTimeline() {
 }
 </script>
 
-<!-- ===================== CASE LOAD DASHBOARD (MODULE 4) ===================== -->
+<!-- ===================== CASE SEVERITY & AGING HELPERS (MODULE 5) ===================== -->
+
+<script>
+function getSeverityBadge(sev) {
+    if (!sev) return "";
+    const s = sev.toLowerCase();
+    let cls = "badge-sev-low";
+    if (s === "critical") cls = "badge-sev-critical";
+    else if (s === "high") cls = "badge-sev-high";
+    else if (s === "medium") cls = "badge-sev-medium";
+    return `<span class="badge ${cls}">${sev.toUpperCase()}</span>`;
+}
+
+function getCaseAgeDays(caseObj) {
+    if (!caseObj.openedAt) return null;
+    const opened = new Date(caseObj.openedAt);
+    const now = new Date();
+    const diffMs = now - opened;
+    return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+}
+
+function getAgingBadge(caseObj) {
+    const days = getCaseAgeDays(caseObj);
+    if (days === null || isNaN(days)) return "";
+
+    let cls = "badge-age-fresh";
+    let label = `${days} day${days === 1 ? "" : "s"}`;
+
+    if (days >= 45) {
+        cls = "badge-age-overdue";
+        label = `${days} days — OVERDUE`;
+    } else if (days >= 30) {
+        cls = "badge-age-stale";
+    } else if (days >= 14) {
+        cls = "badge-age-aging";
+    }
+
+    return `<span class="badge ${cls}">${label}</span>`;
+}
+
+function computeRiskScore(caseObj) {
+    let score = 0;
+
+    const sev = (caseObj.severity || "").toLowerCase();
+    if (sev === "critical") score += 40;
+    else if (sev === "high") score += 25;
+    else if (sev === "medium") score += 10;
+    else if (sev === "low") score += 5;
+
+    const days = getCaseAgeDays(caseObj) || 0;
+    if (days > 45) score += 30;
+    else if (days > 30) score += 20;
+    else if (days > 14) score += 10;
+
+    if (caseObj.previousAssociates && caseObj.previousAssociates.length >= 2) {
+        score += 10;
+    }
+
+    const assoc = associates.find(a => a.name === caseObj.associate);
+    if (assoc) {
+        if (assoc.flag) score += 10;
+        if (assoc.status === "suspended") score += 20;
+    }
+
+    if (caseObj.status === "review") score += 5;
+
+    return score;
+}
+
+function getRiskLabel(score) {
+    if (score >= 70) return "CRITICAL RISK";
+    if (score >= 50) return "HIGH RISK";
+    if (score >= 30) return "ELEVATED RISK";
+    return "BASELINE";
+}
+
+function getRiskBadge(score) {
+    const label = getRiskLabel(score);
+    let cls = "badge-age-fresh";
+    if (score >= 70) cls = "badge-sev-critical";
+    else if (score >= 50) cls = "badge-sev-high";
+    else if (score >= 30) cls = "badge-age-aging";
+    return `<span class="badge ${cls}">${label}</span>`;
+}
+</script>
+
+<!-- ===================== CASE LOAD DASHBOARD (MODULE 4 + 5) ===================== -->
 
 <script>
 window.caseLoadPanel = `
     <h2 style="margin-top:0; color:#9cf;">Case Load Dashboard</h2>
 
     <p style="color:#ccc; margin-bottom:15px;">
-        Real‑time operational overview of associate workload, case distribution, and risk indicators.
+        Real‑time operational overview of associate workload, case distribution, severity, and aging risk.
     </p>
 
     <!-- METRIC TILES -->
@@ -309,6 +431,8 @@ window.caseLoadPanel = `
         <div class="metric-tile" id="tileTotalCases"></div>
         <div class="metric-tile" id="tileReviewCases"></div>
         <div class="metric-tile" id="tileCompletedCases"></div>
+        <div class="metric-tile" id="tileCriticalCases"></div>
+        <div class="metric-tile" id="tileOverdueCases"></div>
         <div class="metric-tile" id="tileFlaggedAssociates"></div>
         <div class="metric-tile" id="tileSuspendedAssociates"></div>
     </div>
@@ -316,6 +440,12 @@ window.caseLoadPanel = `
     <!-- ASSOCIATE LOAD CARDS -->
     <div id="loadCards">
         <p style="color:#777;">Loading workload...</p>
+    </div>
+
+    <!-- HIGH RISK CASES -->
+    <h3 style="color:#9cf; margin-top:25px;">High‑Risk & Overdue Cases</h3>
+    <div id="highRiskCases">
+        <p style="color:#777;">Scanning cases...</p>
     </div>
 `;
 
@@ -334,6 +464,12 @@ function renderMetricTiles() {
     const totalCases = allCases.length;
     const reviewCases = allCases.filter(c => c.status === "review").length;
     const completedCases = allCases.filter(c => c.status === "completed").length;
+
+    const criticalCases = allCases.filter(c => (c.severity || "").toLowerCase() === "critical").length;
+    const overdueCases = allCases.filter(c => {
+        const days = getCaseAgeDays(c) || 0;
+        return days >= 45;
+    }).length;
 
     const flaggedAssociates = associates.filter(a => a.flag).length;
     const suspendedAssociates = associates.filter(a => a.status === "suspended").length;
@@ -354,6 +490,18 @@ function renderMetricTiles() {
     document.getElementById("tileCompletedCases").innerHTML = `
         <div style="font-size:22px; color:#9f9;">${completedCases}</div>
         <div style="color:#ccc; font-size:14px;">Completed</div>
+    `;
+
+    document.getElementById("tileCriticalCases").style = metricTileStyle;
+    document.getElementById("tileCriticalCases").innerHTML = `
+        <div style="font-size:22px; color:#ff7777;">${criticalCases}</div>
+        <div style="color:#ccc; font-size:14px;">Critical Severity</div>
+    `;
+
+    document.getElementById("tileOverdueCases").style = metricTileStyle;
+    document.getElementById("tileOverdueCases").innerHTML = `
+        <div style="font-size:22px; color:#ff9999;">${overdueCases}</div>
+        <div style="color:#ccc; font-size:14px;">Overdue Cases</div>
     `;
 
     document.getElementById("tileFlaggedAssociates").style = metricTileStyle;
@@ -390,7 +538,11 @@ function renderLoadCards() {
     const container = document.getElementById("loadCards");
     if (!container) return;
 
-    container.innerHTML = associates.map(a => `
+    container.innerHTML = associates.map(a => {
+        const assignedCases = allCases.filter(c => c.associate === a.name);
+        const highRiskCount = assignedCases.filter(c => computeRiskScore(c) >= 50).length;
+
+        return `
         <div style="background:#1a1a1a; border:1px solid #333; padding:15px; margin-bottom:12px; border-radius:6px;">
             <div style="font-size:18px; color:#9cf;">
                 ${a.name}
@@ -409,6 +561,10 @@ function renderLoadCards() {
                 ${generateLoadBar(a.cases)}
             </div>
 
+            <div style="color:#ccc; margin-top:5px;">
+                <strong>High‑Risk Cases:</strong> ${highRiskCount}
+            </div>
+
             ${
                 a.autoReactivate
                 ? `<div style="color:#ffdd99; margin-top:6px;">Auto‑Reactivate: ${a.autoReactivate}</div>`
@@ -420,6 +576,43 @@ function renderLoadCards() {
                 View Profile
             </button>
         </div>
+    `;
+    }).join("");
+}
+
+/* HIGH RISK CASE LIST */
+function renderHighRiskCases() {
+    const container = document.getElementById("highRiskCases");
+    if (!container) return;
+
+    const flagged = allCases
+        .map(c => ({ c, score: computeRiskScore(c) }))
+        .filter(x => x.score >= 50 || (getCaseAgeDays(x.c) || 0) >= 45)
+        .sort((a, b) => b.score - a.score);
+
+    if (!flagged.length) {
+        container.innerHTML = `<p style="color:#777;">No high‑risk or overdue cases at this time.</p>`;
+        return;
+    }
+
+    container.innerHTML = flagged.map(({ c, score }) => `
+        <div style="background:#1a1a1a; border:1px solid #444; padding:12px; margin-bottom:10px; border-radius:6px;">
+            <div style="color:#9cf; font-size:16px;">
+                Case #${c.id}
+                ${getSeverityBadge(c.severity)}
+                ${getAgingBadge(c)}
+            </div>
+            <div style="color:#ccc; margin-top:4px;">
+                <strong>Client:</strong> ${c.client}<br>
+                <strong>Associate:</strong> ${c.associate}<br>
+                <strong>Status:</strong> ${c.status.toUpperCase()}<br>
+                <strong>Risk:</strong> ${getRiskBadge(score)}
+            </div>
+            <button onclick="openCaseDetails('${c.id}')"
+                style="margin-top:8px; background:#222; border:1px solid #444; padding:8px 12px; color:#ccc; border-radius:4px;">
+                Open Case
+            </button>
+        </div>
     `).join("");
 }
 
@@ -427,6 +620,7 @@ function renderLoadCards() {
 function renderCaseLoadDashboard() {
     renderMetricTiles();
     renderLoadCards();
+    renderHighRiskCases();
 }
 </script>
 
@@ -460,6 +654,8 @@ let allCases = [
         associate: "Raven Hale",
         status: "completed",
         recommended: true,
+        severity: "High",
+        openedAt: "2026-03-15T09:00:00",
         clientText: "Over the past month, I’ve noticed irregular access...",
         associateNotes: "Initial review of access logs confirms...",
         internalNotes: "Potential internal breach...",
@@ -470,6 +666,9 @@ let allCases = [
         client: "Sarah L.",
         associate: "Raven Hale",
         status: "review",
+        recommended: false,
+        severity: "Critical",
+        openedAt: "2026-02-20T10:30:00",
         clientText: "Sensitive HR files were accessed...",
         associateNotes: "Preliminary review shows unauthorized access...",
         internalNotes: "Possible policy violation...",
@@ -493,13 +692,24 @@ function renderCases(list) {
         return;
     }
 
-    container.innerHTML = list.map(c => `
+    container.innerHTML = list.map(c => {
+        const ageBadge = getAgingBadge(c);
+        const sevBadge = getSeverityBadge(c.severity);
+        const riskScore = computeRiskScore(c);
+        const riskBadge = getRiskBadge(riskScore);
+
+        return `
         <div style="background:#1a1a1a; border:1px solid #333; padding:15px; margin-bottom:12px; border-radius:6px;">
-            <div style="font-size:18px; color:#9cf;">Case #${c.id}</div>
+            <div style="font-size:18px; color:#9cf;">
+                Case #${c.id}
+                ${sevBadge}
+                ${ageBadge}
+            </div>
             <div style="color:#ccc; margin-top:5px;">
                 <strong>Client:</strong> ${c.client}<br>
                 <strong>Associate:</strong> ${c.associate}<br>
-                <strong>Status:</strong> ${c.status.toUpperCase()}
+                <strong>Status:</strong> ${c.status.toUpperCase()}<br>
+                <strong>Risk:</strong> ${riskBadge}
             </div>
 
             ${
@@ -513,7 +723,8 @@ function renderCases(list) {
                 Open Case
             </button>
         </div>
-    `).join("");
+    `;
+    }).join("");
 }
 
 function filterCases(type) {
@@ -525,8 +736,17 @@ function openCaseDetails(caseId) {
     const c = allCases.find(x => x.id === caseId);
     if (!c) return;
 
+    const ageBadge = getAgingBadge(c);
+    const sevBadge = getSeverityBadge(c.severity);
+    const riskScore = computeRiskScore(c);
+    const riskBadge = getRiskBadge(riskScore);
+
     document.getElementById("modalContent").innerHTML = `
         <h2 style="margin-top:0; color:#9cf;">Case #${c.id}</h2>
+
+        <p style="color:#ccc; margin-bottom:8px;">
+            ${sevBadge} ${ageBadge} ${riskBadge}
+        </p>
 
         <h3 style="color:#9cf;">Client’s Statement</h3>
         <p style="color:#ccc;">${c.clientText}</p>
@@ -683,6 +903,7 @@ function openAssociateQuick(id) {
                     }
                     <br>
                     <span style="color:#ccc;">${c.client}</span><br>
+                    ${getSeverityBadge(c.severity)} ${getAgingBadge(c)}<br>
                     <button onclick="openCaseDetails('${c.id}')"
                         style="margin-top:6px; background:#222; border:1px solid #444; padding:6px 10px; color:#ccc; border-radius:4px;">
                         View Case
