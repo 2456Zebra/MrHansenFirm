@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Associate Profile — Firm Admin</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: #0d0d0d;
+        color: #e5e5e5;
+        font-family: Arial, sans-serif;
+    }
+
+    .header {
+        background: #111;
+        padding: 20px;
+        text-align: center;
+        font-size: 22px;
+        border-bottom: 1px solid #333;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 20px;
+        background: #111;
+        border: 1px solid #333;
+        border-radius: 8px;
+    }
+
+    h2, h3 {
+        color: #9cf;
+        margin-top: 0;
+    }
+
+    .profile-photo {
+        width: 140px;
+        height: 140px;
+        border-radius: 8px;
+        background: #222;
+        border: 1px solid #444;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    .btn {
+        background: #222;
+        border: 1px solid #444;
+        padding: 10px 14px;
+        color: #ccc;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+        margin-top: 10px;
+    }
+
+    .btn:hover {
+        background: #333;
+    }
+
+    .btn-danger {
+        background: #3d1f1f;
+        border-color: #6f3f3f;
+        color: #f99;
+    }
+
+    .btn-success {
+        background: #1f3d1f;
+        border-color: #3f6f3f;
+        color: #9f9;
+    }
+
+    .case-box {
+        background: #151515;
+        border: 1px solid #333;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+    }
+
+    textarea, input {
+        width: 100%;
+        padding: 10px;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        color: #ccc;
+        border-radius: 6px;
+        margin-bottom: 12px;
+    }
+
+    a.back-link {
+        color: #77c0ff;
+        text-decoration: none;
+        font-family: Consolas, monospace;
+        display: inline-block;
+        margin-top: 25px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="header">ASSOCIATE PROFILE — FIRM ADMIN</div>
+
+<div class="container" id="profileContainer">
+    <p style="color:#777;">Loading profile...</p>
+</div>
+
+<script>
+// ==========================
+// MOCK DATA (Replace with DB)
+// ==========================
+
+const associates = [
+    {
+        id: "A-001",
+        name: "Raven Hale",
+        email: "raven@example.com",
+        username: "ravenhale",
+        specialty: "Internal Breach & Insider Threats",
+        bio: "Senior intelligence associate focused on internal access anomalies and credential misuse.",
+        instagram: "@ravenintel",
+        status: "active",
+        joined: "2025-11-02",
+        lastLogin: "2026-05-08 14:22",
+        internalNotes: "High performer. Handles sensitive corporate clients.",
+        photo: null
+    },
+    {
+        id: "A-002",
+        name: "Marcus V.",
+        email: "marcus@example.com",
+        username: "marcusv",
+        specialty: "Network Intrusion & VPN Abuse",
+        bio: "Specializes in VPN endpoint analysis and anomalous network behavior.",
+        instagram: "@marcusvsec",
+        status: "active",
+        joined: "2026-01-15",
+        lastLogin: "2026-05-09 09:10",
+        internalNotes: "Strong on technical logs, prefers detailed briefs.",
+        photo: null
+    },
+    {
+        id: "A-003",
+        name: "Elena S.",
+        email: "elena@example.com",
+        username: "elenas",
+        specialty: "Policy Violations & HR-linked Incidents",
+        bio: "Focuses on HR-related digital evidence and internal misuse.",
+        instagram: "@elena.hrintel",
+        status: "suspended",
+        joined: "2025-09-30",
+        lastLogin: "2026-03-21 18:44",
+        internalNotes: "Suspended pending internal review.",
+        photo: null
+    }
+];
+
+const allCases = [
+    {
+        id: "2026-001",
+        client: "John Doe",
+        associate: "Raven Hale",
+        status: "completed",
+        clientText: "Over the past month, I’ve noticed irregular access...",
+        associateNotes: "Initial review of access logs confirms...",
+        internalNotes: "Potential internal breach..."
+    },
+    {
+        id: "2026-003",
+        client: "Sarah L.",
+        associate: "Raven Hale",
+        status: "review",
+        clientText: "Sensitive HR files were accessed...",
+        associateNotes: "Preliminary review shows unauthorized access...",
+        internalNotes: "Possible policy violation..."
+    }
+];
+
+// ==========================
+// LOAD PROFILE
+// ==========================
+
+const urlParams = new URLSearchParams(window.location.search);
+const associateId = urlParams.get("id");
+
+const associate = associates.find(a => a.id === associateId);
+
+function renderProfile() {
+    if (!associate) {
+        document.getElementById("profileContainer").innerHTML =
+            `<p style="color:#f88;">Associate not found.</p>`;
+        return;
+    }
+
+    const assignedCases = allCases.filter(c => c.associate === associate.name);
+
+    document.getElementById("profileContainer").innerHTML = `
+        <h2>${associate.name}</h2>
+
+        <div class="profile-photo">
+            ${associate.photo ? `<img src="${associate.photo}" style="width:100%; height:100%; border-radius:8px;">` : "No Photo"}
+        </div>
+
+        <button class="btn" onclick="uploadPhoto()">Upload New Photo</button>
+
+        <h3>Account Details</h3>
+        <p>
+            <strong>ID:</strong> ${associate.id}<br>
+            <strong>Status:</strong> ${associate.status}<br>
+            <strong>Email:</strong> ${associate.email}<br>
+            <strong>Username:</strong> ${associate.username}<br>
+            <strong>Joined:</strong> ${associate.joined}<br>
+            <strong>Last Login:</strong> ${associate.lastLogin}
+        </p>
+
+        <h3>Profile</h3>
+        <label>Name</label>
+        <input id="nameField" value="${associate.name}">
+
+        <label>Email</label>
+        <input id="emailField" value="${associate.email}">
+
+        <label>Username</label>
+        <input id="usernameField" value="${associate.username}">
+
+        <label>Specialty</label>
+        <input id="specialtyField" value="${associate.specialty}">
+
+        <label>Instagram</label>
+        <input id="instagramField" value="${associate.instagram}">
+
+        <label>Bio</label>
+        <textarea id="bioField">${associate.bio}</textarea>
+
+        <button class="btn-success" onclick="saveProfile()">Save Profile</button>
+
+        <h3>Internal Notes (Firm Only)</h3>
+        <textarea id="notesField">${associate.internalNotes}</textarea>
+        <button class="btn-success" onclick="saveNotes()">Save Notes</button>
+
+        <h3>Assigned Cases</h3>
+        ${
+            assignedCases.length
+            ? assignedCases.map(c => `
+                <div class="case-box">
+                    <strong style="color:#9cf;">Case #${c.id}</strong><br>
+                    <span style="color:#ccc;">${c.client}</span><br>
+                    <strong>Status:</strong> ${c.status.toUpperCase()}<br><br>
+
+                    <button class="btn" onclick="viewCase('${c.id}')">View Case Details</button>
+                </div>
+            `).join("")
+            : `<p style="color:#777;">No cases assigned.</p>`
+        }
+
+        <h3>Account Controls</h3>
+        <button class="btn" onclick="resetPassword()">Reset Password</button>
+        ${
+            associate.status === "active"
+            ? `<button class="btn-danger" onclick="suspend()">Suspend</button>`
+            : `<button class="btn-success" onclick="reactivate()">Reactivate</button>`
+        }
+
+        <h3>Messaging</h3>
+        <textarea id="messageField" placeholder="Write a message to this associate..."></textarea>
+        <button class="btn-success" onclick="sendMessage()">Send Message</button>
+
+        <br><br>
+        <a href="firm-admin.html" class="back-link">‹ Back to Firm Admin</a>
+    `;
+}
+
+// ==========================
+// ACTIONS
+// ==========================
+
+function uploadPhoto() {
+    alert("Photo upload placeholder — connect to backend.");
+}
+
+function saveProfile() {
+    associate.name = document.getElementById("nameField").value;
+    associate.email = document.getElementById("emailField").value;
+    associate.username = document.getElementById("usernameField").value;
+    associate.specialty = document.getElementById("specialtyField").value;
+    associate.instagram = document.getElementById("instagramField").value;
+    associate.bio = document.getElementById("bioField").value;
+
+    alert("Profile saved.");
+}
+
+function saveNotes() {
+    associate.internalNotes = document.getElementById("notesField").value;
+    alert("Internal notes saved.");
+}
+
+function resetPassword() {
+    alert("Password reset link generated (placeholder).");
+}
+
+function suspend() {
+    associate.status = "suspended";
+    alert("Associate suspended.");
+    renderProfile();
+}
+
+function reactivate() {
+    associate.status = "active";
+    alert("Associate reactivated.");
+    renderProfile();
+}
+
+function sendMessage() {
+    const msg = document.getElementById("messageField").value.trim();
+    if (!msg) return alert("Message cannot be empty.");
+    alert("Message sent (placeholder).");
+}
+
+function viewCase(id) {
+    const c = allCases.find(x => x.id === id);
+    if (!c) return alert("Case not found.");
+
+    alert(
+        `Case #${c.id}\n\nClient: ${c.client}\nStatus: ${c.status}\n\nClient Statement:\n${c.clientText}\n\nAssociate Notes:\n${c.associateNotes}\n\nInternal Notes:\n${c.internalNotes}`
+    );
+}
+
+// ==========================
+// INIT
+// ==========================
+
+renderProfile();
+</script>
+
+</body>
+</html>
