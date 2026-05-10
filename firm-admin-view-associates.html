@@ -6,112 +6,159 @@
 <title>Associate Profile — Firm Admin</title>
 
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        background: #0d0d0d;
-        color: #e5e5e5;
-        font-family: Arial, sans-serif;
-    }
+    body {
+        margin: 0;
+        padding: 0;
+        background: #0d0d0d;
+        color: #e5e5e5;
+        font-family: Arial, sans-serif;
+    }
 
-    .header {
-        background: #111;
-        padding: 20px;
-        text-align: center;
-        font-size: 22px;
-        border-bottom: 1px solid #333;
-    }
+    .header {
+        background: #111;
+        padding: 20px;
+        text-align: center;
+        font-size: 22px;
+        border-bottom: 1px solid #333;
+    }
 
-    .container {
-        max-width: 900px;
-        margin: 30px auto;
-        padding: 20px;
-        background: #111;
-        border: 1px solid #333;
-        border-radius: 8px;
-    }
+    .container {
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 20px;
+        background: #111;
+        border: 1px solid #333;
+        border-radius: 8px;
+    }
 
-    h2, h3 {
-        color: #9cf;
-        margin-top: 0;
-    }
+    h2, h3, h4 {
+        color: #9cf;
+        margin-top: 0;
+    }
 
-    .profile-photo {
-        width: 140px;
-        height: 140px;
-        border-radius: 8px;
-        background: #222;
-        border: 1px solid #444;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #666;
-        font-size: 14px;
-        margin-bottom: 15px;
-    }
+    .profile-photo {
+        width: 140px;
+        height: 140px;
+        border-radius: 8px;
+        background: #222;
+        border: 1px solid #444;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
 
-    .btn {
-        background: #222;
-        border: 1px solid #444;
-        padding: 10px 14px;
-        color: #ccc;
-        border-radius: 4px;
-        cursor: pointer;
-        margin-right: 10px;
-        margin-top: 10px;
-    }
+    .btn {
+        background: #222;
+        border: 1px solid #444;
+        padding: 10px 14px;
+        color: #ccc;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+        margin-top: 10px;
+    }
 
-    .btn:hover {
-        background: #333;
-    }
+    .btn:hover {
+        background: #333;
+    }
 
-    .btn-danger {
-        background: #3d1f1f;
-        border-color: #6f3f3f;
-        color: #f99;
-    }
+    .btn-danger {
+        background: #3d1f1f;
+        border-color: #6f3f3f;
+        color: #f99;
+    }
 
-    .btn-success {
-        background: #1f3d1f;
-        border-color: #3f6f3f;
-        color: #9f9;
-    }
+    .btn-success {
+        background: #1f3d1f;
+        border-color: #3f6f3f;
+        color: #9f9;
+    }
 
-    .case-box {
-        background: #151515;
-        border: 1px solid #333;
-        padding: 12px;
-        border-radius: 6px;
-        margin-bottom: 12px;
-    }
+    .case-box {
+        background: #151515;
+        border: 1px solid #333;
+        padding: 12px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+    }
 
-    .badge {
-        display: inline-block;
-        padding: 3px 6px;
-        background: #333;
-        border-radius: 4px;
-        color: #ccc;
-        font-size: 12px;
-        margin-left: 6px;
-    }
+    .badge {
+        display: inline-block;
+        padding: 3px 6px;
+        background: #333;
+        border-radius: 4px;
+        color: #ccc;
+        font-size: 12px;
+        margin-left: 6px;
+    }
 
-    textarea, input {
-        width: 100%;
-        padding: 10px;
-        background: #1a1a1a;
-        border: 1px solid #333;
-        color: #ccc;
-        border-radius: 6px;
-        margin-bottom: 12px;
-    }
+    .badge-status-active {
+        background: #1f3d1f;
+        color: #9f9;
+    }
 
-    a.back-link {
-        color: #77c0ff;
-        text-decoration: none;
-        font-family: Consolas, monospace;
-        display: inline-block;
-        margin-top: 25px;
-    }
+    .badge-status-suspended {
+        background: #3d1f1f;
+        color: #f99;
+    }
+
+    .badge-flag {
+        background: #333;
+        color: #ffdd99;
+    }
+
+    textarea, input, select {
+        width: 100%;
+        padding: 10px;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        color: #ccc;
+        border-radius: 6px;
+        margin-bottom: 12px;
+        box-sizing: border-box;
+    }
+
+    a.back-link {
+        color: #77c0ff;
+        text-decoration: none;
+        font-family: Consolas, monospace;
+        display: inline-block;
+        margin-top: 25px;
+    }
+
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .modal-panel {
+        background: #111;
+        border: 1px solid #444;
+        padding: 16px;
+        width: 100%;
+        max-width: 480px;
+        max-height: 90vh;
+        overflow-y: auto;
+        border-radius: 8px;
+        box-sizing: border-box;
+    }
+
+    .modal-header {
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:10px;
+    }
 </style>
 </head>
 
@@ -120,7 +167,55 @@
 <div class="header">ASSOCIATE PROFILE — FIRM ADMIN</div>
 
 <div class="container" id="profileContainer">
-    <p style="color:#777;">Loading profile...</p>
+    <p style="color:#777;">Loading profile...</p>
+</div>
+
+<!-- SUSPEND / FLAG MODAL -->
+<div id="suspendModal" class="modal-overlay">
+    <div class="modal-panel">
+        <div class="modal-header">
+            <h3 style="margin:0; color:#9cf;">Suspend / Flag Associate</h3>
+            <button class="btn" style="margin-top:0;" onclick="closeSuspendModal()">Close</button>
+        </div>
+
+        <label>Structured Reason</label>
+        <select id="suspendReasonSelect">
+            <option value="">Select reason...</option>
+            <option value="Client Complaint">Client Complaint</option>
+            <option value="Security Concern">Security Concern</option>
+            <option value="Performance Issue">Performance Issue</option>
+            <option value="Policy Violation">Policy Violation</option>
+            <option value="Pending HR Review">Pending HR Review</option>
+            <option value="Pending Legal Review">Pending Legal Review</option>
+            <option value="Other">Other (specify below)</option>
+        </select>
+
+        <div id="suspendOtherWrapper" style="display:none;">
+            <label>Other Reason (required if 'Other')</label>
+            <textarea id="suspendOtherText" placeholder="Describe the reason..."></textarea>
+        </div>
+
+        <label>Flag</label>
+        <select id="flagSelect">
+            <option value="">No flag</option>
+            <option value="Under Review">Under Review</option>
+            <option value="Performance Issue">Performance Issue</option>
+            <option value="Client Complaint">Client Complaint</option>
+            <option value="Security Concern">Security Concern</option>
+            <option value="Probation">Probation</option>
+            <option value="Training Required">Training Required</option>
+            <option value="Pending HR Review">Pending HR Review</option>
+            <option value="Pending Legal Review">Pending Legal Review</option>
+        </select>
+
+        <label>Auto‑Reactivate Date (optional)</label>
+        <input type="date" id="autoReactivateDate" />
+
+        <label>Internal Notes (optional)</label>
+        <textarea id="suspendNotes" placeholder="Additional internal context..."></textarea>
+
+        <button class="btn-danger" onclick="confirmSuspend()">Confirm Suspend</button>
+    </div>
 </div>
 
 <script>
@@ -129,78 +224,102 @@
 // ==========================
 
 const associates = [
-    {
-        id: "A-001",
-        name: "Raven Hale",
-        email: "raven@example.com",
-        username: "ravenhale",
-        specialty: "Internal Breach & Insider Threats",
-        bio: "Senior intelligence associate focused on internal access anomalies and credential misuse.",
-        instagram: "@ravenintel",
-        status: "active",
-        joined: "2025-11-02",
-        lastLogin: "2026-05-08 14:22",
-        internalNotes: "High performer. Handles sensitive corporate clients.",
-        photo: null
-    },
-    {
-        id: "A-002",
-        name: "Marcus V.",
-        email: "marcus@example.com",
-        username: "marcusv",
-        specialty: "Network Intrusion & VPN Abuse",
-        bio: "Specializes in VPN endpoint analysis and anomalous network behavior.",
-        instagram: "@marcusvsec",
-        status: "active",
-        joined: "2026-01-15",
-        lastLogin: "2026-05-09 09:10",
-        internalNotes: "Strong on technical logs, prefers detailed briefs.",
-        photo: null
-    },
-    {
-        id: "A-003",
-        name: "Elena S.",
-        email: "elena@example.com",
-        username: "elenas",
-        specialty: "Policy Violations & HR-linked Incidents",
-        bio: "Focuses on HR-related digital evidence and internal misuse.",
-        instagram: "@elena.hrintel",
-        status: "suspended",
-        joined: "2025-09-30",
-        lastLogin: "2026-03-21 18:44",
-        internalNotes: "Suspended pending internal review.",
-        photo: null
-    }
+    {
+        id: "A-001",
+        name: "Raven Hale",
+        email: "raven@example.com",
+        username: "ravenhale",
+        specialty: "Internal Breach & Insider Threats",
+        bio: "Senior intelligence associate focused on internal access anomalies and credential misuse.",
+        instagram: "@ravenintel",
+        status: "active",
+        joined: "2025-11-02",
+        lastLogin: "2026-05-08 14:22",
+        internalNotes: "High performer. Handles sensitive corporate clients.",
+        photo: null,
+        flag: "",
+        suspensionHistory: []
+    },
+    {
+        id: "A-002",
+        name: "Marcus V.",
+        email: "marcus@example.com",
+        username: "marcusv",
+        specialty: "Network Intrusion & VPN Abuse",
+        bio: "Specializes in VPN endpoint analysis and anomalous network behavior.",
+        instagram: "@marcusvsec",
+        status: "active",
+        joined: "2026-01-15",
+        lastLogin: "2026-05-09 09:10",
+        internalNotes: "Strong on technical logs, prefers detailed briefs.",
+        photo: null,
+        flag: "Under Review",
+        suspensionHistory: [
+            {
+                date: "2026-04-10 11:30",
+                reason: "Performance Issue",
+                flag: "Under Review",
+                autoReactivate: "",
+                admin: "Firm Admin",
+                notes: "Temporary monitoring after missed deadlines."
+            }
+        ]
+    },
+    {
+        id: "A-003",
+        name: "Elena S.",
+        email: "elena@example.com",
+        username: "elenas",
+        specialty: "Policy Violations & HR-linked Incidents",
+        bio: "Focuses on HR-related digital evidence and internal misuse.",
+        instagram: "@elena.hrintel",
+        status: "suspended",
+        joined: "2025-09-30",
+        lastLogin: "2026-03-21 18:44",
+        internalNotes: "Suspended pending internal review.",
+        photo: null,
+        flag: "Pending HR Review",
+        suspensionHistory: [
+            {
+                date: "2026-03-22 09:15",
+                reason: "Policy Violation",
+                flag: "Pending HR Review",
+                autoReactivate: "",
+                admin: "Firm Admin",
+                notes: "Alleged breach of internal communication policy."
+            }
+        ]
+    }
 ];
 
 const allCases = [
-    {
-        id: "2026-001",
-        client: "John Doe",
-        associate: "Raven Hale",
-        status: "completed",
-        clientText: "Over the past month, I’ve noticed irregular access...",
-        associateNotes: "Initial review of access logs confirms...",
-        internalNotes: "Potential internal breach...",
-        previousAssociates: []
-    },
-    {
-        id: "2026-003",
-        client: "Sarah L.",
-        associate: "Raven Hale",
-        status: "review",
-        clientText: "Sensitive HR files were accessed...",
-        associateNotes: "Preliminary review shows unauthorized access...",
-        internalNotes: "Possible policy violation...",
-        previousAssociates: [
-            {
-                from: "Marcus V.",
-                to: "Raven Hale",
-                date: "2026-05-10 13:04",
-                reason: "Client requested specialist"
-            }
-        ]
-    }
+    {
+        id: "2026-001",
+        client: "John Doe",
+        associate: "Raven Hale",
+        status: "completed",
+        clientText: "Over the past month, I’ve noticed irregular access...",
+        associateNotes: "Initial review of access logs confirms...",
+        internalNotes: "Potential internal breach...",
+        previousAssociates: []
+    },
+    {
+        id: "2026-003",
+        client: "Sarah L.",
+        associate: "Raven Hale",
+        status: "review",
+        clientText: "Sensitive HR files were accessed...",
+        associateNotes: "Preliminary review shows unauthorized access...",
+        internalNotes: "Possible policy violation...",
+        previousAssociates: [
+            {
+                from: "Marcus V.",
+                to: "Raven Hale",
+                date: "2026-05-10 13:04",
+                reason: "Client requested specialist"
+            }
+        ]
+    }
 ];
 
 // ==========================
@@ -210,112 +329,149 @@ const allCases = [
 const urlParams = new URLSearchParams(window.location.search);
 const associateId = urlParams.get("id");
 
-const associate = associates.find(a => a.id === associateId);
+let associate = associates.find(a => a.id === associateId);
+let currentAdminName = "Firm Admin"; // placeholder
 
 function renderProfile() {
-    if (!associate) {
-        document.getElementById("profileContainer").innerHTML =
-            `<p style="color:#f88;">Associate not found.</p>`;
-        return;
-    }
+    if (!associate) {
+        document.getElementById("profileContainer").innerHTML =
+            `<p style="color:#f88;">Associate not found.</p>`;
+        return;
+    }
 
-    const assignedCases = allCases.filter(c => c.associate === associate.name);
+    const assignedCases = allCases.filter(c => c.associate === associate.name);
 
-    document.getElementById("profileContainer").innerHTML = `
-        <h2>${associate.name}</h2>
+    const statusBadgeClass = associate.status === "active"
+        ? "badge badge-status-active"
+        : "badge badge-status-suspended";
 
-        <div class="profile-photo">
-            ${associate.photo ? `<img src="${associate.photo}" style="width:100%; height:100%; border-radius:8px;">` : "No Photo"}
-        </div>
+    const flagBadge = associate.flag
+        ? `<span class="badge badge-flag">${associate.flag}</span>`
+        : "";
 
-        <button class="btn" onclick="uploadPhoto()">Upload New Photo</button>
+    const suspensionHistoryHtml =
+        associate.suspensionHistory && associate.suspensionHistory.length
+            ? `
+                <h3>Suspension History</h3>
+                <ul style="color:#ccc; padding-left:18px;">
+                    ${
+                        associate.suspensionHistory.map(s => `
+                            <li>
+                                <strong>${s.date}</strong> — ${s.reason}
+                                ${s.flag ? ` (Flag: ${s.flag})` : ""}
+                                ${s.autoReactivate ? ` — Auto‑reactivate: ${s.autoReactivate}` : ""}<br>
+                                <span style="color:#999;">By: ${s.admin}</span><br>
+                                ${s.notes ? `<span style="color:#aaa;">Notes: ${s.notes}</span>` : ""}
+                            </li>
+                        `).join("")
+                    }
+                </ul>
+            `
+            : `<p style="color:#777;">No suspension history recorded.</p>`;
 
-        <h3>Account Details</h3>
-        <p>
-            <strong>ID:</strong> ${associate.id}<br>
-            <strong>Status:</strong> ${associate.status}<br>
-            <strong>Email:</strong> ${associate.email}<br>
-            <strong>Username:</strong> ${associate.username}<br>
-            <strong>Joined:</strong> ${associate.joined}<br>
-            <strong>Last Login:</strong> ${associate.lastLogin}
-        </p>
+    document.getElementById("profileContainer").innerHTML = `
+        <h2>
+            ${associate.name}
+            <span class="${statusBadgeClass}">${associate.status.toUpperCase()}</span>
+            ${flagBadge}
+        </h2>
 
-        <h3>Profile</h3>
-        <label>Name</label>
-        <input id="nameField" value="${associate.name}">
+        <div class="profile-photo">
+            ${associate.photo ? `<img src="${associate.photo}" style="width:100%; height:100%; border-radius:8px;">` : "No Photo"}
+        </div>
 
-        <label>Email</label>
-        <input id="emailField" value="${associate.email}">
+        <button class="btn" onclick="uploadPhoto()">Upload New Photo</button>
 
-        <label>Username</label>
-        <input id="usernameField" value="${associate.username}">
+        <h3>Account Details</h3>
+        <p>
+            <strong>ID:</strong> ${associate.id}<br>
+            <strong>Status:</strong> ${associate.status}<br>
+            <strong>Flag:</strong> ${associate.flag || "None"}<br>
+            <strong>Email:</strong> ${associate.email}<br>
+            <strong>Username:</strong> ${associate.username}<br>
+            <strong>Joined:</strong> ${associate.joined}<br>
+            <strong>Last Login:</strong> ${associate.lastLogin}
+        </p>
 
-        <label>Specialty</label>
-        <input id="specialtyField" value="${associate.specialty}">
+        <h3>Profile</h3>
+        <label>Name</label>
+        <input id="nameField" value="${associate.name}">
 
-        <label>Instagram</label>
-        <input id="instagramField" value="${associate.instagram}">
+        <label>Email</label>
+        <input id="emailField" value="${associate.email}">
 
-        <label>Bio</label>
-        <textarea id="bioField">${associate.bio}</textarea>
+        <label>Username</label>
+        <input id="usernameField" value="${associate.username}">
 
-        <button class="btn-success" onclick="saveProfile()">Save Profile</button>
+        <label>Specialty</label>
+        <input id="specialtyField" value="${associate.specialty}">
 
-        <h3>Internal Notes (Firm Only)</h3>
-        <textarea id="notesField">${associate.internalNotes}</textarea>
-        <button class="btn-success" onclick="saveNotes()">Save Notes</button>
+        <label>Instagram</label>
+        <input id="instagramField" value="${associate.instagram}">
 
-        <h3>Assigned Cases</h3>
-        ${
-            assignedCases.length
-            ? assignedCases.map(c => `
-                <div class="case-box">
-                    <strong style="color:#9cf;">Case #${c.id}</strong>
-                    ${
-                        c.previousAssociates && c.previousAssociates.length
-                        ? `<span class="badge">Reassigned</span>`
-                        : ""
-                    }
-                    <br>
-                    <span style="color:#ccc;">${c.client}</span><br>
-                    <strong>Status:</strong> ${c.status.toUpperCase()}<br><br>
+        <label>Bio</label>
+        <textarea id="bioField">${associate.bio}</textarea>
 
-                    ${
-                        c.previousAssociates && c.previousAssociates.length
-                        ? `
-                            <strong style="color:#9cf;">Reassignment History:</strong>
-                            <ul style="color:#ccc; padding-left:18px;">
-                                ${
-                                    c.previousAssociates.map(r => `
-                                        <li>${r.date}: ${r.from} → ${r.to} — ${r.reason}</li>
-                                    `).join("")
-                                }
-                            </ul>
-                        `
-                        : ""
-                    }
+        <button class="btn-success" onclick="saveProfile()">Save Profile</button>
 
-                    <button class="btn" onclick="viewCase('${c.id}')">View Case Details</button>
-                </div>
-            `).join("")
-            : `<p style="color:#777;">No cases assigned.</p>`
-        }
+        <h3>Internal Notes (Firm Only)</h3>
+        <textarea id="notesField">${associate.internalNotes}</textarea>
+        <button class="btn-success" onclick="saveNotes()">Save Notes</button>
 
-        <h3>Account Controls</h3>
-        <button class="btn" onclick="resetPassword()">Reset Password</button>
-        ${
-            associate.status === "active"
-            ? `<button class="btn-danger" onclick="suspend()">Suspend</button>`
-            : `<button class="btn-success" onclick="reactivate()">Reactivate</button>`
-        }
+        <h3>Assigned Cases</h3>
+        ${
+            assignedCases.length
+            ? assignedCases.map(c => `
+                <div class="case-box">
+                    <strong style="color:#9cf;">Case #${c.id}</strong>
+                    ${
+                        c.previousAssociates && c.previousAssociates.length
+                        ? `<span class="badge">Reassigned</span>`
+                        : ""
+                    }
+                    <br>
+                    <span style="color:#ccc;">${c.client}</span><br>
+                    <strong>Status:</strong> ${c.status.toUpperCase()}<br><br>
 
-        <h3>Messaging</h3>
-        <textarea id="messageField" placeholder="Write a message to this associate..."></textarea>
-        <button class="btn-success" onclick="sendMessage()">Send Message</button>
+                    ${
+                        c.previousAssociates && c.previousAssociates.length
+                        ? `
+                            <strong style="color:#9cf;">Reassignment History:</strong>
+                            <ul style="color:#ccc; padding-left:18px;">
+                                ${
+                                    c.previousAssociates.map(r => `
+                                        <li>${r.date}: ${r.from} → ${r.to} — ${r.reason}</li>
+                                    `).join("")
+                                }
+                            </ul>
+                        `
+                        : ""
+                    }
 
-        <br><br>
-        <a href="firm-admin.html" class="back-link">‹ Back to Firm Admin</a>
-    `;
+                    <button class="btn" onclick="viewCase('${c.id}')">View Case Details</button>
+                </div>
+            `).join("")
+            : `<p style="color:#777;">No cases assigned.</p>`
+        }
+
+        <h3>Account Controls</h3>
+        <button class="btn" onclick="resetPassword()">Reset Password</button>
+        ${
+            associate.status === "active"
+            ? `<button class="btn-danger" onclick="openSuspendModal()">Suspend / Flag</button>`
+            : `<button class="btn-success" onclick="reactivate()">Reactivate</button>`
+        }
+
+        <h3>Suspension & Flag History</h3>
+        ${suspensionHistoryHtml}
+
+        <h3>Messaging</h3>
+        <textarea id="messageField" placeholder="Write a message to this associate..."></textarea>
+        <button class="btn-success" onclick="sendMessage()">Send Message</button>
+
+        <br><br>
+        <a href="firm-admin.html" class="back-link">‹ Back to Firm Admin</a>
+    `;
 }
 
 // ==========================
@@ -323,54 +479,120 @@ function renderProfile() {
 // ==========================
 
 function uploadPhoto() {
-    alert("Photo upload placeholder — connect to backend.");
+    alert("Photo upload placeholder — connect to backend.");
 }
 
 function saveProfile() {
-    associate.name = document.getElementById("nameField").value;
-    associate.email = document.getElementById("emailField").value;
-    associate.username = document.getElementById("usernameField").value;
-    associate.specialty = document.getElementById("specialtyField").value;
-    associate.instagram = document.getElementById("instagramField").value;
-    associate.bio = document.getElementById("bioField").value;
+    associate.name = document.getElementById("nameField").value;
+    associate.email = document.getElementById("emailField").value;
+    associate.username = document.getElementById("usernameField").value;
+    associate.specialty = document.getElementById("specialtyField").value;
+    associate.instagram = document.getElementById("instagramField").value;
+    associate.bio = document.getElementById("bioField").value;
 
-    alert("Profile saved.");
+    alert("Profile saved (mock).");
+    renderProfile();
 }
 
 function saveNotes() {
-    associate.internalNotes = document.getElementById("notesField").value;
-    alert("Internal notes saved.");
+    associate.internalNotes = document.getElementById("notesField").value;
+    alert("Internal notes saved (mock).");
 }
 
 function resetPassword() {
-    alert("Password reset link generated (placeholder).");
+    alert("Password reset link generated (placeholder).");
 }
 
-function suspend() {
-    associate.status = "suspended";
-    alert("Associate suspended.");
-    renderProfile();
+function openSuspendModal() {
+    document.getElementById("suspendReasonSelect").value = "";
+    document.getElementById("flagSelect").value = associate.flag || "";
+    document.getElementById("autoReactivateDate").value = "";
+    document.getElementById("suspendNotes").value = "";
+    document.getElementById("suspendOtherText").value = "";
+    document.getElementById("suspendOtherWrapper").style.display = "none";
+
+    document.getElementById("suspendModal").style.display = "flex";
+}
+
+function closeSuspendModal() {
+    document.getElementById("suspendModal").style.display = "none";
+}
+
+document.addEventListener("change", function(e) {
+    if (e.target && e.target.id === "suspendReasonSelect") {
+        const val = e.target.value;
+        const wrapper = document.getElementById("suspendOtherWrapper");
+        if (val === "Other") {
+            wrapper.style.display = "block";
+        } else {
+            wrapper.style.display = "none";
+        }
+    }
+});
+
+function confirmSuspend() {
+    const reasonSelect = document.getElementById("suspendReasonSelect").value;
+    const otherText = document.getElementById("suspendOtherText").value.trim();
+    const flag = document.getElementById("flagSelect").value;
+    const autoReactivate = document.getElementById("autoReactivateDate").value;
+    const notes = document.getElementById("suspendNotes").value.trim();
+
+    if (!reasonSelect) {
+        alert("Select a structured reason.");
+        return;
+    }
+
+    let finalReason = reasonSelect;
+    if (reasonSelect === "Other") {
+        if (!otherText) {
+            alert("Provide a reason for 'Other'.");
+            return;
+        }
+        finalReason = otherText;
+    }
+
+    associate.status = "suspended";
+    associate.flag = flag || associate.flag;
+
+    associate.suspensionHistory = associate.suspensionHistory || [];
+    associate.suspensionHistory.push({
+        date: new Date().toLocaleString(),
+        reason: finalReason,
+        flag: associate.flag || "",
+        autoReactivate: autoReactivate || "",
+        admin: currentAdminName,
+        notes
+    });
+
+    if (autoReactivate) {
+        // Placeholder: in real system, backend would schedule auto-reactivation
+        console.log("Auto-reactivate scheduled for", autoReactivate);
+    }
+
+    alert("Associate suspended / flagged (mock).");
+    closeSuspendModal();
+    renderProfile();
 }
 
 function reactivate() {
-    associate.status = "active";
-    alert("Associate reactivated.");
-    renderProfile();
+    associate.status = "active";
+    alert("Associate reactivated (mock).");
+    renderProfile();
 }
 
 function sendMessage() {
-    const msg = document.getElementById("messageField").value.trim();
-    if (!msg) return alert("Message cannot be empty.");
-    alert("Message sent (placeholder).");
+    const msg = document.getElementById("messageField").value.trim();
+    if (!msg) return alert("Message cannot be empty.");
+    alert("Message sent (placeholder).");
 }
 
 function viewCase(id) {
-    const c = allCases.find(x => x.id === id);
-    if (!c) return alert("Case not found.");
+    const c = allCases.find(x => x.id === id);
+    if (!c) return alert("Case not found.");
 
-    alert(
-        `Case #${c.id}\n\nClient: ${c.client}\nStatus: ${c.status}\n\nClient Statement:\n${c.clientText}\n\nAssociate Notes:\n${c.associateNotes}\n\nInternal Notes:\n${c.internalNotes}`
-    );
+    alert(
+        `Case #${c.id}\n\nClient: ${c.client}\nStatus: ${c.status}\n\nClient Statement:\n${c.clientText}\n\nAssociate Notes:\n${c.associateNotes}\n\nInternal Notes:\n${c.internalNotes}`
+    );
 }
 
 // ==========================
