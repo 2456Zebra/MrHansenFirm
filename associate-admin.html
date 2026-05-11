@@ -6,47 +6,337 @@
 <title>Associate Admin — MR. HANSEN FIRM</title>
 
 <style>
-    body {
+    html, body {
         margin: 0;
         padding: 0;
-        background: #0d0d0d;
-        color: #e5e5e5;
+        background: #0d0d0d !important;
+        color: #e5e5e5 !important;
         font-family: Arial, sans-serif;
     }
 
-    .admin-header {
-        background: #111;
+    .assoc-header {
+        background: #111 !important;
         padding: 20px;
         text-align: center;
         font-size: 22px;
         border-bottom: 1px solid #333;
+        color: #e5e5e5 !important;
     }
 
-    .admin-actions {
+    .assoc-actions {
         padding: 20px;
-        max-width: 600px;
-        margin: auto;
+        max-width: 900px;
+        margin: 20px auto 10px auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
     }
 
-    .admin-btn {
-        width: 100%;
-        background: #1a1a1a;
-        border: 1px solid #333;
-        padding: 15px;
-        margin-bottom: 15px;
-        color: #e5e5e5;
-        font-size: 18px;
+    .assoc-btn {
+        background: #1a1a1a !important;
+        border: 1px solid #333 !important;
+        padding: 10px 16px;
+        color: #e5e5e5 !important;
+        font-size: 15px;
         cursor: pointer;
-        text-align: left;
         border-radius: 6px;
         transition: 0.2s;
+        min-width: 140px;
+        text-align: center;
     }
 
-    .admin-btn:hover {
+    .assoc-btn:hover {
+        background: #222 !important;
+        border-color: #555 !important;
+    }
+
+    .assoc-main {
+        max-width: 1100px;
+        margin: 0 auto 40px auto;
+        padding: 0 20px 20px 20px;
+        box-sizing: border-box;
+    }
+
+    .panel-card {
+        background: #111;
+        border: 1px solid #333;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 18px;
+    }
+
+    .panel-title {
+        margin: 0 0 10px 0;
+        color: #9cf;
+        font-size: 18px;
+    }
+
+    .subtext {
+        color: #aaa;
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
+    .case-card {
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 10px;
+    }
+
+    .case-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .case-id {
+        color: #9cf;
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    .case-meta {
+        color: #ccc;
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 3px 6px;
+        background: #333;
+        border-radius: 4px;
+        color: #ccc;
+        font-size: 11px;
+        margin-left: 4px;
+    }
+
+    .badge-status-open {
+        background: #1f3d1f;
+        color: #9f9;
+    }
+
+    .badge-status-review {
+        background: #3f3f1f;
+        color: #ffdd99;
+    }
+
+    .badge-status-completed {
+        background: #1f3d3d;
+        color: #9ff;
+    }
+
+    .badge-status-closed {
+        background: #333;
+        color: #aaa;
+    }
+
+    .badge-sev-critical {
+        background: #b30000;
+        color: #fff;
+    }
+    .badge-sev-high {
+        background: #d96d00;
+        color: #fff;
+    }
+    .badge-sev-medium {
+        background: #d9b300;
+        color: #111;
+    }
+    .badge-sev-low {
+        background: #3fa63f;
+        color: #fff;
+    }
+
+    .badge-age-fresh {
+        background: #1f3d1f;
+        color: #9f9;
+    }
+    .badge-age-aging {
+        background: #3f3f1f;
+        color: #ffdd99;
+    }
+    .badge-age-stale {
+        background: #5a3f1f;
+        color: #ffbb66;
+    }
+    .badge-age-overdue {
+        background: #5a1f1f;
+        color: #ff9999;
+    }
+
+    .badge-risk-critical {
+        background: #b30000;
+        color: #fff;
+    }
+    .badge-risk-high {
+        background: #d96d00;
+        color: #fff;
+    }
+    .badge-risk-elevated {
+        background: #3f3f1f;
+        color: #ffdd99;
+    }
+    .badge-risk-baseline {
+        background: #1f3d1f;
+        color: #9f9;
+    }
+
+    .metric-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .metric-tile {
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 6px;
+        padding: 10px;
+        flex: 1 1 150px;
+        min-width: 140px;
+        text-align: center;
+    }
+
+    .metric-value {
+        font-size: 22px;
+        color: #9cf;
+    }
+
+    .metric-label {
+        font-size: 13px;
+        color: #ccc;
+    }
+
+    .message-list {
+        max-height: 260px;
+        overflow-y: auto;
+        border-radius: 6px;
+        border: 1px solid #333;
+        background: #111;
+        padding: 10px;
+    }
+
+    .message-item {
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #222;
+    }
+
+    .message-meta {
+        font-size: 11px;
+        color: #888;
+        margin-bottom: 3px;
+        font-family: Consolas, monospace;
+    }
+
+    .message-body {
+        font-size: 13px;
+        color: #ddd;
+    }
+
+    .message-from-associate {
+        color: #9cf;
+    }
+
+    .message-from-client {
+        color: #ffdd99;
+    }
+
+    .message-reply-box {
+        margin-top: 10px;
+    }
+
+    .message-reply-box textarea {
+        width: 100%;
+        min-height: 60px;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        color: #e5e5e5;
+        border-radius: 6px;
+        padding: 8px;
+        box-sizing: border-box;
+        resize: vertical;
+    }
+
+    .small-btn {
         background: #222;
-        border-color: #555;
+        border: 1px solid #444;
+        padding: 6px 10px;
+        color: #ccc;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
     }
 
+    .small-btn:hover {
+        background: #333;
+    }
+
+    .profile-field {
+        margin-bottom: 10px;
+    }
+
+    .profile-field label {
+        display: block;
+        font-size: 13px;
+        color: #ccc;
+        margin-bottom: 3px;
+    }
+
+    .profile-field input {
+        width: 100%;
+        padding: 8px;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        color: #e5e5e5;
+        border-radius: 6px;
+        box-sizing: border-box;
+        font-size: 13px;
+    }
+
+    .profile-actions {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .timeline-card {
+        background: #1a1a1a;
+        border: 1px solid #333;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 8px;
+    }
+
+    .timeline-timestamp {
+        color: #77c0ff;
+        font-size: 11px;
+        margin-bottom: 4px;
+        font-family: Consolas, monospace;
+    }
+
+    .timeline-title {
+        font-size: 13px;
+        color: #e5e5e5;
+        margin-bottom: 2px;
+    }
+
+    .timeline-details {
+        color: #bbb;
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+    /* Modal */
     .modal-overlay {
         display: none;
         position: fixed;
@@ -60,8 +350,8 @@
     }
 
     .modal-panel {
-        background: #111;
-        border: 1px solid #444;
+        background: #111 !important;
+        border: 1px solid #444 !important;
         padding: 16px;
         width: 100%;
         max-width: 92vw;
@@ -71,110 +361,224 @@
         box-sizing: border-box;
         margin-left: auto;
         margin-right: 6vw;
+        color: #e5e5e5 !important;
     }
 
     .close-btn {
-        background: #222;
-        border: 1px solid #444;
+        background: #222 !important;
+        border: 1px solid #444 !important;
         padding: 8px 12px;
         cursor: pointer;
         border-radius: 4px;
-        color: #ccc;
+        color: #ccc !important;
+        font-size: 13px;
     }
 
     .close-btn:hover {
-        background: #333;
+        background: #333 !important;
     }
 
-    .case-box {
-        background: #1a1a1a;
-        border: 1px solid #333;
-        padding: 15px;
-        margin-bottom: 12px;
-        border-radius: 6px;
-    }
-
-    .badge {
-        display: inline-block;
-        padding: 3px 6px;
-        background: #333;
-        border-radius: 4px;
-        color: #ccc;
-        font-size: 12px;
-        margin-left: 6px;
+    @media (max-width: 700px) {
+        .assoc-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .assoc-btn {
+            width: 100%;
+        }
     }
 </style>
 </head>
 
 <body>
 
-<div class="admin-header">ASSOCIATE ADMIN PORTAL</div>
+<div class="assoc-header">ASSOCIATE ADMIN PORTAL</div>
 
-<div class="admin-actions">
-    <button class="admin-btn" onclick="openPanel('myCasesPanel')">My Cases</button>
-    <button class="admin-btn" onclick="openPanel('profilePanel')">My Profile</button>
-    <button class="admin-btn" onclick="openPanel('messagesPanel')">Messages</button>
-    <button class="admin-btn" onclick="openPanel('settingsPanel')">Settings</button>
+<div class="assoc-actions">
+    <button class="assoc-btn" onclick="showPanel('dashboard')">Dashboard</button>
+    <button class="assoc-btn" onclick="showPanel('cases')">My Cases</button>
+    <button class="assoc-btn" onclick="showPanel('messages')">Messages</button>
+    <button class="assoc-btn" onclick="showPanel('profile')">Profile & Activity</button>
 </div>
 
-<!-- MODAL -->
-<div id="modalOverlay" class="modal-overlay">
-    <div class="modal-panel">
-        <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
-            <button class="close-btn" onclick="closePanel()">Close</button>
+<div class="assoc-main">
+    <!-- DASHBOARD PANEL -->
+    <div id="panel-dashboard" class="panel-card">
+        <h2 class="panel-title">Overview</h2>
+        <p class="subtext">
+            Operational view of your workload, risk, and recent activity.
+        </p>
+
+        <div class="metric-row">
+            <div class="metric-tile">
+                <div id="metricAssignedCases" class="metric-value">0</div>
+                <div class="metric-label">Assigned Cases</div>
+            </div>
+            <div class="metric-tile">
+                <div id="metricHighRiskCases" class="metric-value">0</div>
+                <div class="metric-label">High‑Risk Cases</div>
+            </div>
+            <div class="metric-tile">
+                <div id="metricOverdueCases" class="metric-value">0</div>
+                <div class="metric-label">Overdue Cases</div>
+            </div>
+            <div class="metric-tile">
+                <div id="metricUnreadClientMessages" class="metric-value">0</div>
+                <div class="metric-label">Unread Client Messages</div>
+            </div>
         </div>
-        <div id="modalContent"></div>
+
+        <div>
+            <h3 style="color:#9cf; margin:15px 0 8px 0;">High‑Risk & Overdue Cases</h3>
+            <div id="dashboardRiskCases">
+                <p style="color:#777; font-size:13px;">Scanning cases...</p>
+            </div>
+        </div>
+
+        <div>
+            <h3 style="color:#9cf; margin:15px 0 8px 0;">Recent Activity</h3>
+            <div id="dashboardActivity">
+                <p style="color:#777; font-size:13px;">Loading activity...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CASES PANEL -->
+    <div id="panel-cases" class="panel-card" style="display:none;">
+        <h2 class="panel-title">My Cases</h2>
+        <p class="subtext">
+            All cases currently assigned to you. Open a case to review details and communicate with the client.
+        </p>
+
+        <div style="margin-bottom:10px;">
+            <button class="small-btn" onclick="filterAssocCases('all')">All</button>
+            <button class="small-btn" onclick="filterAssocCases('open')">Open</button>
+            <button class="small-btn" onclick="filterAssocCases('review')">In Review</button>
+            <button class="small-btn" onclick="filterAssocCases('completed')">Completed</button>
+            <button class="small-btn" onclick="filterAssocCases('closed')">Closed</button>
+        </div>
+
+        <div id="assocCaseList">
+            <p style="color:#777; font-size:13px;">Loading cases...</p>
+        </div>
+    </div>
+
+    <!-- MESSAGES PANEL -->
+    <div id="panel-messages" class="panel-card" style="display:none;">
+        <h2 class="panel-title">Messages</h2>
+        <p class="subtext">
+            View and reply to client messages across all your assigned cases.
+        </p>
+
+        <div class="profile-field">
+            <label for="messageCaseFilter">Filter by case</label>
+            <select id="messageCaseFilter" onchange="renderGlobalMessages()">
+                <option value="all">All cases</option>
+            </select>
+        </div>
+
+        <div class="message-list" id="globalMessageList">
+            <p style="color:#777; font-size:13px;">No messages yet.</p>
+        </div>
+
+        <div class="message-reply-box">
+            <label style="font-size:13px; color:#ccc;">Reply (to most recent conversation in selected scope)</label>
+            <textarea id="globalReplyText" placeholder="Type your reply..."></textarea>
+            <div style="margin-top:6px; display:flex; justify-content:flex-end;">
+                <button class="small-btn" onclick="sendGlobalReply()">Send Reply</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROFILE PANEL -->
+    <div id="panel-profile" class="panel-card" style="display:none;">
+        <h2 class="panel-title">Profile & Activity</h2>
+        <p class="subtext">
+            Your associate profile, status, and recent actions recorded by the firm.
+        </p>
+
+        <div style="margin-bottom:15px; color:#ccc; font-size:13px;">
+            <strong>Name:</strong> <span id="profileNameLabel"></span><br>
+            <strong>Username:</strong> <span id="profileUsernameLabel"></span><br>
+            <strong>Status:</strong> <span id="profileStatusLabel"></span><br>
+            <strong>Flag:</strong> <span id="profileFlagLabel"></span><br>
+            <strong>Auto‑Reactivate:</strong> <span id="profileAutoReactivateLabel"></span>
+        </div>
+
+        <div class="profile-field">
+            <label for="profileContactEmail">Contact Email</label>
+            <input id="profileContactEmail" type="email" />
+        </div>
+
+        <div class="profile-field">
+            <label for="profileContactPhone">Contact Phone</label>
+            <input id="profileContactPhone" type="tel" />
+        </div>
+
+        <div class="profile-actions">
+            <button class="small-btn" onclick="saveAssocProfile()">Save Contact Info</button>
+            <button class="small-btn" onclick="assocChangePassword()">Change Password</button>
+        </div>
+
+        <h3 style="color:#9cf; margin:18px 0 8px 0;">Activity Log</h3>
+        <div id="assocActivityLog">
+            <p style="color:#777; font-size:13px;">Loading activity...</p>
+        </div>
+    </div>
+</div>
+
+<!-- CASE VIEW MODAL -->
+<div id="caseModalOverlay" class="modal-overlay">
+    <div class="modal-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h3 id="caseModalTitle" style="margin:0; color:#9cf;">Case</h3>
+            <button class="close-btn" onclick="closeCaseModal()">Close</button>
+        </div>
+        <div id="caseModalContent"></div>
     </div>
 </div>
 
 <script>
-function openPanel(panelName) {
-    const overlay = document.getElementById("modalOverlay");
-    const content = document.getElementById("modalContent");
+/* ---------- MOCK DATA (replace with live wiring) ---------- */
 
-    overlay.style.display = "flex";
-    content.innerHTML = window[panelName] || "<p style='color:#f88;'>Panel not available.</p>";
+let associateSelf = {
+    id: "A-001",
+    name: "Raven Hale",
+    username: "ravenhale",
+    status: "active",
+    flag: "",
+    autoReactivate: "",
+    contactEmail: "raven.hale@example.com",
+    contactPhone: "+1 (555) 987-6543"
+};
 
-    if (panelName === "myCasesPanel") setTimeout(() => renderMyCases(), 10);
-}
-
-function closePanel() {
-    document.getElementById("modalOverlay").style.display = "none";
-}
-</script>
-
-<!-- ===================== MY CASES ===================== -->
-
-<script>
-window.myCasesPanel = `
-    <h2 style="margin-top:0; color:#9cf;">My Cases</h2>
-
-    <p style="color:#ccc; margin-bottom:15px;">
-        These are the cases assigned to you.
-    </p>
-
-    <div id="myCaseList" style="margin-top:10px;">
-        <p style="color:#777;">Loading cases...</p>
-    </div>
-`;
-
-let myCases = [
+let associateCases = [
     {
         id: "2026-001",
         client: "John Doe",
+        title: "Suspicious Access to Internal Systems",
         status: "completed",
-        clientText: "Over the past month, I’ve noticed irregular access...",
-        associateNotes: "Initial review of access logs confirms...",
-        internalNotes: "Potential internal breach...",
+        severity: "High",
+        openedAt: "2026-03-15T09:00:00",
+        lastUpdate: "2026-04-02T14:30:00",
+        riskScore: 45,
+        clientStatement: "Over the past month, I’ve noticed irregular access to my internal dashboards...",
+        associateNotes: "Initial review of access logs confirms multiple anomalous sessions...",
+        internalNotes: "Potential internal breach. Correlate with HR logs.",
         previousAssociates: []
     },
     {
         id: "2026-003",
         client: "Sarah L.",
+        title: "Unauthorized Access to HR Files",
         status: "review",
-        clientText: "Sensitive HR files were accessed...",
-        associateNotes: "Preliminary review shows unauthorized access...",
-        internalNotes: "Possible policy violation...",
+        severity: "Critical",
+        openedAt: "2026-02-20T10:30:00",
+        lastUpdate: "2026-05-10T13:04:00",
+        riskScore: 78,
+        clientStatement: "Sensitive HR files were accessed without authorization. I need to understand the scope...",
+        associateNotes: "Preliminary review shows unauthorized access from an internal credential...",
+        internalNotes: "Possible policy violation. Coordinate with HR and legal.",
         previousAssociates: [
             {
                 from: "Marcus V.",
@@ -183,77 +587,328 @@ let myCases = [
                 reason: "Client requested specialist"
             }
         ]
+    },
+    {
+        id: "2026-004",
+        client: "Michael T.",
+        title: "External Account Takeover Attempt",
+        status: "open",
+        severity: "Medium",
+        openedAt: "2026-04-25T08:15:00",
+        lastUpdate: "2026-05-08T16:20:00",
+        riskScore: 32,
+        clientStatement: "I received multiple alerts about login attempts from unknown locations...",
+        associateNotes: "Monitoring login patterns and enforcing additional controls...",
+        internalNotes: "Potential credential stuffing. Check IP reputation.",
+        previousAssociates: []
     }
 ];
 
-function renderMyCases() {
-    const container = document.getElementById("myCaseList");
+let associateMessages = [
+    {
+        id: "m1",
+        caseId: "2026-003",
+        from: "client",
+        client: "Sarah L.",
+        timestamp: "2026-05-10 13:22",
+        body: "No reports yet, but I can ask HR to check for anomalies.",
+        read: false
+    },
+    {
+        id: "m2",
+        caseId: "2026-003",
+        from: "associate",
+        client: "Sarah L.",
+        timestamp: "2026-05-10 13:10",
+        body: "I’ve completed the initial review. Please confirm if any HR staff reported suspicious behavior.",
+        read: true
+    },
+    {
+        id: "m3",
+        caseId: "2026-004",
+        from: "client",
+        client: "Michael T.",
+        timestamp: "2026-05-09 09:20",
+        body: "I don’t recognize any of the locations. All of them look suspicious.",
+        read: false
+    }
+];
+
+let associateActivityLog = [
+    {
+        type: "case-update",
+        target: "Case #2026-003",
+        details: "Updated internal notes and severity review.",
+        timestamp: "2026-05-10 13:30"
+    },
+    {
+        type: "message",
+        target: "Client: Sarah L.",
+        details: "Sent update regarding HR file access investigation.",
+        timestamp: "2026-05-10 13:10"
+    },
+    {
+        type: "case-assignment",
+        target: "Case #2026-004",
+        details: "Assigned as primary associate.",
+        timestamp: "2026-04-25 08:20"
+    }
+];
+
+/* ---------- UTILITIES ---------- */
+
+function getStatusBadge(status) {
+    const s = (status || "").toLowerCase();
+    let cls = "badge-status-open";
+    if (s === "open") cls = "badge-status-open";
+    else if (s === "review") cls = "badge-status-review";
+    else if (s === "completed") cls = "badge-status-completed";
+    else if (s === "closed") cls = "badge-status-closed";
+    return `<span class="badge ${cls}">${status.toUpperCase()}</span>`;
+}
+
+function getSeverityBadge(sev) {
+    if (!sev) return "";
+    const s = sev.toLowerCase();
+    let cls = "badge-sev-low";
+    if (s === "critical") cls = "badge-sev-critical";
+    else if (s === "high") cls = "badge-sev-high";
+    else if (s === "medium") cls = "badge-sev-medium";
+    return `<span class="badge ${cls}">${sev.toUpperCase()}</span>`;
+}
+
+function getCaseAgeDays(caseObj) {
+    if (!caseObj.openedAt) return null;
+    const opened = new Date(caseObj.openedAt);
+    const now = new Date();
+    const diffMs = now - opened;
+    return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+}
+
+function getAgingBadge(caseObj) {
+    const days = getCaseAgeDays(caseObj);
+    if (days === null || isNaN(days)) return "";
+
+    let cls = "badge-age-fresh";
+    let label = `${days} day${days === 1 ? "" : "s"}`;
+
+    if (days >= 45) {
+        cls = "badge-age-overdue";
+        label = `${days} days — OVERDUE`;
+    } else if (days >= 30) {
+        cls = "badge-age-stale";
+    } else if (days >= 14) {
+        cls = "badge-age-aging";
+    }
+
+    return `<span class="badge ${cls}">${label}</span>`;
+}
+
+function getRiskBadge(score) {
+    let cls = "badge-risk-baseline";
+    let label = "BASELINE";
+    if (score >= 70) {
+        cls = "badge-risk-critical";
+        label = "CRITICAL RISK";
+    } else if (score >= 50) {
+        cls = "badge-risk-high";
+        label = "HIGH RISK";
+    } else if (score >= 30) {
+        cls = "badge-risk-elevated";
+        label = "ELEVATED RISK";
+    }
+    return `<span class="badge ${cls}">${label}</span>`;
+}
+
+/* ---------- PANEL SWITCHING ---------- */
+
+function showPanel(name) {
+    document.getElementById("panel-dashboard").style.display = (name === "dashboard") ? "block" : "none";
+    document.getElementById("panel-cases").style.display = (name === "cases") ? "block" : "none";
+    document.getElementById("panel-messages").style.display = (name === "messages") ? "block" : "none";
+    document.getElementById("panel-profile").style.display = (name === "profile") ? "block" : "none";
+
+    if (name === "dashboard") renderDashboard();
+    if (name === "cases") renderAssocCases(associateCases);
+    if (name === "messages") {
+        populateMessageCaseFilter();
+        renderGlobalMessages();
+    }
+    if (name === "profile") renderProfilePanel();
+}
+
+/* ---------- DASHBOARD RENDER ---------- */
+
+function renderDashboard() {
+    const assigned = associateCases.length;
+    const highRisk = associateCases.filter(c => c.riskScore >= 50).length;
+    const overdue = associateCases.filter(c => (getCaseAgeDays(c) || 0) >= 45).length;
+    const unreadClient = associateMessages.filter(m => m.from === "client" && !m.read).length;
+
+    document.getElementById("metricAssignedCases").textContent = assigned;
+    document.getElementById("metricHighRiskCases").textContent = highRisk;
+    document.getElementById("metricOverdueCases").textContent = overdue;
+    document.getElementById("metricUnreadClientMessages").textContent = unreadClient;
+
+    const riskContainer = document.getElementById("dashboardRiskCases");
+    const flagged = associateCases
+        .map(c => ({ c, score: c.riskScore }))
+        .filter(x => x.score >= 50 || (getCaseAgeDays(x.c) || 0) >= 45)
+        .sort((a, b) => b.score - a.score);
+
+    if (!flagged.length) {
+        riskContainer.innerHTML = `<p style="color:#777; font-size:13px;">No high‑risk or overdue cases at this time.</p>`;
+    } else {
+        riskContainer.innerHTML = flagged.map(({ c, score }) => `
+            <div class="case-card">
+                <div class="case-header">
+                    <div class="case-id">Case #${c.id}</div>
+                    <div>
+                        ${getStatusBadge(c.status)}
+                        ${getSeverityBadge(c.severity)}
+                        ${getAgingBadge(c)}
+                        ${getRiskBadge(score)}
+                    </div>
+                </div>
+                <div class="case-meta">
+                    <strong>${c.title}</strong><br>
+                    Client: ${c.client}<br>
+                    Last update: <span style="font-family:Consolas, monospace;">${new Date(c.lastUpdate).toLocaleString()}</span>
+                </div>
+                <div style="margin-top:6px; display:flex; justify-content:flex-end;">
+                    <button class="small-btn" onclick="openCaseModal('${c.id}')">Open Case</button>
+                </div>
+            </div>
+        `).join("");
+    }
+
+    const activityContainer = document.getElementById("dashboardActivity");
+    if (!associateActivityLog.length) {
+        activityContainer.innerHTML = `<p style="color:#777; font-size:13px;">No activity recorded.</p>`;
+    } else {
+        const recent = associateActivityLog.slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 5);
+        activityContainer.innerHTML = recent.map(ev => `
+            <div class="timeline-card">
+                <div class="timeline-timestamp">${ev.timestamp}</div>
+                <div class="timeline-title">${ev.type.toUpperCase()}</div>
+                <div class="timeline-details">
+                    ${ev.details}<br>
+                    <span style="color:#888;">Target: ${ev.target}</span>
+                </div>
+            </div>
+        `).join("");
+    }
+}
+
+/* ---------- CASE LIST RENDER ---------- */
+
+function renderAssocCases(list) {
+    const container = document.getElementById("assocCaseList");
     if (!container) return;
 
-    if (!myCases.length) {
-        container.innerHTML = `<p style="color:#777;">No cases assigned.</p>`;
+    if (!list.length) {
+        container.innerHTML = `<p style="color:#777; font-size:13px;">No cases found.</p>`;
         return;
     }
 
-    container.innerHTML = myCases.map(c => `
-        <div class="case-box">
-            <div style="font-size:18px; color:#9cf;">Case #${c.id}</div>
-
-            ${
-                c.previousAssociates && c.previousAssociates.length
-                ? `<span class="badge">Reassigned</span>`
-                : ""
-            }
-
-            <div style="color:#ccc; margin-top:5px;">
-                <strong>Client:</strong> ${c.client}<br>
-                <strong>Status:</strong> ${c.status.toUpperCase()}
+    container.innerHTML = list.map(c => `
+        <div class="case-card">
+            <div class="case-header">
+                <div class="case-id">Case #${c.id}</div>
+                <div>
+                    ${getStatusBadge(c.status)}
+                    ${getSeverityBadge(c.severity)}
+                    ${getAgingBadge(c)}
+                    ${getRiskBadge(c.riskScore)}
+                </div>
             </div>
-
-            ${
-                c.previousAssociates && c.previousAssociates.length
-                ? `
-                    <h4 style="color:#9cf; margin-top:10px;">Reassignment History</h4>
-                    <ul style="color:#ccc; padding-left:18px;">
-                        ${
-                            c.previousAssociates.map(r => `
-                                <li>${r.date}: ${r.from} → ${r.to} — ${r.reason}</li>
-                            `).join("")
-                        }
-                    </ul>
-                `
-                : ""
-            }
-
-            <button onclick="openMyCaseDetails('${c.id}')"
-                style="margin-top:12px; background:#222; border:1px solid #444; padding:10px 14px; color:#ccc; border-radius:4px;">
-                View Case
-            </button>
+            <div class="case-meta">
+                <strong>${c.title}</strong><br>
+                Client: ${c.client}<br>
+                Opened: <span style="font-family:Consolas, monospace;">${new Date(c.openedAt).toLocaleDateString()}</span><br>
+                Last update: <span style="font-family:Consolas, monospace;">${new Date(c.lastUpdate).toLocaleString()}</span>
+            </div>
+            <div style="margin-top:6px; display:flex; justify-content:flex-end; gap:6px; flex-wrap:wrap;">
+                <button class="small-btn" onclick="openCaseModal('${c.id}')">Open Case</button>
+                <button class="small-btn" onclick="openMessagesForCase('${c.id}')">View Messages</button>
+            </div>
         </div>
     `).join("");
 }
 
-function openMyCaseDetails(caseId) {
-    const c = myCases.find(x => x.id === caseId);
+function filterAssocCases(type) {
+    if (type === "all") {
+        renderAssocCases(associateCases);
+        return;
+    }
+    const filtered = associateCases.filter(c => c.status === type);
+    renderAssocCases(filtered);
+}
+
+/* ---------- CASE MODAL ---------- */
+
+function openCaseModal(caseId) {
+    const c = associateCases.find(x => x.id === caseId);
     if (!c) return;
 
-    document.getElementById("modalContent").innerHTML = `
-        <h2 style="margin-top:0; color:#9cf;">Case #${c.id}</h2>
+    const caseMessages = associateMessages
+        .filter(m => m.caseId === caseId)
+        .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
-        <h3 style="color:#9cf;">Client’s Statement</h3>
-        <p style="color:#ccc;">${c.clientText}</p>
+    const messagesHtml = caseMessages.length
+        ? caseMessages.map(m => `
+            <div class="message-item">
+                <div class="message-meta">
+                    ${
+                        m.from === "client"
+                        ? `<span class="message-from-client">${m.client}</span>`
+                        : `<span class="message-from-associate">${associateSelf.name}</span>`
+                    }
+                    &nbsp;|&nbsp; ${m.timestamp}
+                    ${
+                        m.from === "client" && !m.read
+                        ? `&nbsp;<span class="badge" style="background:#3f3f1f; color:#ffdd99;">UNREAD</span>`
+                        : ""
+                    }
+                </div>
+                <div class="message-body">${m.body}</div>
+            </div>
+        `).join("")
+        : `<p style="color:#777; font-size:13px;">No messages yet for this case.</p>`;
 
-        <h3 style="color:#9cf;">Your Notes</h3>
-        <p style="color:#ccc;">${c.associateNotes}</p>
+    document.getElementById("caseModalTitle").textContent = `Case #${c.id}`;
 
-        <h3 style="color:#9cf;">Internal Notes</h3>
-        <p style="color:#ccc;">${c.internalNotes}</p>
+    document.getElementById("caseModalContent").innerHTML = `
+        <h3 style="color:#9cf; margin-top:0;">${c.title}</h3>
+
+        <p style="color:#ccc; font-size:13px; margin-bottom:8px;">
+            ${getStatusBadge(c.status)}
+            ${getSeverityBadge(c.severity)}
+            ${getAgingBadge(c)}
+            ${getRiskBadge(c.riskScore)}
+        </p>
+
+        <div style="margin-bottom:12px; color:#ccc; font-size:13px;">
+            <strong>Client:</strong> ${c.client}<br>
+            <strong>Assigned Associate:</strong> ${associateSelf.name}<br>
+            <strong>Opened:</strong> ${new Date(c.openedAt).toLocaleString()}<br>
+            <strong>Last Update:</strong> ${new Date(c.lastUpdate).toLocaleString()}<br>
+        </div>
+
+        <h4 style="color:#9cf; margin-bottom:4px;">Client Statement</h4>
+        <p style="color:#ddd; font-size:13px;">${c.clientStatement}</p>
+
+        <h4 style="color:#9cf; margin-bottom:4px;">Your Notes</h4>
+        <p style="color:#ddd; font-size:13px;">${c.associateNotes}</p>
+
+        <h4 style="color:#9cf; margin-bottom:4px;">Internal Notes</h4>
+        <p style="color:#bbb; font-size:13px;">${c.internalNotes}</p>
 
         ${
             c.previousAssociates && c.previousAssociates.length
             ? `
-                <h3 style="color:#9cf;">Reassignment History</h3>
-                <ul style="color:#ccc; padding-left:18px;">
+                <h4 style="color:#9cf; margin:14px 0 4px 0;">Reassignment History</h4>
+                <ul style="color:#ccc; font-size:13px; padding-left:18px;">
                     ${
                         c.previousAssociates.map(r => `
                             <li>${r.date}: ${r.from} → ${r.to} — ${r.reason}</li>
@@ -263,53 +918,213 @@ function openMyCaseDetails(caseId) {
             `
             : ""
         }
+
+        <h4 style="color:#9cf; margin:14px 0 6px 0;">Messages</h4>
+        <div class="message-list" style="max-height:220px;">
+            ${messagesHtml}
+        </div>
+
+        <div class="message-reply-box">
+            <label style="font-size:13px; color:#ccc;">Reply to client</label>
+            <textarea id="caseReplyText" placeholder="Type your reply..."></textarea>
+            <div style="margin-top:6px; display:flex; justify-content:flex-end;">
+                <button class="small-btn" onclick="sendCaseReply('${c.id}')">Send Reply</button>
+            </div>
+        </div>
     `;
+
+    // Mark client messages for this case as read
+    associateMessages.forEach(m => {
+        if (m.caseId === caseId && m.from === "client") {
+            m.read = true;
+        }
+    });
+
+    document.getElementById("caseModalOverlay").style.display = "flex";
+    renderDashboard();
+    renderGlobalMessages();
 }
-</script>
 
-<!-- ===================== PROFILE ===================== -->
+function closeCaseModal() {
+    document.getElementById("caseModalOverlay").style.display = "none";
+}
 
-<script>
-window.profilePanel = `
-    <h2 style="margin-top:0; color:#9cf;">My Profile</h2>
+/* ---------- GLOBAL MESSAGES PANEL ---------- */
 
-    <p style="color:#ccc;">
-        <strong>Name:</strong> Raven Hale<br>
-        <strong>Email:</strong> raven@example.com<br>
-        <strong>Username:</strong> ravenhale<br>
-        <strong>Specialty:</strong> Internal Breach & Insider Threats<br>
-        <strong>Instagram:</strong> @ravenintel
-    </p>
+function populateMessageCaseFilter() {
+    const select = document.getElementById("messageCaseFilter");
+    const current = select.value || "all";
+    select.innerHTML = `<option value="all">All cases</option>`;
+    associateCases.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c.id;
+        opt.textContent = `Case #${c.id} — ${c.client}`;
+        select.appendChild(opt);
+    });
+    select.value = current;
+}
 
-    <p style="color:#ccc; white-space:pre-wrap;">
-        Senior intelligence associate focused on internal access anomalies and credential misuse.
-    </p>
-`;
-</script>
+function renderGlobalMessages() {
+    const container = document.getElementById("globalMessageList");
+    const filterCaseId = document.getElementById("messageCaseFilter").value;
 
-<!-- ===================== MESSAGES ===================== -->
+    let msgs = associateMessages.slice().sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    if (filterCaseId !== "all") {
+        msgs = msgs.filter(m => m.caseId === filterCaseId);
+    }
 
-<script>
-window.messagesPanel = `
-    <h2 style="margin-top:0; color:#9cf;">Messages</h2>
+    if (!msgs.length) {
+        container.innerHTML = `<p style="color:#777; font-size:13px;">No messages yet.</p>`;
+        return;
+    }
 
-    <p style="color:#ccc;">No messages at this time.</p>
-`;
-</script>
+    container.innerHTML = msgs.map(m => `
+        <div class="message-item">
+            <div class="message-meta">
+                ${
+                    m.from === "client"
+                    ? `<span class="message-from-client">${m.client}</span>`
+                    : `<span class="message-from-associate">${associateSelf.name}</span>`
+                }
+                &nbsp;|&nbsp; Case #${m.caseId} &nbsp;|&nbsp; ${m.timestamp}
+                ${
+                    m.from === "client" && !m.read
+                    ? `&nbsp;<span class="badge" style="background:#3f3f1f; color:#ffdd99;">UNREAD</span>`
+                    : ""
+                }
+            </div>
+            <div class="message-body">${m.body}</div>
+        </div>
+    `).join("");
+}
 
-<!-- ===================== SETTINGS ===================== -->
+function sendGlobalReply() {
+    const text = document.getElementById("globalReplyText").value.trim();
+    if (!text) {
+        alert("Please enter a message before sending.");
+        return;
+    }
 
-<script>
-window.settingsPanel = `
-    <h2 style="margin-top:0; color:#9cf;">Settings</h2>
+    if (!associateMessages.length) {
+        alert("No existing conversation to reply to. Open a case and send a message there.");
+        return;
+    }
 
-    <p style="color:#ccc;">Settings panel placeholder.</p>
-`;
+    const filterCaseId = document.getElementById("messageCaseFilter").value;
+    let targetCaseId = filterCaseId;
+
+    if (targetCaseId === "all") {
+        const lastMsg = associateMessages.slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0];
+        targetCaseId = lastMsg.caseId;
+    }
+
+    const caseObj = associateCases.find(c => c.id === targetCaseId);
+    const clientName = caseObj ? caseObj.client : "Client";
+
+    associateMessages.push({
+        id: "m" + (associateMessages.length + 1),
+        caseId: targetCaseId,
+        from: "associate",
+        client: clientName,
+        timestamp: new Date().toLocaleString(),
+        body: text,
+        read: true
+    });
+
+    document.getElementById("globalReplyText").value = "";
+    renderGlobalMessages();
+    alert(`Your message has been sent to ${clientName} (Case #${targetCaseId}).`);
+}
+
+/* ---------- CASE-SPECIFIC REPLY ---------- */
+
+function sendCaseReply(caseId) {
+    const textarea = document.getElementById("caseReplyText");
+    if (!textarea) return;
+    const text = textarea.value.trim();
+    if (!text) {
+        alert("Please enter a message before sending.");
+        return;
+    }
+
+    const caseObj = associateCases.find(c => c.id === caseId);
+    const clientName = caseObj ? caseObj.client : "Client";
+
+    associateMessages.push({
+        id: "m" + (associateMessages.length + 1),
+        caseId: caseId,
+        from: "associate",
+        client: clientName,
+        timestamp: new Date().toLocaleString(),
+        body: text,
+        read: true
+    });
+
+    textarea.value = "";
+    openCaseModal(caseId); // re-render modal with new message
+    alert(`Your message has been sent to ${clientName}.`);
+}
+
+/* ---------- OPEN MESSAGES FOR SPECIFIC CASE ---------- */
+
+function openMessagesForCase(caseId) {
+    showPanel("messages");
+    const select = document.getElementById("messageCaseFilter");
+    select.value = caseId;
+    renderGlobalMessages();
+}
+
+/* ---------- PROFILE PANEL ---------- */
+
+function renderProfilePanel() {
+    document.getElementById("profileNameLabel").textContent = associateSelf.name;
+    document.getElementById("profileUsernameLabel").textContent = associateSelf.username;
+    document.getElementById("profileStatusLabel").textContent = associateSelf.status.toUpperCase();
+    document.getElementById("profileFlagLabel").textContent = associateSelf.flag || "None";
+    document.getElementById("profileAutoReactivateLabel").textContent = associateSelf.autoReactivate || "Not set";
+
+    document.getElementById("profileContactEmail").value = associateSelf.contactEmail || "";
+    document.getElementById("profileContactPhone").value = associateSelf.contactPhone || "";
+
+    const container = document.getElementById("assocActivityLog");
+    if (!associateActivityLog.length) {
+        container.innerHTML = `<p style="color:#777; font-size:13px;">No activity recorded.</p>`;
+        return;
+    }
+
+    const sorted = associateActivityLog.slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    container.innerHTML = sorted.map(ev => `
+        <div class="timeline-card">
+            <div class="timeline-timestamp">${ev.timestamp}</div>
+            <div class="timeline-title">${ev.type.toUpperCase()}</div>
+            <div class="timeline-details">
+                ${ev.details}<br>
+                <span style="color:#888;">Target: ${ev.target}</span>
+            </div>
+        </div>
+    `).join("");
+}
+
+function saveAssocProfile() {
+    associateSelf.contactEmail = document.getElementById("profileContactEmail").value.trim();
+    associateSelf.contactPhone = document.getElementById("profileContactPhone").value.trim();
+    alert("Contact information updated. Changes will be reflected in the firm’s internal console.");
+}
+
+function assocChangePassword() {
+    alert("Password change flow would be triggered here (integrated with your auth system).");
+}
+
+/* ---------- INIT ---------- */
+
+document.addEventListener("DOMContentLoaded", () => {
+    showPanel("dashboard");
+});
 </script>
 
 <!-- ========================= FOOTER ========================= -->
 
-<div style="text-align:center; margin:40px 0;">
+<div style="text-align:center; margin:20px 0 30px 0;">
     <a href="index.html" style="color:#77c0ff; text-decoration:none; font-family:Consolas, monospace;">
         ‹ Back to Home
     </a>
