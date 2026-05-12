@@ -72,23 +72,12 @@
             <input type="text" style="display:none;" aria-hidden="true">
             <input type="password" style="display:none;" aria-hidden="true">
 
-            <label for="adminType">Select Admin Portal</label>
-            <select id="adminType" required>
-                <option value="">-- Select Portal --</option>
-                <option value="client-admin.html">Client Admin</option>
-                <option value="associate-admin.html">Associate Admin</option>
-                <option value="firm-admin.html">Firm Admin</option>
-            </select>
-            <div id="adminTypeError" class="error-message"></div>
-
             <label for="email">Email</label>
-            <input type="text" id="email" autocomplete="off" 
-                   placeholder="your@email.com" required>
+            <input type="text" id="email" autocomplete="off" placeholder="your@email.com" required>
             <div id="emailError" class="error-message"></div>
 
             <label for="password">Password</label>
-            <input type="password" id="password" autocomplete="new-password" 
-                   placeholder="Enter password" required>
+            <input type="password" id="password" autocomplete="new-password" placeholder="Enter password" required>
             <div id="passwordError" class="error-message"></div>
 
             <button type="submit">Sign In</button>
@@ -99,19 +88,24 @@
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
 <script>
-    // Pre-select admin type
-    window.onload = function() {
-        const params = new URLSearchParams(window.location.search);
-        const redirect = params.get('redirect');
-        if (redirect) {
-            document.getElementById('adminType').value = redirect;
-        }
+    // CORRECT FIREBASE CONFIG
+    const firebaseConfig = {
+      apiKey: "AIzaSyCXijSyw_EqvRSKwJH0M-xPs5piNfiCiYI",
+      authDomain: "mrhansenfirm-b57c1.firebaseapp.com",
+      projectId: "mrhansenfirm-b57c1",
+      storageBucket: "mrhansenfirm-b57c1.appspot.com",
+      messagingSenderId: "1007101301706",
+      appId: "1:1007101301706:web:bbbac146ca9411e41af533"
     };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
     function showError(fieldId, message) {
         const errorDiv = document.getElementById(fieldId + 'Error');
@@ -165,13 +159,17 @@
             // Role-based redirect
             if (role === "client_admin") {
                 window.location.href = "client-admin.html";
-            } else if (role === "associate_admin") {
+            } 
+            else if (role === "associate_admin") {
                 window.location.href = "associate-admin.html";
-            } else if (role === "firm_admin") {
+            } 
+            else if (role === "firm_admin") {
                 window.location.href = "firm-admin.html";
-            } else if (role === "community_user") {
+            }
+            else if (role === "community_user") {
                 window.location.href = "community.html";
-            } else {
+            }
+            else {
                 alert("Your account has no valid role assigned.");
             }
 
