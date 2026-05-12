@@ -1075,6 +1075,33 @@ const waitForRole = setInterval(() => {
 }, 50);
 </script>
 
+<!-- FIREBASE AUTH GUARD FOR CLIENT ADMIN -->
+<script>
+firebase.auth().onAuthStateChanged(async (user) => {
+    if (!user) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    const doc = await db.collection("users").doc(user.uid).get();
+
+    if (!doc.exists) {
+        await firebase.auth().signOut();
+        window.location.href = "login.html";
+        return;
+    }
+
+    const role = doc.data().role;
+
+    if (role !== "client_admin") {
+        window.location.href = "unauthorized.html";
+        return;
+    }
+
+    // User is authenticated AND authorized
+});
+</script>
+
     
 </body>
 </html>
