@@ -104,18 +104,6 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
 <script>
-    // Firebase Init
-    const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
     // Pre-select admin type
     window.onload = function() {
         const params = new URLSearchParams(window.location.search);
@@ -141,16 +129,11 @@
         e.preventDefault();
         clearErrors();
 
-        const adminType = document.getElementById('adminType').value;
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value.trim();
 
         let isValid = true;
 
-        if (!adminType) {
-            showError('adminType', 'Please select an Admin Portal');
-            isValid = false;
-        }
         if (!email) {
             showError('email', 'Please enter your email');
             isValid = false;
@@ -186,6 +169,8 @@
                 window.location.href = "associate-admin.html";
             } else if (role === "firm_admin") {
                 window.location.href = "firm-admin.html";
+            } else if (role === "community_user") {
+                window.location.href = "community.html";
             } else {
                 alert("Your account has no valid role assigned.");
             }
