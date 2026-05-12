@@ -99,58 +99,103 @@
         </div>
     </div>
 
-    <script>
-        // Pre-select admin type
-        window.onload = function() {
-            const params = new URLSearchParams(window.location.search);
-            const redirect = params.get('redirect');
-            if (redirect) {
-                document.getElementById('adminType').value = redirect;
-            }
-        };
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
-        function showError(fieldId, message) {
-            const errorDiv = document.getElementById(fieldId + 'Error');
-            if (errorDiv) {
-                errorDiv.textContent = message;
-                errorDiv.style.display = 'block';
-            }
+<script>
+    // Firebase Init
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Pre-select admin type
+    window.onload = function() {
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect');
+        if (redirect) {
+            document.getElementById('adminType').value = redirect;
+        }
+    };
+
+    function showError(fieldId, message) {
+        const errorDiv = document.getElementById(fieldId + 'Error');
+        if (errorDiv) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+    }
+
+    function clearErrors() {
+        document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        clearErrors();
+
+        const adminType = document.getElementById('adminType').value;
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+
+        let isValid = true;
+
+        if (!adminType) {
+            showError('adminType', 'Please select an Admin Portal');
+            isValid = false;
+        }
+        if (!email) {
+            showError('email', 'Please enter your email');
+            isValid = false;
+        }
+        if (!password) {
+            showError('password', 'Please enter your password');
+            isValid = false;
+        } else if (password.length < 4) {
+            showError('password', 'Password must be at least 4 characters');
+            isValid = false;
         }
 
-        function clearErrors() {
-            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+        if (!isValid) return;
+
+        try {
+            // Authenticate user
+            const userCred = await firebase.auth().signInWithEmailAndPassword(email, password);
+            const uid = userCred.user.uid;
+
+            // Fetch role from Firestore
+            const doc = await db.collection("users").doc(uid).get();
+            if (!doc.exists) {
+                alert("No user profile found. Contact support.");
+                return;
+            }
+
+            const role = doc.data().role;
+
+            // Role-based redirect
+            if (role === "client_admin") {
+                window.location.href = "client-admin.html";
+            } else if (role === "associate_admin") {
+                window.location.href = "associate-admin.html";
+            } else if (role === "firm_admin") {
+                window.location.href = "firm-admin.html";
+            } else {
+                alert("Your account has no valid role assigned.");
+            }
+
+        } catch (err) {
+            console.error(err);
+            alert("Invalid login. Check your email and password.");
         }
+    });
+</script>
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            clearErrors();
-
-            const adminType = document.getElementById('adminType').value;
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-
-            let isValid = true;
-
-            if (!adminType) {
-                showError('adminType', 'Please select an Admin Portal');
-                isValid = false;
-            }
-            if (!email) {
-                showError('email', 'Please enter your email');
-                isValid = false;
-            }
-            if (!password) {
-                showError('password', 'Please enter your password');
-                isValid = false;
-            } else if (password.length < 4) {
-                showError('password', 'Password must be at least 4 characters');
-                isValid = false;
-            }
-
-            if (!isValid) return;
-
-            window.location.href = adminType;
-        });
-    </script>
 </body>
 </html>
