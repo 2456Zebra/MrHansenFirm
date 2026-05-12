@@ -1075,7 +1075,27 @@ const waitForRole = setInterval(() => {
 }, 50);
 </script>
 
-<!-- FIREBASE AUTH GUARD FOR CLIENT ADMIN -->
+<!-- FIREBASE SCRIPTS -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<!-- FIREBASE CONFIG -->
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCXijSyw_EqvRSKwJH0M-xPs5piNfiCiYI",
+  authDomain: "mrhansenfirm-b57c1.firebaseapp.com",
+  projectId: "mrhansenfirm-b57c1",
+  storageBucket: "mrhansenfirm-b57c1.appspot.com",
+  messagingSenderId: "1007101301706",
+  appId: "1:1007101301706:web:bbbac146ca9411e41af533"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+
+<!-- AUTH GUARD FOR CLIENT ADMIN -->
 <script>
 firebase.auth().onAuthStateChanged(async (user) => {
     if (!user) {
