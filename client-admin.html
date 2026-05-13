@@ -1022,64 +1022,12 @@ document.addEventListener("DOMContentLoaded", () => {
     </a>
 </div>
 
-<!-- ========================= FIREBASE CORE ========================= -->
+<!-- FIREBASE SCRIPTS -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
-<!-- ========================= FIREBASE INIT ========================= -->
-<script>
-    const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-</script>
-
-<!-- ========================= PART 1: UNIVERSAL ROLE GUARD ========================= -->
-<script>
-firebase.auth().onAuthStateChanged(async (user) => {
-    if (!user) {
-        window.location.href = "login.html";
-        return;
-    }
-
-    const doc = await db.collection("users").doc(user.uid).get();
-
-    if (!doc.exists) {
-        firebase.auth().signOut();
-        window.location.href = "login.html";
-        return;
-    }
-
-    window.currentUserRole = doc.data().role;
-});
-</script>
-
-<!-- ========================= PART 4: CLIENT ADMIN ACCESS GUARD ========================= -->
-<script>
-const waitForRole = setInterval(() => {
-    if (!window.currentUserRole) return;
-
-    clearInterval(waitForRole);
-
-    if (window.currentUserRole !== "client_admin") {
-        window.location.href = "unauthorized.html";
-    }
-}, 50);
-
-<!-- ========================= FIREBASE CORE ========================= -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
-<!-- ========================= FIREBASE INIT ========================= -->
+<!-- FIREBASE CONFIG -->
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyCXijSyw_EqvRSKwJH0M-xPs5piNfiCiYI",
@@ -1094,7 +1042,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 </script>
 
-<!-- ========================= CLIENT ADMIN AUTH GUARD ========================= -->
+<!-- AUTH GUARD FOR CLIENT ADMIN -->
 <script>
 firebase.auth().onAuthStateChanged(async (user) => {
     if (!user) {
@@ -1117,11 +1065,10 @@ firebase.auth().onAuthStateChanged(async (user) => {
         return;
     }
 
-    // User is authenticated AND authorized; allow page to remain loaded
+    // User is authenticated AND authorized
 });
 </script>
 
-    
     
 </body>
 </html>
