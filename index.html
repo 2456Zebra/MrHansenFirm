@@ -514,6 +514,9 @@ const auth = firebase.auth();
         <a onclick="goToLogin('firm_admin')" style="display:block; padding:10px 20px; color:#ddd; text-decoration:none;">
             Firm Admin
         </a>
+        <a onclick="goToLogin('community_user')" style="display:block; padding:10px 20px; color:#ddd; text-decoration:none;">
+            Community User
+        </a>
     </div>
 </span>
 </nav>
@@ -523,6 +526,7 @@ function goToLogin(role) {
     window.location.href = `login.html?role=${role}`;
 }
 </script>
+
 
 
 
