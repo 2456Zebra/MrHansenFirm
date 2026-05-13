@@ -498,24 +498,24 @@ const auth = firebase.auth();
     <a onclick="showPage('submit')">Submit Case</a>
     <a onclick="showPage('pricing')">Pricing</a>
 
-    <!-- Admin Portal Dropdown -->
-    <span id="adminPortalTrigger" style="margin-left:20px; position:relative; display:inline-block;">
-        <a onclick="toggleAdminDropdown()" style="cursor:pointer;">
-            Admin Portal ▾
-        </a>
+<!-- Admin Portal Dropdown -->
+<span id="adminPortalTrigger" style="margin-left:20px; position:relative; display:inline-block;">
+    <a onclick="toggleAdminDropdown()" style="cursor:pointer;">
+        Admin Portal ▾
+    </a>
 
-        <div id="adminDropdown" style="display:none; position:absolute; left:0; margin-top:5px; background:#111; border:1px solid #444; padding:8px 0; z-index:5000; min-width:180px;">
-            <a onclick="goToLogin('client_admin')" style="display:block; padding:10px 20px; color:#ddd; text-decoration:none;">
-                Client Admin
-            </a>
-            <a onclick="goToLogin('associate_admin')" style="display:block; padding:10px 20px; color:#ddd; text-decoration:none;">
-                Associate Admin
-            </a>
-            <a onclick="goToLogin('firm_admin')" style="display:block; padding:10px 20px; color:#ddd; text-decoration:none;">
-                Firm Admin
-            </a>
-        </div>
-    </span>
+    <div id="adminDropdown" style="display:none; position:absolute; left:0; margin-top:5px; background:#111; border:1px solid #444; padding:8px 0; z-index:5000; min-width:180px;">
+        <a onclick="goToLogin('client_admin')" style="display:block; padding:10px 20px; color:#ddd; text-decoration:none;">
+            Client Admin
+        </a>
+        <a onclick="goToLogin('associate_admin')" style="display:block; padding:10px 20px; color:#ddd; text-decoration:none;">
+            Associate Admin
+        </a>
+        <a onclick="goToLogin('firm_admin')" style="display:block; padding:10px 20px; color:#ddd; text-decoration:none;">
+            Firm Admin
+        </a>
+    </div>
+</span>
 </nav>
 
 <script>
@@ -523,6 +523,7 @@ function goToLogin(role) {
     window.location.href = `login.html?role=${role}`;
 }
 </script>
+
 
 
 <!-- Home -->
