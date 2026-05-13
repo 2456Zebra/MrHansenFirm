@@ -107,6 +107,10 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // Capture intended role from URL (e.g., login.html?role=firm_admin)
+    const urlParams = new URLSearchParams(window.location.search);
+    const intendedRole = urlParams.get("role") || null;
+
     function showError(fieldId, message) {
         const errorDiv = document.getElementById(fieldId + 'Error');
         if (errorDiv) {
@@ -156,7 +160,12 @@
 
             const role = doc.data().role;
 
-            // Role-based redirect
+            // Handle mismatch (Option B)
+            if (intendedRole && intendedRole !== role) {
+                alert(`You do not have ${intendedRole.replace("_", " ")} access. Redirecting to your assigned portal.`);
+            }
+
+            // Redirect to the user's actual role portal
             if (role === "client_admin") {
                 window.location.href = "client-admin.html";
             } 
