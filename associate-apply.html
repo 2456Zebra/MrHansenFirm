@@ -217,13 +217,15 @@
     uploadStatus.style.display = "block";
 
     const payload = {
-      name: form.name.value,
-      email: form.email.value,
-      instagram: form.instagram.value,
-      specialty: form.specialty.value,
-      bio: form.bio.value,
-      photoBase64: photoBase64
-    };
+  action: "apply_associate",
+  name: form.name.value,
+  email: form.email.value,
+  instagram: form.instagram.value,
+  specialty: form.specialty.value,
+  bio: form.bio.value,
+  photoBase64: photoBase64
+};
+
 
     try {
       const response = await fetch(BASE_URL, {
