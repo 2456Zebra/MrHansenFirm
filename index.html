@@ -963,15 +963,22 @@ function goToSignup() {
         }
     }
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(event) {
-        const trigger = document.getElementById('adminPortalTrigger');
-        const dropdown = document.getElementById('adminDropdown');
-        if (trigger && dropdown && !trigger.contains(event.target)) {
-            dropdown.style.display = 'none';
-        }
-    });
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const trigger = document.getElementById('adminPortalTrigger');
+    const dropdown = document.getElementById('adminDropdown');
+    if (trigger && dropdown && !trigger.contains(event.target)) {
+        dropdown.style.display = 'none';
+    }
+});
+</script>
+
+<script>
+function goToLogin(role) {
+    window.location.href = "login.html?role=" + role;
+}
 </script>
 
 </body>
 </html>
+
