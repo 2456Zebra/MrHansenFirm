@@ -188,9 +188,12 @@
 
   <div id="successScreen">APPLICATION RECEIVED — REDIRECTING...</div>
 
+  <a href="/associates.html" style="color:#00ff88; display:block; margin-top:40px; text-align:center;">
+    &lt; BACK TO ASSOCIATES
+  </a>
+
 <script>
-  const BASE_URL = "https://script.google.com/macros/s/AKfycbz_vOFpD9MlXADWLMXavqEbsYVIzNMmtfAwLFtDpqH29Sqgbggte-OIHOhiyrsxnEZHyw/exec
-";
+  const BASE_URL = "https://script.google.com/macros/s/AKfycbz_vOFpD9MlXADWLMXavqEbsYVIzNMmtfAwLFtDpqH29Sqgbggte-OIHOhiyrsxnEZHyw/exec";
 
   let photoBase64 = null;
 
@@ -218,15 +221,14 @@
     uploadStatus.style.display = "block";
 
     const payload = {
-  action: "apply_associate",
-  name: form.name.value,
-  email: form.email.value,
-  instagram: form.instagram.value,
-  specialty: form.specialty.value,
-  bio: form.bio.value,
-  photoBase64: photoBase64
-};
-
+      action: "apply_associate",
+      name: form.name.value,
+      email: form.email.value,
+      instagram: form.instagram.value,
+      specialty: form.specialty.value,
+      bio: form.bio.value,
+      photoBase64: photoBase64
+    };
 
     try {
       const response = await fetch(BASE_URL, {
