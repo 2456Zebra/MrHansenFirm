@@ -3,249 +3,163 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Intelligence Associates</title>
-
+  <title>Submit Case</title>
   <style>
     body {
+      font-family: "Courier New", monospace;
       background: #000;
       color: #00ff88;
-      font-family: "Courier New", monospace;
-      padding: 20px;
-      text-align: center;
-      margin: 0;
+      padding: 40px 20px;
+      max-width: 800px;
+      margin: auto;
     }
-
-    h1 {
-      text-shadow: 0 0 12px #00ff88;
-      margin-bottom: 15px;
-      font-size: 2.2rem;
+    h1 { text-shadow: 0 0 15px #00ff88; margin-bottom: 10px; }
+    .associate-banner {
+      background: #0a0a0a;
+      padding: 15px 20px;
+      border-left: 5px solid #00ff88;
+      margin-bottom: 30px;
+      font-size: 18px;
     }
-
-    .apply-btn {
-      display: inline-block;
-      padding: 12px 24px;
+    label { display: block; margin-top: 20px; font-weight: bold; }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      background: #0a0a0a;
+      border: 1px solid #00ff88;
+      color: #00ff88;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 40px;
+      width: 100%;
+      padding: 18px;
       background: #00ff88;
       color: #000;
-      border-radius: 6px;
-      text-decoration: none;
+      font-size: 20px;
       font-weight: bold;
-      box-shadow: 0 0 12px #00ff88;
-      transition: 0.2s;
-      margin-bottom: 30px;
-    }
-
-    .apply-btn:hover {
-      background: #00ffaa;
-      box-shadow: 0 0 20px #00ffaa;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
-      margin-top: 20px;
-      max-width: 1400px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .card {
-      background: #0a0a0a;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 12px #00ff88;
-      text-align: center;
-      transition: all 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-8px);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
       box-shadow: 0 0 25px #00ff88;
     }
+    button:hover { background: #00ffaa; box-shadow: 0 0 35px #00ffaa; }
+    #status { margin-top: 20px; font-size: 16px; min-height: 1.5em; }
 
-    .photo {
-      width: 100%;
-      height: 260px;
-      object-fit: cover;
-      object-position: center;
-      border-radius: 10px;
-      margin-bottom: 15px;
-      box-shadow: 0 0 10px #00ff88;
-      background: #111;
-    }
-
-    /* ⭐ OPTION B — FIX HEAD CROPPING ON MOBILE */
-    @media (max-width: 480px) {
-      .photo {
-        height: 300px !important;   /* More vertical room */
-        object-position: top center; /* Keep heads visible */
+    /* ⭐ MOBILE FIX — prevents right-side cutoff */
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 10px;
       }
-    }
 
-    .name {
-      font-size: 1.35rem;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    .specialty {
-      font-size: 1.05rem;
-      margin-bottom: 12px;
-      color: #00ffaa;
-    }
-
-    .bio {
-      font-size: 0.95rem;
-      margin-bottom: 18px;
-      color: #baffd9;
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-align: left;
-      line-height: 1.5;
-    }
-
-    .insta-btn, .select-btn {
-      display: inline-block;
-      padding: 10px 18px;
-      margin: 5px 4px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.2s;
-      font-size: 0.95rem;
-    }
-
-    .insta-btn {
-      background: #ff2ea6;
-      color: #fff;
-      box-shadow: 0 0 12px #ff2ea6;
-    }
-
-    .insta-btn:hover {
-      background: #ff5fbd;
-      box-shadow: 0 0 18px #ff5fbd;
-    }
-
-    .select-btn {
-      background: #00ff88;
-      color: #000;
-      box-shadow: 0 0 12px #00ff88;
-    }
-
-    .select-btn:hover {
-      background: #00ffaa;
-      box-shadow: 0 0 18px #00ffaa;
-    }
-
-    .back-home {
-      display: block;
-      margin: 60px auto 0;
-      color: #00ff88;
-      text-decoration: none;
-      font-size: 1.1rem;
-      text-shadow: 0 0 8px #00ff88;
-      transition: 0.2s;
-    }
-
-    .back-home:hover {
-      color: #00ffaa;
-      text-shadow: 0 0 12px #00ffaa;
-    }
-
-    #loading {
-      font-size: 1.3rem;
-      margin: 50px 0;
-      text-shadow: 0 0 10px #00ff88;
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.6; }
-      50% { opacity: 1; }
-    }
-
-    @media (max-width: 480px) {
-      body { padding: 15px; }
-      h1 { font-size: 1.9rem; }
-      .grid { gap: 20px; }
+      form, input, textarea, select {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+      }
     }
   </style>
 </head>
-
 <body>
+  <h1>SUBMIT NEW CASE</h1>
+ 
+  <div id="associateBanner" class="associate-banner" style="display:none;">
+    Submitting case to: <strong id="selectedAssociate"></strong>
+  </div>
 
-  <h1>INTELLIGENCE ASSOCIATES</h1>
+  <form id="caseForm">
+    <input type="hidden" id="associateId">
 
-  <a href="/associate-apply.html" class="apply-btn">
-    Apply to Be an Intelligence Associate
-  </a>
+    <label>Associate</label>
+    <input type="text" id="associateName" readonly />
 
-  <div id="loading">INITIALIZING ASSOCIATES NETWORK...</div>
+    <label>Your Name</label>
+    <input type="text" id="clientName" required />
 
-  <div class="grid" id="grid"></div>
+    <label>Your Email</label>
+    <input type="email" id="clientEmail" required />
 
-  <a href="/index.html" class="back-home">&lt; Back to Home</a>
+    <label>Case Title</label>
+    <input type="text" id="caseTitle" required />
+
+    <label>Case Description</label>
+    <textarea id="caseDescription" rows="8" required></textarea>
+
+    <label>Service Tier</label>
+    <select id="tier" required>
+      <option value="">— Select Tier —</option>
+      <option value="Level 1 - Quick Read" data-link="https://buy.stripe.com/test_aFadR9c403TR98u9TY77O00">Level 1 — Quick Read ($35)</option>
+      <option value="Level 2 - Deep Dive Analysis" data-link="https://buy.stripe.com/test_4gM00j5FC4XVbgCc2677O01">Level 2 — Deep Dive Analysis ($95)</option>
+      <option value="Level 3 - Crisis Session" data-link="https://buy.stripe.com/test_5kQaEX9VSgGDbgCgim77O02">Level 3 — Crisis Session ($195)</option>
+    </select>
+
+    <div id="status"></div>
+    <button type="submit" id="submitBtn">PAY NOW & SUBMIT CASE</button>
+  </form>
 
   <script>
-    const BASE_URL =
-      "https://script.google.com/macros/s/AKfycbz_vOFpD9MlXADWLMXavqEbsYVIzNMmtfAwLFtDpqH29Sqgbggte-OIHOhiyrsxnEZHyw/exec";
+    const BASE_URL = "https://script.google.com/macros/s/AKfycbxcU-ADNA0l3KO-Pev4OEdFmWfJVTLA1E8knM3odyhifCC20e17LPD7R4vtQM2_c4Rv/exec";
 
-    async function loadAssociates() {
-      const loading = document.getElementById("loading");
+    const params = new URLSearchParams(window.location.search);
+    const associateName = params.get('associate');
+    const associateId = params.get('id');
+
+    if (associateName) {
+      document.getElementById("associateBanner").style.display = "block";
+      document.getElementById("selectedAssociate").textContent = associateName;
+      document.getElementById("associateName").value = associateName;
+      if (associateId) document.getElementById("associateId").value = associateId;
+    }
+
+    document.getElementById("caseForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+     
+      const status = document.getElementById("status");
+      const btn = document.getElementById("submitBtn");
+      const tierSelect = document.getElementById("tier");
+      const selectedOption = tierSelect.options[tierSelect.selectedIndex];
+      const stripeLink = selectedOption.getAttribute("data-link");
+
+      if (!stripeLink) {
+        status.innerHTML = `<span style="color:#ff3366">Please select a tier.</span>`;
+        return;
+      }
+
+      btn.disabled = true;
+      status.innerHTML = `<span style="color:#00ff88">SAVING CASE...</span>`;
+
+      const payload = {
+        clientName: document.getElementById("clientName").value,
+        clientEmail: document.getElementById("clientEmail").value,
+        associateName: document.getElementById("associateName").value,
+        associateId: document.getElementById("associateId").value,
+        caseTitle: document.getElementById("caseTitle").value,
+        caseDescription: document.getElementById("caseDescription").value,
+        tier: tierSelect.value,
+        timestamp: new Date().toISOString()
+      };
 
       try {
-        const res = await fetch(BASE_URL + "?list=1&cb=" + Date.now());
-        const data = await res.json();
-
-        loading.style.display = "none";
-
-        if (!data || data.length === 0) {
-          loading.style.display = "block";
-          loading.innerText = "NO ASSOCIATES FOUND";
-          return;
-        }
-
-        // ⭐ NEWEST → OLDEST SORTING BASED ON TIMESTAMP
-        data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-        const grid = document.getElementById("grid");
-        grid.innerHTML = "";
-
-        data.forEach(a => {
-          const card = document.createElement("div");
-          card.className = "card";
-
-          card.innerHTML = `
-            <img src="${a.photoUrl}" class="photo"
-              onerror="this.src='https://via.placeholder.com/300x280/111111/00ff88?text=Photo+Unavailable'" />
-
-            <div class="name">${a.name}</div>
-            <div class="specialty">${a.specialty}</div>
-            <div class="bio">${a.bio}</div>
-
-            <a class="insta-btn" href="https://instagram.com/${a.instagram}" target="_blank">
-              View Instagram
-            </a>
-
-            <a class="select-btn" href="/profile.html?id=${a.id}">
-              View Profile and Select
-            </a>
-          `;
-
-          grid.appendChild(card);
+        await fetch(BASE_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
         });
+
+        status.innerHTML = `<span style="color:#00ff88">REDIRECTING TO SECURE PAYMENT...</span>`;
+
+        setTimeout(() => {
+          window.location.href = stripeLink;
+        }, 1200);
 
       } catch (err) {
         console.error(err);
-        loading.style.display = "block";
-        loading.innerHTML = "ERROR LOADING ASSOCIATES NETWORK";
+        status.innerHTML = `<span style="color:#ff3366">Error saving case. Please try again.</span>`;
+        btn.disabled = false;
       }
-    }
-
-    window.onload = loadAssociates;
+    });
   </script>
-
 </body>
 </html>
