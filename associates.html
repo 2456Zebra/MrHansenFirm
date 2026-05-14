@@ -199,12 +199,8 @@
           return;
         }
 
-        // ⭐ NEWEST → OLDEST SORTING BASED ON ID TIMESTAMP
-        data.sort((a, b) => {
-          const ta = Number(a.id.replace("assoc_", ""));
-          const tb = Number(b.id.replace("assoc_", ""));
-          return tb - ta; // newest first
-        });
+        // ⭐ NEWEST → OLDEST SORTING BASED ON TIMESTAMP
+        data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
         const grid = document.getElementById("grid");
         grid.innerHTML = "";
