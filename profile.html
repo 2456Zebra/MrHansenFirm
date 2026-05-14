@@ -77,7 +77,6 @@
     .case-btn { background: #00ff88; color: #000; }
     .btn:hover { transform: scale(1.05); }
 
-    /* Desktop - Side by side */
     @media (min-width: 768px) {
       .profile-container {
         flex-direction: row;
@@ -95,7 +94,6 @@
       }
     }
 
-    /* Extra small phones */
     @media (max-width: 480px) {
       body { padding: 15px; }
       .info h1 { font-size: 2rem; }
@@ -118,12 +116,10 @@
   <div id="profileContent" style="display: none;">
     <div class="profile-container">
       
-      <!-- Photo -->
       <div class="photo-container">
         <img id="profilePhoto" class="photo" alt="Associate Photo">
       </div>
       
-      <!-- Info -->
       <div class="info">
         <h1 id="profileName"></h1>
         <div id="profileSpecialty" class="specialty"></div>
@@ -138,7 +134,7 @@
   </div>
 
   <script>
-    const BASE_URL = "https://script.google.com/macros/s/AKfycbxcU-ADNA0l3KO-Pev4OEdFmWfJVTLA1E8knM3odyhifCC20e17LPD7R4vtQM2_c4Rv/exec";
+    const BASE_URL = "https://script.google.com/macros/s/AKfycbz_vOFpD9MlXADWLMXavqEbsYVIzNMmtfAwLFtDpqH29Sqgbggte-OIHOhiyrsxnEZHyw/exec";
 
     async function loadProfile() {
       const params = new URLSearchParams(window.location.search);
@@ -150,7 +146,7 @@
       }
 
       try {
-        const res = await fetch(BASE_URL);
+        const res = await fetch(BASE_URL + "?list=1");
         const associates = await res.json();
         const associate = associates.find(a => a.id === id);
 
@@ -159,7 +155,6 @@
           return;
         }
 
-        // Populate profile
         document.getElementById("profileName").textContent = associate.name;
         document.getElementById("profileSpecialty").textContent = associate.specialty;
         document.getElementById("profileBio").innerHTML = associate.bio.replace(/\n/g, '<br>');
