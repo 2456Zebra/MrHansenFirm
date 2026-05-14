@@ -47,6 +47,19 @@
     }
     button:hover { background: #00ffaa; box-shadow: 0 0 35px #00ffaa; }
     #status { margin-top: 20px; font-size: 16px; min-height: 1.5em; }
+
+    /* ⭐ MOBILE FIX — prevents right-side cutoff */
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 10px;
+      }
+
+      form, input, textarea, select {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+      }
+    }
   </style>
 </head>
 <body>
@@ -129,7 +142,6 @@
       };
 
       try {
-        // Save to sheet
         await fetch(BASE_URL, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -138,7 +150,6 @@
 
         status.innerHTML = `<span style="color:#00ff88">REDIRECTING TO SECURE PAYMENT...</span>`;
 
-        // Small delay so user sees the message
         setTimeout(() => {
           window.location.href = stripeLink;
         }, 1200);
