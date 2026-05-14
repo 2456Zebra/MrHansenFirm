@@ -70,6 +70,24 @@
       margin: 5px 0;
       color: #0f0;
     }
+
+    .btn {
+      display: block;
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: #0f0;
+      color: #000;
+      text-align: center;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+
+    .select-btn {
+      background: #fff;
+      color: #000;
+      margin-top: 6px;
+    }
   </style>
 </head>
 
@@ -111,6 +129,13 @@
             <p><b>Specialty:</b> ${a.specialty}</p>
             <p><b>Instagram:</b> @${a.instagram}</p>
             <p>${a.bio}</p>
+
+            <a href="https://instagram.com/${a.instagram}" 
+               target="_blank" 
+               class="btn">View Instagram</a>
+
+            <a href="/submit-case.html?associate=${a.id}" 
+               class="btn select-btn">Select This Associate</a>
           `;
 
           grid.appendChild(card);
