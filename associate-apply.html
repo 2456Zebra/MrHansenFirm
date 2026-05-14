@@ -216,6 +216,11 @@
   document.getElementById("applyForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    if (!photoBase64) {
+      alert("Please upload a photo before submitting.");
+      return;
+    }
+
     const form = e.target;
     const uploadStatus = document.getElementById("uploadStatus");
     uploadStatus.style.display = "block";
@@ -233,10 +238,19 @@
     try {
       const response = await fetch(BASE_URL, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
 
-      const result = await response.json();
+      const text = await response.text();
+
+      let result;
+      try {
+        result = JSON.parse(text);
+      } catch (err) {
+        console.error("Backend returned non-JSON:", text);
+        throw new Error("Invalid JSON from backend");
+      }
 
       if (result.status === "success") {
         document.getElementById("successScreen").style.display = "flex";
