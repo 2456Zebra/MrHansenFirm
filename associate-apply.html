@@ -5,17 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Apply as Associate</title>
 
+  <!-- RESTORE YOUR GREEN BRANDING -->
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 20px;
-      background: #f5f5f5;
+      background: #e8f5e9; /* light green background */
     }
 
     h1 {
       text-align: center;
       margin-bottom: 20px;
+      color: #1b5e20; /* dark green */
     }
 
     form {
@@ -24,6 +26,7 @@
       background: white;
       padding: 20px;
       border-radius: 8px;
+      border: 2px solid #4caf50; /* green border */
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
@@ -31,14 +34,15 @@
       display: block;
       margin-top: 15px;
       font-weight: bold;
+      color: #1b5e20;
     }
 
-    input, textarea, select {
+    input, textarea {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
       border-radius: 5px;
-      border: 1px solid #ccc;
+      border: 1px solid #4caf50;
     }
 
     #photoPreview {
@@ -46,6 +50,7 @@
       max-width: 150px;
       border-radius: 8px;
       display: none;
+      border: 2px solid #4caf50;
     }
 
     #uploadStatus {
@@ -53,7 +58,7 @@
       margin-top: 20px;
       text-align: center;
       font-weight: bold;
-      color: #007bff;
+      color: #2e7d32;
     }
 
     #successScreen {
@@ -74,7 +79,7 @@
       margin-top: 20px;
       padding: 12px;
       width: 100%;
-      background: black;
+      background: #2e7d32; /* green */
       color: white;
       border: none;
       border-radius: 5px;
@@ -83,7 +88,7 @@
     }
 
     button:hover {
-      opacity: 0.8;
+      background: #1b5e20;
     }
   </style>
 </head>
@@ -140,7 +145,7 @@
       reader.readAsDataURL(file);
     });
 
-    // Submit form using FormData (NO JSON HEADERS)
+    // Submit form using JSON (NO HEADERS → NO CORS)
     document.getElementById("applyForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -153,19 +158,20 @@
       const uploadStatus = document.getElementById("uploadStatus");
       uploadStatus.style.display = "block";
 
-      const formData = new FormData();
-      formData.append("action", "associateApply");
-      formData.append("name", form.name.value);
-      formData.append("email", form.email.value);
-      formData.append("instagram", form.instagram.value);
-      formData.append("specialty", form.specialty.value);
-      formData.append("bio", form.bio.value);
-      formData.append("photo", photoBase64);
+      const payload = {
+        action: "associateApply",
+        name: form.name.value,
+        email: form.email.value,
+        instagram: form.instagram.value,
+        specialty: form.specialty.value,
+        bio: form.bio.value,
+        photo: photoBase64
+      };
 
       try {
         const response = await fetch(BASE_URL, {
           method: "POST",
-          body: formData
+          body: JSON.stringify(payload)   // ⭐ NO HEADERS
         });
 
         const result = await response.json();
