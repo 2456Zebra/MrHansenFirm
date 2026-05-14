@@ -197,7 +197,6 @@
 
   let photoBase64 = null;
 
-  // Photo preview + Base64 conversion
   document.getElementById("photo").addEventListener("change", function () {
     const file = this.files[0];
     if (file) {
@@ -226,13 +225,13 @@
     uploadStatus.style.display = "block";
 
     const payload = {
-      action: "apply_associate",
+      action: "associateApply",
       name: form.name.value,
       email: form.email.value,
       instagram: form.instagram.value,
       specialty: form.specialty.value,
       bio: form.bio.value,
-      photoBase64: photoBase64
+      photo: photoBase64
     };
 
     try {
@@ -243,8 +242,8 @@
       });
 
       const text = await response.text();
-
       let result;
+
       try {
         result = JSON.parse(text);
       } catch (err) {
@@ -252,13 +251,13 @@
         throw new Error("Invalid JSON from backend");
       }
 
-      if (result.status === "success") {
+      if (result.success === true) {
         document.getElementById("successScreen").style.display = "flex";
         setTimeout(() => {
           window.location.href = "/associates.html";
         }, 2000);
       } else {
-        alert("Submission failed: " + result.message);
+        alert("Submission failed.");
         uploadStatus.style.display = "none";
       }
 
