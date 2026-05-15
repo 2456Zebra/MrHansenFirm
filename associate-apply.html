@@ -35,7 +35,7 @@
       z-index: 999;
     }
 
-    /* Animated typing header — FIXED to never spill */
+    /* Animated typing header */
     .typing {
       font-size: 28px;
       margin-bottom: 30px;
@@ -61,9 +61,7 @@
     }
 
     @media (max-width: 480px) {
-      .typing {
-        font-size: 20px;
-      }
+      .typing { font-size: 20px; }
     }
 
     label {
@@ -165,7 +163,6 @@
       to { opacity: 1; }
     }
 
-    /* Back button — centered, not bold, no box */
     .back-btn {
       margin-top: 30px;
       display: block;
@@ -191,20 +188,24 @@
   <div class="typing">INITIALIZING ASSOCIATE APPLICATION TERMINAL...</div>
 
   <form id="applyForm">
-    <label>Name</label>
-    <input type="text" name="name" required />
+
+    <label>Display Name</label>
+    <input type="text" id="displayName" required />
 
     <label>Email</label>
-    <input type="email" name="email" required />
+    <input type="email" id="email" required />
+
+    <label>Create Password</label>
+    <input type="password" id="password" required />
 
     <label>Instagram Handle</label>
-    <input type="text" name="instagram" required />
+    <input type="text" id="instagram" placeholder="instagram username" required />
 
     <label>Specialty</label>
-    <input type="text" name="specialty" required />
+    <input type="text" id="specialty" required />
 
     <label>Bio</label>
-    <textarea name="bio" rows="4" required></textarea>
+    <textarea id="bio" rows="4" required></textarea>
 
     <label>Upload Photo</label>
     <input type="file" id="photo" accept="image/*" required />
@@ -216,15 +217,41 @@
     <button type="submit">SUBMIT APPLICATION</button>
   </form>
 
-  <!-- Back to Associates (centered, no box, not bold) -->
   <a href="/associates.html" class="back-btn">← BACK TO ASSOCIATES</a>
 
   <div id="successScreen">APPLICATION RECEIVED — REDIRECTING...</div>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
 <script>
-  const BASE_URL = "https://script.google.com/macros/s/AKfycbz_vOFpD9MlXADWLMXavqEbsYVIzNMmtfAwLFtDpqH29Sqgbggte-OIHOhiyrsxnEZHyw/exec";
+  const firebaseConfig = {
+    apiKey: "AIzaSyCXijSyw_EqvRSKwJH0M-xPs5piNfiCiYI",
+    authDomain: "mrhansenfirm-b57c1.firebaseapp.com",
+    projectId: "mrhansenfirm-b57c1",
+    storageBucket: "mrhansenfirm-b57c1.appspot.com",
+    messagingSenderId: "1007101301706",
+    appId: "1:1007101301706:web:bbbac146ca9411e41af533"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
   let photoBase64 = null;
+
+  // Clean Instagram handle (remove @, URLs, spaces)
+  function cleanInstagramHandle(input) {
+    if (!input) return "";
+    return input
+      .trim()
+      .replace(/^@/, "")
+      .replace(/https?:\/\/(www\.)?instagram\.com\//, "")
+      .replace(/\/$/, "")
+      .replace(/\s+/g, "");
+  }
 
   // Photo preview + Base64 conversion
   document.getElementById("photo").addEventListener("change", function () {
@@ -242,45 +269,79 @@
     }
   });
 
+  function generateAssociateId() {
+    return "assoc_" + Math.random().toString(36).substring(2, 10);
+  }
+
+  async function createOrSignInAssociate(email, password) {
+    try {
+      const cred = await auth.createUserWithEmailAndPassword(email, password);
+      return cred.user;
+    } catch (err) {
+      if (err.code === "auth/email-already-in-use") {
+        const cred = await auth.signInWithEmailAndPassword(email, password);
+        return cred.user;
+      }
+      throw err;
+    }
+  }
+
+  async function saveAssociateToFirestore(uid, data) {
+    await db.collection("users").doc(uid).set(data);
+  }
+
   document.getElementById("applyForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const form = e.target;
-    const uploadStatus = document.getElementById("uploadStatus");
-    uploadStatus.style.display = "block";
+    const displayName = document.getElementById("displayName").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    let instagram = cleanInstagramHandle(document.getElementById("instagram").value);
+    const specialty = document.getElementById("specialty").value.trim();
+    const bio = document.getElementById("bio").value.trim();
 
-    const payload = {
-      action: "associateApply",
-      name: form.name.value,
-      email: form.email.value,
-      instagram: form.instagram.value,
-      specialty: form.specialty.value,
-      bio: form.bio.value,
-      photo: photoBase64
-    };
+    if (!displayName || !email || !password || !instagram || !specialty || !bio || !photoBase64) {
+      alert("Please complete all fields.");
+      return;
+    }
+
+    if (password.length < 6) {
+      alert("Password must be at least 6 characters.");
+      return;
+    }
+
+    document.getElementById("uploadStatus").style.display = "block";
 
     try {
-      const response = await fetch(BASE_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
+      const user = await createOrSignInAssociate(email, password);
+      const uid = user.uid;
 
-      const result = await response.json();
+      const associateId = generateAssociateId();
 
-      if (result.success === true) {
-        document.getElementById("successScreen").style.display = "flex";
-        setTimeout(() => {
-          window.location.href = "/associates.html";
-        }, 2000);
-      } else {
-        alert("Submission failed: " + result.error);
-        uploadStatus.style.display = "none";
-      }
+      const firestoreData = {
+        role: "associate",
+        email,
+        name: displayName,
+        instagram,
+        specialty,
+        bio,
+        photo: photoBase64,
+        associateId,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      await saveAssociateToFirestore(uid, firestoreData);
+
+      document.getElementById("successScreen").style.display = "flex";
+
+      setTimeout(() => {
+        window.location.href = "/associate-admin.html?id=" + associateId;
+      }, 2000);
 
     } catch (err) {
-      alert("Network error submitting application.");
       console.error(err);
-      uploadStatus.style.display = "none";
+      alert("Error submitting application.");
+      document.getElementById("uploadStatus").style.display = "none";
     }
   });
 </script>
