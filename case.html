@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Details</title>
+
+  <style>
+    body {
+      font-family: "Consolas", "Courier New", monospace;
+      background: #000;
+      color: #00ff88;
+      padding: 40px;
+      max-width: 900px;
+      margin: auto;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        rgba(0, 255, 136, 0.05) 0px,
+        rgba(0, 255, 136, 0.05) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+      z-index: 999;
+    }
+
+    .typing {
+      font-size: 28px;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px #00ff88;
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      clip-path: inset(0 100% 0 0);
+      animation: reveal 3s steps(40) forwards, cursorBlink 0.7s infinite;
+      border-right: 2px solid #00ff88;
+    }
+
+    @keyframes reveal {
+      from { clip-path: inset(0 100% 0 0); }
+      to { clip-path: inset(0 0 0 0); }
+    }
+
+    @keyframes cursorBlink {
+      50% { border-color: transparent; }
+    }
+
+    .case-box {
+      background: #0a0a0a;
+      padding: 25px;
+      border: 1px solid #00ff88;
+      border-radius: 8px;
+      box-shadow: 0 0 15px #00ff88 inset;
+      margin-bottom: 30px;
+    }
+
+    .case-title {
+      font-size: 24px;
+      font-weight: bold;
+      text-shadow: 0 0 10px #00ff88;
+    }
+
+    .case-section {
+      margin-top: 20px;
+    }
+
+    .label {
+      font-weight: bold;
+      text-shadow: 0 0 8px #00ff88;
+      margin-bottom: 5px;
+    }
+
+    .value {
+      opacity: 0.9;
+      line-height: 1.5em;
+    }
+
+    .signup-btn {
+      margin-top: 30px;
+      padding: 12px 22px;
+      background: #00ff88;
+      border: none;
+      border-radius: 6px;
+      color: #000;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 15px #00ff88;
+      transition: 0.2s;
+      display: inline-block;
+    }
+
+    .signup-btn:hover {
+      background: #00ffaa;
+      box-shadow: 0 0 25px #00ffaa;
+      transform: scale(1.03);
+    }
+
+    .back-btn {
+      margin-top: 30px;
+      display: block;
+      text-align: center;
+      color: #00ff88;
+      text-decoration: none;
+      font-size: 15px;
+      text-shadow: 0 0 6px #00ff88;
+      transition: 0.2s;
+    }
+
+    .back-btn:hover {
+      color: #00ffaa;
+      text-shadow: 0 0 10px #00ffaa;
+      transform: translateY(-2px);
+    }
+
+    #status {
+      margin-top: 20px;
+      font-size: 14px;
+      text-shadow: 0 0 8px #00ff88;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="typing">ACCESSING CASE FILE...</div>
+
+  <div id="status">Loading case...</div>
+
+  <div id="caseContainer" style="display:none;" class="case-box">
+    <div id="caseTitle" class="case-title"></div>
+
+    <div class="case-section">
+      <div class="label">Summary</div>
+      <div id="caseSummary" class="value"></div>
+    </div>
+
+    <div class="case-section">
+      <div class="label">Category</div>
+      <div id="caseCategory" class="value"></div>
+    </div>
+
+    <div class="case-section">
+      <div class="label">Assigned Associate</div>
+      <div id="caseAssociate" class="value"></div>
+    </div>
+
+    <div class="case-section">
+      <div class="label">Full Details</div>
+      <div id="caseDetails" class="value"></div>
+    </div>
+  </div>
+
+  <button class="signup-btn" onclick="window.location.href='/community-signup.html'">
+    SIGN UP TO BECOME A COMMUNITY USER TO COMMENT
+  </button>
+
+  <a href="/view-cases.html" class="back-btn">← BACK TO CASE LIST</a>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCXijSyw_EqvRSKwJH0M-xPs5piNfiCiYI",
+      authDomain: "mrhansenfirm-b57c1.firebaseapp.com",
+      projectId: "mrhansenfirm-b57c1",
+      storageBucket: "mrhansenfirm-b57c1.appspot.com",
+      messagingSenderId: "1007101301706",
+      appId: "1:1007101301706:web:bbbac146ca9411e41af533"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const params = new URLSearchParams(window.location.search);
+    const caseId = params.get("id");
+
+    const statusEl = document.getElementById("status");
+    const container = document.getElementById("caseContainer");
+
+    async function loadCase() {
+      if (!caseId) {
+        statusEl.textContent = "Invalid case ID.";
+        return;
+      }
+
+      try {
+        const doc = await db.collection("cases").doc(caseId).get();
+
+        if (!doc.exists) {
+          statusEl.textContent = "Case not found.";
+          return;
+        }
+
+        const data = doc.data();
+
+        document.getElementById("caseTitle").textContent = data.title || "Untitled Case";
+        document.getElementById("caseSummary").textContent = data.summary || "No summary provided.";
+        document.getElementById("caseCategory").textContent = data.category || "N/A";
+        document.getElementById("caseAssociate").textContent = data.associateName || "Unassigned";
+        document.getElementById("caseDetails").textContent = data.details || "No details provided.";
+
+        statusEl.style.display = "none";
+        container.style.display = "block";
+
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Error loading case.";
+      }
+    }
+
+    loadCase();
+  </script>
+
+</body>
+</html>
