@@ -25,44 +25,46 @@
   }
 
   /* Inner span does the typing animation */
-  .page-title {
-    display: inline-block;
-    color: #00ff88;
-    font-size: 32px;
-    text-shadow: 0 0 15px #00ff88;
-    border-right: 2px solid #00ff88;
-    overflow: hidden;
-    white-space: nowrap;
+.page-title {
+  display: inline-block;
+  color: #00ff88;
+  font-size: 32px;
+  text-shadow: 0 0 15px #00ff88;
+  border-right: 2px solid #00ff88;
+  overflow: hidden;
 
-    /* Prevent initial flash */
-    visibility: hidden;
+  /* allow wrapping */
+  white-space: normal;
 
-    animation:
-  slideIn 0.4s ease-out forwards,
-  typing 4.2s steps(45, end) 0.4s forwards,
-  reveal 0s linear 0.4s forwards,
-  blink 0.8s step-end infinite alternate 4.6s;
+  /* Prevent initial flash */
+  visibility: hidden;
 
-  }
+  animation:
+    slideIn 0.4s ease-out forwards,
+    typing 4.2s steps(45, end) 0.4s forwards,
+    reveal 0s linear 0.4s forwards,
+    blink 0.8s step-end infinite alternate 4.6s;
+}
 
-  @keyframes slideIn {
-    from { transform: translateX(-40px); opacity: 0; }
-    to   { transform: translateX(0); opacity: 1; }
-  }
+@keyframes slideIn {
+  from { transform: translateX(-40px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
 
-  @keyframes typing {
-    from { width: 0; }
-    to   { width: 100%; }
-  }
+/* NEW: clip-path typing so wrapping works */
+@keyframes typing {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
 
-  @keyframes reveal {
-    to { visibility: visible; }
-  }
+@keyframes reveal {
+  to { visibility: visible; }
+}
 
-  @keyframes blink {
-    from { border-color: transparent; }
-    to   { border-color: #00ff88; }
-  }
+@keyframes blink {
+  from { border-color: transparent; }
+  to   { border-color: #00ff88; }
+}
 
   .subtext {
     margin-top: 10px;
