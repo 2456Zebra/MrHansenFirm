@@ -1,263 +1,382 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Intelligence Associates</title>
+<meta charset="UTF-8">
+<title>Meet Our Intelligence Associates</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      background: #000;
-      color: #00ff88;
-      font-family: "Courier New", monospace;
-      padding: 20px;
-      text-align: center;
-      margin: 0;
-    }
-
-    h1 {
-      text-shadow: 0 0 12px #00ff88;
-      margin-bottom: 15px;
-      font-size: 2.2rem;
-    }
-
-    .apply-btn {
-      display: inline-block;
-      padding: 12px 24px;
-      background: #00ff88;
-      color: #000;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      box-shadow: 0 0 12px #00ff88;
-      transition: 0.2s;
-      margin-bottom: 30px;
-    }
-
-    .apply-btn:hover {
-      background: #00ffaa;
-      box-shadow: 0 0 20px #00ffaa;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
-      margin-top: 20px;
-      max-width: 1400px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .card {
-      background: #0a0a0a;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 12px #00ff88;
-      text-align: center;
-      transition: all 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 0 25px #00ff88;
-    }
-
-    .photo {
-      width: 100%;
-      height: 260px;
-      object-fit: cover;
-      object-position: center;
-      border-radius: 10px;
-      margin-bottom: 15px;
-      box-shadow: 0 0 10px #00ff88;
-      background: #111;
-    }
-
-    /* ⭐ OPTION B — FIX HEAD CROPPING ON MOBILE */
-    @media (max-width: 480px) {
-      .photo {
-        height: 300px !important;   /* More vertical room */
-        object-position: top center; /* Keep heads visible */
-      }
-    }
-
-    .name {
-      font-size: 1.35rem;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    .specialty {
-      font-size: 1.05rem;
-      margin-bottom: 12px;
-      color: #00ffaa;
-    }
-
-    .bio {
-      font-size: 0.95rem;
-      margin-bottom: 18px;
-      color: #baffd9;
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-align: left;
-      line-height: 1.5;
-    }
-
-    .insta-btn, .select-btn {
-      display: inline-block;
-      padding: 10px 18px;
-      margin: 5px 4px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.2s;
-      font-size: 0.95rem;
-    }
-
-    .insta-btn {
-      background: #ff2ea6;
-      color: #fff;
-      box-shadow: 0 0 12px #ff2ea6;
-    }
-
-    .insta-btn:hover {
-      background: #ff5fbd;
-      box-shadow: 0 0 18px #ff5fbd;
-    }
-
-    .select-btn {
-      background: #00ff88;
-      color: #000;
-      box-shadow: 0 0 12px #00ff88;
-    }
-
-    .select-btn:hover {
-      background: #00ffaa;
-      box-shadow: 0 0 18px #00ffaa;
-    }
-
-    .back-home {
-      display: block;
-      margin: 60px auto 0;
-      color: #00ff88;
-      text-decoration: none;
-      font-size: 1.1rem;
-      text-shadow: 0 0 8px #00ff88;
-      transition: 0.2s;
-    }
-
-    .back-home:hover {
-      color: #00ffaa;
-      text-shadow: 0 0 12px #00ffaa;
-    }
-
-    #loading {
-      font-size: 1.3rem;
-      margin: 50px 0;
-      text-shadow: 0 0 10px #00ff88;
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.6; }
-      50% { opacity: 1; }
-    }
-
-    @media (max-width: 480px) {
-      body { padding: 15px; }
-      h1 { font-size: 1.9rem; }
-      .grid { gap: 20px; }
-    }
-
-  /* ⭐ DESKTOP/LAPTOP HEAD FIX */
-@media (min-width: 481px) {
-  .photo {
-    height: auto !important;
-    max-height: 420px !important;
-    object-fit: contain !important;
-    object-position: top center !important;
+<style>
+  body {
+    background: #000;
+    color: #00ff88;
+    font-family: "Courier New", monospace;
+    padding: 30px;
+    max-width: 1000px;
+    margin: auto;
   }
-}
 
-    
-  </style>
+  /* Title container allows wrapping */
+  .title-container {
+    text-align: center;
+    width: 100%;
+    overflow-wrap: break-word;
+    white-space: normal;
+    margin: 0 auto 10px auto;
+  }
+
+  /* Inner span does the typing animation */
+  .page-title {
+    display: inline-block;
+    color: #00ff88;
+    font-size: 32px;
+    text-shadow: 0 0 15px #00ff88;
+    border-right: 2px solid #00ff88;
+    overflow: hidden;
+    white-space: nowrap;
+
+    /* Prevent initial flash */
+    visibility: hidden;
+
+    animation:
+  slideIn 0.4s ease-out forwards,
+  typing 4.2s steps(45, end) 0.4s forwards,
+  reveal 0s linear 0.4s forwards,
+  blink 0.8s step-end infinite alternate 4.6s;
+
+  }
+
+  @keyframes slideIn {
+    from { transform: translateX(-40px); opacity: 0; }
+    to   { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes typing {
+    from { width: 0; }
+    to   { width: 100%; }
+  }
+
+  @keyframes reveal {
+    to { visibility: visible; }
+  }
+
+  @keyframes blink {
+    from { border-color: transparent; }
+    to   { border-color: #00ff88; }
+  }
+
+  .subtext {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #66ffbb;
+    text-align: center;
+  }
+
+  .btn-primary {
+    background: #00ff88;
+    color: #000;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 20px #00ff88;
+    margin: 20px auto;
+    display: block;
+  }
+
+  .btn-primary:hover {
+    background: #00ffaa;
+  }
+
+  .mode-label {
+    margin-top: 20px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .mode-buttons {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .mode-btn {
+    background: #0a0a0a;
+    color: #00ff88;
+    border: 1px solid #00ff88;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 0 6px;
+    font-size: 13px;
+  }
+
+  .mode-btn.active {
+    background: #00ff88;
+    color: #000;
+    box-shadow: 0 0 15px #00ff88;
+  }
+
+  .mode-btn:hover {
+    background: #00ffaa;
+    color: #000;
+  }
+
+  /* Directory Cards (Newest Mode) */
+  .directory-card {
+    background: #0a0a0a;
+    border-left: 5px solid #00ff88;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  .directory-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 2px solid #00ff88;
+    margin-right: 20px;
+  }
+
+  .directory-name {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .directory-meta {
+    font-size: 13px;
+    opacity: 0.9;
+  }
+
+  /* Leaderboard Rows */
+  .leaderboard-row {
+    background: #050505;
+    border-left: 4px solid #00ff88;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+  }
+
+  .rank-badge {
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 12px;
+    color: #00ff88;
+    width: 32px;
+    text-align: right;
+  }
+
+  .leaderboard-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #00ff88;
+    margin-right: 12px;
+  }
+
+  .leaderboard-name {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .leaderboard-stats {
+    font-size: 12px;
+    opacity: 0.9;
+  }
+
+  .hir-chip {
+    margin-left: auto;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #000;
+    box-shadow: 0 0 12px #00ff88;
+  }
+
+  .hir-green { background: #00ff88; }
+  .hir-yellow { background: #e6ff00; }
+  .hir-red { background: #ff4444; }
+
+  .section-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #66ffbb;
+    margin-bottom: 6px;
+  }
+</style>
 </head>
 
 <body>
 
-  <h1>INTELLIGENCE ASSOCIATES</h1>
+<!-- Title -->
+<h1 class="title-container">
+  <span class="page-title">MEET OUR INTELLIGENCE ASSOCIATES</span>
+</h1>
 
-  <a href="/associate-apply.html" class="apply-btn">
-    Apply to Be an Intelligence Associate
-  </a>
+<div class="subtext">
+  Intelligence associates in active competition. Rankings update in real time.
+</div>
 
-  <div id="loading">INITIALIZING ASSOCIATES NETWORK...</div>
+<button class="btn-primary">
+  APPLY TO BE AN INTELLIGENCE ASSOCIATE
+</button>
 
-  <div class="grid" id="grid"></div>
+<div class="mode-label">Sort Associates by:</div>
 
-  <a href="/index.html" class="back-home">&lt; Back to Home</a>
+<div class="mode-buttons">
+  <button id="btnNewest" class="mode-btn active" onclick="setMode('newest')">Newest</button>
+  <button id="btnLeaderboard" class="mode-btn" onclick="setMode('leaderboard')">Leaderboard</button>
+</div>
 
-  <script>
-    const BASE_URL =
-      "https://script.google.com/macros/s/AKfycbz_vOFpD9MlXADWLMXavqEbsYVIzNMmtfAwLFtDpqH29Sqgbggte-OIHOhiyrsxnEZHyw/exec";
+<!-- Newest Mode -->
+<div id="directorySection">
+  <div class="section-label">Newest Associates</div>
+  <div id="directoryContainer">Loading associates...</div>
+</div>
 
-    async function loadAssociates() {
-      const loading = document.getElementById("loading");
+<!-- Leaderboard Mode -->
+<div id="leaderboardSection" style="display:none;">
+  <div class="section-label">Competition Leaderboard</div>
+  <div id="leaderboardContainer">Loading leaderboard...</div>
+</div>
 
-      try {
-        const res = await fetch(BASE_URL + "?list=1&cb=" + Date.now());
-        const data = await res.json();
+<script>
+const BASE_URL = "YOUR_BACKEND_URL_HERE"; // Replace with your Apps Script URL
 
-        loading.style.display = "none";
+let associates = [];
+let currentMode = 'newest';
 
-        if (!data || data.length === 0) {
-          loading.style.display = "block";
-          loading.innerText = "NO ASSOCIATES FOUND";
-          return;
-        }
+async function loadAssociates() {
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "getAssociates" })
+    });
 
-        // ⭐ NEWEST → OLDEST SORTING BASED ON TIMESTAMP
-        data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-        const grid = document.getElementById("grid");
-        grid.innerHTML = "";
-
-        data.forEach(a => {
-          const card = document.createElement("div");
-          card.className = "card";
-
-          card.innerHTML = `
-            <img src="${a.photoUrl}" class="photo"
-              onerror="this.src='https://via.placeholder.com/300x280/111111/00ff88?text=Photo+Unavailable'" />
-
-            <div class="name">${a.name}</div>
-            <div class="specialty">${a.specialty}</div>
-            <div class="bio">${a.bio}</div>
-
-            <a class="insta-btn" href="https://instagram.com/${a.instagram}" target="_blank">
-              View Instagram
-            </a>
-
-            <a class="select-btn" href="/profile.html?id=${a.id}">
-              View Profile and Select
-            </a>
-          `;
-
-          grid.appendChild(card);
-        });
-
-      } catch (err) {
-        console.error(err);
-        loading.style.display = "block";
-        loading.innerHTML = "ERROR LOADING ASSOCIATES NETWORK";
-      }
+    const data = await res.json();
+    if (!data.success) {
+      document.getElementById("directoryContainer").innerHTML = "Error loading associates.";
+      document.getElementById("leaderboardContainer").innerHTML = "Error loading associates.";
+      return;
     }
 
-    window.onload = loadAssociates;
-  </script>
+    associates = data.associates || [];
+    renderCurrentMode();
+  } catch (e) {
+    document.getElementById("directoryContainer").innerHTML = "Error loading associates.";
+    document.getElementById("leaderboardContainer").innerHTML = "Error loading associates.";
+  }
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById("btnNewest").classList.toggle("active", mode === 'newest');
+  document.getElementById("btnLeaderboard").classList.toggle("active", mode === 'leaderboard');
+
+  document.getElementById("directorySection").style.display = (mode === 'newest') ? 'block' : 'none';
+  document.getElementById("leaderboardSection").style.display = (mode === 'leaderboard') ? 'block' : 'none';
+
+  renderCurrentMode();
+}
+
+function renderCurrentMode() {
+  if (currentMode === 'newest') {
+    renderDirectory();
+  } else {
+    renderLeaderboard();
+  }
+}
+
+/* --------- DIRECTORY MODE --------- */
+function renderDirectory() {
+  const container = document.getElementById("directoryContainer");
+  container.innerHTML = "";
+
+  if (!associates.length) {
+    container.innerHTML = "No associates yet.";
+    return;
+  }
+
+  const sorted = [...associates].reverse();
+
+  sorted.forEach(a => {
+    const avatar = `https://api.dicebear.com/7.x/thumbs/svg?seed=${encodeURIComponent(a.name || a.associateId || 'associate')}`;
+
+    container.innerHTML += `
+      <div class="directory-card">
+        <img src="${avatar}" class="directory-avatar">
+        <div>
+          <div class="directory-name">${a.name || "Unnamed Associate"}</div>
+          <div class="directory-meta">
+            HIR: ${a.HIR || "—"}<br>
+            Cases Completed: ${a.casesCompleted || 0}<br>
+            Avg Client Rating: ${a.avgClientRating || "—"}<br>
+            Avg Community Rating: ${a.avgCommunityRating || "—"}
+          </div>
+        </div>
+      </div>
+    `;
+  });
+}
+
+/* --------- LEADERBOARD MODE --------- */
+function renderLeaderboard() {
+  const container = document.getElementById("leaderboardContainer");
+  container.innerHTML = "";
+
+  if (!associates.length) {
+    container.innerHTML = "No associates yet.";
+    return;
+  }
+
+  const sorted = [...associates].sort((a, b) => {
+    const A = parseFloat(a.HIR) || 0;
+    const B = parseFloat(b.HIR) || 0;
+    return B - A;
+  });
+
+  sorted.forEach((a, index) => {
+    const rank = index + 1;
+    const avatar = `https://api.dicebear.com/7.x/thumbs/svg?seed=${encodeURIComponent(a.name || a.associateId || 'associate')}`;
+    const HIR = parseFloat(a.HIR) || 0;
+
+    let badgeClass = "hir-green";
+    if (HIR < 70) badgeClass = "hir-yellow";
+    if (HIR < 40) badgeClass = "hir-red";
+
+    container.innerHTML += `
+      <div class="leaderboard-row">
+        <div class="rank-badge">#${rank}</div>
+        <img src="${avatar}" class="leaderboard-avatar">
+        <div>
+          <div class="leaderboard-name">${a.name || "Unnamed Associate"}</div>
+          <div class="leaderboard-stats">
+            HIR: ${HIR.toFixed(1)} &nbsp;|&nbsp;
+            Cases: ${a.casesCompleted || 0} &nbsp;|&nbsp;
+            Client: ${a.avgClientRating || "—"} &nbsp;|&nbsp;
+            Community: ${a.avgCommunityRating || "—"}
+          </div>
+        </div>
+        <div class="hir-chip ${badgeClass}">
+          ${HIR.toFixed(1)}
+        </div>
+      </div>
+    `;
+  });
+}
+
+/* --------- INIT --------- */
+loadAssociates();
+</script>
 
 </body>
 </html>
