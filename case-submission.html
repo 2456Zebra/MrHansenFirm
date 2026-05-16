@@ -28,6 +28,15 @@
       opacity: 0.9;
     }
 
+    .disclaimer {
+      margin-top: 20px;
+      margin-bottom: 25px;
+      font-size: 14px;
+      color: #00ff88;
+      opacity: 0.7;
+      line-height: 1.4;
+    }
+
     .associate-banner {
       background: #0a0a0a;
       padding: 15px 20px;
@@ -98,15 +107,9 @@
       color: #00ffaa;
     }
 
-    /* ⭐ MOBILE FIX */
     @media (max-width: 600px) {
       body {
         padding: 20px 10px;
-      }
-      form, input, textarea, select {
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box;
       }
     }
   </style>
@@ -119,7 +122,6 @@
     When you submit a case, an account is created so you can return as a Client and view updates.
   </div>
 
-  <!-- Associate Prefill Banner -->
   <div id="associateBanner" class="associate-banner" style="display:none;">
     Submitting case to: <strong id="selectedAssociate"></strong>
   </div>
@@ -127,22 +129,24 @@
   <form id="caseForm">
     <input type="hidden" id="associateId">
 
-    <label>Associate</label>
-    <input type="text" id="associateName" readonly />
-
     <label>Your Name</label>
     <input type="text" id="clientName" required />
 
+    <label>Display Name (public)</label>
+    <input type="text" id="clientDisplayName" required />
+    <div class="subtitle" style="margin-top:5px;">This name will appear on the public View Cases page.</div>
+
     <label>Your Email</label>
     <input type="email" id="clientEmail" required />
-    <div class="subtitle" style="margin-top:5px;">Used to create your secure client account.</div>
 
     <label>Create Password</label>
     <input type="password" id="clientPassword" required />
-    <div class="subtitle" style="margin-top:5px;">Minimum 6 characters.</div>
 
     <label>Phone (optional)</label>
     <input type="text" id="clientPhone" />
+
+    <label>Associate</label>
+    <input type="text" id="associateName" readonly />
 
     <label>Case Subject</label>
     <input type="text" id="caseTitle" required />
@@ -158,6 +162,11 @@
       <option value="Level 3 - Crisis Session" data-link="https://buy.stripe.com/test_5kQaEX9VSgGDbgCgim77O02">Level 3 — Crisis Session ($195)</option>
     </select>
 
+    <!-- ⭐ Disclaimer moved here (cleaner, less clutter) -->
+    <div class="disclaimer">
+      <strong>Disclaimer:</strong> By submitting a case, you agree that your case title, description, and display name may be published publicly on the View Cases page. Your real name, email, and personal information will never be shown.
+    </div>
+
     <div id="status"></div>
     <button type="submit" id="submitBtn">PAY NOW & SUBMIT CASE</button>
   </form>
@@ -167,7 +176,6 @@
   </div>
 
   <script>
-    /* Prefill Associate */
     const params = new URLSearchParams(window.location.search);
     const associateName = params.get('associate');
     const associateId = params.get('id');
@@ -199,7 +207,7 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    const BASE_URL = "https://script.google.com/macros/s/AKfycbxcU-ADNA0l3KO-Pev4OEdFmWfJVTLA1E8knM3odyhifCC20e17LPD7R4vtQM2_c4Rv/exec";
+    const BASE_URL = "https://script.google.com/macros/s/AKfycbz_vOFpD9MlXADWLMXavqEbsYVIzNMmtfAwLFtDpqH29Sqgbggte-OIHOhiyrsxnEZHyw/exec";
 
     const statusEl = document.getElementById("status");
     const btn = document.getElementById("submitBtn");
@@ -247,6 +255,7 @@
       }
 
       const clientName = document.getElementById("clientName").value.trim();
+      const clientDisplayName = document.getElementById("clientDisplayName").value.trim();
       const clientEmail = document.getElementById("clientEmail").value.trim();
       const clientPassword = document.getElementById("clientPassword").value.trim();
       const clientPhone = document.getElementById("clientPhone").value.trim();
@@ -255,7 +264,7 @@
       const associateNameVal = document.getElementById("associateName").value.trim();
       const associateIdVal = document.getElementById("associateId").value.trim();
 
-      if (!clientName || !clientEmail || !clientPassword || !caseTitle || !caseDescription) {
+      if (!clientName || !clientDisplayName || !clientEmail || !clientPassword || !caseTitle || !caseDescription) {
         setStatus("Please fill in all required fields.", "#ff3366");
         return;
       }
@@ -275,7 +284,9 @@
         await ensureClientUserDoc(uid, clientEmail, clientName);
 
         const payload = {
+          action: "submitCase",
           clientName,
+          clientDisplayName,
           clientEmail,
           clientPhone,
           associateName: associateNameVal,
