@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>View Case</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  body {
+    background: #000;
+    color: #00ff88;
+    font-family: "Courier New", monospace;
+    padding: 30px;
+    max-width: 900px;
+    margin: auto;
+  }
+
+  h1 {
+    text-shadow: 0 0 15px #00ff88;
+    margin-bottom: 10px;
+  }
+
+  .case-box {
+    background: #0a0a0a;
+    padding: 20px;
+    border-left: 5px solid #00ff88;
+    margin-bottom: 30px;
+  }
+
+  .section-title {
+    font-size: 20px;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px #00ff88;
+  }
+
+  .avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid #00ff88;
+    margin-right: 15px;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  textarea, input {
+    width: 100%;
+    background: #0a0a0a;
+    border: 1px solid #00ff88;
+    color: #00ff88;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+  }
+
+  button {
+    background: #00ff88;
+    color: #000;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+    box-shadow: 0 0 20px #00ff88;
+  }
+
+  button:hover {
+    background: #00ffaa;
+  }
+
+  .comment {
+    background: #0a0a0a;
+    padding: 15px;
+    border-left: 3px solid #00ff88;
+    margin-bottom: 15px;
+  }
+
+  .vote-btn {
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 18px;
+  }
+
+  .vote-btn:hover {
+    color: #00ffaa;
+  }
+
+</style>
+</head>
+
+<body>
+
+<h1>CASE DETAILS</h1>
+
+<div id="caseContainer" class="case-box">
+  Loading case...
+</div>
+
+<h2 class="section-title">Associate Response</h2>
+<div id="associateBox" class="case-box">
+  Loading associate info...
+</div>
+
+<h2 class="section-title">Community Rating</h2>
+<input type="number" id="communityRatingInput" step="0.1" min="1" max="10" placeholder="Rate this case (1–10)">
+<button onclick="submitCommunityRating()">Submit Rating</button>
+
+<h2 class="section-title">Community Discussion</h2>
+<div id="commentsContainer"></div>
+
+<h3 class="section-title">Add Comment</h3>
+<input type="text" id="commentName" placeholder="Display Name (public)">
+<textarea id="commentText" placeholder="Write your comment..."></textarea>
+<button onclick="submitComment()">Post Comment</button>
+
+<script>
+const BASE_URL = "https://script.google.com/macros/s/AKfycbz_vOFpD9MlXADWLMXavqEbsYVIzNMmtfAwLFtDpqH29Sqgbggte-OIHOhiyrsxnEZHyw/exec";
+
+const params = new URLSearchParams(window.location.search);
+const caseId = params.get("id");
+
+if (!caseId) {
+  document.getElementById("caseContainer").innerHTML = "Invalid case.";
+}
+
+/* ---------------------------
+   FETCH CASE PUBLIC DATA
+----------------------------*/
+async function loadCase() {
+  const res = await fetch(BASE_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ action: "getCasePublic", caseId })
+  });
+
+  const data = await res.json();
+  if (!data.success) {
+    document.getElementById("caseContainer").innerHTML = "Case not found.";
+    return;
+  }
+
+  const c = data.case;
+
+  const avatar = `https://api.dicebear.com/7.x/thumbs/svg?seed=${encodeURIComponent(c.clientDisplayName)}`;
+
+  document.getElementById("caseContainer").innerHTML = `
+    <div class="row">
+      <img src="${avatar}" class="avatar">
+      <div>
+        <strong>${c.clientDisplayName}</strong><br>
+        <small>${c.timestamp}</small>
+      </div>
+    </div>
+
+    <h2>${c.caseTitle}</h2>
+
+    <p>${c.description}</p>
+
+    <p><strong>Tier:</strong> ${c.tier}</p>
+    <p><strong>Status:</strong> ${c.status}</p>
+
+    <p><strong>Client Rating:</strong> ${c.clientRating || "—"}</p>
+    <p><strong>Community Rating:</strong> ${c.communityRating || "—"}</p>
+  `;
+
+  document.getElementById("associateBox").innerHTML = `
+    <p><strong>Associate:</strong> ${c.associateName}</p>
+    <p><strong>HIR:</strong> ${c.associateHIR || "—"}</p>
+  `;
+}
+
+/* ---------------------------
+   FETCH COMMENTS
+----------------------------*/
+async function loadComments() {
+  const res = await fetch(BASE_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ action: "getCaseThread", caseId })
+  });
+
+  const data = await res.json();
+  const container = document.getElementById("commentsContainer");
+  container.innerHTML = "";
+
+  if (!data.success || data.comments.length === 0) {
+    container.innerHTML = "<p>No comments yet.</p>";
+    return;
+  }
+
+  data.comments.forEach(c => {
+    const avatar = `https://api.dicebear.com/7.x/thumbs/svg?seed=${encodeURIComponent(c.displayName)}`;
+
+    container.innerHTML += `
+      <div class="comment">
+        <div class="row">
+          <img src="${avatar}" class="avatar">
+          <div>
+            <strong>${c.displayName}</strong><br>
+            <small>${c.timestamp}</small>
+          </div>
+        </div>
+
+        <p>${c.text}</p>
+
+        <span class="vote-btn" onclick="voteComment('${c.commentId}', 1)">👍 ${c.upvotes}</span>
+        <span class="vote-btn" onclick="voteComment('${c.commentId}', -1)">👎 ${c.downvotes}</span>
+      </div>
+    `;
+  });
+}
+
+/* ---------------------------
+   SUBMIT COMMUNITY RATING
+----------------------------*/
+async function submitCommunityRating() {
+  const rating = parseFloat(document.getElementById("communityRatingInput").value);
+  if (isNaN(rating) || rating < 1 || rating > 10) {
+    alert("Enter a rating between 1 and 10.");
+    return;
+  }
+
+  await fetch(BASE_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({
+      action: "rateCase",
+      caseId,
+      userId: "community",
+      rating
+    })
+  });
+
+  alert("Rating submitted.");
+  loadCase();
+}
+
+/* ---------------------------
+   SUBMIT COMMENT
+----------------------------*/
+async function submitComment() {
+  const name = document.getElementById("commentName").value.trim();
+  const text = document.getElementById("commentText").value.trim();
+
+  if (!name || !text) {
+    alert("Enter a display name and comment.");
+    return;
+  }
+
+  const commentId = "COMM_" + Date.now();
+
+  await fetch(BASE_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({
+      action: "postComment",
+      commentId,
+      caseId,
+      userId: "community",
+      displayName: name,
+      role: "community",
+      text,
+      timestamp: new Date().toISOString()
+    })
+  });
+
+  document.getElementById("commentText").value = "";
+  loadComments();
+}
+
+/* ---------------------------
+   VOTE COMMENT
+----------------------------*/
+async function voteComment(commentId, vote) {
+  await fetch(BASE_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({
+      action: "voteComment",
+      commentId,
+      userId: "community",
+      vote
+    })
+  });
+
+  loadComments();
+}
+
+/* ---------------------------
+   INIT
+----------------------------*/
+loadCase();
+loadComments();
+
+</script>
+</body>
+</html>
