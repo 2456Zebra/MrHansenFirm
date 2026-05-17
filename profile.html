@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Associate Profile</title>
+
   <style>
     body {
       font-family: "Courier New", monospace;
@@ -22,18 +23,16 @@
       display: inline-block;
     }
     .error { color: #ff3366; }
-    
+
     .profile-container {
       display: flex;
       flex-direction: column;
       gap: 30px;
       margin-top: 20px;
     }
-    
-    .photo-container {
-      text-align: center;
-    }
-    
+
+    .photo-container { text-align: center; }
+
     .photo {
       width: 100%;
       max-width: 380px;
@@ -41,19 +40,19 @@
       border: 3px solid #00ff88;
       box-shadow: 0 0 30px #00ff88;
     }
-    
+
     .info h1 {
       font-size: 2.4rem;
       margin: 0 0 8px 0;
       text-shadow: 0 0 15px #00ff88;
     }
-    
+
     .specialty {
       font-size: 1.5rem;
       color: #00ffaa;
       margin-bottom: 25px;
     }
-    
+
     .bio {
       font-size: 17px;
       background: #0a0a0a;
@@ -61,7 +60,7 @@
       border-radius: 10px;
       border-left: 5px solid #00ff88;
     }
-    
+
     .btn {
       display: inline-block;
       margin: 10px 8px 10px 0;
@@ -72,26 +71,16 @@
       text-decoration: none;
       transition: all 0.3s;
     }
-    
+
     .insta-btn { background: #ff2ea6; color: #fff; }
     .case-btn { background: #00ff88; color: #000; }
     .btn:hover { transform: scale(1.05); }
 
     @media (min-width: 768px) {
-      .profile-container {
-        flex-direction: row;
-        gap: 50px;
-      }
-      .photo-container {
-        flex-shrink: 0;
-        width: 380px;
-      }
-      .info {
-        flex: 1;
-      }
-      body {
-        padding: 40px 20px;
-      }
+      .profile-container { flex-direction: row; gap: 50px; }
+      .photo-container { flex-shrink: 0; width: 380px; }
+      .info { flex: 1; }
+      body { padding: 40px 20px; }
     }
 
     @media (max-width: 480px) {
@@ -99,37 +88,35 @@
       .info h1 { font-size: 2rem; }
       .specialty { font-size: 1.3rem; }
       .bio { padding: 20px; font-size: 16px; }
-      .btn {
-        display: block;
-        margin: 12px 0;
-        text-align: center;
-      }
+      .btn { display: block; margin: 12px 0; text-align: center; }
     }
   </style>
 </head>
+
 <body>
   <a href="/associates.html" class="back-link">← BACK TO ALL ASSOCIATES</a>
-  
+
   <div id="loading">LOADING PROFILE...</div>
   <div id="errorMessage" class="error" style="display:none;"></div>
-  
-  <div id="profileContent" style="display: none;">
+
+  <div id="profileContent" style="display:none;">
     <div class="profile-container">
-      
+
       <div class="photo-container">
         <img id="profilePhoto" class="photo" alt="Associate Photo">
       </div>
-      
+
       <div class="info">
         <h1 id="profileName"></h1>
         <div id="profileSpecialty" class="specialty"></div>
         <div id="profileBio" class="bio"></div>
-        
+
         <div>
           <a id="instaBtn" class="btn insta-btn" target="_blank">VIEW INSTAGRAM</a>
           <a id="caseBtn" class="btn case-btn">SUBMIT CASE TO THIS ASSOCIATE</a>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -138,35 +125,41 @@
 
     async function loadProfile() {
       const params = new URLSearchParams(window.location.search);
-      const id = params.get('id');
-      
-      if (!id) {
-        showError("No profile ID in URL. Go back and click 'View Full Profile'.");
-        return;
-      }
+      const id = params.get("id");
+
+      if (!id) return showError("No profile ID in URL.");
 
       try {
-        const res = await fetch(BASE_URL + "?list=1");
-        const associates = await res.json();
-        const associate = associates.find(a => a.id === id);
+        const res = await fetch(BASE_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "getAssociates" })
+        });
 
-        if (!associate) {
-          showError(`Associate with ID "${id}" not found.`);
-          return;
-        }
+        const data = await res.json();
+
+        if (!data.success || !Array.isArray(data.associates))
+          return showError("Invalid data from server.");
+
+        const associate = data.associates.find(a => a.associateId === id);
+
+        if (!associate)
+          return showError(`Associate with ID "${id}" not found.`);
 
         document.getElementById("profileName").textContent = associate.name;
-        document.getElementById("profileSpecialty").textContent = associate.specialty;
-        document.getElementById("profileBio").innerHTML = associate.bio.replace(/\n/g, '<br>');
-        document.getElementById("profilePhoto").src = associate.photoUrl;
+        document.getElementById("profileSpecialty").textContent = associate.specialty || "No specialty listed";
+        document.getElementById("profileBio").innerHTML = (associate.bio || "").replace(/\n/g, "<br>");
+        document.getElementById("profilePhoto").src = associate.photoUrl || "";
         document.getElementById("instaBtn").href = `https://instagram.com/${associate.instagram}`;
-        document.getElementById("caseBtn").href = `/case-submission.html?associate=${encodeURIComponent(associate.name)}&id=${associate.id}`;
+        document.getElementById("caseBtn").href =
+          `/case-submission.html?associate=${encodeURIComponent(associate.name)}&id=${associate.associateId}`;
 
         document.getElementById("loading").style.display = "none";
         document.getElementById("profileContent").style.display = "block";
+
       } catch (err) {
         console.error("Load error:", err);
-        showError("Failed to load profile. Check console for details.");
+        showError("Failed to load profile.");
       }
     }
 
@@ -179,5 +172,6 @@
 
     window.onload = loadProfile;
   </script>
+
 </body>
 </html>
