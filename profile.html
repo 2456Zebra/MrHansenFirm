@@ -29,11 +29,33 @@
     text-decoration: underline;
   }
 
+  /* Boot sequence */
+  #bootSequence {
+    font-size: 14px;
+    color: #66ffbb;
+    margin-bottom: 25px;
+    white-space: pre-line;
+    opacity: 0;
+    animation: fadeInBoot 1.5s forwards;
+  }
+
+  @keyframes fadeInBoot {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
   /* Layout container */
   .profile-wrapper {
     display: flex;
     gap: 30px;
     align-items: flex-start;
+    opacity: 0;
+    animation: fadeInProfile 1.5s forwards 2.5s;
+  }
+
+  @keyframes fadeInProfile {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   /* Mobile layout */
@@ -43,7 +65,7 @@
     }
   }
 
-  /* Photo restored to normal size */
+  /* Photo */
   .photo {
     width: 320px;
     height: 420px;
@@ -76,11 +98,15 @@
     display: flex;
     margin-bottom: 12px;
     opacity: 0;
-    animation: typeIn 0.6s forwards;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 2px solid #00ff88;
+    width: 0;
+    animation: typing 2s steps(40, end) forwards;
   }
 
   .field-label {
-    width: 180px;
+    width: 220px;
     font-weight: bold;
     color: #66ffbb;
   }
@@ -90,18 +116,29 @@
     color: #baffd9;
   }
 
-  /* HIR emphasized */
-  .hir-value {
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #00ff88;
-    text-shadow: 0 0 12px #00ff88;
+  /* Typewriter animation */
+  @keyframes typing {
+    from { width: 0; opacity: 1; }
+    to   { width: 100%; opacity: 1; }
   }
 
-  /* Typewriter entrance */
-  @keyframes typeIn {
-    from { opacity: 0; transform: translateX(-10px); }
-    to   { opacity: 1; transform: translateX(0); }
+  @keyframes blinkCursor {
+    from { border-color: transparent; }
+    to   { border-color: #00ff88; }
+  }
+
+  /* HIR emphasized */
+  .hir-value {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #00ff88;
+    text-shadow: 0 0 18px #00ff88;
+    animation: pulseHIR 1.4s infinite alternate;
+  }
+
+  @keyframes pulseHIR {
+    from { text-shadow: 0 0 10px #00ff88; opacity: 0.85; }
+    to   { text-shadow: 0 0 25px #00ffaa; opacity: 1; }
   }
 
   /* Buttons smaller */
@@ -142,6 +179,20 @@
     background: #00ffaa;
     box-shadow: 0 0 14px #00ffaa;
   }
+
+  /* HIR explanation */
+  .hir-explainer {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #66ffbb;
+    opacity: 0;
+    animation: fadeInExplainer 1.5s forwards 10s;
+  }
+
+  @keyframes fadeInExplainer {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
 </style>
 </head>
 
@@ -149,7 +200,9 @@
 
 <a href="/associates.html" class="back-link">← Back to Associates</a>
 
-<div id="profileContainer">Loading profile...</div>
+<div id="bootSequence"></div>
+
+<div id="profileContainer"></div>
 
 <script>
 function getQueryParam(key) {
@@ -157,13 +210,33 @@ function getQueryParam(key) {
   return url.searchParams.get(key);
 }
 
-async function loadProfile() {
-  const id = (getQueryParam("id") || "").trim();
+function playBootSequence() {
+  const boot = [
+    "> INITIALIZING SECURE PROFILE VIEWER...",
+    "> ESTABLISHING ENCRYPTED LINK...",
+    "> AUTHENTICATING USER ACCESS LEVEL: APPROVED",
+    "> DECRYPTING ASSOCIATE DOSSIER...",
+    "> LOADING INTELLIGENCE METRICS...",
+    "> RENDERING PROFILE..."
+  ];
 
-  if (!id) {
-    document.getElementById("profileContainer").innerHTML = "Invalid profile.";
-    return;
-  }
+  let i = 0;
+  const el = document.getElementById("bootSequence");
+
+  const interval = setInterval(() => {
+    if (i < boot.length) {
+      el.innerHTML += boot[i] + "\n";
+      i++;
+    } else {
+      clearInterval(interval);
+    }
+  }, 600);
+}
+
+async function loadProfile() {
+  playBootSequence();
+
+  const id = (getQueryParam("id") || "").trim();
 
   try {
     const res = await fetch(
@@ -176,21 +249,11 @@ async function loadProfile() {
     );
 
     const data = await res.json();
-    if (!data.success) {
-      document.getElementById("profileContainer").innerHTML = "Error loading profile.";
-      return;
-    }
-
     const associate = data.associates.find(a =>
       (a.associateId || "").trim() === id
     );
 
-    if (!associate) {
-      document.getElementById("profileContainer").innerHTML = "Profile not found.";
-      return;
-    }
-
-    const photoUrl = associate.photoUrl || "https://via.placeholder.com/400x300/111111/00ff88?text=No+Photo";
+    const photoUrl = associate.photoUrl;
 
     document.getElementById("profileContainer").innerHTML = `
       <div class="profile-wrapper">
@@ -202,32 +265,38 @@ async function loadProfile() {
 
           <div class="name">${associate.name}</div>
 
-          <div class="field" style="animation-delay:0.1s">
+          <div class="field" style="animation-delay:2.5s">
             <div class="field-label">Specialty:</div>
             <div class="field-value">${associate.specialty || "—"}</div>
           </div>
 
-          <div class="field" style="animation-delay:0.2s">
+          <div class="field" style="animation-delay:4.5s">
             <div class="field-label">Bio:</div>
             <div class="field-value">${associate.bio || "—"}</div>
           </div>
 
-          <div class="field" style="animation-delay:0.3s">
+          <div class="field" style="animation-delay:6.5s">
             <div class="field-label">Cases Completed:</div>
             <div class="field-value">${associate.casesCompleted || 0}</div>
           </div>
 
-          <div class="field" style="animation-delay:0.4s">
+          <div class="field" style="animation-delay:8.5s">
             <div class="field-label">Community Rating:</div>
             <div class="field-value">${associate.avgCommunityRating || "—"}</div>
           </div>
 
-          <div class="field" style="animation-delay:0.5s">
+          <div class="field" style="animation-delay:10.5s">
             <div class="field-label">Hansen Intelligence Rating (HIR):</div>
             <div class="field-value hir-value">${associate.HIR || "—"}</div>
           </div>
 
-          <div class="btn-row" style="animation-delay:0.6s">
+          <div class="hir-explainer">
+            The Hansen Intelligence Rating (HIR) is the core competitive metric of the MR. Hansen Firm.
+            It reflects performance, precision, client impact, community trust, and overall intelligence output.
+            Associates rise and fall by this number.
+          </div>
+
+          <div class="btn-row" style="animation-delay:12s">
             <a class="insta-btn"
                href="https://instagram.com/${associate.instagram}"
                target="_blank"
