@@ -141,7 +141,7 @@
         if (!data.success || !Array.isArray(data.associates))
           return showError("Invalid data from server.");
 
-        const associate = data.associates.find(a => a.associateId === id);
+        const associate = data.associates.find(a => a.associateId.trim() === id.trim());
 
         if (!associate)
           return showError(`Associate with ID "${id}" not found.`);
