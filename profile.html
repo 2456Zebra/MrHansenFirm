@@ -59,6 +59,7 @@
       padding: 30px;
       border-radius: 10px;
       border-left: 5px solid #00ff88;
+      white-space: pre-wrap;
     }
 
     .btn {
@@ -75,6 +76,10 @@
     .insta-btn { background: #ff2ea6; color: #fff; }
     .case-btn { background: #00ff88; color: #000; }
     .btn:hover { transform: scale(1.05); }
+
+    #profileContent {
+      visibility: hidden; /* prevents flash */
+    }
 
     @media (min-width: 768px) {
       .profile-container { flex-direction: row; gap: 50px; }
@@ -146,16 +151,33 @@
         if (!associate)
           return showError(`Associate with ID "${id}" not found.`);
 
+        // BASIC FIELDS
         document.getElementById("profileName").textContent = associate.name;
-        document.getElementById("profileSpecialty").textContent = associate.specialty || "No specialty listed";
-        document.getElementById("profileBio").innerHTML = (associate.bio || "").replace(/\n/g, "<br>");
+        document.getElementById("profileSpecialty").textContent =
+          associate.specialty || "No specialty listed";
+
+        document.getElementById("profileBio").innerHTML =
+          (associate.bio || "").replace(/\n/g, "<br>");
+
         document.getElementById("profilePhoto").src = associate.photoUrl || "";
-        document.getElementById("instaBtn").href = `https://instagram.com/${associate.instagram}`;
+
+        // INSTAGRAM (SAFE)
+        if (associate.instagram) {
+          document.getElementById("instaBtn").href =
+            `https://instagram.com/${associate.instagram}`;
+        } else {
+          document.getElementById("instaBtn").style.display = "none";
+        }
+
+        // CASE SUBMISSION LINK
         document.getElementById("caseBtn").href =
           `/case-submission.html?associate=${encodeURIComponent(associate.name)}&id=${associate.associateId}`;
 
+        // SHOW CONTENT
         document.getElementById("loading").style.display = "none";
-        document.getElementById("profileContent").style.display = "block";
+        const content = document.getElementById("profileContent");
+        content.style.display = "block";
+        content.style.visibility = "visible";
 
       } catch (err) {
         console.error("Load error:", err);
