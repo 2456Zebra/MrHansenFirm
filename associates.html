@@ -125,7 +125,7 @@
     margin-bottom: 6px;
   }
 
-  /* NEWEST — neon grid cards */
+  /* GRID */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -192,32 +192,48 @@
     line-height: 1.5;
   }
 
-  .insta-btn, .select-btn {
+  /* FIXED INSTAGRAM BUTTON — unified, no duplicates */
+  .insta-btn {
     display: inline-block;
     padding: 10px 18px;
-    margin: 5px 4px;
+    background: #ff2ea6;
+    color: #fff;
     border-radius: 6px;
     text-decoration: none;
     font-weight: bold;
-    transition: 0.2s;
-    font-size: 0.95rem;
-  }
-
-  .insta-btn {
-    background: #ff2ea6;
-    color: #fff;
     box-shadow: 0 0 12px #ff2ea6;
+    transition: 0.2s;
+    margin: 5px 4px 14px 4px;
+    font-size: 0.95rem;
   }
 
   .insta-btn:hover {
     background: #ff5fbd;
     box-shadow: 0 0 18px #ff5fbd;
+    transform: scale(1.05);
+  }
+
+  /* MOBILE FIX */
+  @media (max-width: 480px) {
+    .insta-btn {
+      font-size: 14px !important;
+      padding: 8px 14px !important;
+      margin-top: 10px !important;
+    }
   }
 
   .select-btn {
+    display: inline-block;
+    padding: 10px 18px;
     background: #00ff88;
     color: #000;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
     box-shadow: 0 0 12px #00ff88;
+    transition: 0.2s;
+    margin: 5px 4px;
+    font-size: 0.95rem;
   }
 
   .select-btn:hover {
@@ -276,26 +292,6 @@
   .hir-green { background: #00ff88; }
   .hir-yellow { background: #e6ff00; }
   .hir-red { background: #ff4444; }
-
-.insta-btn {
-  display: inline-block;
-  padding: 10px 16px;
-  background: #ff2ea6;
-  color: #fff;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: bold;
-  box-shadow: 0 0 12px #ff2ea6;
-  transition: 0.2s;
-  margin-top: 10px;
-}
-
-.insta-btn:hover {
-  background: #ff4fba;
-  box-shadow: 0 0 18px #ff4fba;
-  transform: scale(1.05);
-}
-
 
 </style>
 </head>
@@ -415,14 +411,12 @@ function renderDirectory() {
       <div class="specialty">${specialty}</div>
       <div class="bio">${bio}</div>
 
-      <a class="insta-btn btn" 
-   href="https://instagram.com/${a.instagram}" 
-   target="_blank" 
-   rel="noopener noreferrer">
-   Instagram
-</a>
-
-
+      <a class="insta-btn"
+         href="https://instagram.com/${a.instagram}"
+         target="_blank"
+         rel="noopener noreferrer">
+         Instagram
+      </a>
 
       <a class="select-btn" href="/profile.html?id=${a.associateId}">
         View Profile and Select
