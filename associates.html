@@ -15,7 +15,6 @@
     margin: auto;
   }
 
-  /* Title container allows wrapping */
   .title-container {
     text-align: center;
     width: 100%;
@@ -24,7 +23,6 @@
     margin: 0 auto 10px auto;
   }
 
-  /* Inner span does the typing animation */
 .page-title {
   display: inline-block;
   color: #00ff88;
@@ -32,13 +30,8 @@
   text-shadow: 0 0 15px #00ff88;
   border-right: 2px solid #00ff88;
   overflow: hidden;
-
-  /* allow wrapping */
   white-space: normal;
-
-  /* Prevent initial flash */
   visibility: hidden;
-
   animation:
     slideIn 0.4s ease-out forwards,
     typing 4.2s steps(45, end) 0.4s forwards,
@@ -51,7 +44,6 @@
   to   { transform: translateX(0); opacity: 1; }
 }
 
-/* NEW: clip-path typing so wrapping works */
 @keyframes typing {
   from { clip-path: inset(0 100% 0 0); }
   to   { clip-path: inset(0 0 0 0); }
@@ -125,7 +117,6 @@
     color: #000;
   }
 
-  /* Directory Cards (Newest Mode) */
   .directory-card {
     background: #0a0a0a;
     border-left: 5px solid #00ff88;
@@ -154,7 +145,6 @@
     opacity: 0.9;
   }
 
-  /* Leaderboard Rows */
   .leaderboard-row {
     background: #050505;
     border-left: 4px solid #00ff88;
@@ -218,7 +208,6 @@
 
 <body>
 
-<!-- Title -->
 <h1 class="title-container">
   <span class="page-title">MEET OUR INTELLIGENCE ASSOCIATES</span>
 </h1>
@@ -238,20 +227,18 @@
   <button id="btnLeaderboard" class="mode-btn" onclick="setMode('leaderboard')">Leaderboard</button>
 </div>
 
-<!-- Newest Mode -->
 <div id="directorySection">
   <div class="section-label">Newest Associates</div>
   <div id="directoryContainer">Loading associates...</div>
 </div>
 
-<!-- Leaderboard Mode -->
 <div id="leaderboardSection" style="display:none;">
   <div class="section-label">Competition Leaderboard</div>
   <div id="leaderboardContainer">Loading leaderboard...</div>
 </div>
 
 <script>
-const BASE_URL = "https://script.google.com/macros/s/AKfycbz_vOFpD9MlXADWLMXavqEbsYVIzNMmtfAwLFtDpqH29Sqgbggte-OIHOhiyrsxnEZHyw/exec"; //
+const BASE_URL = "https://script.google.com/macros/s/AKfycbz_vOFpD9MlXADWLMXavqEbsYVIzNMmtfAwLFtDpqH29Sqgbggte-OIHOhiyrsxnEZHyw/exec";
 
 let associates = [];
 let currentMode = 'newest';
@@ -265,14 +252,16 @@ async function loadAssociates() {
     });
 
     const data = await res.json();
-    if (!data.success) {
+
+    if (!data.success || !Array.isArray(data.associates)) {
       document.getElementById("directoryContainer").innerHTML = "Error loading associates.";
       document.getElementById("leaderboardContainer").innerHTML = "Error loading associates.";
       return;
     }
 
-    associates = data.associates || [];
+    associates = data.associates;
     renderCurrentMode();
+
   } catch (e) {
     document.getElementById("directoryContainer").innerHTML = "Error loading associates.";
     document.getElementById("leaderboardContainer").innerHTML = "Error loading associates.";
@@ -298,7 +287,6 @@ function renderCurrentMode() {
   }
 }
 
-/* --------- DIRECTORY MODE --------- */
 function renderDirectory() {
   const container = document.getElementById("directoryContainer");
   container.innerHTML = "";
@@ -330,7 +318,6 @@ function renderDirectory() {
   });
 }
 
-/* --------- LEADERBOARD MODE --------- */
 function renderLeaderboard() {
   const container = document.getElementById("leaderboardContainer");
   container.innerHTML = "";
@@ -376,7 +363,6 @@ function renderLeaderboard() {
   });
 }
 
-/* --------- INIT --------- */
 loadAssociates();
 </script>
 
