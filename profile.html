@@ -146,12 +146,10 @@
   .flex-icon {
     width: 18px;
     height: 18px;
-    filter: drop-shadow(0 0 4px #ffd700);
   }
 
   .flex-icon.dim {
     opacity: 0.25;
-    filter: none;
   }
 
   /* Case Success Probability */
@@ -187,7 +185,6 @@
     background: #00ff88;
     width: 0%;
     animation: fillProb 2s forwards 10s;
-    box-shadow: 0 0 12px #00ff88;
   }
 
   .prob-text {
@@ -221,6 +218,12 @@
     margin-bottom: 6px;
   }
 
+  .hir-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
   .hir-value {
     font-size: 3rem;
     font-weight: bold;
@@ -230,14 +233,14 @@
   }
 
   @keyframes pulseHIR {
-    from { text-shadow: 0 0 22px #00ff88; opacity: 0.85; transform: scale(1); }
-    to   { text-shadow: 0 0 42px #00ffaa; opacity: 1; transform: scale(1.04); }
+    from { text-shadow: 0 0 22px #00ff88; opacity: 0.85; }
+    to   { text-shadow: 0 0 42px #00ffaa; opacity: 1; }
   }
 
   .hir-outof {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #66ffbb;
-    margin-top: 4px;
+    margin-left: 4px;
   }
 
   /* Competition header */
@@ -389,7 +392,7 @@ async function loadProfile() {
   for (let i = 1; i <= 10; i++) {
     flexIcons += `
       <img 
-        src="https://img.icons8.com/fluency-systems-regular/50/${i <= rating ? 'ffd700' : '444444'}/flex-biceps.png" 
+        src="https://img.icons8.com/fluency/48/${i <= rating ? 'ffd700' : '444444'}/flex-biceps.png" 
         class="flex-icon ${i <= rating ? '' : 'dim'}"
       >
     `;
@@ -444,8 +447,11 @@ async function loadProfile() {
         <!-- HIR BLOCK -->
         <div class="hir-block">
           <div class="hir-label">Hansen Intelligence Rating (HIR):</div>
-          <div class="hir-value">${associate.HIR || "—"}</div>
-          <div class="hir-outof">out of 100</div>
+
+          <div class="hir-row">
+            <div class="hir-value">${associate.HIR || "—"}</div>
+            <div class="hir-outof">out of 100</div>
+          </div>
         </div>
 
         <!-- Competition Header -->
@@ -456,7 +462,7 @@ async function loadProfile() {
           The Hansen Intelligence Rating (HIR) is the core competitive metric of the MR. Hansen Firm.
           It reflects performance, precision, client impact, community trust, and overall intelligence output.
           Associates rise and fall by this number. 
-          <a href="/associates.html" style="color:#00ffaa; text-decoration:none;">Visit the Associate Rankings Dashboard</a>.
+          <a href="/associates.html" style="color:#00ffaa; text-decoration:none;">&lt; Associates Rankings Dashboard</a>.
         </div>
 
         <div class="btn-row">
