@@ -395,7 +395,9 @@ async function loadProfile() {
              Instagram
           </a>
 
-          <a class="case-btn" href="/case.html?id=${associate.associateId.trim()}">
+          <!-- ⭐ FIXED: Associate name now included -->
+          <a class="case-btn" 
+             href="/case.html?id=${associate.associateId.trim()}&associate=${encodeURIComponent(associate.name)}">
             Assign Case
           </a>
         </div>
