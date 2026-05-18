@@ -101,7 +101,7 @@
     overflow: hidden;
     border-right: 2px solid #00ff88;
     animation: typing 2s steps(40, end) forwards;
-    max-width: 600px; /* prevents overflow */
+    max-width: 600px;
   }
 
   .field-label {
@@ -114,13 +114,35 @@
   .field-value {
     flex: 1;
     color: #baffd9;
-    white-space: normal; /* allows wrapping */
+    white-space: normal;
   }
 
   /* Typewriter animation */
   @keyframes typing {
     from { width: 0; opacity: 1; }
     to   { width: 100%; opacity: 1; }
+  }
+
+  /* Community Rating icons */
+  .rating-icons {
+    display: flex;
+    gap: 4px;
+    margin-top: 4px;
+  }
+
+  .rating-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .dot-filled {
+    background: #00ff88;
+    box-shadow: 0 0 6px #00ff88;
+  }
+
+  .dot-empty {
+    background: #003322;
   }
 
   /* HIR emphasized */
@@ -142,16 +164,22 @@
   }
 
   .hir-value {
-    font-size: 2.2rem;
+    font-size: 2.6rem;
     font-weight: bold;
     color: #00ff88;
-    text-shadow: 0 0 18px #00ff88;
-    animation: pulseHIR 1.4s infinite alternate;
+    text-shadow: 0 0 22px #00ff88;
+    animation: pulseHIR 1.1s infinite alternate;
   }
 
   @keyframes pulseHIR {
-    from { text-shadow: 0 0 12px #00ff88; opacity: 0.85; }
-    to   { text-shadow: 0 0 28px #00ffaa; opacity: 1; }
+    from { text-shadow: 0 0 14px #00ff88; opacity: 0.8; transform: scale(1); }
+    to   { text-shadow: 0 0 32px #00ffaa; opacity: 1; transform: scale(1.06); }
+  }
+
+  .hir-outof {
+    font-size: 0.9rem;
+    color: #66ffbb;
+    margin-top: 4px;
   }
 
   /* Buttons smaller */
@@ -275,6 +303,13 @@ async function loadProfile() {
 
   const photoUrl = associate.photoUrl;
 
+  /* Build community rating dots */
+  const rating = Number(associate.avgCommunityRating || 0);
+  let dots = "";
+  for (let i = 1; i <= 10; i++) {
+    dots += `<div class="rating-dot ${i <= rating ? "dot-filled" : "dot-empty"}"></div>`;
+  }
+
   document.getElementById("profileContainer").innerHTML = `
     <div class="profile-wrapper">
 
@@ -302,13 +337,17 @@ async function loadProfile() {
 
         <div class="field" style="animation-delay:8.5s">
           <div class="field-label">Community Rating:</div>
-          <div class="field-value">${associate.avgCommunityRating || "—"}</div>
+          <div class="field-value">
+            ${rating}
+            <div class="rating-icons">${dots}</div>
+          </div>
         </div>
 
         <!-- HIR BLOCK -->
         <div class="hir-block">
           <div class="hir-label">Hansen Intelligence Rating (HIR):</div>
           <div class="hir-value">${associate.HIR || "—"}</div>
+          <div class="hir-outof">out of 100</div>
         </div>
 
         <div class="hir-explainer">
