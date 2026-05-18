@@ -98,22 +98,23 @@
     display: flex;
     margin-bottom: 12px;
     opacity: 0;
-    white-space: nowrap;
     overflow: hidden;
     border-right: 2px solid #00ff88;
-    width: 0;
     animation: typing 2s steps(40, end) forwards;
+    max-width: 600px; /* prevents overflow */
   }
 
   .field-label {
     width: 220px;
     font-weight: bold;
     color: #66ffbb;
+    white-space: nowrap;
   }
 
   .field-value {
     flex: 1;
     color: #baffd9;
+    white-space: normal; /* allows wrapping */
   }
 
   /* Typewriter animation */
@@ -122,14 +123,26 @@
     to   { width: 100%; opacity: 1; }
   }
 
-  @keyframes blinkCursor {
-    from { border-color: transparent; }
-    to   { border-color: #00ff88; }
+  /* HIR emphasized */
+  .hir-block {
+    margin-top: 20px;
+    opacity: 0;
+    animation: fadeInHIR 1.5s forwards 10.5s;
   }
 
-  /* HIR emphasized */
+  @keyframes fadeInHIR {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hir-label {
+    font-size: 1rem;
+    color: #66ffbb;
+    margin-bottom: 6px;
+  }
+
   .hir-value {
-    font-size: 1.6rem;
+    font-size: 2.2rem;
     font-weight: bold;
     color: #00ff88;
     text-shadow: 0 0 18px #00ff88;
@@ -137,8 +150,8 @@
   }
 
   @keyframes pulseHIR {
-    from { text-shadow: 0 0 10px #00ff88; opacity: 0.85; }
-    to   { text-shadow: 0 0 25px #00ffaa; opacity: 1; }
+    from { text-shadow: 0 0 12px #00ff88; opacity: 0.85; }
+    to   { text-shadow: 0 0 28px #00ffaa; opacity: 1; }
   }
 
   /* Buttons smaller */
@@ -146,6 +159,13 @@
     margin-top: 25px;
     display: flex;
     gap: 12px;
+    opacity: 0;
+    animation: fadeInButtons 1.5s forwards 12s;
+  }
+
+  @keyframes fadeInButtons {
+    from { opacity: 0; }
+    to   { opacity: 1; }
   }
 
   .insta-btn, .case-btn {
@@ -182,11 +202,12 @@
 
   /* HIR explanation */
   .hir-explainer {
-    margin-top: 20px;
+    margin-top: 15px;
     font-size: 0.9rem;
     color: #66ffbb;
     opacity: 0;
-    animation: fadeInExplainer 1.5s forwards 10s;
+    animation: fadeInExplainer 1.5s forwards 12.5s;
+    max-width: 600px;
   }
 
   @keyframes fadeInExplainer {
@@ -238,83 +259,80 @@ async function loadProfile() {
 
   const id = (getQueryParam("id") || "").trim();
 
-  try {
-    const res = await fetch(
-      "https://script.google.com/macros/s/AKfycbwMPK8PCo5IgaeObx3Q8vD4dzqz3EQyLQyrS7Bru6Kx1K_DI6uaxIOfFrOx4OCGzDz0/exec",
-      {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: "getAssociates" })
-      }
-    );
+  const res = await fetch(
+    "https://script.google.com/macros/s/AKfycbwMPK8PCo5IgaeObx3Q8vD4dzqz3EQyLQyrS7Bru6Kx1K_DI6uaxIOfFrOx4OCGzDz0/exec",
+    {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "getAssociates" })
+    }
+  );
 
-    const data = await res.json();
-    const associate = data.associates.find(a =>
-      (a.associateId || "").trim() === id
-    );
+  const data = await res.json();
+  const associate = data.associates.find(a =>
+    (a.associateId || "").trim() === id
+  );
 
-    const photoUrl = associate.photoUrl;
+  const photoUrl = associate.photoUrl;
 
-    document.getElementById("profileContainer").innerHTML = `
-      <div class="profile-wrapper">
+  document.getElementById("profileContainer").innerHTML = `
+    <div class="profile-wrapper">
 
-        <img src="${photoUrl}" class="photo"
-          onerror="this.src='https://via.placeholder.com/400x300/111111/00ff88?text=Photo+Unavailable'" />
+      <img src="${photoUrl}" class="photo"
+        onerror="this.src='https://via.placeholder.com/400x300/111111/00ff88?text=Photo+Unavailable'" />
 
-        <div class="details">
+      <div class="details">
 
-          <div class="name">${associate.name}</div>
+        <div class="name">${associate.name}</div>
 
-          <div class="field" style="animation-delay:2.5s">
-            <div class="field-label">Specialty:</div>
-            <div class="field-value">${associate.specialty || "—"}</div>
-          </div>
-
-          <div class="field" style="animation-delay:4.5s">
-            <div class="field-label">Bio:</div>
-            <div class="field-value">${associate.bio || "—"}</div>
-          </div>
-
-          <div class="field" style="animation-delay:6.5s">
-            <div class="field-label">Cases Completed:</div>
-            <div class="field-value">${associate.casesCompleted || 0}</div>
-          </div>
-
-          <div class="field" style="animation-delay:8.5s">
-            <div class="field-label">Community Rating:</div>
-            <div class="field-value">${associate.avgCommunityRating || "—"}</div>
-          </div>
-
-          <div class="field" style="animation-delay:10.5s">
-            <div class="field-label">Hansen Intelligence Rating (HIR):</div>
-            <div class="field-value hir-value">${associate.HIR || "—"}</div>
-          </div>
-
-          <div class="hir-explainer">
-            The Hansen Intelligence Rating (HIR) is the core competitive metric of the MR. Hansen Firm.
-            It reflects performance, precision, client impact, community trust, and overall intelligence output.
-            Associates rise and fall by this number.
-          </div>
-
-          <div class="btn-row" style="animation-delay:12s">
-            <a class="insta-btn"
-               href="https://instagram.com/${associate.instagram}"
-               target="_blank"
-               rel="noopener noreferrer">
-               Instagram
-            </a>
-
-            <a class="case-btn" href="/case.html?id=${associate.associateId.trim()}">
-              Assign Case
-            </a>
-          </div>
-
+        <div class="field" style="animation-delay:2.5s">
+          <div class="field-label">Specialty:</div>
+          <div class="field-value">${associate.specialty || "—"}</div>
         </div>
+
+        <div class="field" style="animation-delay:4.5s">
+          <div class="field-label">Bio:</div>
+          <div class="field-value">${associate.bio || "—"}</div>
+        </div>
+
+        <div class="field" style="animation-delay:6.5s">
+          <div class="field-label">Cases Completed:</div>
+          <div class="field-value">${associate.casesCompleted || 0}</div>
+        </div>
+
+        <div class="field" style="animation-delay:8.5s">
+          <div class="field-label">Community Rating:</div>
+          <div class="field-value">${associate.avgCommunityRating || "—"}</div>
+        </div>
+
+        <!-- HIR BLOCK -->
+        <div class="hir-block">
+          <div class="hir-label">Hansen Intelligence Rating (HIR):</div>
+          <div class="hir-value">${associate.HIR || "—"}</div>
+        </div>
+
+        <div class="hir-explainer">
+          The Hansen Intelligence Rating (HIR) is the core competitive metric of the MR. Hansen Firm.
+          It reflects performance, precision, client impact, community trust, and overall intelligence output.
+          Associates rise and fall by this number.
+        </div>
+
+        <div class="btn-row">
+          <a class="insta-btn"
+             href="https://instagram.com/${associate.instagram}"
+             target="_blank"
+             rel="noopener noreferrer">
+             Instagram
+          </a>
+
+          <a class="case-btn" href="/case.html?id=${associate.associateId.trim()}">
+            Assign Case
+          </a>
+        </div>
+
       </div>
-    `;
-  } catch (err) {
-    document.getElementById("profileContainer").innerHTML = "Error loading profile.";
-  }
+    </div>
+  `;
 }
 
 loadProfile();
