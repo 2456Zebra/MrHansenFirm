@@ -6,15 +6,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-  body {
+  /* GLOBAL */
+  html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden !important; /* ⭐ FIX: Prevent right-side overflow */
     background: #000;
     color: #00ff88;
     font-family: "Courier New", monospace;
     padding: 30px;
-    max-width: 1000px;
     margin: auto;
     position: relative;
-    overflow-x: hidden; /* ⭐ FIX 1: Prevent right-side overflow */
+    box-sizing: border-box;
   }
 
   body::before {
@@ -61,6 +64,8 @@
     align-items: flex-start;
     opacity: 0;
     animation: fadeInProfile 1.5s forwards 2.5s;
+    width: 100%;
+    max-width: 100%;
   }
 
   @keyframes fadeInProfile {
@@ -71,6 +76,8 @@
   @media (max-width: 700px) {
     .profile-wrapper {
       flex-direction: column;
+      width: 100%;
+      max-width: 100%;
     }
   }
 
@@ -91,41 +98,41 @@
 
   .details {
     flex: 1;
+    width: 100%;
+    max-width: 100%;
   }
 
   .name {
     font-size: 1.9rem;
     font-weight: bold;
-    margin-bottom: 22px; /* ⭐ FIX 2: Space below name */
+    margin-bottom: 22px; /* ⭐ FIX: Space below name */
     text-shadow: 0 0 12px #00ff88;
   }
 
   .field {
     display: flex;
-    margin-bottom: 22px; /* ⭐ FIX 3: Space below specialty + bio + spacing between fields */
+    flex-direction: column; /* ⭐ FIX: Prevent overlap */
+    margin-bottom: 22px; /* ⭐ FIX: Space between fields */
     opacity: 0;
     overflow: hidden;
     border-right: 2px solid #00ff88;
     animation: typing 2s steps(40, end) forwards;
     width: 100%;
-    min-width: 0;
+    max-width: 100%;
   }
 
   .field-label {
     font-weight: bold;
     color: #66ffbb;
     white-space: nowrap;
-    min-width: 120px;
-    max-width: 40%;
-    display: flex;
-    align-items: flex-start; /* ⭐ FIX 4: Prevent vertical overlap */
+    line-height: 1.3;
   }
 
   .field-value {
-    flex: 1;
     color: #baffd9;
-    white-space: normal;
-    min-width: 0;
+    margin-top: 6px; /* ⭐ FIX: Space below label */
+    width: 100%;
+    max-width: 100%;
   }
 
   @keyframes typing {
@@ -133,13 +140,15 @@
     to   { width: 100%; opacity: 1; }
   }
 
-  /* Rating icons */
+  /* ⭐ FIX: Left-align flex arms, no wrap */
   .rating-icons {
     display: flex;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    align-items: center;
     gap: 4px;
-    margin-top: 4px;
-    flex-wrap: nowrap; /* ⭐ FIX 5: Keep flex arms on one line */
-    justify-content: flex-start; /* ⭐ FIX 6: Left align arms */
+    width: 100%;
+    overflow-x: hidden;
   }
 
   .flex-icon {
@@ -190,18 +199,13 @@
   }
 
   .comp-header {
-    margin-top: 40px !important; /* ⭐ FIX 7: Space above competition */
+    margin-top: 40px !important; /* ⭐ FIX: Space above competition */
     font-size: 1rem;
     font-weight: bold;
     color: #00ffaa;
     text-shadow: 0 0 12px #00ffaa;
     opacity: 0;
     animation: fadeInComp 1.5s forwards 12s;
-  }
-
-  @keyframes fadeInComp {
-    from { opacity: 0; }
-    to   { opacity: 1; }
   }
 
   .hir-explainer {
@@ -213,11 +217,6 @@
     max-width: 600px;
   }
 
-  @keyframes fadeInExplainer {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-
   .btn-row {
     margin-top: 25px;
     display: flex;
@@ -225,11 +224,6 @@
     opacity: 0;
     animation: fadeInButtons 1.5s forwards 13.5s;
     flex-wrap: wrap;
-  }
-
-  @keyframes fadeInButtons {
-    from { opacity: 0; }
-    to   { opacity: 1; }
   }
 
   .insta-btn, .case-btn {
@@ -248,20 +242,10 @@
     box-shadow: 0 0 10px #ff2ea6;
   }
 
-  .insta-btn:hover {
-    background: #ff5fbd;
-    box-shadow: 0 0 14px #ff5fbd;
-  }
-
   .case-btn {
     background: #00ff88;
     color: #000;
     box-shadow: 0 0 10px #00ff88;
-  }
-
-  .case-btn:hover {
-    background: #00ffaa;
-    box-shadow: 0 0 14px #00ffaa;
   }
 </style>
 </head>
@@ -387,7 +371,7 @@ async function loadProfile() {
 
         <div class="hir-explainer">
           This is a competition among associates. The Hansen Intelligence Rating (HIR) is the core competitive metric of the MR. Hansen Firm. It reflects performance, precision, client impact, community trust, and overall intelligence output. 
-          <a href="/associates.html" style="color:#00ffaa; text-decoration:underline;">
+          <a href="/dashboard.html" style="color:#00ffaa; text-decoration:underline; text-decoration-thickness:1px;">
             &lt; Associates Rankings Dashboard
           </a>
         </div>
