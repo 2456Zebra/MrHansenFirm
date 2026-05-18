@@ -13,6 +13,24 @@
     padding: 30px;
     max-width: 1000px;
     margin: auto;
+    position: relative;
+  }
+
+  /* Subtle CRT scanlines */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,255,136,0.03) 0px,
+      rgba(0,255,136,0.03) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+    z-index: 999;
   }
 
   /* Back button */
@@ -123,31 +141,27 @@
     to   { width: 100%; opacity: 1; }
   }
 
-  /* Community Rating icons */
+  /* Community Rating icons (brains) */
   .rating-icons {
     display: flex;
     gap: 4px;
     margin-top: 4px;
   }
 
-  .rating-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
+  .brain {
+    width: 16px;
+    height: 16px;
+    filter: drop-shadow(0 0 4px #00ff88);
   }
 
-  .dot-filled {
-    background: #00ff88;
-    box-shadow: 0 0 6px #00ff88;
-  }
-
-  .dot-empty {
-    background: #003322;
+  .brain.dim {
+    opacity: 0.25;
+    filter: none;
   }
 
   /* HIR emphasized */
   .hir-block {
-    margin-top: 20px;
+    margin-top: 25px;
     opacity: 0;
     animation: fadeInHIR 1.5s forwards 10.5s;
   }
@@ -163,23 +177,84 @@
     margin-bottom: 6px;
   }
 
+  .hir-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
   .hir-value {
-    font-size: 2.6rem;
+    font-size: 2.8rem;
     font-weight: bold;
     color: #00ff88;
-    text-shadow: 0 0 22px #00ff88;
-    animation: pulseHIR 1.1s infinite alternate;
+    text-shadow: 0 0 26px #00ff88;
+    animation: pulseHIR 1.2s infinite alternate;
   }
 
   @keyframes pulseHIR {
-    from { text-shadow: 0 0 14px #00ff88; opacity: 0.8; transform: scale(1); }
-    to   { text-shadow: 0 0 32px #00ffaa; opacity: 1; transform: scale(1.06); }
+    from { text-shadow: 0 0 18px #00ff88; opacity: 0.85; }
+    to   { text-shadow: 0 0 38px #00ffaa; opacity: 1; }
   }
+
+  /* HIR badge */
+  .hir-badge {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #000;
+    text-transform: uppercase;
+    box-shadow: 0 0 12px currentColor;
+  }
+
+  .gold { background: #ffd700; color: #000; }
+  .silver { background: #c0c0c0; color: #000; }
+  .bronze { background: #cd7f32; color: #000; }
 
   .hir-outof {
     font-size: 0.9rem;
     color: #66ffbb;
     margin-top: 4px;
+  }
+
+  /* Case Success Probability */
+  .prob-block {
+    margin-top: 20px;
+    opacity: 0;
+    animation: fadeInProb 1.5s forwards 11.5s;
+  }
+
+  @keyframes fadeInProb {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .prob-label {
+    font-size: 1rem;
+    color: #66ffbb;
+    margin-bottom: 6px;
+  }
+
+  .prob-bar {
+    width: 100%;
+    height: 14px;
+    background: #003322;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 0 8px #00ff88 inset;
+  }
+
+  .prob-fill {
+    height: 100%;
+    background: #00ff88;
+    width: 0%;
+    animation: fillProb 2s forwards 12s;
+    box-shadow: 0 0 12px #00ff88;
+  }
+
+  @keyframes fillProb {
+    from { width: 0%; }
+    to   { width: var(--prob); }
   }
 
   /* Buttons smaller */
@@ -188,7 +263,7 @@
     display: flex;
     gap: 12px;
     opacity: 0;
-    animation: fadeInButtons 1.5s forwards 12s;
+    animation: fadeInButtons 1.5s forwards 13s;
   }
 
   @keyframes fadeInButtons {
@@ -228,13 +303,29 @@
     box-shadow: 0 0 14px #00ffaa;
   }
 
+  /* Competition header */
+  .comp-header {
+    margin-top: 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #00ffaa;
+    text-shadow: 0 0 12px #00ffaa;
+    opacity: 0;
+    animation: fadeInComp 1.5s forwards 12.2s;
+  }
+
+  @keyframes fadeInComp {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
   /* HIR explanation */
   .hir-explainer {
-    margin-top: 15px;
+    margin-top: 10px;
     font-size: 0.9rem;
     color: #66ffbb;
     opacity: 0;
-    animation: fadeInExplainer 1.5s forwards 12.5s;
+    animation: fadeInExplainer 1.5s forwards 12.8s;
     max-width: 600px;
   }
 
@@ -303,12 +394,24 @@ async function loadProfile() {
 
   const photoUrl = associate.photoUrl;
 
-  /* Build community rating dots */
+  /* Build brain icons */
   const rating = Number(associate.avgCommunityRating || 0);
-  let dots = "";
+  let brains = "";
   for (let i = 1; i <= 10; i++) {
-    dots += `<div class="rating-dot ${i <= rating ? "dot-filled" : "dot-empty"}"></div>`;
+    brains += `<img src="https://img.icons8.com/ios-filled/50/00ff88/brain.png" class="brain ${i <= rating ? "" : "dim"}">`;
   }
+
+  /* Determine HIR badge */
+  const hir = Number(associate.HIR || 0);
+  let badgeClass = "";
+  let badgeText = "";
+
+  if (hir >= 90) { badgeClass = "gold"; badgeText = "Gold"; }
+  else if (hir >= 75) { badgeClass = "silver"; badgeText = "Silver"; }
+  else if (hir >= 60) { badgeClass = "bronze"; badgeText = "Bronze"; }
+
+  /* Case Success Probability */
+  const prob = associate.caseSuccess || 0;
 
   document.getElementById("profileContainer").innerHTML = `
     <div class="profile-wrapper">
@@ -339,18 +442,35 @@ async function loadProfile() {
           <div class="field-label">Community Rating:</div>
           <div class="field-value">
             ${rating}
-            <div class="rating-icons">${dots}</div>
+            <div class="rating-icons">${brains}</div>
           </div>
         </div>
 
         <!-- HIR BLOCK -->
         <div class="hir-block">
           <div class="hir-label">Hansen Intelligence Rating (HIR):</div>
-          <div class="hir-value">${associate.HIR || "—"}</div>
+
+          <div class="hir-row">
+            <div class="hir-value">${associate.HIR || "—"}</div>
+            ${badgeText ? `<div class="hir-badge ${badgeClass}">${badgeText}</div>` : ""}
+          </div>
+
           <div class="hir-outof">out of 100</div>
         </div>
 
+        <!-- Case Success Probability -->
+        <div class="prob-block">
+          <div class="prob-label">Case Success Probability:</div>
+          <div class="prob-bar">
+            <div class="prob-fill" style="--prob:${prob}%"></div>
+          </div>
+        </div>
+
+        <!-- Competition Header -->
+        <div class="comp-header">ASSOCIATES COMPETITION</div>
+
         <div class="hir-explainer">
+          This is a competition among associates.  
           The Hansen Intelligence Rating (HIR) is the core competitive metric of the MR. Hansen Firm.
           It reflects performance, precision, client impact, community trust, and overall intelligence output.
           Associates rise and fall by this number.
