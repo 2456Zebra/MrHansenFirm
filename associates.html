@@ -15,7 +15,6 @@
     margin: auto;
   }
 
-  /* BACK TO HOME BUTTON */
   .back-home {
     display: inline-block;
     margin-bottom: 20px;
@@ -139,7 +138,6 @@
     margin-bottom: 6px;
   }
 
-  /* GRID */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -234,7 +232,6 @@
     font-size: 0.95rem;
   }
 
-  /* LEADERBOARD */
   .leaderboard-row {
     background: #050505;
     border-left: 4px solid #00ff88;
@@ -260,6 +257,7 @@
     border-radius: 50%;
     border: 2px solid #00ff88;
     margin-right: 12px;
+    object-fit: cover;
   }
 
   .leaderboard-name {
@@ -291,7 +289,6 @@
 
 <body>
 
-<!-- ⭐ BACK TO HOME BUTTON -->
 <a href="/index.html" class="back-home">← Back to Home</a>
 
 <h1 class="title-container">
@@ -326,7 +323,6 @@
 <script>
 const BASE_URL = "https://script.google.com/macros/s/AKfycbwMPK8PCo5IgaeObx3Q8vD4dzqz3EQyLQyrS7Bru6Kx1K_DI6uaxIOfFrOx4OCGzDz0/exec";
 
-/* ⭐ FIX: Determine mode BEFORE anything else */
 const params = new URLSearchParams(window.location.search);
 let currentMode = params.get("mode") === "leaderboard" ? "leaderboard" : "newest";
 
@@ -350,7 +346,6 @@ async function loadAssociates() {
 
     associates = data.associates;
 
-    /* ⭐ FIX: Now apply the mode immediately */
     setMode(currentMode);
 
   } catch (e) {
@@ -379,7 +374,6 @@ function renderCurrentMode() {
   }
 }
 
-/* NEWEST — neon grid with real photos */
 function renderDirectory() {
   const container = document.getElementById("directoryContainer");
   container.innerHTML = "";
@@ -429,7 +423,6 @@ function renderDirectory() {
   });
 }
 
-/* LEADERBOARD — unchanged logic */
 function renderLeaderboard() {
   const container = document.getElementById("leaderboardContainer");
   container.innerHTML = "";
@@ -447,7 +440,11 @@ function renderLeaderboard() {
 
   sorted.forEach((a, index) => {
     const rank = index + 1;
-    const avatar = `https://api.dicebear.com/7.x/thumbs/svg?seed=${encodeURIComponent(a.name || a.associateId || 'associate')}`;
+
+    const avatar = a.photoUrl && a.photoUrl.trim()
+      ? a.photoUrl.trim()
+      : `https://api.dicebear.com/7.x/thumbs/svg?seed=${encodeURIComponent(a.name || a.associateId || 'associate')}`;
+
     const HIR = parseFloat(a.HIR) || 0;
 
     let badgeClass = "hir-green";
