@@ -141,20 +141,20 @@
     to   { width: 100%; opacity: 1; }
   }
 
-  /* Community Rating icons (brains) */
+  /* Community Rating icons (yellow flex) */
   .rating-icons {
     display: flex;
     gap: 4px;
     margin-top: 4px;
   }
 
-  .brain {
-    width: 16px;
-    height: 16px;
-    filter: drop-shadow(0 0 4px #00ff88);
+  .flex-icon {
+    width: 18px;
+    height: 18px;
+    filter: drop-shadow(0 0 4px #ffd700);
   }
 
-  .brain.dim {
+  .flex-icon.dim {
     opacity: 0.25;
     filter: none;
   }
@@ -184,16 +184,16 @@
   }
 
   .hir-value {
-    font-size: 2.8rem;
+    font-size: 3rem;
     font-weight: bold;
     color: #00ff88;
-    text-shadow: 0 0 26px #00ff88;
+    text-shadow: 0 0 32px #00ff88;
     animation: pulseHIR 1.2s infinite alternate;
   }
 
   @keyframes pulseHIR {
-    from { text-shadow: 0 0 18px #00ff88; opacity: 0.85; }
-    to   { text-shadow: 0 0 38px #00ffaa; opacity: 1; }
+    from { text-shadow: 0 0 22px #00ff88; opacity: 0.85; transform: scale(1); }
+    to   { text-shadow: 0 0 42px #00ffaa; opacity: 1; transform: scale(1.04); }
   }
 
   /* HIR badge */
@@ -242,6 +242,7 @@
     border-radius: 6px;
     overflow: hidden;
     box-shadow: 0 0 8px #00ff88 inset;
+    position: relative;
   }
 
   .prob-fill {
@@ -252,9 +253,68 @@
     box-shadow: 0 0 12px #00ff88;
   }
 
+  .prob-text {
+    position: absolute;
+    top: -22px;
+    right: 0;
+    font-size: 0.9rem;
+    color: #66ffbb;
+  }
+
   @keyframes fillProb {
     from { width: 0%; }
     to   { width: var(--prob); }
+  }
+
+  /* Competition header */
+  .comp-header {
+    margin-top: 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #00ffaa;
+    text-shadow: 0 0 12px #00ffaa;
+    opacity: 0;
+    animation: fadeInComp 1.5s forwards 12.2s;
+  }
+
+  @keyframes fadeInComp {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* HIR explanation */
+  .hir-explainer {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #66ffbb;
+    opacity: 0;
+    animation: fadeInExplainer 1.5s forwards 12.8s;
+    max-width: 600px;
+  }
+
+  @keyframes fadeInExplainer {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* Competition Dashboard link */
+  .comp-link {
+    margin-top: 10px;
+    display: inline-block;
+    color: #00ffaa;
+    font-size: 0.95rem;
+    text-decoration: none;
+    opacity: 0;
+    animation: fadeInCompLink 1.5s forwards 13.2s;
+  }
+
+  .comp-link:hover {
+    text-decoration: underline;
+  }
+
+  @keyframes fadeInCompLink {
+    from { opacity: 0; }
+    to   { opacity: 1; }
   }
 
   /* Buttons smaller */
@@ -263,7 +323,7 @@
     display: flex;
     gap: 12px;
     opacity: 0;
-    animation: fadeInButtons 1.5s forwards 13s;
+    animation: fadeInButtons 1.5s forwards 13.8s;
   }
 
   @keyframes fadeInButtons {
@@ -301,37 +361,6 @@
   .case-btn:hover {
     background: #00ffaa;
     box-shadow: 0 0 14px #00ffaa;
-  }
-
-  /* Competition header */
-  .comp-header {
-    margin-top: 25px;
-    font-size: 1rem;
-    font-weight: bold;
-    color: #00ffaa;
-    text-shadow: 0 0 12px #00ffaa;
-    opacity: 0;
-    animation: fadeInComp 1.5s forwards 12.2s;
-  }
-
-  @keyframes fadeInComp {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-
-  /* HIR explanation */
-  .hir-explainer {
-    margin-top: 10px;
-    font-size: 0.9rem;
-    color: #66ffbb;
-    opacity: 0;
-    animation: fadeInExplainer 1.5s forwards 12.8s;
-    max-width: 600px;
-  }
-
-  @keyframes fadeInExplainer {
-    from { opacity: 0; }
-    to   { opacity: 1; }
   }
 </style>
 </head>
@@ -394,11 +423,16 @@ async function loadProfile() {
 
   const photoUrl = associate.photoUrl;
 
-  /* Build brain icons */
+  /* Build yellow flex icons */
   const rating = Number(associate.avgCommunityRating || 0);
-  let brains = "";
+  let flexIcons = "";
   for (let i = 1; i <= 10; i++) {
-    brains += `<img src="https://img.icons8.com/ios-filled/50/00ff88/brain.png" class="brain ${i <= rating ? "" : "dim"}">`;
+    flexIcons += `
+      <img 
+        src="https://img.icons8.com/ios/50/${i <= rating ? 'ffd700' : '444444'}/flex-biceps.png" 
+        class="flex-icon ${i <= rating ? '' : 'dim'}"
+      >
+    `;
   }
 
   /* Determine HIR badge */
@@ -411,7 +445,8 @@ async function loadProfile() {
   else if (hir >= 60) { badgeClass = "bronze"; badgeText = "Bronze"; }
 
   /* Case Success Probability */
-  const prob = associate.caseSuccess || 0;
+  let prob = associate.caseSuccess || 0;
+  if (prob > 99.9) prob = 99.9;
 
   document.getElementById("profileContainer").innerHTML = `
     <div class="profile-wrapper">
@@ -442,7 +477,7 @@ async function loadProfile() {
           <div class="field-label">Community Rating:</div>
           <div class="field-value">
             ${rating}
-            <div class="rating-icons">${brains}</div>
+            <div class="rating-icons">${flexIcons}</div>
           </div>
         </div>
 
@@ -458,14 +493,6 @@ async function loadProfile() {
           <div class="hir-outof">out of 100</div>
         </div>
 
-        <!-- Case Success Probability -->
-        <div class="prob-block">
-          <div class="prob-label">Case Success Probability:</div>
-          <div class="prob-bar">
-            <div class="prob-fill" style="--prob:${prob}%"></div>
-          </div>
-        </div>
-
         <!-- Competition Header -->
         <div class="comp-header">ASSOCIATES COMPETITION</div>
 
@@ -474,6 +501,17 @@ async function loadProfile() {
           The Hansen Intelligence Rating (HIR) is the core competitive metric of the MR. Hansen Firm.
           It reflects performance, precision, client impact, community trust, and overall intelligence output.
           Associates rise and fall by this number.
+        </div>
+
+        <a href="/leaderboard.html" class="comp-link">→ Visit the Competition Dashboard</a>
+
+        <!-- Case Success Probability -->
+        <div class="prob-block">
+          <div class="prob-label">Case Success Probability:</div>
+          <div class="prob-bar">
+            <div class="prob-fill" style="--prob:${prob}%"></div>
+            <div class="prob-text">${prob}%</div>
+          </div>
         </div>
 
         <div class="btn-row">
