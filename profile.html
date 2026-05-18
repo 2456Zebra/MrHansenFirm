@@ -53,13 +53,8 @@
     color: #66ffbb;
     margin-bottom: 25px;
     white-space: pre-line;
-    opacity: 0;
-    animation: fadeInBoot 1.5s forwards;
-  }
-
-  @keyframes fadeInBoot {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    opacity: 1;
+    transition: opacity 1.5s ease;
   }
 
   /* Layout container */
@@ -159,69 +154,11 @@
     filter: none;
   }
 
-  /* HIR emphasized */
-  .hir-block {
-    margin-top: 25px;
-    opacity: 0;
-    animation: fadeInHIR 1.5s forwards 10.5s;
-  }
-
-  @keyframes fadeInHIR {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .hir-label {
-    font-size: 1rem;
-    color: #66ffbb;
-    margin-bottom: 6px;
-  }
-
-  .hir-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .hir-value {
-    font-size: 3rem;
-    font-weight: bold;
-    color: #00ff88;
-    text-shadow: 0 0 32px #00ff88;
-    animation: pulseHIR 1.2s infinite alternate;
-  }
-
-  @keyframes pulseHIR {
-    from { text-shadow: 0 0 22px #00ff88; opacity: 0.85; transform: scale(1); }
-    to   { text-shadow: 0 0 42px #00ffaa; opacity: 1; transform: scale(1.04); }
-  }
-
-  /* HIR badge */
-  .hir-badge {
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #000;
-    text-transform: uppercase;
-    box-shadow: 0 0 12px currentColor;
-  }
-
-  .gold { background: #ffd700; color: #000; }
-  .silver { background: #c0c0c0; color: #000; }
-  .bronze { background: #cd7f32; color: #000; }
-
-  .hir-outof {
-    font-size: 0.9rem;
-    color: #66ffbb;
-    margin-top: 4px;
-  }
-
   /* Case Success Probability */
   .prob-block {
     margin-top: 20px;
     opacity: 0;
-    animation: fadeInProb 1.5s forwards 11.5s;
+    animation: fadeInProb 1.5s forwards 9.5s;
   }
 
   @keyframes fadeInProb {
@@ -249,7 +186,7 @@
     height: 100%;
     background: #00ff88;
     width: 0%;
-    animation: fillProb 2s forwards 12s;
+    animation: fillProb 2s forwards 10s;
     box-shadow: 0 0 12px #00ff88;
   }
 
@@ -266,6 +203,43 @@
     to   { width: var(--prob); }
   }
 
+  /* HIR emphasized */
+  .hir-block {
+    margin-top: 25px;
+    opacity: 0;
+    animation: fadeInHIR 1.5s forwards 11s;
+  }
+
+  @keyframes fadeInHIR {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hir-label {
+    font-size: 1rem;
+    color: #66ffbb;
+    margin-bottom: 6px;
+  }
+
+  .hir-value {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #00ff88;
+    text-shadow: 0 0 32px #00ff88;
+    animation: pulseHIR 1.2s infinite alternate;
+  }
+
+  @keyframes pulseHIR {
+    from { text-shadow: 0 0 22px #00ff88; opacity: 0.85; transform: scale(1); }
+    to   { text-shadow: 0 0 42px #00ffaa; opacity: 1; transform: scale(1.04); }
+  }
+
+  .hir-outof {
+    font-size: 0.9rem;
+    color: #66ffbb;
+    margin-top: 4px;
+  }
+
   /* Competition header */
   .comp-header {
     margin-top: 25px;
@@ -274,7 +248,7 @@
     color: #00ffaa;
     text-shadow: 0 0 12px #00ffaa;
     opacity: 0;
-    animation: fadeInComp 1.5s forwards 12.2s;
+    animation: fadeInComp 1.5s forwards 12s;
   }
 
   @keyframes fadeInComp {
@@ -288,31 +262,11 @@
     font-size: 0.9rem;
     color: #66ffbb;
     opacity: 0;
-    animation: fadeInExplainer 1.5s forwards 12.8s;
+    animation: fadeInExplainer 1.5s forwards 12.5s;
     max-width: 600px;
   }
 
   @keyframes fadeInExplainer {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-
-  /* Competition Dashboard link */
-  .comp-link {
-    margin-top: 10px;
-    display: inline-block;
-    color: #00ffaa;
-    font-size: 0.95rem;
-    text-decoration: none;
-    opacity: 0;
-    animation: fadeInCompLink 1.5s forwards 13.2s;
-  }
-
-  .comp-link:hover {
-    text-decoration: underline;
-  }
-
-  @keyframes fadeInCompLink {
     from { opacity: 0; }
     to   { opacity: 1; }
   }
@@ -323,7 +277,7 @@
     display: flex;
     gap: 12px;
     opacity: 0;
-    animation: fadeInButtons 1.5s forwards 13.8s;
+    animation: fadeInButtons 1.5s forwards 13.5s;
   }
 
   @keyframes fadeInButtons {
@@ -398,6 +352,12 @@ function playBootSequence() {
       i++;
     } else {
       clearInterval(interval);
+
+      /* Fade out boot sequence */
+      setTimeout(() => {
+        el.style.opacity = 0;
+        setTimeout(() => el.remove(), 1500);
+      }, 1500);
     }
   }, 600);
 }
@@ -429,20 +389,11 @@ async function loadProfile() {
   for (let i = 1; i <= 10; i++) {
     flexIcons += `
       <img 
-        src="https://img.icons8.com/ios/50/${i <= rating ? 'ffd700' : '444444'}/flex-biceps.png" 
+        src="https://img.icons8.com/fluency-systems-regular/50/${i <= rating ? 'ffd700' : '444444'}/flex-biceps.png" 
         class="flex-icon ${i <= rating ? '' : 'dim'}"
       >
     `;
   }
-
-  /* Determine HIR badge */
-  const hir = Number(associate.HIR || 0);
-  let badgeClass = "";
-  let badgeText = "";
-
-  if (hir >= 90) { badgeClass = "gold"; badgeText = "Gold"; }
-  else if (hir >= 75) { badgeClass = "silver"; badgeText = "Silver"; }
-  else if (hir >= 60) { badgeClass = "bronze"; badgeText = "Bronze"; }
 
   /* Case Success Probability */
   let prob = associate.caseSuccess || 0;
@@ -481,15 +432,19 @@ async function loadProfile() {
           </div>
         </div>
 
+        <!-- Case Success Probability -->
+        <div class="prob-block">
+          <div class="prob-label">Case Success Probability:</div>
+          <div class="prob-bar">
+            <div class="prob-fill" style="--prob:${prob}%"></div>
+            <div class="prob-text">${prob}%</div>
+          </div>
+        </div>
+
         <!-- HIR BLOCK -->
         <div class="hir-block">
           <div class="hir-label">Hansen Intelligence Rating (HIR):</div>
-
-          <div class="hir-row">
-            <div class="hir-value">${associate.HIR || "—"}</div>
-            ${badgeText ? `<div class="hir-badge ${badgeClass}">${badgeText}</div>` : ""}
-          </div>
-
+          <div class="hir-value">${associate.HIR || "—"}</div>
           <div class="hir-outof">out of 100</div>
         </div>
 
@@ -500,18 +455,8 @@ async function loadProfile() {
           This is a competition among associates.  
           The Hansen Intelligence Rating (HIR) is the core competitive metric of the MR. Hansen Firm.
           It reflects performance, precision, client impact, community trust, and overall intelligence output.
-          Associates rise and fall by this number.
-        </div>
-
-        <a href="/leaderboard.html" class="comp-link">→ Visit the Competition Dashboard</a>
-
-        <!-- Case Success Probability -->
-        <div class="prob-block">
-          <div class="prob-label">Case Success Probability:</div>
-          <div class="prob-bar">
-            <div class="prob-fill" style="--prob:${prob}%"></div>
-            <div class="prob-text">${prob}%</div>
-          </div>
+          Associates rise and fall by this number. 
+          <a href="/associates.html" style="color:#00ffaa; text-decoration:none;">Visit the Associate Rankings Dashboard</a>.
         </div>
 
         <div class="btn-row">
