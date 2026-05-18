@@ -261,17 +261,30 @@
     box-shadow: 0 0 14px #00ffaa;
   }
 
-  /* MOBILE FIXES */
+  /* ⭐ MOBILE FIXES — ALL 8 ITEMS ⭐ */
   @media (max-width: 700px) {
-    .field {
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
+
+    /* 1–3: Buffer spacing */
+    .name { margin-bottom: 22px !important; }
+    .field:nth-of-type(1) { margin-bottom: 22px !important; } /* Specialty */
+    .field:nth-of-type(2) { margin-bottom: 22px !important; } /* Bio */
+
+    /* 4–5: Fix vertical alignment of labels */
+    .field-label {
+      display: flex;
+      align-items: flex-start;
     }
 
-    .field-label {
-      max-width: 40%;
-      min-width: 120px;
+    /* 6: Flex arms on one line */
+    .rating-icons {
+      flex-wrap: nowrap !important;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    /* 7: Buffer above competition header */
+    .comp-header {
+      margin-top: 40px !important;
     }
   }
 </style>
@@ -397,7 +410,10 @@ async function loadProfile() {
         <div class="comp-header">ASSOCIATES COMPETITION</div>
 
         <div class="hir-explainer">
-          This is a competition among associates. The Hansen Intelligence Rating (HIR) is the core competitive metric of the MR. Hansen Firm. It reflects performance, precision, client impact, community trust, and overall intelligence output. Associates rise and fall by this number. <a href="/associates.html" style="color:#00ffaa; text-decoration:none;">&lt; Associates Rankings Dashboard</a>.
+          This is a competition among associates. The Hansen Intelligence Rating (HIR) is the core competitive metric of the MR. Hansen Firm. It reflects performance, precision, client impact, community trust, and overall intelligence output. Associates rise and fall by this number. 
+          <a href="/associates.html" style="color:#00ffaa; text-decoration:underline;">
+            &lt; Associates Rankings Dashboard
+          </a>.
         </div>
 
         <div class="btn-row">
