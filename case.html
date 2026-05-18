@@ -3,172 +3,193 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Case Details</title>
+  <title>Submit Case</title>
 
   <style>
     body {
-      font-family: "Consolas", "Courier New", monospace;
+      font-family: "Courier New", monospace;
       background: #000;
       color: #00ff88;
-      padding: 40px;
-      max-width: 900px;
+      padding: 40px 20px;
+      max-width: 800px;
       margin: auto;
-      overflow-x: hidden;
-      position: relative;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      background: repeating-linear-gradient(
-        rgba(0, 255, 136, 0.05) 0px,
-        rgba(0, 255, 136, 0.05) 2px,
-        transparent 2px,
-        transparent 4px
-      );
-      z-index: 999;
+    h1 {
+      text-shadow: 0 0 15px #00ff88;
+      margin-bottom: 10px;
     }
 
-    .typing {
-      font-size: 28px;
-      margin-bottom: 30px;
-      text-shadow: 0 0 10px #00ff88;
-      display: inline-block;
-      white-space: nowrap;
-      overflow: hidden;
-      clip-path: inset(0 100% 0 0);
-      animation: reveal 3s steps(40) forwards, cursorBlink 0.7s infinite;
-      border-right: 2px solid #00ff88;
-    }
-
-    @keyframes reveal {
-      from { clip-path: inset(0 100% 0 0); }
-      to { clip-path: inset(0 0 0 0); }
-    }
-
-    @keyframes cursorBlink {
-      50% { border-color: transparent; }
-    }
-
-    .case-box {
-      background: #0a0a0a;
-      padding: 25px;
-      border: 1px solid #00ff88;
-      border-radius: 8px;
-      box-shadow: 0 0 15px #00ff88 inset;
-      margin-bottom: 30px;
-    }
-
-    .case-title {
-      font-size: 24px;
-      font-weight: bold;
-      text-shadow: 0 0 10px #00ff88;
-    }
-
-    .case-section {
-      margin-top: 20px;
-    }
-
-    .label {
-      font-weight: bold;
-      text-shadow: 0 0 8px #00ff88;
-      margin-bottom: 5px;
-    }
-
-    .value {
+    .subtitle {
+      margin-top: -5px;
+      margin-bottom: 25px;
+      color: #00ff88;
+      font-size: 17px;
       opacity: 0.9;
-      line-height: 1.5em;
     }
 
-    .signup-btn {
-      margin-top: 30px;
-      padding: 12px 22px;
+    .disclaimer {
+      margin-top: 20px;
+      margin-bottom: 25px;
+      font-size: 14px;
+      color: #00ff88;
+      opacity: 0.7;
+      line-height: 1.4;
+    }
+
+    .associate-banner {
+      background: #0a0a0a;
+      padding: 15px 20px;
+      border-left: 5px solid #00ff88;
+      margin-bottom: 30px;
+      font-size: 18px;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      background: #0a0a0a;
+      border: 1px solid #00ff88;
+      color: #00ff88;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 40px;
+      width: 100%;
+      padding: 18px;
       background: #00ff88;
+      color: #000;
+      font-size: 20px;
+      font-weight: bold;
       border: none;
       border-radius: 6px;
-      color: #000;
-      font-size: 16px;
-      font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 0 15px #00ff88;
-      transition: 0.2s;
-      display: inline-block;
+      box-shadow: 0 0 25px #00ff88;
     }
 
-    .signup-btn:hover {
+    button:hover {
       background: #00ffaa;
-      box-shadow: 0 0 25px #00ffaa;
-      transform: scale(1.03);
-    }
-
-    .back-btn {
-      margin-top: 30px;
-      display: block;
-      text-align: center;
-      color: #00ff88;
-      text-decoration: none;
-      font-size: 15px;
-      text-shadow: 0 0 6px #00ff88;
-      transition: 0.2s;
-    }
-
-    .back-btn:hover {
-      color: #00ffaa;
-      text-shadow: 0 0 10px #00ffaa;
-      transform: translateY(-2px);
+      box-shadow: 0 0 35px #00ffaa;
     }
 
     #status {
       margin-top: 20px;
-      font-size: 14px;
-      text-shadow: 0 0 8px #00ff88;
+      font-size: 16px;
+      min-height: 1.5em;
+    }
+
+    .back-link {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .back-link a {
+      color: #00ff88;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    .back-link a:hover {
+      color: #00ffaa;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 10px;
+      }
     }
   </style>
 </head>
 
 <body>
+  <h1>SUBMIT A CASE</h1>
 
-  <div class="typing">ACCESSING CASE FILE...</div>
-
-  <div id="status">Loading case...</div>
-
-  <div id="caseContainer" style="display:none;" class="case-box">
-    <div id="caseTitle" class="case-title"></div>
-
-    <div class="case-section">
-      <div class="label">Summary</div>
-      <div id="caseSummary" class="value"></div>
-    </div>
-
-    <div class="case-section">
-      <div class="label">Category</div>
-      <div id="caseCategory" class="value"></div>
-    </div>
-
-    <div class="case-section">
-      <div class="label">Assigned Associate</div>
-      <div id="caseAssociate" class="value"></div>
-    </div>
-
-    <div class="case-section">
-      <div class="label">Full Details</div>
-      <div id="caseDetails" class="value"></div>
-    </div>
+  <div class="subtitle">
+    When you submit a case, an account is created so you can return as a Client and view updates.
   </div>
 
-  <button class="signup-btn" onclick="window.location.href='/community-signup.html'">
-    SIGN UP TO BECOME A COMMUNITY USER TO COMMENT
-  </button>
+  <div id="associateBanner" class="associate-banner" style="display:none;">
+    Submitting case to: <strong id="selectedAssociate"></strong>
+  </div>
 
-  <a href="/view-cases.html" class="back-btn">← BACK TO CASE LIST</a>
+  <form id="caseForm">
+    <input type="hidden" id="associateId">
+
+    <label>Your Name</label>
+    <input type="text" id="clientName" required />
+
+    <label>Display Name (public)</label>
+    <input type="text" id="clientDisplayName" required />
+    <div class="subtitle" style="margin-top:5px;">This name will appear on the public View Cases page.</div>
+
+    <label>Your Email</label>
+    <input type="email" id="clientEmail" required />
+
+    <label>Create Password</label>
+    <input type="password" id="clientPassword" required />
+
+    <label>Phone (optional)</label>
+    <input type="text" id="clientPhone" />
+
+    <label>Associate</label>
+    <input type="text" id="associateName" readonly />
+
+    <label>Case Subject</label>
+    <input type="text" id="caseTitle" required />
+
+    <label>Case Details</label>
+    <textarea id="caseDescription" rows="8" required></textarea>
+
+    <label>Service Tier</label>
+    <select id="tier" required>
+      <option value="">— Select Tier —</option>
+      <option value="Level 1 - Quick Read" data-link="https://buy.stripe.com/test_aFadR9c403TR98u9TY77O00">Level 1 — Quick Read ($35)</option>
+      <option value="Level 2 - Deep Dive Analysis" data-link="https://buy.stripe.com/test_4gM00j5FC4XVbgCc2677O01">Level 2 — Deep Dive Analysis ($95)</option>
+      <option value="Level 3 - Crisis Session" data-link="https://buy.stripe.com/test_5kQaEX9VSgGDbgCgim77O02">Level 3 — Crisis Session ($195)</option>
+    </select>
+
+    <div class="disclaimer">
+      <strong>Disclaimer:</strong> By submitting a case, you agree that your case title, description, and display name may be published publicly on the View Cases page. Your real name, email, and personal information will never be shown.
+    </div>
+
+    <div id="status"></div>
+    <button type="submit" id="submitBtn">PAY NOW & SUBMIT CASE</button>
+  </form>
+
+  <div class="back-link">
+    <a href="/associates.html">← Back to Associates</a>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const associateName = params.get('associate');
+    const associateId = params.get('id');
+
+    if (associateName) {
+      document.getElementById("associateBanner").style.display = "block";
+      document.getElementById("selectedAssociate").textContent = associateName;
+      document.getElementById("associateName").value = associateName;
+      if (associateId) document.getElementById("associateId").value = associateId;
+    }
+  </script>
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
   <script>
@@ -182,47 +203,120 @@
     };
 
     firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
     const db = firebase.firestore();
 
-    const params = new URLSearchParams(window.location.search);
-    const caseId = params.get("id");
+    const BASE_URL = "https://script.google.com/macros/s/AKfycbwMPK8PCo5IgaeObx3Q8vD4dzqz3EQyLQyrS7Bru6Kx1K_DI6uaxIOfFrOx4OCGzDz0/exec";
 
     const statusEl = document.getElementById("status");
-    const container = document.getElementById("caseContainer");
+    const btn = document.getElementById("submitBtn");
 
-    async function loadCase() {
-      if (!caseId) {
-        statusEl.textContent = "Invalid case ID.";
-        return;
-      }
+    function setStatus(msg, color = "#00ff88") {
+      statusEl.innerHTML = `<span style="color:${color}">${msg}</span>`;
+    }
 
-      try {
-        const doc = await db.collection("cases").doc(caseId).get();
+    async function ensureClientUserDoc(uid, email, name) {
+      const ref = db.collection("users").doc(uid);
+      const snap = await ref.get();
 
-        if (!doc.exists) {
-          statusEl.textContent = "Case not found.";
-          return;
-        }
-
-        const data = doc.data();
-
-        document.getElementById("caseTitle").textContent = data.title || "Untitled Case";
-        document.getElementById("caseSummary").textContent = data.summary || "No summary provided.";
-        document.getElementById("caseCategory").textContent = data.category || "N/A";
-        document.getElementById("caseAssociate").textContent = data.associateName || "Unassigned";
-        document.getElementById("caseDetails").textContent = data.details || "No details provided.";
-
-        statusEl.style.display = "none";
-        container.style.display = "block";
-
-      } catch (err) {
-        console.error(err);
-        statusEl.textContent = "Error loading case.";
+      if (!snap.exists) {
+        await ref.set({
+          role: "client_admin",
+          email,
+          name,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
       }
     }
 
-    loadCase();
-  </script>
+    async function createOrSignInClient(email, password) {
+      try {
+        const cred = await auth.createUserWithEmailAndPassword(email, password);
+        return cred.user;
+      } catch (err) {
+        if (err.code === "auth/email-already-in-use") {
+          const cred = await auth.signInWithEmailAndPassword(email, password);
+          return cred.user;
+        }
+        throw err;
+      }
+    }
 
+    document.getElementById("caseForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const tierSelect = document.getElementById("tier");
+      const stripeLink = tierSelect.options[tierSelect.selectedIndex].getAttribute("data-link");
+
+      if (!stripeLink) {
+        setStatus("Please select a tier.", "#ff3366");
+        return;
+      }
+
+      const clientName = document.getElementById("clientName").value.trim();
+      const clientDisplayName = document.getElementById("clientDisplayName").value.trim();
+      const clientEmail = document.getElementById("clientEmail").value.trim();
+      const clientPassword = document.getElementById("clientPassword").value.trim();
+      const clientPhone = document.getElementById("clientPhone").value.trim();
+      const caseTitle = document.getElementById("caseTitle").value.trim();
+      const caseDescription = document.getElementById("caseDescription").value.trim();
+      const associateNameVal = document.getElementById("associateName").value.trim();
+      const associateIdVal = document.getElementById("associateId").value.trim();
+
+      if (!clientName || !clientDisplayName || !clientEmail || !clientPassword || !caseTitle || !caseDescription) {
+        setStatus("Please fill in all required fields.", "#ff3366");
+        return;
+      }
+
+      if (clientPassword.length < 6) {
+        setStatus("Password must be at least 6 characters.", "#ff3366");
+        return;
+      }
+
+      btn.disabled = true;
+      setStatus("CREATING SECURE CLIENT ACCOUNT...");
+
+      try {
+        const user = await createOrSignInClient(clientEmail, clientPassword);
+        const uid = user.uid;
+
+        await ensureClientUserDoc(uid, clientEmail, clientName);
+
+        const payload = {
+          action: "submitCase",
+          clientName,
+          clientDisplayName,
+          clientEmail,
+          clientPhone,
+          associateName: associateNameVal,
+          associateId: associateIdVal,
+          caseTitle,
+          caseDescription,
+          tier: tierSelect.value,
+          clientUid: uid,
+          timestamp: new Date().toISOString()
+        };
+
+        setStatus("SAVING CASE...");
+
+        await fetch(BASE_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+
+        setStatus("REDIRECTING TO SECURE PAYMENT...");
+
+        setTimeout(() => {
+          window.location.href = stripeLink;
+        }, 1200);
+
+      } catch (err) {
+        console.error(err);
+        setStatus("Error creating account or submitting case.", "#ff3366");
+        btn.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>
