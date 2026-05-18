@@ -14,7 +14,7 @@
     max-width: 1000px;
     margin: auto;
     position: relative;
-    overflow-x: hidden;
+    overflow-x: hidden; /* ⭐ FIX 1: Prevent right-side overflow */
   }
 
   body::before {
@@ -96,13 +96,13 @@
   .name {
     font-size: 1.9rem;
     font-weight: bold;
-    margin-bottom: 12px;
+    margin-bottom: 22px; /* ⭐ FIX 2: Space below name */
     text-shadow: 0 0 12px #00ff88;
   }
 
   .field {
     display: flex;
-    margin-bottom: 12px;
+    margin-bottom: 22px; /* ⭐ FIX 3: Space below specialty + bio + spacing between fields */
     opacity: 0;
     overflow: hidden;
     border-right: 2px solid #00ff88;
@@ -117,6 +117,8 @@
     white-space: nowrap;
     min-width: 120px;
     max-width: 40%;
+    display: flex;
+    align-items: flex-start; /* ⭐ FIX 4: Prevent vertical overlap */
   }
 
   .field-value {
@@ -136,7 +138,8 @@
     display: flex;
     gap: 4px;
     margin-top: 4px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap; /* ⭐ FIX 5: Keep flex arms on one line */
+    justify-content: flex-start; /* ⭐ FIX 6: Left align arms */
   }
 
   .flex-icon {
@@ -187,7 +190,7 @@
   }
 
   .comp-header {
-    margin-top: 25px;
+    margin-top: 40px !important; /* ⭐ FIX 7: Space above competition */
     font-size: 1rem;
     font-weight: bold;
     color: #00ffaa;
@@ -259,33 +262,6 @@
   .case-btn:hover {
     background: #00ffaa;
     box-shadow: 0 0 14px #00ffaa;
-  }
-
-  /* ⭐ MOBILE FIXES — ALL 8 ITEMS ⭐ */
-  @media (max-width: 700px) {
-
-    /* 1–3: Buffer spacing */
-    .name { margin-bottom: 22px !important; }
-    .field:nth-of-type(1) { margin-bottom: 22px !important; } /* Specialty */
-    .field:nth-of-type(2) { margin-bottom: 22px !important; } /* Bio */
-
-    /* 4–5: Fix vertical alignment of labels */
-    .field-label {
-      display: flex;
-      align-items: flex-start;
-    }
-
-    /* 6: Flex arms on one line */
-    .rating-icons {
-      flex-wrap: nowrap !important;
-      overflow-x: auto;
-      padding-bottom: 4px;
-    }
-
-    /* 7: Buffer above competition header */
-    .comp-header {
-      margin-top: 40px !important;
-    }
   }
 </style>
 </head>
@@ -410,10 +386,10 @@ async function loadProfile() {
         <div class="comp-header">ASSOCIATES COMPETITION</div>
 
         <div class="hir-explainer">
-          This is a competition among associates. The Hansen Intelligence Rating (HIR) is the core competitive metric of the MR. Hansen Firm. It reflects performance, precision, client impact, community trust, and overall intelligence output. Associates rise and fall by this number. 
+          This is a competition among associates. The Hansen Intelligence Rating (HIR) is the core competitive metric of the MR. Hansen Firm. It reflects performance, precision, client impact, community trust, and overall intelligence output. 
           <a href="/associates.html" style="color:#00ffaa; text-decoration:underline;">
             &lt; Associates Rankings Dashboard
-          </a>.
+          </a>
         </div>
 
         <div class="btn-row">
