@@ -13,6 +13,7 @@
     padding: 30px;
     max-width: 1000px;
     margin: auto;
+    overflow-x: hidden;
   }
 
   .back-home {
@@ -155,6 +156,8 @@
     box-shadow: 0 0 12px #00ff88;
     text-align: center;
     transition: all 0.3s;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .card:hover {
@@ -171,12 +174,12 @@
     margin-bottom: 15px;
     box-shadow: 0 0 10px #00ff88;
     background: #111;
+    cursor: pointer;
   }
 
   @media (max-width: 480px) {
     .photo {
-      height: 300px !important;
-      object-position: top center;
+      height: auto !important;
     }
   }
 
@@ -240,6 +243,7 @@
     display: flex;
     align-items: center;
     font-size: 13px;
+    flex-wrap: wrap;
   }
 
   .rank-badge {
@@ -258,11 +262,14 @@
     border: 2px solid #00ff88;
     margin-right: 12px;
     object-fit: cover;
+    cursor: pointer;
   }
 
   .leaderboard-name {
     font-size: 16px;
     font-weight: bold;
+    white-space: normal;
+    word-break: break-word;
   }
 
   .leaderboard-stats {
@@ -284,6 +291,34 @@
   .hir-yellow { background: #e6ff00; }
   .hir-red { background: #ff4444; }
 
+  /* MOBILE FIXES */
+  @media (max-width: 480px) {
+
+    body, html {
+      overflow-x: hidden !important;
+    }
+
+    .leaderboard-row {
+      flex-wrap: wrap;
+      padding-right: 10px;
+    }
+
+    .leaderboard-row > div {
+      width: calc(100% - 70px);
+      margin-top: 6px;
+    }
+
+    .hir-chip {
+      margin-left: 0 !important;
+      margin-top: 10px;
+      width: auto;
+    }
+
+    .card {
+      width: 100% !important;
+      box-sizing: border-box;
+    }
+  }
 </style>
 </head>
 
@@ -401,6 +436,7 @@ function renderDirectory() {
 
     card.innerHTML = `
       <img src="${photoUrl}" class="photo"
+        onclick="window.location.href='/profile.html?id=${a.associateId}'"
         onerror="this.src='https://via.placeholder.com/300x280/111111/00ff88?text=Photo+Unavailable'" />
 
       <div class="name">${(a.name || "Unnamed Associate").replace(/\r|\n/g, '')}</div>
@@ -454,7 +490,10 @@ function renderLeaderboard() {
     container.innerHTML += `
       <div class="leaderboard-row">
         <div class="rank-badge">#${rank}</div>
-        <img src="${avatar}" class="leaderboard-avatar">
+
+        <img src="${avatar}" class="leaderboard-avatar"
+             onclick="window.location.href='/profile.html?id=${a.associateId}'">
+
         <div>
           <div class="leaderboard-name">${(a.name || "Unnamed Associate").replace(/\r|\n/g, '')}</div>
           <div class="leaderboard-stats">
@@ -464,6 +503,7 @@ function renderLeaderboard() {
             Community: ${a.avgCommunityRating || "—"}
           </div>
         </div>
+
         <div class="hir-chip ${badgeClass}">
           ${HIR.toFixed(1)}
         </div>
