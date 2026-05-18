@@ -140,7 +140,6 @@
     to   { width: 100%; opacity: 1; }
   }
 
-  /* ⭐ Left-align flex arms */
   .rating-icons {
     display: flex;
     flex-wrap: nowrap !important;
@@ -156,7 +155,6 @@
     height: 18px;
   }
 
-  /* HIR */
   .hir-block {
     margin-top: 25px;
     opacity: 1 !important;
@@ -212,7 +210,6 @@
     max-width: 600px;
   }
 
-  /* ⭐ MOBILE BUTTON FIX — prevent overlap */
   @media (max-width: 700px) {
     .btn-row {
       display: flex;
@@ -328,7 +325,6 @@ async function loadProfile() {
 
   const photoUrl = associate.photoUrl;
 
-  /* Build flex icons */
   const rating = Number(associate.avgCommunityRating || 0);
   let flexIcons = "";
   for (let i = 1; i <= 10; i++) {
@@ -387,7 +383,7 @@ async function loadProfile() {
         <div class="hir-explainer">
           This is a competition among associates. The Hansen Intelligence Rating (HIR) is the core competitive metric of the MR. Hansen Firm. It reflects performance, precision, client impact, community trust, and overall intelligence output. 
           <a href="/associates.html?mode=leaderboard" style="color:#00ffaa; text-decoration:underline; text-decoration-thickness:1px;">
-            &lt; Associates Rankings Dashboard
+            &lt; Associates Rankings Leaderboard
           </a>
         </div>
 
