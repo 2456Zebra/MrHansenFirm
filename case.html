@@ -126,7 +126,7 @@
     Submitting case to: <strong id="selectedAssociate"></strong>
   </div>
 
-  <form id="caseForm">
+  <form id="caseForm" autocomplete="off">
     <input type="hidden" id="associateId">
 
     <label>Your Name</label>
@@ -137,10 +137,10 @@
     <div class="subtitle" style="margin-top:5px;">This name will appear on the public View Cases page.</div>
 
     <label>Your Email</label>
-    <input type="email" id="clientEmail" required />
+    <input type="email" id="clientEmail" required autocomplete="new-email" />
 
     <label>Create Password</label>
-    <input type="password" id="clientPassword" required />
+    <input type="password" id="clientPassword" required autocomplete="new-password" />
 
     <label>Phone (optional)</label>
     <input type="text" id="clientPhone" />
