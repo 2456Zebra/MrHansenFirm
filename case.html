@@ -112,6 +112,30 @@
         padding: 20px 10px;
       }
     }
+
+/* MOBILE FIX — Prevent right-side cutoff */
+@media (max-width: 600px) {
+  body {
+    padding: 20px 10px !important;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  input, textarea, select {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  form {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+}
+
+    
   </style>
 </head>
 
