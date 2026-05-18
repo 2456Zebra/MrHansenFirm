@@ -326,8 +326,11 @@
 <script>
 const BASE_URL = "https://script.google.com/macros/s/AKfycbwMPK8PCo5IgaeObx3Q8vD4dzqz3EQyLQyrS7Bru6Kx1K_DI6uaxIOfFrOx4OCGzDz0/exec";
 
+/* ⭐ FIX: Determine mode BEFORE anything else */
+const params = new URLSearchParams(window.location.search);
+let currentMode = params.get("mode") === "leaderboard" ? "leaderboard" : "newest";
+
 let associates = [];
-let currentMode = 'newest';
 
 async function loadAssociates() {
   try {
@@ -347,15 +350,8 @@ async function loadAssociates() {
 
     associates = data.associates;
 
-    /* ⭐ URL MODE FIX — this makes ?mode=leaderboard work */
-    const params = new URLSearchParams(window.location.search);
-    const mode = params.get("mode");
-
-    if (mode === "leaderboard") {
-      setMode("leaderboard");
-    } else {
-      renderCurrentMode();
-    }
+    /* ⭐ FIX: Now apply the mode immediately */
+    setMode(currentMode);
 
   } catch (e) {
     document.getElementById("directoryContainer").innerHTML = "Error loading associates.";
