@@ -106,7 +106,6 @@
       align-items: center;
       gap: 4px;
     }
-
     .required {
       color: var(--accent);
       font-size: 18px;
@@ -191,21 +190,25 @@
         <div class="panel-header">Your Information</div>
         
         <label>Your Full Name <span class="required">*</span></label>
-        <input type="text" id="clientName" required />
+        <input type="text" id="clientName" required autocomplete="off" />
 
         <label>Display Name (Public) <span class="required">*</span></label>
-        <input type="text" id="clientDisplayName" required />
+        <input type="text" id="clientDisplayName" required autocomplete="off" />
         <small style="color:#888; display:block; margin-top:4px;">This name will appear on the public View Cases page.</small>
 
         <div style="height: 18px;"></div>
         <label>Your Email <span class="required">*</span></label>
-        <input type="email" id="clientEmail" required />
+        <input type="email" id="clientEmail" required autocomplete="off" />
 
         <label>Create Password <span class="required">*</span></label>
-        <input type="password" id="clientPassword" required />
+        <input type="password" 
+               id="clientPassword" 
+               name="new_password_987" 
+               autocomplete="new-password" 
+               required />
 
         <label>Phone (optional)</label>
-        <input type="tel" id="clientPhone" />
+        <input type="tel" id="clientPhone" autocomplete="off" />
       </div>
 
       <!-- Tier -->
@@ -223,7 +226,7 @@
       <div class="panel">
         <div class="panel-header">Case Details</div>
         <label>Case Title <span class="required">*</span></label>
-        <input type="text" id="caseTitle" placeholder="Short, clear title" required />
+        <input type="text" id="caseTitle" placeholder="Short, clear title" required autocomplete="off" />
 
         <label>Describe Your Situation <span class="required">*</span></label>
         <textarea id="caseDescription" placeholder="What happened? What clarity are you looking for?" required></textarea>
@@ -283,7 +286,7 @@
 </div>
 
 <script>
-// === YOUR 7 ASSOCIATES GO HERE ===
+// === YOUR 7 ASSOCIATES ===
 const associatesData = [
   { id: 1, name: "HANSEN // PRIME", handle: "@hansen_prime", hir: 97 },
   { id: 2, name: "SIGMA // RELATIONS", handle: "@sigma_relations", hir: 94 },
@@ -347,7 +350,7 @@ function updateSummary() {
   document.getElementById("submitButton").disabled = !ready;
 }
 
-// Add-on clicks
+// Add-on functionality
 document.querySelectorAll('.addon-row').forEach(row => {
   row.addEventListener('click', () => {
     row.classList.toggle('active');
