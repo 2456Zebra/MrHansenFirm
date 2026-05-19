@@ -201,11 +201,7 @@
         <input type="email" id="clientEmail" required autocomplete="off" />
 
         <label>Create Password <span class="required">*</span></label>
-        <input type="password" 
-               id="clientPassword" 
-               name="new_password_987" 
-               autocomplete="new-password" 
-               required />
+        <input type="password" id="clientPassword" name="new_password_987" autocomplete="new-password" required />
 
         <label>Phone (optional)</label>
         <input type="tel" id="clientPhone" autocomplete="off" />
@@ -273,21 +269,21 @@
     </div>
   </div>
 
-  <!-- Apply Section - CORRECT LINK -->
+  <!-- Apply -->
   <div class="panel" style="text-align: center; margin-top: 40px;">
     <h3>Want to Become an Intelligence Associate?</h3>
     <p style="color: var(--muted); max-width: 600px; margin: 12px auto;">
       Join the arena, grow your personal brand, and compete for visibility and followers.
     </p>
-    <a href="associate-apply.html" 
-       style="display: inline-block; padding: 14px 32px; background: #00ff88; color: black; font-weight: bold; border-radius: 999px; text-decoration: none;">
+    <a href="associate-apply.html" style="display: inline-block; padding: 14px 32px; background: #00ff88; color: black; font-weight: bold; border-radius: 999px; text-decoration: none;">
       APPLY TO BE AN INTELLIGENCE ASSOCIATE
     </a>
   </div>
 </div>
 
 <script>
-// === YOUR ASSOCIATES DATA ===
+const BASE_URL = "https://script.google.com/macros/s/AKfycbwMPK8PCo5IgaeObx3Q8vD4dzqz3EQyLQyrS7Bru6Kx1K_DI6uaxIOfFrOx4OCGzDz0/exec";
+
 const associatesData = [
   { id: 1, name: "HANSEN // PRIME", handle: "@hansen_prime", hir: 97 },
   { id: 2, name: "SIGMA // RELATIONS", handle: "@sigma_relations", hir: 94 },
@@ -343,7 +339,6 @@ function updateSummary() {
   document.getElementById("summaryTier").textContent = tierText;
 
   selectedTierPrice = parseInt(tierSelect.options[tierSelect.selectedIndex]?.dataset.price) || 0;
-
   const total = selectedTierPrice + addonTotal;
   document.getElementById("summaryTotal").textContent = "$" + total;
 
@@ -351,6 +346,7 @@ function updateSummary() {
   document.getElementById("submitButton").disabled = !ready;
 }
 
+// Add-on toggles
 document.querySelectorAll('.addon-row').forEach(row => {
   row.addEventListener('click', () => {
     row.classList.toggle('active');
@@ -362,6 +358,41 @@ document.querySelectorAll('.addon-row').forEach(row => {
   });
 });
 
+// Submit Handler
+document.getElementById("submitButton").addEventListener("click", async () => {
+  if (!selectedAssociate) return;
+
+  const payload = {
+    action: "submitCaseWithSignup",
+    clientName: document.getElementById("clientName").value.trim(),
+    clientDisplayName: document.getElementById("clientDisplayName").value.trim(),
+    clientEmail: document.getElementById("clientEmail").value.trim(),
+    clientPhone: document.getElementById("clientPhone").value.trim(),
+    caseTitle: document.getElementById("caseTitle").value.trim(),
+    caseDescription: document.getElementById("caseDescription").value.trim(),
+    tier: document.getElementById("tier").value,
+    associateId: selectedAssociate.id
+  };
+
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+    const result = await res.json();
+
+    if (result.success) {
+      alert("✅ Case submitted successfully! Check your email.");
+    } else {
+      alert("Error: " + (result.error || "Unknown error"));
+    }
+  } catch (err) {
+    alert("Submission failed. Please try again.");
+  }
+});
+
+// Search & Initial Load
 document.getElementById("searchInput").addEventListener("input", (e) => {
   const term = e.target.value.toLowerCase();
   const filtered = associatesData.filter(a => 
