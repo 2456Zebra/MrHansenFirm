@@ -146,8 +146,24 @@
       border-radius: 999px;
       cursor: pointer;
       margin-top: 12px;
+      position: relative;
     }
     .submit-button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .loading-spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #000;
+      border-top: 3px solid #00ff88;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
     .disclaimer {
       font-size: 11px;
@@ -249,7 +265,8 @@
         <div style="margin-bottom: 20px;"><strong>Total:</strong> <span id="summaryTotal">$0</span></div>
 
         <button id="submitButton" class="submit-button" disabled>
-          SUBMIT CASE &amp; TRANSMIT TO ASSOCIATE
+          <span id="buttonText">SUBMIT CASE &amp; TRANSMIT TO ASSOCIATE</span>
+          <span class="loading-spinner" id="spinner"></span>
         </button>
 
         <div class="disclaimer">
@@ -290,12 +307,8 @@ async function loadAssociates() {
     if (result.success) {
       associatesData = result.associates || [];
       renderAssociates(associatesData);
-    } else {
-      document.getElementById("associateGrid").innerHTML = "<p>Error loading associates.</p>";
     }
-  } catch (e) {
-    document.getElementById("associateGrid").innerHTML = "<p>Could not load associates.</p>";
-  }
+  } catch (e) {}
 }
 
 function renderAssociates(filtered) {
@@ -303,7 +316,6 @@ function renderAssociates(filtered) {
   grid.innerHTML = "";
 
   filtered.forEach(a => {
-    // Correct key from your sheet
     const photoUrl = (a.photoUrl && a.photoUrl.trim()) 
       ? a.photoUrl.trim() 
       : "https://via.placeholder.com/56x56/222/00ff88?text=No+Photo";
@@ -352,8 +364,29 @@ function updateSummary() {
   document.getElementById("submitButton").disabled = !ready;
 }
 
+// Add-on clicks
+document.querySelectorAll('.addon-row').forEach(row => {
+  row.addEventListener('click', () => {
+    row.classList.toggle('active');
+    addonTotal = 0;
+    document.querySelectorAll('.addon-row.active').forEach(r => {
+      addonTotal += parseInt(r.dataset.price) || 0;
+    });
+    updateSummary();
+  });
+});
+
+// Submit with loading spinner
 document.getElementById("submitButton").addEventListener("click", async () => {
   if (!selectedAssociate) return;
+
+  const btn = document.getElementById("submitButton");
+  const buttonText = document.getElementById("buttonText");
+  const spinner = document.getElementById("spinner");
+
+  buttonText.style.display = "none";
+  spinner.style.display = "inline-block";
+  btn.disabled = true;
 
   const payload = {
     action: "submitCaseWithSignup",
@@ -377,11 +410,16 @@ document.getElementById("submitButton").addEventListener("click", async () => {
 
     if (result.success) {
       alert("✅ Case submitted successfully! Check your email.");
+      // Optional: window.location.href = "/client-dashboard.html"; // once you have it
     } else {
       alert("Error: " + (result.error || "Unknown error"));
     }
   } catch (err) {
     alert("Submission failed. Please try again.");
+  } finally {
+    buttonText.style.display = "inline";
+    spinner.style.display = "none";
+    btn.disabled = false;
   }
 });
 
