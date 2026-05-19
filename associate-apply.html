@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Associate Application</title>
-
   <style>
     body {
       font-family: "Consolas", "Courier New", monospace;
@@ -16,7 +15,6 @@
       overflow-x: hidden;
       position: relative;
     }
-
     /* Scanline overlay */
     body::before {
       content: "";
@@ -34,7 +32,6 @@
       );
       z-index: 999;
     }
-
     /* Animated typing header */
     .typing {
       font-size: 28px;
@@ -50,20 +47,16 @@
       animation: reveal 3s steps(40) forwards, cursorBlink 0.7s infinite;
       border-right: 2px solid #00ff88;
     }
-
     @keyframes reveal {
       from { clip-path: inset(0 100% 0 0); }
       to { clip-path: inset(0 0 0 0); }
     }
-
     @keyframes cursorBlink {
       50% { border-color: transparent; }
     }
-
     @media (max-width: 480px) {
       .typing { font-size: 20px; }
     }
-
     label {
       display: block;
       margin-top: 20px;
@@ -71,7 +64,6 @@
       font-size: 15px;
       text-shadow: 0 0 8px #00ff88;
     }
-
     input, textarea {
       width: 100%;
       padding: 12px;
@@ -84,12 +76,10 @@
       box-shadow: 0 0 10px #00ff88 inset;
       transition: 0.2s;
     }
-
     input:focus, textarea:focus {
       outline: none;
       box-shadow: 0 0 18px #00ff88;
     }
-
     #preview {
       margin-top: 15px;
       width: 120px;
@@ -100,7 +90,6 @@
       display: none;
       box-shadow: 0 0 12px #00ff88;
     }
-
     button {
       margin-top: 35px;
       width: 100%;
@@ -116,13 +105,11 @@
       box-shadow: 0 0 15px #00ff88;
       transition: 0.2s ease-in-out;
     }
-
     button:hover {
       background: #00ffaa;
       box-shadow: 0 0 25px #00ffaa;
       transform: scale(1.02);
     }
-
     #uploadStatus {
       margin-top: 20px;
       font-size: 14px;
@@ -130,17 +117,14 @@
       display: none;
       text-shadow: 0 0 8px #00ff88;
     }
-
     .pulse {
       animation: pulse 1s infinite;
     }
-
     @keyframes pulse {
       0% { opacity: 0.4; }
       50% { opacity: 1; }
       100% { opacity: 0.4; }
     }
-
     #successScreen {
       position: fixed;
       top: 0;
@@ -157,12 +141,10 @@
       z-index: 2000;
       animation: fadeIn 1s forwards;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
-
     .back-btn {
       margin-top: 30px;
       display: block;
@@ -174,7 +156,6 @@
       text-shadow: 0 0 6px #00ff88;
       transition: 0.2s;
     }
-
     .back-btn:hover {
       color: #00ffaa;
       text-shadow: 0 0 10px #00ffaa;
@@ -182,27 +163,27 @@
     }
   </style>
 </head>
-
 <body>
-
   <div class="typing">INITIALIZING ASSOCIATE APPLICATION TERMINAL...</div>
-
   <form id="applyForm">
-
     <label>Display Name</label>
-    <input type="text" id="displayName" required />
+    <input type="text" id="displayName" required autocomplete="off" />
 
     <label>Email</label>
-    <input type="email" id="email" required />
+    <input type="email" id="email" required autocomplete="off" />
 
     <label>Create Password</label>
-    <input type="password" id="password" required />
+    <input type="password" 
+           id="password" 
+           name="new_password_987654"
+           autocomplete="new-password" 
+           required />
 
     <label>Instagram Handle</label>
-    <input type="text" id="instagram" placeholder="instagram username" required />
+    <input type="text" id="instagram" placeholder="instagram username" required autocomplete="off" />
 
     <label>Specialty</label>
-    <input type="text" id="specialty" required />
+    <input type="text" id="specialty" required autocomplete="off" />
 
     <label>Bio</label>
     <textarea id="bio" rows="4" required></textarea>
@@ -211,21 +192,16 @@
     <input type="file" id="photo" accept="image/*" required />
 
     <img id="preview" />
-
     <div id="uploadStatus" class="pulse">UPLOADING... PLEASE WAIT</div>
-
     <button type="submit">SUBMIT APPLICATION</button>
   </form>
-
   <a href="/associates.html" class="back-btn">← BACK TO ASSOCIATES</a>
-
   <div id="successScreen">APPLICATION RECEIVED — REDIRECTING...</div>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyCXijSyw_EqvRSKwJH0M-xPs5piNfiCiYI",
@@ -235,14 +211,11 @@
     messagingSenderId: "1007101301706",
     appId: "1:1007101301706:web:bbbac146ca9411e41af533"
   };
-
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
-
   let photoBase64 = null;
 
-  // Clean Instagram handle (remove @, URLs, spaces)
   function cleanInstagramHandle(input) {
     if (!input) return "";
     return input
@@ -253,14 +226,12 @@
       .replace(/\s+/g, "");
   }
 
-  // Photo preview + Base64 conversion
   document.getElementById("photo").addEventListener("change", function () {
     const file = this.files[0];
     if (file) {
       const preview = document.getElementById("preview");
       preview.src = URL.createObjectURL(file);
       preview.style.display = "block";
-
       const reader = new FileReader();
       reader.onload = () => {
         photoBase64 = reader.result;
@@ -292,7 +263,6 @@
 
   document.getElementById("applyForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const displayName = document.getElementById("displayName").value.trim();
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
@@ -304,7 +274,6 @@
       alert("Please complete all fields.");
       return;
     }
-
     if (password.length < 6) {
       alert("Password must be at least 6 characters.");
       return;
@@ -315,9 +284,7 @@
     try {
       const user = await createOrSignInAssociate(email, password);
       const uid = user.uid;
-
       const associateId = generateAssociateId();
-
       const firestoreData = {
         role: "associate",
         email,
@@ -329,15 +296,11 @@
         associateId,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       };
-
       await saveAssociateToFirestore(uid, firestoreData);
-
       document.getElementById("successScreen").style.display = "flex";
-
       setTimeout(() => {
         window.location.href = "/associate-admin.html?id=" + associateId;
       }, 2000);
-
     } catch (err) {
       console.error(err);
       alert("Error submitting application.");
@@ -345,6 +308,5 @@
     }
   });
 </script>
-
 </body>
 </html>
