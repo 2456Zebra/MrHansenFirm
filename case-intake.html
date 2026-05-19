@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Case Intake Hub — MR. HANSEN FIRM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #05070b;
+      --bg-elevated: #0b0f18;
+      --accent: #f5c15b;
+      --accent-soft: rgba(245, 193, 91, 0.12);
+      --accent-strong: #ffdd88;
+      --text: #f5f7fb;
+      --muted: #9aa0b5;
+      --border: #1b2233;
+      --danger: #ff5c7a;
+      --success: #4fd1a1;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.55);
+      --font-main: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: radial-gradient(circle at top, #151b2b 0, #05070b 55%);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hub-shell {
+      max-width: 1120px;
+      margin: 32px auto 40px;
+      padding: 0 16px 40px;
+    }
+
+    .hub-header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .hub-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .hub-title-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hub-title {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .hub-pill {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(245, 193, 91, 0.4);
+      background: linear-gradient(
+        135deg,
+        rgba(245, 193, 91, 0.12),
+        rgba(245, 193, 91, 0.02)
+      );
+      color: var(--accent-strong);
+    }
+
+    .hub-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 640px;
+    }
+
+    .hub-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(280px, 1fr);
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 900px) {
+      .hub-layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, #151b2b 0, #05070b 55%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
+      padding: 18px 18px 16px;
+    }
+
+    .panel + .panel {
+      margin-top: 12px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+
+    .panel-title {
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .panel-tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(154, 160, 181, 0.4);
+      color: var(--muted);
+    }
+
+    .panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Associate grid */
+
+    .associate-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    .associate-card {
+      position: relative;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: linear-gradient(
+        145deg,
+        rgba(11, 15, 24, 0.96),
+        rgba(5, 7, 11, 0.98)
+      );
+      padding: 10px;
+      cursor: pointer;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease,
+        transform 0.12s ease, background 0.16s ease;
+    }
+
+    .associate-card:hover {
+      border-color: rgba(245, 193, 91, 0.55);
+      box-shadow: 0 0 0 1px rgba(245, 193, 91, 0.18);
+      transform: translateY(-1px);
+    }
+
+    .associate-card.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(245, 193, 91, 0.4);
+      background: radial-gradient(
+        circle at top left,
+        rgba(245, 193, 91, 0.16),
+        rgba(5, 7, 11, 0.98)
+      );
+    }
+
+    .associate-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .associate-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #f5c15b, #7b5cff);
+      border: 1px solid rgba(245, 193, 91, 0.5);
+      flex-shrink: 0;
+    }
+
+    .associate-main {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .associate-name {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .associate-handle {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .associate-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .meta-pill {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(19, 26, 43, 0.9);
+      color: var(--muted);
+      border: 1px solid rgba(27, 34, 51, 0.9);
+    }
+
+    .meta-pill strong {
+      color: var(--accent-strong);
+      font-weight: 500;
+    }
+
+    .associate-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .tag-chip {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(245, 193, 91, 0.08);
+      color: var(--accent-strong);
+      border: 1px solid rgba(245, 193, 91, 0.3);
+    }
+
+    .associate-select-label {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(154, 160, 181, 0.5);
+      color: var(--muted);
+      background: rgba(5, 7, 11, 0.9);
+    }
+
+    .associate-card.selected .associate-select-label {
+      border-color: var(--accent);
+      color: var(--accent-strong);
+      background: rgba(5, 7, 11, 0.95);
+    }
+
+    /* Case levels */
+
+    .levels-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 10px;
+    }
+
+    .level-card {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: linear-gradient(
+        150deg,
+        rgba(11, 15, 24, 0.96),
+        rgba(5, 7, 11, 0.98)
+      );
+      padding: 10px;
+      cursor: pointer;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease,
+        transform 0.12s ease, background 0.16s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .level-card:hover {
+      border-color: rgba(245, 193, 91, 0.55);
+      box-shadow: 0 0 0 1px rgba(245, 193, 91, 0.18);
+      transform: translateY(-1px);
+    }
+
+    .level-card.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(245, 193, 91, 0.4);
+      background: radial-gradient(
+        circle at top left,
+        rgba(245, 193, 91, 0.16),
+        rgba(5, 7, 11, 0.98)
+      );
+    }
+
+    .level-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .level-name {
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .level-price {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent-strong);
+    }
+
+    .level-title {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .level-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Add-ons */
+
+    .addons-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .addon-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 9px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: rgba(5, 7, 11, 0.9);
+    }
+
+    .addon-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .addon-title {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .addon-desc {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .addon-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .addon-price {
+      font-size: 12px;
+      color: var(--accent-strong);
+      font-weight: 500;
+    }
+
+    .toggle {
+      position: relative;
+      width: 34px;
+      height: 18px;
+      border-radius: 999px;
+      background: #151b2b;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .toggle-knob {
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: #9aa0b5;
+      transition: transform 0.16s ease, background 0.16s ease;
+    }
+
+    .toggle.active {
+      background: rgba(79, 209, 161, 0.18);
+      border-color: var(--success);
+    }
+
+    .toggle.active .toggle-knob {
+      transform: translateX(14px);
+      background: var(--success);
+    }
+
+    /* Case description */
+
+    .field-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      gap: 8px;
+    }
+
+    .field-label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .field-hint {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .textarea {
+      width: 100%;
+      min-height: 130px;
+      resize: vertical;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: rgba(5, 7, 11, 0.96);
+      color: var(--text);
+      padding: 10px;
+      font-size: 13px;
+      line-height: 1.4;
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .textarea:focus {
+      border-color: rgba(245, 193, 91, 0.7);
+      box-shadow: 0 0 0 1px rgba(245, 193, 91, 0.25);
+    }
+
+    .case-attachments {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .ghost-button {
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px dashed var(--border);
+      background: rgba(5, 7, 11, 0.9);
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    /* Sidebar summary */
+
+    .summary-panel {
+      position: sticky;
+      top: 20px;
+      background: radial-gradient(circle at top, #151b2b 0, #05070b 55%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .summary-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .summary-title {
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .summary-status {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(154, 160, 181, 0.5);
+      color: var(--muted);
+    }
+
+    .summary-status.ready {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .summary-section {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: rgba(5, 7, 11, 0.96);
+      padding: 9px 9px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .summary-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .summary-value {
+      font-size: 12px;
+    }
+
+    .summary-value.muted {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .summary-line strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .summary-total-label {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 11px;
+    }
+
+    .summary-total-amount {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--accent-strong);
+    }
+
+    .submit-button {
+      margin-top: 8px;
+      width: 100%;
+      border-radius: 999px;
+      border: none;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      background: linear-gradient(135deg, #f5c15b, #ffdd88);
+      color: #1b1305;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65);
+      transition: transform 0.12s ease, box-shadow 0.12s ease,
+        filter 0.12s ease;
+    }
+
+    .submit-button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .submit-button:not(:disabled):hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75);
+      filter: brightness(1.02);
+    }
+
+    .summary-footnote {
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-top: 4px;
+    }
+
+    .summary-footnote strong {
+      color: var(--accent-strong);
+      font-weight: 500;
+    }
+
+    /* Disclaimer */
+
+    .disclaimer {
+      margin-top: 14px;
+      padding: 10px 11px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(154, 160, 181, 0.4);
+      background: rgba(5, 7, 11, 0.96);
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .disclaimer strong {
+      color: var(--accent-strong);
+      font-weight: 500;
+    }
+
+    /* Confirmation overlay (simple) */
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.78);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    .overlay.visible {
+      display: flex;
+    }
+
+    .overlay-card {
+      max-width: 420px;
+      width: 90%;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: radial-gradient(circle at top, #151b2b 0, #05070b 55%);
+      box-shadow: var(--shadow-soft);
+      padding: 18px 18px 14px;
+      text-align: left;
+    }
+
+    .overlay-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .overlay-body {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .overlay-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .overlay-close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(5, 7, 11, 0.96);
+      color: var(--text);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <main class="hub-shell">
+      <header class="hub-header">
+        <div class="hub-eyebrow">Hansen Intelligence Division</div>
+        <div class="hub-title-row">
+          <h1 class="hub-title">Case Intake Hub</h1>
+          <span class="hub-pill">Enter the arena</span>
+        </div>
+        <p class="hub-subtitle">
+          Choose your associate, select your level of analysis, and transmit
+          your situation into the competitive intelligence arena.
+        </p>
+      </header>
+
+      <div class="hub-layout">
+        <!-- LEFT COLUMN -->
+        <section>
+          <!-- Associates -->
+          <div class="panel" id="panel-associates">
+            <div class="panel-header">
+              <div class="panel-title">Select Intelligence Associate</div>
+              <div class="panel-tag">Step 1 of 4</div>
+            </div>
+            <div class="panel-body">
+              <div class="associate-grid" id="associateGrid">
+                <!-- Example associates; replace with dynamic data if needed -->
+                <div
+                  class="associate-card"
+                  data-associate-id="1"
+                  data-associate-name="HANSEN // PRIME"
+                >
+                  <div class="associate-select-label">Select</div>
+                  <div class="associate-top">
+                    <div class="associate-avatar"></div>
+                    <div class="associate-main">
+                      <div class="associate-name">HANSEN // PRIME</div>
+                      <div class="associate-handle">@hansen_prime</div>
+                    </div>
+                  </div>
+                  <div class="associate-meta">
+                    <span class="meta-pill">
+                      Followers: <strong>128K</strong>
+                    </span>
+                    <span class="meta-pill">
+                      Response: <strong>Fast</strong>
+                    </span>
+                    <span class="meta-pill">
+                      Case Score: <strong>97</strong>
+                    </span>
+                  </div>
+                  <div class="associate-tags">
+                    <span class="tag-chip">Behavioral Strategy</span>
+                    <span class="tag-chip">High‑stakes</span>
+                  </div>
+                </div>
+
+                <div
+                  class="associate-card"
+                  data-associate-id="2"
+                  data-associate-name="SIGMA // RELATIONS"
+                >
+                  <div class="associate-select-label">Select</div>
+                  <div class="associate-top">
+                    <div class="associate-avatar"></div>
+                    <div class="associate-main">
+                      <div class="associate-name">SIGMA // RELATIONS</div>
+                      <div class="associate-handle">@sigma_relations</div>
+                    </div>
+                  </div>
+                  <div class="associate-meta">
+                    <span class="meta-pill">
+                      Followers: <strong>64K</strong>
+                    </span>
+                    <span class="meta-pill">
+                      Response: <strong>Standard</strong>
+                    </span>
+                    <span class="meta-pill">
+                      Case Score: <strong>92</strong>
+                    </span>
+                  </div>
+                  <div class="associate-tags">
+                    <span class="tag-chip">Relationships</span>
+                    <span class="tag-chip">Patterns</span>
+                  </div>
+                </div>
+
+                <div
+                  class="associate-card"
+                  data-associate-id="3"
+                  data-associate-name="VECTOR // CRISIS"
+                >
+                  <div class="associate-select-label">Select</div>
+                  <div class="associate-top">
+                    <div class="associate-avatar"></div>
+                    <div class="associate-main">
+                      <div class="associate-name">VECTOR // CRISIS</div>
+                      <div class="associate-handle">@vector_crisis</div>
+                    </div>
+                  </div>
+                  <div class="associate-meta">
+                    <span class="meta-pill">
+                      Followers: <strong>41K</strong>
+                    </span>
+                    <span class="meta-pill">
+                      Response: <strong>Priority</strong>
+                    </span>
+                    <span class="meta-pill">
+                      Case Score: <strong>94</strong>
+                    </span>
+                  </div>
+                  <div class="associate-tags">
+                    <span class="tag-chip">Crisis</span>
+                    <span class="tag-chip">High‑pressure</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Levels -->
+          <div class="panel" id="panel-levels">
+            <div class="panel-header">
+              <div class="panel-title">Select Case Level</div>
+              <div class="panel-tag">Step 2 of 4</div>
+            </div>
+            <div class="panel-body">
+              <div class="levels-grid" id="levelsGrid">
+                <div
+                  class="level-card"
+                  data-level-id="1"
+                  data-level-name="LEVEL 1 — Quick Read"
+                  data-level-price="35"
+                >
+                  <div class="level-row">
+                    <div class="level-name">Level 1</div>
+                    <div class="level-price">$35</div>
+                  </div>
+                  <div class="level-title">Quick Read</div>
+                  <div class="level-desc">
+                    Fast clarity on a single situation. A brief intelligence
+                    read to confirm instincts, decode behavior, or validate
+                    concerns.
+                  </div>
+                </div>
+
+                <div
+                  class="level-card"
+                  data-level-id="2"
+                  data-level-name="LEVEL 2 — Deep Dive Analysis"
+                  data-level-price="95"
+                >
+                  <div class="level-row">
+                    <div class="level-name">Level 2</div>
+                    <div class="level-price">$95</div>
+                  </div>
+                  <div class="level-title">Deep Dive Analysis</div>
+                  <div class="level-desc">
+                    Full behavioral breakdown including motives, inconsistencies,
+                    emotional drivers, predicted outcomes, and recommended
+                    actions.
+                  </div>
+                </div>
+
+                <div
+                  class="level-card"
+                  data-level-id="3"
+                  data-level-name="LEVEL 3 — Crisis Session"
+                  data-level-price="195"
+                >
+                  <div class="level-row">
+                    <div class="level-name">Level 3</div>
+                    <div class="level-price">$195</div>
+                  </div>
+                  <div class="level-title">Crisis Session</div>
+                  <div class="level-desc">
+                    High‑stakes clarity. Priority handling for urgent or
+                    time‑sensitive cases. Immediate direction and stabilization
+                    from a senior associate.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add-ons -->
+          <div class="panel" id="panel-addons">
+            <div class="panel-header">
+              <div class="panel-title">Optional Add‑Ons</div>
+              <div class="panel-tag">Step 3 of 4</div>
+            </div>
+            <div class="panel-body">
+              <div class="addons-list">
+                <div class="addon-row" data-addon-id="report" data-addon-price="75">
+                  <div class="addon-main">
+                    <div class="addon-title">Written Behavioral Pattern Report</div>
+                    <div class="addon-desc">
+                      A formal intelligence‑style document summarizing your case.
+                    </div>
+                  </div>
+                  <div class="addon-meta">
+                    <div class="addon-price">$75</div>
+                    <div class="toggle" data-toggle="report">
+                      <div class="toggle-knob"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="addon-row" data-addon-id="followup" data-addon-price="25">
+                  <div class="addon-main">
+                    <div class="addon-title">Follow‑Up Check‑In</div>
+                    <div class="addon-desc">
+                      Quick update analysis after new developments.
+                    </div>
+                  </div>
+                  <div class="addon-meta">
+                    <div class="addon-price">$25</div>
+                    <div class="toggle" data-toggle="followup">
+                      <div class="toggle-knob"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Case description -->
+          <div class="panel" id="panel-description">
+            <div class="panel-header">
+              <div class="panel-title">Describe Your Situation</div>
+              <div class="panel-tag">Step 4 of 4</div>
+            </div>
+            <div class="panel-body">
+              <div class="field-label-row">
+                <div class="field-label">Case Briefing</div>
+                <div class="field-hint">Be specific. Names, timelines, patterns.</div>
+              </div>
+              <textarea
+                id="caseDescription"
+                class="textarea"
+                placeholder="Outline what happened, who is involved, and what outcome you want clarity on."
+              ></textarea>
+
+              <div class="case-attachments">
+                <button type="button" class="ghost-button">
+                  Attach screenshots
+                </button>
+                <button type="button" class="ghost-button">
+                  Attach documents
+                </button>
+                <button type="button" class="ghost-button">
+                  Add voice note
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- RIGHT COLUMN: SUMMARY -->
+        <aside>
+          <div class="summary-panel">
+            <div class="summary-header">
+              <div class="summary-title">Case Summary</div>
+              <div class="summary-status" id="summaryStatus">
+                Awaiting selections
+              </div>
+            </div>
+
+            <div class="summary-section">
+              <div class="summary-label">Associate</div>
+              <div class="summary-value muted" id="summaryAssociate">
+                None selected
+              </div>
+            </div>
+
+            <div class="summary-section">
+              <div class="summary-label">Case Level</div>
+              <div class="summary-value muted" id="summaryLevel">
+                None selected
+              </div>
+            </div>
+
+            <div class="summary-section">
+              <div class="summary-label">Add‑Ons</div>
+              <div class="summary-line">
+                <span>Written Behavioral Pattern Report</span>
+                <span id="summaryAddonReport">$0</span>
+              </div>
+              <div class="summary-line">
+                <span>Follow‑Up Check‑In</span>
+                <span id="summaryAddonFollowup">$0</span>
+              </div>
+            </div>
+
+            <div class="summary-section">
+              <div class="summary-total">
+                <div class="summary-total-label">Total</div>
+                <div class="summary-total-amount" id="summaryTotal">$0</div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="submit-button"
+              id="submitButton"
+              disabled
+            >
+              Submit Case &amp; Enter the Arena
+            </button>
+
+            <div class="summary-footnote">
+              By submitting, you authorize MR. HANSEN FIRM to transmit your case
+              to the selected associate for competitive analysis.
+            </div>
+
+            <div class="disclaimer">
+              <strong>Disclaimer:</strong> MR. HANSEN FIRM and its associates do
+              not provide legal advice, legal representation, or professional
+              services of any kind. All case submissions, responses, analyses,
+              and communications on this platform are for entertainment and
+              informational purposes only. No content on this site should be
+              interpreted as legal, medical, financial, or professional advice.
+              If you require legal assistance, please consult a licensed
+              attorney in your jurisdiction.
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <!-- Simple confirmation overlay -->
+  <div class="overlay" id="confirmationOverlay">
+    <div class="overlay-card">
+      <div class="overlay-title">Case Submitted</div>
+      <div class="overlay-body">
+        Your case has been transmitted into the Hansen Intelligence Division
+        arena. Your selected associate has been notified and will respond within
+        their stated response window.
+      </div>
+      <div class="overlay-meta" id="overlayMeta"></div>
+      <button type="button" class="overlay-close" id="overlayClose">
+        Return to Hub
+      </button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const associates = document.querySelectorAll(".associate-card");
+      const levels = document.querySelectorAll(".level-card");
+      const toggles = document.querySelectorAll(".toggle");
+      const summaryAssociate = document.getElementById("summaryAssociate");
+      const summaryLevel = document.getElementById("summaryLevel");
+      const summaryAddonReport = document.getElementById(
+        "summaryAddonReport"
+      );
+      const summaryAddonFollowup = document.getElementById(
+        "summaryAddonFollowup"
+      );
+      const summaryTotal = document.getElementById("summaryTotal");
+      const summaryStatus = document.getElementById("summaryStatus");
+      const submitButton = document.getElementById("submitButton");
+      const caseDescription = document.getElementById("caseDescription");
+      const overlay = document.getElementById("confirmationOverlay");
+      const overlayMeta = document.getElementById("overlayMeta");
+      const overlayClose = document.getElementById("overlayClose");
+
+      let selectedAssociate = null;
+      let selectedLevel = null;
+      let basePrice = 0;
+      let addonReport = false;
+      let addonFollowup = false;
+
+      function formatCurrency(value) {
+        return "$" + value.toString();
+      }
+
+      function updateSummary() {
+        // Associate
+        if (selectedAssociate) {
+          summaryAssociate.textContent = selectedAssociate.name;
+          summaryAssociate.classList.remove("muted");
+        } else {
+          summaryAssociate.textContent = "None selected";
+          summaryAssociate.classList.add("muted");
+        }
+
+        // Level
+        if (selectedLevel) {
+          summaryLevel.textContent = selectedLevel.name;
+          summaryLevel.classList.remove("muted");
+        } else {
+          summaryLevel.textContent = "None selected";
+          summaryLevel.classList.add("muted");
+        }
+
+        // Add-ons
+        const reportPrice = addonReport ? 75 : 0;
+        const followupPrice = addonFollowup ? 25 : 0;
+        summaryAddonReport.textContent = formatCurrency(reportPrice);
+        summaryAddonFollowup.textContent = formatCurrency(followupPrice);
+
+        const total = basePrice + reportPrice + followupPrice;
+        summaryTotal.textContent = formatCurrency(total);
+
+        // Status + button
+        const ready =
+          !!selectedAssociate &&
+          !!selectedLevel &&
+          caseDescription.value.trim().length > 0;
+
+        if (ready) {
+          summaryStatus.textContent = "Ready to transmit";
+          summaryStatus.classList.add("ready");
+          submitButton.disabled = false;
+        } else {
+          summaryStatus.textContent = "Awaiting selections";
+          summaryStatus.classList.remove("ready");
+          submitButton.disabled = true;
+        }
+      }
+
+      associates.forEach((card) => {
+        card.addEventListener("click", () => {
+          associates.forEach((c) => c.classList.remove("selected"));
+          card.classList.add("selected");
+          selectedAssociate = {
+            id: card.getAttribute("data-associate-id"),
+            name: card.getAttribute("data-associate-name"),
+          };
+          updateSummary();
+        });
+      });
+
+      levels.forEach((card) => {
+        card.addEventListener("click", () => {
+          levels.forEach((c) => c.classList.remove("selected"));
+          card.classList.add("selected");
+          selectedLevel = {
+            id: card.getAttribute("data-level-id"),
+            name: card.getAttribute("data-level-name"),
+            price: parseInt(card.getAttribute("data-level-price"), 10),
+          };
+          basePrice = selectedLevel.price || 0;
+          updateSummary();
+        });
+      });
+
+      toggles.forEach((toggle) => {
+        toggle.addEventListener("click", () => {
+          const key = toggle.getAttribute("data-toggle");
+          toggle.classList.toggle("active");
+          if (key === "report") {
+            addonReport = toggle.classList.contains("active");
+          } else if (key === "followup") {
+            addonFollowup = toggle.classList.contains("active");
+          }
+          updateSummary();
+        });
+      });
+
+      caseDescription.addEventListener("input", updateSummary);
+
+      submitButton.addEventListener("click", () => {
+        if (!selectedAssociate || !selectedLevel) return;
+
+        const reportPrice = addonReport ? 75 : 0;
+        const followupPrice = addonFollowup ? 25 : 0;
+        const total = basePrice + reportPrice + followupPrice;
+
+        overlayMeta.textContent =
+          "Associate: " +
+          selectedAssociate.name +
+          " • " +
+          selectedLevel.name +
+          " • Total: " +
+          formatCurrency(total);
+        overlay.classList.add("visible");
+      });
+
+      overlayClose.addEventListener("click", () => {
+        overlay.classList.remove("visible");
+      });
+    })();
+  </script>
+</body>
+</html>
