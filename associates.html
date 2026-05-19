@@ -435,8 +435,7 @@ function renderDirectory() {
     card.className = "card";
 
     card.innerHTML = `
-      <img src="${photoUrl}" class="photo"
-        onclick="window.location.href='/profile.html?id=${a.associateId}'"
+      <img src="${photoUrl}" class="photo lb-click" data-id="${a.associateId}"
         onerror="this.src='https://via.placeholder.com/300x280/111111/00ff88?text=Photo+Unavailable'" />
 
       <div class="name">${(a.name || "Unnamed Associate").replace(/\r|\n/g, '')}</div>
@@ -457,6 +456,8 @@ function renderDirectory() {
 
     grid.appendChild(card);
   });
+
+  attachClickHandlers();
 }
 
 function renderLeaderboard() {
@@ -491,8 +492,7 @@ function renderLeaderboard() {
       <div class="leaderboard-row">
         <div class="rank-badge">#${rank}</div>
 
-        <img src="${avatar}" class="leaderboard-avatar"
-             onclick="window.location.href='/profile.html?id=${a.associateId}'">
+        <img src="${avatar}" class="leaderboard-avatar lb-click" data-id="${a.associateId}">
 
         <div>
           <div class="leaderboard-name">${(a.name || "Unnamed Associate").replace(/\r|\n/g, '')}</div>
@@ -509,6 +509,18 @@ function renderLeaderboard() {
         </div>
       </div>
     `;
+  });
+
+  attachClickHandlers();
+}
+
+/* CLICK HANDLER FIX */
+function attachClickHandlers() {
+  document.querySelectorAll(".lb-click").forEach(img => {
+    img.addEventListener("click", () => {
+      const id = img.getAttribute("data-id");
+      window.location.href = `/profile.html?id=${id}`;
+    });
   });
 }
 
