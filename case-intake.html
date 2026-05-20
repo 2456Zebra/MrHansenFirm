@@ -83,14 +83,9 @@
 
     .associate-top { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; }
     .associate-avatar {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: #222;
-      background-size: cover;
-      background-position: center;
-      border: 2px solid var(--accent);
-      flex-shrink: 0;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: #222; background-size: cover; background-position: center;
+      border: 2px solid var(--accent); flex-shrink: 0;
     }
     .associate-name { font-weight: 600; }
     .associate-handle { color: var(--muted); font-size: 13px; }
@@ -107,28 +102,14 @@
     }
     textarea { min-height: 140px; resize: vertical; }
 
-    label {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .required {
-      color: var(--accent);
-      font-size: 18px;
-      line-height: 1;
-    }
+    label { display: flex; align-items: center; gap: 4px; }
+    .required { color: var(--accent); font-size: 18px; line-height: 1; }
 
     .addon-row {
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center;
-      padding: 14px; 
-      background: #11151f; 
-      border-radius: 8px; 
-      margin-bottom: 12px; 
-      border: 1px solid var(--border);
-      cursor: pointer;
-      transition: all 0.2s;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px; background: #11151f; border-radius: 8px; 
+      margin-bottom: 12px; border: 1px solid var(--border);
+      cursor: pointer; transition: all 0.2s;
     }
     .addon-row.active {
       border-color: var(--accent);
@@ -136,43 +117,27 @@
     }
 
     .submit-button {
-      width: 100%;
-      padding: 18px;
-      background: var(--accent);
-      color: black;
-      font-weight: bold;
-      font-size: 18px;
-      border: none;
-      border-radius: 999px;
-      cursor: pointer;
-      margin-top: 12px;
+      width: 100%; padding: 18px;
+      background: var(--accent); color: black;
+      font-weight: bold; font-size: 18px;
+      border: none; border-radius: 999px;
+      cursor: pointer; margin-top: 12px;
       position: relative;
     }
     .submit-button:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .loading-spinner {
-      display: none;
-      width: 20px;
-      height: 20px;
-      border: 3px solid #000;
-      border-top: 3px solid #00ff88;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
+      display: none; width: 20px; height: 20px;
+      border: 3px solid #000; border-top: 3px solid #00ff88;
+      border-radius: 50%; animation: spin 1s linear infinite;
       margin: 0 auto;
     }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .disclaimer {
-      font-size: 11px;
-      color: #888;
-      line-height: 1.45;
-      margin-top: 24px;
-      padding: 14px;
-      border: 1px solid #333;
-      border-radius: 8px;
+      font-size: 11px; color: #888; line-height: 1.45;
+      margin-top: 24px; padding: 14px;
+      border: 1px solid #333; border-radius: 8px;
     }
 
     @media (max-width: 600px) {
@@ -184,30 +149,26 @@
 <body>
 
 <div class="hub-shell">
-  <div class="back-link">
-    <a href="/">← Back to Home</a>
-  </div>
+  <div class="back-link"><a href="/">← Back to Home</a></div>
 
   <header class="hub-header">
     <h1 class="hub-title">CASE INTAKE HUB</h1>
-    <p class="hub-subtitle">
-      When you submit a case, an account is created so you can return as a Client and view updates.
-    </p>
+    <p class="hub-subtitle">When you submit a case, an account is created so you can return as a Client and view updates.</p>
   </header>
 
   <div class="hub-layout">
 
     <div>
-
+      <!-- Associates -->
       <div class="panel">
         <div class="panel-header">Select Intelligence Associate <span class="required">*</span></div>
         <input type="text" id="searchInput" class="search-bar" placeholder="Search associates..." />
         <div class="associate-grid" id="associateGrid">Loading associates...</div>
       </div>
 
+      <!-- Client Info -->
       <div class="panel">
         <div class="panel-header">Your Information</div>
-        
         <label>Your Full Name <span class="required">*</span></label>
         <input type="text" id="clientName" required autocomplete="off" />
 
@@ -226,16 +187,18 @@
         <input type="tel" id="clientPhone" autocomplete="off" />
       </div>
 
+      <!-- Tier -->
       <div class="panel">
         <div class="panel-header">Select Your Tier <span class="required">*</span></div>
         <select id="tier" required>
           <option value="">— Select Tier —</option>
-          <option value="Level 1 - Quick Read" data-price="35">Level 1 — Quick Read ($35)</option>
-          <option value="Level 2 - Deep Dive Analysis" data-price="95">Level 2 — Deep Dive Analysis ($95)</option>
-          <option value="Level 3 - Crisis Session" data-price="195">Level 3 — Crisis Session ($195)</option>
+          <option value="Level 1 - Quick Read" data-price="35" data-link="https://buy.stripe.com/test_aFadR9c403TR98u9TY77O00">Level 1 — Quick Read ($35)</option>
+          <option value="Level 2 - Deep Dive Analysis" data-price="95" data-link="https://buy.stripe.com/test_4gM00j5FC4XVbgCc2677O01">Level 2 — Deep Dive Analysis ($95)</option>
+          <option value="Level 3 - Crisis Session" data-price="195" data-link="https://buy.stripe.com/test_5kQaEX9VSgGDbgCgim77O02">Level 3 — Crisis Session ($195)</option>
         </select>
       </div>
 
+      <!-- Case Details -->
       <div class="panel">
         <div class="panel-header">Case Details</div>
         <label>Case Title <span class="required">*</span></label>
@@ -245,6 +208,7 @@
         <textarea id="caseDescription" placeholder="What happened? What clarity are you looking for?" required></textarea>
       </div>
 
+      <!-- Boosts -->
       <div class="panel">
         <div class="panel-header">Boost Your Case (Optional)</div>
         <div id="addonsList">
@@ -259,7 +223,6 @@
     <div>
       <div class="panel" style="position: sticky; top: 20px;">
         <div class="panel-header">Case Summary</div>
-        
         <div style="margin-bottom: 12px;"><strong>Associate:</strong> <span id="selectedName">None selected</span></div>
         <div style="margin-bottom: 12px;"><strong>Tier:</strong> <span id="summaryTier">-</span></div>
         <div style="margin-bottom: 20px;"><strong>Total:</strong> <span id="summaryTotal">$0</span></div>
@@ -303,7 +266,6 @@ async function loadAssociates() {
       body: JSON.stringify({ action: "getAssociates" })
     });
     const result = await res.json();
-
     if (result.success) {
       associatesData = result.associates || [];
       renderAssociates(associatesData);
@@ -316,9 +278,7 @@ function renderAssociates(filtered) {
   grid.innerHTML = "";
 
   filtered.forEach(a => {
-    const photoUrl = (a.photoUrl && a.photoUrl.trim()) 
-      ? a.photoUrl.trim() 
-      : "https://via.placeholder.com/56x56/222/00ff88?text=No+Photo";
+    const photoUrl = (a.photoUrl && a.photoUrl.trim()) ? a.photoUrl.trim() : "https://via.placeholder.com/56x56/222/00ff88?text=No+Photo";
 
     const card = document.createElement("div");
     card.className = "associate-card";
@@ -364,7 +324,7 @@ function updateSummary() {
   document.getElementById("submitButton").disabled = !ready;
 }
 
-// Add-on clicks
+// Add-on toggles
 document.querySelectorAll('.addon-row').forEach(row => {
   row.addEventListener('click', () => {
     row.classList.toggle('active');
@@ -376,7 +336,7 @@ document.querySelectorAll('.addon-row').forEach(row => {
   });
 });
 
-// Submit with loading spinner
+// Submit with Stripe redirect
 document.getElementById("submitButton").addEventListener("click", async () => {
   if (!selectedAssociate) return;
 
@@ -387,6 +347,9 @@ document.getElementById("submitButton").addEventListener("click", async () => {
   buttonText.style.display = "none";
   spinner.style.display = "inline-block";
   btn.disabled = true;
+
+  const tierSelect = document.getElementById("tier");
+  const stripeLink = tierSelect.options[tierSelect.selectedIndex].dataset.link;
 
   const payload = {
     action: "submitCaseWithSignup",
@@ -401,6 +364,7 @@ document.getElementById("submitButton").addEventListener("click", async () => {
   };
 
   try {
+    // Save to backend first
     const res = await fetch(BASE_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -408,14 +372,13 @@ document.getElementById("submitButton").addEventListener("click", async () => {
     });
     const result = await res.json();
 
-    if (result.success) {
-      alert("✅ Case submitted successfully! Check your email.");
-      // Optional: window.location.href = "/client-dashboard.html"; // once you have it
+    if (result.success && stripeLink) {
+      window.location.href = stripeLink;   // Redirect to Stripe
     } else {
-      alert("Error: " + (result.error || "Unknown error"));
+      alert("Error saving case.");
     }
   } catch (err) {
-    alert("Submission failed. Please try again.");
+    alert("Submission failed.");
   } finally {
     buttonText.style.display = "inline";
     spinner.style.display = "none";
