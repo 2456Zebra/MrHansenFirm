@@ -66,6 +66,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(205px, 1fr));
       gap: 14px;
+      min-height: 300px;
     }
     .associate-card {
       background: #11151f;
@@ -151,14 +152,15 @@
     .submit-button:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .loading-spinner {
-      display: none;
+      display: inline-block;
       width: 20px;
       height: 20px;
       border: 3px solid #000;
       border-top: 3px solid #00ff88;
       border-radius: 50%;
       animation: spin 1s linear infinite;
-      margin: 0 auto;
+      vertical-align: middle;
+      margin-left: 8px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -201,7 +203,7 @@
       <div class="panel">
         <div class="panel-header">Select Intelligence Associate <span class="required">*</span></div>
         <input type="text" id="searchInput" class="search-bar" placeholder="Search associates..." />
-        <div class="associate-grid" id="associateGrid">Loading associates...</div>
+        <div class="associate-grid" id="associateGrid"></div>
       </div>
 
       <!-- Client Info -->
@@ -266,7 +268,8 @@
         
         <div style="margin-bottom: 12px;"><strong>Associate:</strong> <span id="selectedName">None selected</span></div>
         <div style="margin-bottom: 12px;"><strong>Tier:</strong> <span id="summaryTier">-</span></div>
-        <div style="margin-bottom: 20px;"><strong>Total:</strong> <span id="summaryTotal">$0</span></div>
+        <div style="margin-bottom: 12px;"><strong>Add-ons:</strong> <span id="summaryAddons">$0</span></div>
+        <div style="margin-bottom: 20px; font-size:18px;"><strong>Total:</strong> <span id="summaryTotal">$0</span></div>
 
         <button id="submitButton" class="submit-button" disabled>
           <span id="buttonText">SUBMIT CASE &amp; PAY NOW</span>
@@ -308,7 +311,9 @@ const stripeLinks = {
 
 async function loadAssociates() {
   const grid = document.getElementById("associateGrid");
-  grid.innerHTML = `<div style="text-align:center; padding:20px;">Loading associates <span class="loading-spinner" style="display:inline-block; vertical-align:middle; margin-left:8px;"></span></div>`;
+  grid.innerHTML = `<div style="text-align:center; padding:40px 20px;">
+    Loading associates <span class="loading-spinner" style="display:inline-block; vertical-align:middle;"></span>
+  </div>`;
 
   try {
     const res = await fetch(BASE_URL, {
@@ -371,25 +376,25 @@ function updateSummary() {
   if (selectedAssociate) document.getElementById("selectedName").textContent = selectedAssociate.name || 'Unknown';
 
   const tierSelect = document.getElementById("tier");
-  const tierText = tierSelect.options[tierSelect.selectedIndex]?.textContent || "-";
-  document.getElementById("summaryTier").textContent = tierText;
-
   selectedTierPrice = parseInt(tierSelect.options[tierSelect.selectedIndex]?.dataset.price) || 0;
+
+  addonTotal = 0;
+  document.querySelectorAll('.addon-row.active').forEach(r => {
+    addonTotal += parseInt(r.dataset.price) || 0;
+  });
+
   const total = selectedTierPrice + addonTotal;
   document.getElementById("summaryTotal").textContent = "$" + total;
+  document.getElementById("summaryAddons").textContent = "$" + addonTotal;
 
   const ready = selectedAssociate && title && desc && name && display && email && pass.length >= 6 && selectedTierPrice > 0;
   document.getElementById("submitButton").disabled = !ready;
 }
 
-// Add-on toggles
+// Add-on clicks
 document.querySelectorAll('.addon-row').forEach(row => {
   row.addEventListener('click', () => {
     row.classList.toggle('active');
-    addonTotal = 0;
-    document.querySelectorAll('.addon-row.active').forEach(r => {
-      addonTotal += parseInt(r.dataset.price) || 0;
-    });
     updateSummary();
   });
 });
@@ -418,7 +423,8 @@ document.getElementById("submitButton").addEventListener("click", async () => {
     caseTitle: document.getElementById("caseTitle").value.trim(),
     caseDescription: document.getElementById("caseDescription").value.trim(),
     tier: tierValue,
-    associateId: selectedAssociate.associateId
+    associateId: selectedAssociate.associateId,
+    addonsTotal: addonTotal
   };
 
   try {
@@ -430,8 +436,6 @@ document.getElementById("submitButton").addEventListener("click", async () => {
 
     if (stripeLink) {
       window.location.href = stripeLink;
-    } else {
-      alert("No payment link found.");
     }
   } catch (err) {
     alert("Submission failed.");
