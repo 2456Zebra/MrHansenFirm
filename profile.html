@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Associate Profile</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
   /* GLOBAL */
   html, body {
@@ -19,7 +18,6 @@
     position: relative;
     box-sizing: border-box;
   }
-
   body::before {
     content: "";
     position: fixed;
@@ -35,7 +33,6 @@
     );
     z-index: 999;
   }
-
   .back-link {
     color: #00ff88;
     text-decoration: none;
@@ -48,7 +45,6 @@
     opacity: 1;
     text-decoration: underline;
   }
-
   #bootSequence {
     font-size: 14px;
     color: #66ffbb;
@@ -57,7 +53,6 @@
     opacity: 1;
     transition: opacity 1.5s ease;
   }
-
   .profile-wrapper {
     display: flex;
     gap: 30px;
@@ -67,12 +62,10 @@
     width: 100%;
     max-width: 100%;
   }
-
   @keyframes fadeInProfile {
     from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
+    to { opacity: 1; transform: translateY(0); }
   }
-
   @media (max-width: 700px) {
     .profile-wrapper {
       flex-direction: column;
@@ -80,7 +73,6 @@
       max-width: 100%;
     }
   }
-
   .photo {
     width: 320px;
     height: 420px;
@@ -88,27 +80,23 @@
     border-radius: 12px;
     box-shadow: 0 0 15px #00ff88;
   }
-
   @media (max-width: 700px) {
     .photo {
       width: 100%;
       height: auto;
     }
   }
-
   .details {
     flex: 1;
     width: 100%;
     max-width: 100%;
   }
-
   .name {
     font-size: 1.9rem;
     font-weight: bold;
     margin-bottom: 22px;
     text-shadow: 0 0 12px #00ff88;
   }
-
   .field {
     display: flex;
     flex-direction: column;
@@ -120,26 +108,22 @@
     width: 100%;
     max-width: 100%;
   }
-
   .field-label {
     font-weight: bold;
     color: #66ffbb;
     white-space: nowrap;
     line-height: 1.3;
   }
-
   .field-value {
     color: #baffd9;
     margin-top: 6px;
     width: 100%;
     max-width: 100%;
   }
-
   @keyframes typing {
     from { width: 0; opacity: 1; }
-    to   { width: 100%; opacity: 1; }
+    to { width: 100%; opacity: 1; }
   }
-
   .rating-icons {
     display: flex;
     flex-wrap: nowrap !important;
@@ -149,30 +133,25 @@
     width: 100%;
     overflow-x: hidden;
   }
-
   .flex-icon {
     width: 18px;
     height: 18px;
   }
-
   .hir-block {
     margin-top: 25px;
     opacity: 1 !important;
     animation: none !important;
   }
-
   .hir-label {
     font-size: 1rem;
     color: #66ffbb;
     margin-bottom: 6px;
   }
-
   .hir-row {
     display: flex;
     align-items: baseline;
     gap: 12px;
   }
-
   .hir-value {
     font-size: 3rem;
     font-weight: bold;
@@ -180,17 +159,14 @@
     text-shadow: 0 0 32px #00ff88;
     animation: pulseHIR 1.2s infinite alternate;
   }
-
   @keyframes pulseHIR {
     from { text-shadow: 0 0 22px #00ff88; opacity: 0.85; }
-    to   { text-shadow: 0 0 42px #00ffaa; opacity: 1; }
+    to { text-shadow: 0 0 42px #00ffaa; opacity: 1; }
   }
-
   .hir-outof {
     font-size: 1rem;
     color: #66ffbb;
   }
-
   .comp-header {
     margin-top: 40px !important;
     font-size: 1rem;
@@ -200,7 +176,6 @@
     opacity: 1 !important;
     animation: none !important;
   }
-
   .hir-explainer {
     margin-top: 10px;
     font-size: 0.9rem;
@@ -209,65 +184,44 @@
     animation: none !important;
     max-width: 600px;
   }
-
-  @media (max-width: 700px) {
-    .btn-row {
-      display: flex;
-      flex-direction: column !important;
-      align-items: stretch !important;
-      width: 100% !important;
-      gap: 16px !important;
-      margin-top: 25px;
-      opacity: 1 !important;
-      animation: none !important;
-    }
-
-    .insta-btn,
-    .case-btn {
-      width: 100% !important;
-      text-align: center;
-    }
-  }
-
   .btn-row {
     margin-top: 25px;
     display: flex;
     gap: 12px;
-    opacity: 1 !important;
-    animation: none !important;
     flex-wrap: wrap;
   }
-
   .insta-btn, .case-btn {
-    padding: 10px 16px;
+    padding: 14px 28px;
     border-radius: 6px;
     text-decoration: none;
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 1rem;
     display: inline-block;
-    width: auto;
+    text-align: center;
   }
-
   .insta-btn {
     background: #ff2ea6;
     color: #fff;
     box-shadow: 0 0 10px #ff2ea6;
   }
-
   .case-btn {
     background: #00ff88;
     color: #000;
-    box-shadow: 0 0 10px #00ff88;
+    box-shadow: 0 0 12px #00ff88;
+    font-weight: bold;
+  }
+  @media (max-width: 700px) {
+    .btn-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
   }
 </style>
 </head>
-
 <body>
-
 <a href="/associates.html" class="back-link">← Back to Associates</a>
-
 <div id="bootSequence"></div>
-
 <div id="profileContainer"></div>
 
 <script>
@@ -285,17 +239,14 @@ function playBootSequence() {
     "> LOADING INTELLIGENCE METRICS...",
     "> RENDERING PROFILE..."
   ];
-
   let i = 0;
   const el = document.getElementById("bootSequence");
-
   const interval = setInterval(() => {
     if (i < boot.length) {
       el.innerHTML += boot[i] + "\n";
       i++;
     } else {
       clearInterval(interval);
-
       setTimeout(() => {
         el.style.opacity = 0;
         setTimeout(() => el.remove(), 1500);
@@ -306,9 +257,8 @@ function playBootSequence() {
 
 async function loadProfile() {
   playBootSequence();
-
   const id = (getQueryParam("id") || "").trim();
-
+  
   const res = await fetch(
     "https://script.google.com/macros/s/AKfycbwMPK8PCo5IgaeObx3Q8vD4dzqz3EQyLQyrS7Bru6Kx1K_DI6uaxIOfFrOx4OCGzDz0/exec",
     {
@@ -317,61 +267,50 @@ async function loadProfile() {
       body: JSON.stringify({ action: "getAssociates" })
     }
   );
-
   const data = await res.json();
-  const associate = data.associates.find(a =>
-    (a.associateId || "").trim() === id
-  );
+  const associate = data.associates.find(a => (a.associateId || "").trim() === id);
 
-  const photoUrl = associate.photoUrl;
+  if (!associate) {
+    document.getElementById("profileContainer").innerHTML = "<p style='color:red'>Associate not found.</p>";
+    return;
+  }
 
+  const photoUrl = associate.photoUrl || "https://via.placeholder.com/400x300/111111/00ff88?text=Photo+Unavailable";
   const rating = Number(associate.avgCommunityRating || 0);
+  
   let flexIcons = "";
   for (let i = 1; i <= 10; i++) {
-    flexIcons += `
-      <img 
-        src="https://img.icons8.com/fluency-systems-filled/50/${i <= rating ? 'ffd700' : '777777'}/flex-biceps.png" 
-        class="flex-icon"
-      >
-    `;
+    flexIcons += `<img src="https://img.icons8.com/fluency-systems-filled/50/${i <= rating ? 'ffd700' : '777777'}/flex-biceps.png" class="flex-icon">`;
   }
 
   document.getElementById("profileContainer").innerHTML = `
     <div class="profile-wrapper">
-
-      <img src="${photoUrl}" class="photo"
-        onerror="this.src='https://via.placeholder.com/400x300/111111/00ff88?text=Photo+Unavailable'" />
-
+      <img src="${photoUrl}" class="photo" onerror="this.src='https://via.placeholder.com/400x300/111111/00ff88?text=Photo+Unavailable'" />
       <div class="details">
-
         <div class="name">${associate.name}</div>
-
+        
         <div class="field" style="animation-delay:2.5s">
           <div class="field-label">Specialty:</div>
           <div class="field-value">${associate.specialty || "—"}</div>
         </div>
-
         <div class="field" style="animation-delay:4.5s">
           <div class="field-label">Bio:</div>
           <div class="field-value">${associate.bio || "—"}</div>
         </div>
-
         <div class="field" style="animation-delay:6.5s">
           <div class="field-label">Cases Completed:</div>
           <div class="field-value">${associate.casesCompleted || 0}</div>
         </div>
-
         <div class="field" style="animation-delay:8.5s">
           <div class="field-label">Community Rating:</div>
           <div class="field-value">
-            ${rating.toFixed(1).replace(".", "<span style='font-family:sans-serif;'>.</span>")}
+            ${rating.toFixed(1)} 
             <div class="rating-icons">${flexIcons}</div>
           </div>
         </div>
 
         <div class="hir-block">
           <div class="hir-label">Hansen Intelligence Rating (HIR):</div>
-
           <div class="hir-row">
             <div class="hir-value">${associate.HIR || "—"}</div>
             <div class="hir-outof">out of 100</div>
@@ -379,29 +318,19 @@ async function loadProfile() {
         </div>
 
         <div class="comp-header">ASSOCIATES COMPETITION</div>
-
         <div class="hir-explainer">
-          This is a competition among associates. The Hansen Intelligence Rating (HIR) is the core competitive metric of the MR. Hansen Firm. It reflects performance, precision, client impact, community trust, and overall intelligence output. 
-          <a href="/associates.html?mode=leaderboard" style="color:#00ffaa; text-decoration:underline; text-decoration-thickness:1px;">
-            &lt; Associates Rankings Leaderboard
-          </a>
+          This is a competition among associates. The Hansen Intelligence Rating (HIR) is the core competitive metric...
+          <a href="/associates.html?mode=leaderboard" style="color:#00ffaa; text-decoration:underline;">&lt; View Full Leaderboard</a>
         </div>
 
         <div class="btn-row">
-          <a class="insta-btn"
-             href="https://instagram.com/${associate.instagram}"
-             target="_blank"
-             rel="noopener noreferrer">
-             Instagram
+          <a class="insta-btn" href="https://instagram.com/${associate.instagram}" target="_blank" rel="noopener noreferrer">
+            View Instagram
           </a>
-
-          <!-- ⭐ FIXED: Associate name now included -->
-          <a class="case-btn" 
-             href="/case.html?id=${associate.associateId.trim()}&associate=${encodeURIComponent(associate.name)}">
-            Assign Case
+          <a class="case-btn" href="submit-case.html?id=${associate.associateId.trim()}">
+            Submit Case to ${associate.name}
           </a>
         </div>
-
       </div>
     </div>
   `;
@@ -409,6 +338,5 @@ async function loadProfile() {
 
 loadProfile();
 </script>
-
 </body>
 </html>
