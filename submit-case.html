@@ -23,6 +23,19 @@
       padding: 20px;
       margin-bottom: 25px;
     }
+    .associate-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    .associate-photo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #00ff88;
+    }
     label { display: block; margin-top: 15px; }
     .required { color: #ff6666; }
     input, textarea, select {
@@ -43,12 +56,6 @@
       width: 100%; padding: 18px; background: #00ff88; color: #000;
       font-weight: bold; font-size: 18px; border: none; cursor: pointer; margin-top: 20px;
     }
-    .loading-spinner {
-      display: none; width: 20px; height: 20px;
-      border: 3px solid #000; border-top: 3px solid #00ff88;
-      border-radius: 50%; animation: spin 1s linear infinite; vertical-align: middle;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -59,7 +66,6 @@
 <div class="panel">
   <h2>Selected Associate</h2>
   <div id="associateInfo">Loading...</div>
-  <small>Debug ID: <span id="debugId"></span></small>
 </div>
 
 <div class="panel">
@@ -128,68 +134,64 @@ let addonTotal = 0;
 const urlParams = new URLSearchParams(window.location.search);
 const associateId = urlParams.get('id');
 
-document.getElementById("debugId").textContent = associateId || "MISSING";
-
 async function loadAssociate() {
   const infoDiv = document.getElementById("associateInfo");
   
   if (!associateId) {
-    infoDiv.innerHTML = `<span class="error">No associate ID in URL.</span>`;
+    infoDiv.innerHTML = `<span style="color:red">No associate ID in URL.</span>`;
     return;
   }
 
-  infoDiv.innerHTML = "Loading associate...";
+  infoDiv.innerHTML = "Loading...";
 
   try {
-    // Try direct profile first
-    let res = await fetch(BASE_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ action: "getAssociateProfile", associateId: associateId })
-    });
-    let data = await res.json();
-
-    if (data.success && data.profile) {
-      selectedAssociate = data.profile;
-      infoDiv.innerHTML = `<span style="color:#00ff88">✓ ${selectedAssociate.name}</span>`;
-      document.getElementById("summaryAssociate").textContent = selectedAssociate.name;
-      updateSummary();
-      return;
-    }
-
-    // Fallback - load all associates
-    res = await fetch(BASE_URL, {
+    const res = await fetch(BASE_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({ action: "getAssociates" })
     });
-    data = await res.json();
+    const data = await res.json();
 
     if (data.success && data.associates) {
       const found = data.associates.find(a => (a.associateId || "").trim() === associateId);
       if (found) {
         selectedAssociate = found;
-        infoDiv.innerHTML = `<span style="color:#00ff88">✓ ${found.name}</span>`;
+        const photo = found.photoUrl ? `<img src="${found.photoUrl}" class="associate-photo" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #00ff88;">` : '';
+        
+        infoDiv.innerHTML = `
+          <div class="associate-header">
+            ${photo}
+            <div><strong>${found.name}</strong></div>
+          </div>
+        `;
         document.getElementById("summaryAssociate").textContent = found.name;
         updateSummary();
       } else {
-        infoDiv.innerHTML = `<span class="error">Associate ID not found: ${associateId}</span>`;
+        infoDiv.innerHTML = `<span style="color:red">Associate not found.</span>`;
       }
     }
   } catch (e) {
-    infoDiv.innerHTML = `<span class="error">Network error loading associate.</span>`;
-    console.error(e);
+    infoDiv.innerHTML = `<span style="color:red">Error loading associate.</span>`;
   }
 }
+
+// Addon + Summary logic
+document.querySelectorAll('.addon-row').forEach(row => {
+  row.addEventListener('click', () => {
+    row.classList.toggle('active');
+    addonTotal = 0;
+    document.querySelectorAll('.addon-row.active').forEach(r => addonTotal += parseInt(r.dataset.price) || 0);
+    updateSummary();
+  });
+});
 
 function updateSummary() {
   const tierSelect = document.getElementById("tier");
   const tierText = tierSelect.options[tierSelect.selectedIndex]?.textContent || "—";
-  document.getElementById("summaryTier").textContent = tierText;
-
   const tierPrice = parseInt(tierSelect.options[tierSelect.selectedIndex]?.dataset.price) || 0;
   const total = tierPrice + addonTotal;
 
+  document.getElementById("summaryTier").textContent = tierText;
   document.getElementById("summaryAddons").textContent = "$" + addonTotal;
   document.getElementById("summaryTotal").textContent = total;
 
@@ -204,18 +206,6 @@ function updateSummary() {
 
   document.getElementById("submitButton").disabled = !ready;
 }
-
-// Addon clicks
-document.querySelectorAll('.addon-row').forEach(row => {
-  row.addEventListener('click', () => {
-    row.classList.toggle('active');
-    addonTotal = 0;
-    document.querySelectorAll('.addon-row.active').forEach(r => {
-      addonTotal += parseInt(r.dataset.price) || 0;
-    });
-    updateSummary();
-  });
-});
 
 document.querySelectorAll("input, textarea, select").forEach(el => {
   el.addEventListener("input", updateSummary);
