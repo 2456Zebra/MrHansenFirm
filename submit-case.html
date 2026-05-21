@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submit Case — MR. HANSEN FIRM</title>
+  <style>
+    body {
+      font-family: "Courier New", monospace;
+      background: #000;
+      color: #00ff88;
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: auto;
+      line-height: 1.5;
+    }
+    h1 { text-shadow: 0 0 15px #00ff88; margin-bottom: 10px; }
+    .subtitle { opacity: 0.9; margin-bottom: 30px; }
+    .panel {
+      background: #0a0a0a;
+      border: 1px solid #00ff88;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+    label { display: block; margin-top: 15px; }
+    .required { color: #ff6666; }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      background: #111;
+      border: 1px solid #00ff88;
+      color: #00ff88;
+      margin-top: 6px;
+      font-family: inherit;
+    }
+    textarea { min-height: 120px; resize: vertical; }
+    .addon-row {
+      display: flex; justify-content: space-between; padding: 12px;
+      background: #111; border: 1px solid #00ff88; margin-bottom: 10px; cursor: pointer;
+    }
+    .addon-row.active { background: #003300; border-color: #00ff88; }
+    .submit-button {
+      width: 100%; padding: 18px; background: #00ff88; color: #000;
+      font-weight: bold; font-size: 18px; border: none; cursor: pointer; margin-top: 20px;
+    }
+    .loading-spinner {
+      display: none; width: 20px; height: 20px;
+      border: 3px solid #000; border-top: 3px solid #00ff88;
+      border-radius: 50%; animation: spin 1s linear infinite; vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<h1>SUBMIT CASE</h1>
+<p class="subtitle">An account will be created so you can track updates.</p>
+
+<div class="panel">
+  <h2>Selected Associate</h2>
+  <div id="associateInfo">Loading associate...</div>
+</div>
+
+<div class="panel">
+  <h2>Your Information</h2>
+  <label>Your Full Name <span class="required">*</span></label>
+  <input type="text" id="clientName" />
+
+  <label>Display Name (Public) <span class="required">*</span></label>
+  <input type="text" id="clientDisplayName" />
+
+  <label>Your Email <span class="required">*</span></label>
+  <input type="email" id="clientEmail" />
+
+  <label>Create Password <span class="required">*</span></label>
+  <input type="password" id="clientPassword" name="new_password_987" autocomplete="new-password" />
+
+  <label>Phone (optional)</label>
+  <input type="tel" id="clientPhone" />
+</div>
+
+<div class="panel">
+  <h2>Select Tier <span class="required">*</span></h2>
+  <select id="tier">
+    <option value="">— Select Tier —</option>
+    <option value="Level 1 - Quick Read" data-price="35">Level 1 — Quick Read ($35)</option>
+    <option value="Level 2 - Deep Dive Analysis" data-price="95">Level 2 — Deep Dive Analysis ($95)</option>
+    <option value="Level 3 - Crisis Session" data-price="195">Level 3 — Crisis Session ($195)</option>
+  </select>
+</div>
+
+<div class="panel">
+  <h2>Case Details</h2>
+  <label>Case Title <span class="required">*</span></label>
+  <input type="text" id="caseTitle" />
+
+  <label>Describe Your Situation <span class="required">*</span></label>
+  <textarea id="caseDescription"></textarea>
+</div>
+
+<div class="panel">
+  <h2>Boost Your Case (Optional)</h2>
+  <div id="addonsList">
+    <div class="addon-row" data-price="45">Featured at the top for 1 week <span style="color:#00ff88">+$45</span></div>
+    <div class="addon-row" data-price="30">Boost Client Rating by 2 points <span style="color:#00ff88">+$30</span></div>
+    <div class="addon-row" data-price="25">Priority Response <span style="color:#00ff88">+$25</span></div>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Summary</h2>
+  <div><strong>Associate:</strong> <span id="summaryAssociate">—</span></div>
+  <div><strong>Tier:</strong> <span id="summaryTier">—</span></div>
+  <div><strong>Add-ons:</strong> <span id="summaryAddons">$0</span></div>
+  <div style="font-size:20px; margin:15px 0;"><strong>Total: $<span id="summaryTotal">0</span></strong></div>
+
+  <button id="submitButton" class="submit-button" disabled>
+    <span id="buttonText">SUBMIT CASE &amp; PAY NOW</span>
+    <span class="loading-spinner" id="spinner"></span>
+  </button>
+</div>
+
+<script>
+const BASE_URL = "https://script.google.com/macros/s/AKfycbwMPK8PCo5IgaeObx3Q8vD4dzqz3EQyLQyrS7Bru6Kx1K_DI6uaxIOfFrOx4OCGzDz0/exec";
+let selectedAssociate = null;
+let addonTotal = 0;
+
+const urlParams = new URLSearchParams(window.location.search);
+const associateId = urlParams.get('id');
+
+async function loadAssociate() {
+  const infoDiv = document.getElementById("associateInfo");
+  if (!associateId) {
+    infoDiv.innerHTML = `<span style="color:red">No associate ID in URL. Use ?id=assoc_xxxx</span>`;
+    return;
+  }
+
+  infoDiv.innerHTML = "Loading...";
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      headers: {"Content-Type": "text/plain;charset=utf-8"},
+      body: JSON.stringify({ action: "getAssociateProfile", associateId })
+    });
+    const data = await res.json();
+
+    if (data.success && data.profile) {
+      selectedAssociate = data.profile;
+      infoDiv.innerHTML = `<strong>${selectedAssociate.name}</strong>`;
+      document.getElementById("summaryAssociate").textContent = selectedAssociate.name;
+      updateSummary();
+    } else {
+      infoDiv.innerHTML = `<span style="color:red">Associate not found.</span>`;
+    }
+  } catch (e) {
+    infoDiv.innerHTML = `<span style="color:red">Error loading associate.</span>`;
+  }
+}
+
+document.querySelectorAll('.addon-row').forEach(row => {
+  row.addEventListener('click', () => {
+    row.classList.toggle('active');
+    addonTotal = 0;
+    document.querySelectorAll('.addon-row.active').forEach(r => {
+      addonTotal += parseInt(r.dataset.price) || 0;
+    });
+    updateSummary();
+  });
+});
+
+function updateSummary() {
+  const tierSelect = document.getElementById("tier");
+  const tierText = tierSelect.options[tierSelect.selectedIndex]?.textContent || "—";
+  document.getElementById("summaryTier").textContent = tierText;
+
+  const tierPrice = parseInt(tierSelect.options[tierSelect.selectedIndex]?.dataset.price) || 0;
+  const total = tierPrice + addonTotal;
+
+  document.getElementById("summaryAddons").textContent = "$" + addonTotal;
+  document.getElementById("summaryTotal").textContent = total;
+
+  const ready = selectedAssociate &&
+                document.getElementById("clientName").value.trim() &&
+                document.getElementById("clientDisplayName").value.trim() &&
+                document.getElementById("clientEmail").value.trim() &&
+                document.getElementById("clientPassword").value.length >= 6 &&
+                tierPrice > 0 &&
+                document.getElementById("caseTitle").value.trim() &&
+                document.getElementById("caseDescription").value.trim();
+
+  document.getElementById("submitButton").disabled = !ready;
+}
+
+// Submit handler (same as Intake Hub)
+document.getElementById("submitButton").addEventListener("click", async () => {
+  // ... (I'll expand this if you want Stripe dynamic later)
+  alert("This is the updated old submit page. Ready for full integration.");
+});
+
+document.querySelectorAll("input, textarea, select").forEach(el => {
+  el.addEventListener("input", updateSummary);
+  el.addEventListener("change", updateSummary);
+});
+
+loadAssociate();
+</script>
+</body>
+</html>
