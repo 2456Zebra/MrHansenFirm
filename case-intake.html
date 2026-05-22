@@ -401,7 +401,7 @@ document.querySelectorAll('.addon-row').forEach(row => {
   });
 });
 
-// Submit Handler — Dynamic Stripe Checkout
+// Submit
 document.getElementById("submitButton").addEventListener("click", async () => {
   if (!selectedAssociate) return;
 
@@ -419,7 +419,8 @@ document.getElementById("submitButton").addEventListener("click", async () => {
     clientDisplayName: document.getElementById("clientDisplayName").value.trim(),
     clientEmail: document.getElementById("clientEmail").value.trim(),
     clientPhone: document.getElementById("clientPhone").value.trim(),
-    caseTitle: document.getElementById("caseTitle").value.trim(),
+    clientPassword: document.getElementById("clientPassword").value.trim(),   // REQUIRED
+    caseTitle: document.getElementById("caseTitle").value.trim(),             // REQUIRED
     caseDescription: document.getElementById("caseDescription").value.trim(),
     tier: document.getElementById("tier").value,
     associateId: selectedAssociate.associateId,
@@ -436,10 +437,12 @@ document.getElementById("submitButton").addEventListener("click", async () => {
     if (result.success && result.checkoutUrl) {
       window.location.href = result.checkoutUrl;
     } else {
+      console.log("Backend returned:", result);
       alert("Stripe checkout could not be created.");
     }
 
   } catch (err) {
+    console.error("Submission error:", err);
     alert("Submission failed.");
   } finally {
     text.style.display = "inline";
@@ -447,6 +450,7 @@ document.getElementById("submitButton").addEventListener("click", async () => {
     btn.disabled = false;
   }
 });
+
 
 // Search filter
 document.getElementById("searchInput").addEventListener("input", (e) => {
