@@ -14,14 +14,8 @@
       margin: auto;
       line-height: 1.5;
     }
-    h1 { 
-      text-shadow: 0 0 15px #00ff88; 
-      margin-bottom: 10px; 
-    }
-    .subtitle { 
-      opacity: 0.9; 
-      margin-bottom: 30px; 
-    }
+    h1 { text-shadow: 0 0 15px #00ff88; margin-bottom: 10px; }
+    .subtitle { opacity: 0.9; margin-bottom: 30px; }
     .panel {
       background: #0a0a0a;
       border: 1px solid #00ff88;
@@ -43,13 +37,8 @@
       object-fit: cover;
       border: 2px solid #00ff88;
     }
-    label { 
-      display: block; 
-      margin-top: 15px; 
-    }
-    .required { 
-      color: #ff6666; 
-    }
+    label { display: block; margin-top: 15px; }
+    .required { color: #ff6666; }
     input, textarea, select {
       width: 100%;
       padding: 12px;
@@ -57,49 +46,24 @@
       border: 1px solid #00ff88;
       color: #00ff88;
       margin-top: 6px;
-      box-sizing: border-box;   /* ← This fixes the overflow */
+      box-sizing: border-box;
     }
-    textarea { 
-      min-height: 120px; 
-      resize: vertical; 
-    }
+    textarea { min-height: 120px; resize: vertical; }
     .addon-row {
-      display: flex; 
-      justify-content: space-between; 
-      padding: 12px;
-      background: #111; 
-      border: 1px solid #00ff88; 
-      margin-bottom: 10px; 
-      cursor: pointer;
+      display: flex; justify-content: space-between; padding: 12px;
+      background: #111; border: 1px solid #00ff88; margin-bottom: 10px; cursor: pointer;
     }
-    .addon-row.active { 
-      background: #003300; 
-      border-color: #00ff88; 
-    }
+    .addon-row.active { background: #003300; border-color: #00ff88; }
     .submit-button {
-      width: 100%; 
-      padding: 18px; 
-      background: #00ff88; 
-      color: #000;
-      font-weight: bold; 
-      font-size: 18px; 
-      border: none; 
-      cursor: pointer; 
-      margin-top: 20px;
+      width: 100%; padding: 18px; background: #00ff88; color: #000;
+      font-weight: bold; font-size: 18px; border: none; cursor: pointer; margin-top: 20px;
     }
     .loading-spinner {
-      display: none; 
-      width: 20px; 
-      height: 20px;
-      border: 3px solid #000; 
-      border-top: 3px solid #00ff88;
-      border-radius: 50%; 
-      animation: spin 1s linear infinite; 
-      vertical-align: middle;
+      display: none; width: 20px; height: 20px;
+      border: 3px solid #000; border-top: 3px solid #00ff88;
+      border-radius: 50%; animation: spin 1s linear infinite; vertical-align: middle;
     }
-    @keyframes spin { 
-      to { transform: rotate(360deg); } 
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -184,7 +148,6 @@ async function loadAssociate() {
     infoDiv.innerHTML = `<span style="color:red">No associate ID in URL.</span>`;
     return;
   }
-
   infoDiv.innerHTML = "Loading...";
 
   try {
@@ -234,7 +197,7 @@ function updateSummary() {
   document.getElementById("summaryAddons").textContent = "$" + addonTotal;
   document.getElementById("summaryTotal").textContent = total;
 
-  const ready = selectedAssociate && 
+  const ready = selectedAssociate &&
                 document.getElementById("clientName").value.trim() &&
                 document.getElementById("clientDisplayName").value.trim() &&
                 document.getElementById("clientEmail").value.trim() &&
@@ -245,6 +208,59 @@ function updateSummary() {
 
   document.getElementById("submitButton").disabled = !ready;
 }
+
+// ==================== SUBMIT HANDLER ====================
+document.getElementById("submitButton").addEventListener("click", async () => {
+  if (!selectedAssociate) return;
+
+  const btn = document.getElementById("submitButton");
+  const text = document.getElementById("buttonText") || {style: {display: "inline"}}; // fallback
+  const spinner = document.getElementById("spinner");
+
+  if (spinner) {
+    text.style.display = "none";
+    spinner.style.display = "inline-block";
+  }
+  btn.disabled = true;
+
+  const payload = {
+    action: "submitCaseWithSignup",
+    clientName: document.getElementById("clientName").value.trim(),
+    clientDisplayName: document.getElementById("clientDisplayName").value.trim(),
+    clientEmail: document.getElementById("clientEmail").value.trim(),
+    clientPhone: document.getElementById("clientPhone").value.trim(),
+    caseTitle: document.getElementById("caseTitle").value.trim(),
+    caseDescription: document.getElementById("caseDescription").value.trim(),
+    tier: document.getElementById("tier").value,
+    associateId: associateId,
+    addonsTotal: addonTotal
+  };
+
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await res.json();
+
+    if (result.success && result.checkoutUrl) {
+      window.location.href = result.checkoutUrl;
+    } else {
+      alert("Error: No payment link received.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Submission failed. Check console.");
+  } finally {
+    if (spinner) {
+      text.style.display = "inline";
+      spinner.style.display = "none";
+    }
+    btn.disabled = false;
+  }
+});
 
 document.querySelectorAll("input, textarea, select").forEach(el => {
   el.addEventListener("input", updateSummary);
