@@ -178,6 +178,7 @@ async function loadAssociate() {
   }
 }
 
+// Add-on logic with description
 document.querySelectorAll('.addon-row').forEach(row => {
   row.addEventListener('click', () => {
     row.classList.toggle('active');
@@ -225,6 +226,8 @@ document.getElementById("submitButton").addEventListener("click", async () => {
   spinner.style.display = "inline-block";
   btn.disabled = true;
 
+  const tierValue = document.getElementById("tier").value;
+
   const payload = {
     action: "submitCaseWithSignup",
     clientName: document.getElementById("clientName").value.trim(),
@@ -233,7 +236,7 @@ document.getElementById("submitButton").addEventListener("click", async () => {
     clientPhone: document.getElementById("clientPhone").value.trim(),
     caseTitle: document.getElementById("caseTitle").value.trim(),
     caseDescription: document.getElementById("caseDescription").value.trim(),
-    tier: document.getElementById("tier").value,
+    tier: tierValue,                    // ← This was missing in some versions
     associateId: associateId,
     addonsTotal: addonTotal
   };
@@ -250,11 +253,11 @@ document.getElementById("submitButton").addEventListener("click", async () => {
     if (result.success && result.checkoutUrl) {
       window.location.href = result.checkoutUrl;
     } else {
-      alert("Payment link failed.\n\nError from server: " + (result.error || "No checkout URL returned"));
+      alert("Payment link failed.\n\nServer error: " + (result.error || "No checkout URL returned"));
     }
   } catch (err) {
     console.error(err);
-    alert("Network or server error occurred.");
+    alert("Submission failed. Check console.");
   } finally {
     text.style.display = "inline";
     spinner.style.display = "none";
