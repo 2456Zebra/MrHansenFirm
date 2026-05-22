@@ -122,7 +122,7 @@
   <div style="font-size:20px; margin:15px 0;"><strong>Total: $<span id="summaryTotal">0</span></strong></div>
 
   <button id="submitButton" class="submit-button" disabled>
-    SUBMIT CASE &amp; PAY NOW
+    SUBMIT CASE & PAY NOW
   </button>
 </div>
 
@@ -156,8 +156,9 @@ async function loadAssociate() {
       const found = data.associates.find(a => (a.associateId || "").trim() === associateId);
       if (found) {
         selectedAssociate = found;
-        const photo = found.photoUrl ? `<img src="${found.photoUrl}" class="associate-photo" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #00ff88;">` : '';
-       
+        const photo = found.photoUrl ? 
+          `<img src="${found.photoUrl}" class="associate-photo">` : '';
+
         infoDiv.innerHTML = `
           <div class="associate-header">
             ${photo}
@@ -175,12 +176,14 @@ async function loadAssociate() {
   }
 }
 
-// Addon + Summary logic
+// Add-on click logic
 document.querySelectorAll('.addon-row').forEach(row => {
   row.addEventListener('click', () => {
     row.classList.toggle('active');
     addonTotal = 0;
-    document.querySelectorAll('.addon-row.active').forEach(r => addonTotal += parseInt(r.dataset.price) || 0);
+    document.querySelectorAll('.addon-row.active').forEach(r => {
+      addonTotal += parseInt(r.dataset.price) || 0;
+    });
     updateSummary();
   });
 });
@@ -195,14 +198,15 @@ function updateSummary() {
   document.getElementById("summaryAddons").textContent = "$" + addonTotal;
   document.getElementById("summaryTotal").textContent = total;
 
-  const ready = selectedAssociate &&
-                document.getElementById("clientName").value.trim() &&
-                document.getElementById("clientDisplayName").value.trim() &&
-                document.getElementById("clientEmail").value.trim() &&
-                document.getElementById("clientPassword").value.length >= 6 &&
-                tierPrice > 0 &&
-                document.getElementById("caseTitle").value.trim() &&
-                document.getElementById("caseDescription").value.trim();
+  const ready =
+    selectedAssociate &&
+    document.getElementById("clientName").value.trim() &&
+    document.getElementById("clientDisplayName").value.trim() &&
+    document.getElementById("clientEmail").value.trim() &&
+    document.getElementById("clientPassword").value.length >= 6 &&
+    tierPrice > 0 &&
+    document.getElementById("caseTitle").value.trim() &&
+    document.getElementById("caseDescription").value.trim();
 
   document.getElementById("submitButton").disabled = !ready;
 }
@@ -213,6 +217,47 @@ document.querySelectorAll("input, textarea, select").forEach(el => {
 });
 
 loadAssociate();
+
+document.getElementById("submitButton").addEventListener("click", async () => {
+  if (!selectedAssociate) return;
+
+  const btn = document.getElementById("submitButton");
+  btn.disabled = true;
+
+  const payload = {
+    action: "submitCaseWithSignup",
+    clientName: document.getElementById("clientName").value.trim(),
+    clientDisplayName: document.getElementById("clientDisplayName").value.trim(),
+    clientEmail: document.getElementById("clientEmail").value.trim(),
+    clientPhone: document.getElementById("clientPhone").value.trim(),
+    caseTitle: document.getElementById("caseTitle").value.trim(),
+    caseDescription: document.getElementById("caseDescription").value.trim(),
+    tier: document.getElementById("tier").value,
+    associateId: selectedAssociate.associateId,
+    addonsTotal: addonTotal
+  };
+
+  try {
+    const result = await fetch(BASE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    }).then(r => r.json());
+
+    if (result.success && result.checkoutUrl) {
+      window.location.href = result.checkoutUrl;
+    } else {
+      alert("Stripe checkout could not be created.");
+    }
+
+  } catch (err) {
+    alert("Submission failed.");
+  } finally {
+    btn.disabled = false;
+  }
+});
+
 </script>
+
 </body>
 </html>
