@@ -126,7 +126,7 @@
   <h2>Summary</h2>
   <div><strong>Associate:</strong> <span id="summaryAssociate">—</span></div>
   <div><strong>Tier:</strong> <span id="summaryTier">—</span></div>
-  <div><strong>Add-ons:</strong> <span id="summaryAddons">$0</span></div>
+  <div><strong>Add-ons:</strong> <span id="summaryAddons">None</span></div>
   <div style="font-size:20px; margin:15px 0;"><strong>Total: $<span id="summaryTotal">0</span></strong></div>
 
   <button id="submitButton" class="submit-button" disabled>
@@ -165,7 +165,7 @@ async function loadAssociate() {
       selectedAssociate = found;
       const photo = found.photoUrl ? `<img src="${found.photoUrl}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #00ff88;">` : '';
       infoDiv.innerHTML = `
-        <div style="display:flex; align-items:center; gap:15px;">
+        <div class="associate-header">
           ${photo}
           <div><strong>${found.name}</strong></div>
         </div>`;
@@ -179,14 +179,17 @@ async function loadAssociate() {
   }
 }
 
-// Add-on clicks
+// Add-on logic with description
 document.querySelectorAll('.addon-row').forEach(row => {
   row.addEventListener('click', () => {
     row.classList.toggle('active');
     addonTotal = 0;
+    let addonDesc = "";
     document.querySelectorAll('.addon-row.active').forEach(r => {
       addonTotal += parseInt(r.dataset.price) || 0;
+      addonDesc += r.textContent.split('+$')[0].trim() + ", ";
     });
+    document.getElementById("summaryAddons").textContent = addonDesc ? addonDesc.slice(0, -2) : "None";
     updateSummary();
   });
 });
@@ -198,7 +201,6 @@ function updateSummary() {
   const total = tierPrice + addonTotal;
 
   document.getElementById("summaryTier").textContent = tierText;
-  document.getElementById("summaryAddons").textContent = "$" + addonTotal;
   document.getElementById("summaryTotal").textContent = total;
 
   const ready = selectedAssociate &&
@@ -250,11 +252,11 @@ document.getElementById("submitButton").addEventListener("click", async () => {
     if (result.success && result.checkoutUrl) {
       window.location.href = result.checkoutUrl;
     } else {
-      alert("Error: No payment link received from server.");
+      alert("Error: No payment link received.\n\nPlease check the backend logs for Stripe errors.");
     }
   } catch (err) {
     console.error(err);
-    alert("Submission failed. Please try again.");
+    alert("Submission failed. Check console for details.");
   } finally {
     text.style.display = "inline";
     spinner.style.display = "none";
