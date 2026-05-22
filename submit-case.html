@@ -130,7 +130,8 @@
   <div style="font-size:20px; margin:15px 0;"><strong>Total: $<span id="summaryTotal">0</span></strong></div>
 
   <button id="submitButton" class="submit-button" disabled>
-    SUBMIT CASE &amp; PAY NOW
+    <span id="buttonText">SUBMIT CASE &amp; PAY NOW</span>
+    <span class="loading-spinner" id="spinner"></span>
   </button>
 </div>
 
@@ -148,6 +149,7 @@ async function loadAssociate() {
     infoDiv.innerHTML = `<span style="color:red">No associate ID in URL.</span>`;
     return;
   }
+
   infoDiv.innerHTML = "Loading...";
 
   try {
@@ -161,9 +163,9 @@ async function loadAssociate() {
     const found = data.associates.find(a => (a.associateId || "").trim() === associateId);
     if (found) {
       selectedAssociate = found;
-      const photo = found.photoUrl ? `<img src="${found.photoUrl}" class="associate-photo" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #00ff88;">` : '';
+      const photo = found.photoUrl ? `<img src="${found.photoUrl}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #00ff88;">` : '';
       infoDiv.innerHTML = `
-        <div class="associate-header">
+        <div style="display:flex; align-items:center; gap:15px;">
           ${photo}
           <div><strong>${found.name}</strong></div>
         </div>`;
@@ -177,12 +179,14 @@ async function loadAssociate() {
   }
 }
 
-// Addon logic
+// Add-on clicks
 document.querySelectorAll('.addon-row').forEach(row => {
   row.addEventListener('click', () => {
     row.classList.toggle('active');
     addonTotal = 0;
-    document.querySelectorAll('.addon-row.active').forEach(r => addonTotal += parseInt(r.dataset.price) || 0);
+    document.querySelectorAll('.addon-row.active').forEach(r => {
+      addonTotal += parseInt(r.dataset.price) || 0;
+    });
     updateSummary();
   });
 });
@@ -209,18 +213,16 @@ function updateSummary() {
   document.getElementById("submitButton").disabled = !ready;
 }
 
-// ==================== SUBMIT HANDLER ====================
+// Submit Handler
 document.getElementById("submitButton").addEventListener("click", async () => {
   if (!selectedAssociate) return;
 
   const btn = document.getElementById("submitButton");
-  const text = document.getElementById("buttonText") || {style: {display: "inline"}}; // fallback
+  const text = document.getElementById("buttonText");
   const spinner = document.getElementById("spinner");
 
-  if (spinner) {
-    text.style.display = "none";
-    spinner.style.display = "inline-block";
-  }
+  text.style.display = "none";
+  spinner.style.display = "inline-block";
   btn.disabled = true;
 
   const payload = {
@@ -248,16 +250,14 @@ document.getElementById("submitButton").addEventListener("click", async () => {
     if (result.success && result.checkoutUrl) {
       window.location.href = result.checkoutUrl;
     } else {
-      alert("Error: No payment link received.");
+      alert("Error: No payment link received from server.");
     }
   } catch (err) {
     console.error(err);
-    alert("Submission failed. Check console.");
+    alert("Submission failed. Please try again.");
   } finally {
-    if (spinner) {
-      text.style.display = "inline";
-      spinner.style.display = "none";
-    }
+    text.style.display = "inline";
+    spinner.style.display = "none";
     btn.disabled = false;
   }
 });
