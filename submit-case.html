@@ -179,17 +179,17 @@ async function loadAssociate() {
   }
 }
 
-// Add-on logic with description
+// Addon logic with description
 document.querySelectorAll('.addon-row').forEach(row => {
   row.addEventListener('click', () => {
     row.classList.toggle('active');
     addonTotal = 0;
-    let addonDesc = "";
+    let desc = "";
     document.querySelectorAll('.addon-row.active').forEach(r => {
       addonTotal += parseInt(r.dataset.price) || 0;
-      addonDesc += r.textContent.split('+$')[0].trim() + ", ";
+      desc += r.textContent.split('+$')[0].trim() + ", ";
     });
-    document.getElementById("summaryAddons").textContent = addonDesc ? addonDesc.slice(0, -2) : "None";
+    document.getElementById("summaryAddons").textContent = desc ? desc.slice(0, -2) : "None";
     updateSummary();
   });
 });
@@ -252,11 +252,11 @@ document.getElementById("submitButton").addEventListener("click", async () => {
     if (result.success && result.checkoutUrl) {
       window.location.href = result.checkoutUrl;
     } else {
-      alert("Error: No payment link received.\n\nPlease check the backend logs for Stripe errors.");
+      alert("Payment link not received.\n\nPlease check the backend execution logs for details.");
     }
   } catch (err) {
     console.error(err);
-    alert("Submission failed. Check console for details.");
+    alert("Submission failed. Check console.");
   } finally {
     text.style.display = "inline";
     spinner.style.display = "none";
