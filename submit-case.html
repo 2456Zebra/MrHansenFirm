@@ -178,7 +178,7 @@ async function loadAssociate() {
   }
 }
 
-// Add-on logic with description
+// Add-on logic
 document.querySelectorAll('.addon-row').forEach(row => {
   row.addEventListener('click', () => {
     row.classList.toggle('active');
@@ -226,8 +226,6 @@ document.getElementById("submitButton").addEventListener("click", async () => {
   spinner.style.display = "inline-block";
   btn.disabled = true;
 
-  const tierValue = document.getElementById("tier").value;
-
   const payload = {
     action: "submitCaseWithSignup",
     clientName: document.getElementById("clientName").value.trim(),
@@ -236,7 +234,7 @@ document.getElementById("submitButton").addEventListener("click", async () => {
     clientPhone: document.getElementById("clientPhone").value.trim(),
     caseTitle: document.getElementById("caseTitle").value.trim(),
     caseDescription: document.getElementById("caseDescription").value.trim(),
-    tier: tierValue,                    // ← This was missing in some versions
+    tier: document.getElementById("tier").value,           // Important
     associateId: associateId,
     addonsTotal: addonTotal
   };
