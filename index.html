@@ -905,27 +905,36 @@ function goToSignup() {
 
     // Load associates into dropdown
     function loadAssociates() {
-        fetch(BASE_URL + "?list=1")
-            .then(r => r.json())
-            .then(data => {
-                associateSelect.innerHTML = "";
-                if (!data || data.length === 0) {
-                    associateSelect.innerHTML = `<option value="">No active associates available</option>`;
-                    return;
-                }
-                associateSelect.innerHTML = `<option value="">Select an associate...</option>`;
-                data.forEach(a => {
-                    const opt = document.createElement("option");
-                    opt.value = a.name;
-                    opt.textContent = a.name + " — " + (a.specialty || "Specialty");
-                    associateSelect.appendChild(opt);
-                });
-                autoSelectFromURL();
-            })
-            .catch(err => {
-                associateSelect.innerHTML = `<option value="">Error loading associates</option>`;
-                console.error(err);
-            });
+ fetch(BASE_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action: "getAssociates" })
+})
+.then(r => r.json())
+.then(data => {
+    associateSelect.innerHTML = "";
+
+    if (!data.success || !data.associates || data.associates.length === 0) {
+        associateSelect.innerHTML = `<option value="">No active associates available</option>`;
+        return;
+    }
+
+    associateSelect.innerHTML = `<option value="">Select an associate...</option>`;
+
+    data.associates.forEach(a => {
+        const opt = document.createElement("option");
+        opt.value = a.associateId;
+        opt.textContent = `${a.name} — ${a.specialty || "Specialty"}`;
+        associateSelect.appendChild(opt);
+    });
+
+    autoSelectFromURL();
+})
+.catch(err => {
+    associateSelect.innerHTML = `<option value="">Error loading associates</option>`;
+    console.error(err);
+});
+
     }
 
     // Auto-select associate from URL (?associate=Name)
