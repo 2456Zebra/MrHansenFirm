@@ -248,7 +248,7 @@ async function submitCase() {
 
     const data = await res.json();
 
-    if (!data.success) {
+    if (!data.success || !data.checkoutUrl) {
       alert("Error submitting case.");
       return;
     }
@@ -262,8 +262,11 @@ async function submitCase() {
   }
 }
 
-/* ⭐ Attach click handler */
-document.getElementById("submitButton").addEventListener("click", submitCase);
+/* ⭐ Attach click handler (prevents reload, guarantees JSON submit) */
+document.getElementById("submitButton").addEventListener("click", function (event) {
+  event.preventDefault();
+  submitCase();
+});
 
 /* Load associate on page load */
 loadAssociate();
