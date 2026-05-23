@@ -74,7 +74,7 @@
 
   .subtext {
     margin-top: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     font-size: 14px;
     color: #66ffbb;
     text-align: center;
@@ -83,25 +83,18 @@
   .btn-primary {
     background: #00ff88;
     color: #000;
-    padding: 14px 24px;
+    padding: 12px 20px;
     border: none;
     border-radius: 6px;
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 0 20px #00ff88;
-    margin: 20px auto 30px auto;
+    margin: 20px auto;
     display: block;
-    font-size: 16px;
-    text-decoration: none;
-    text-align: center;
-    max-width: 320px;
-    transition: all 0.2s;
   }
 
   .btn-primary:hover {
     background: #00ffaa;
-    transform: scale(1.03);
-    box-shadow: 0 0 30px #00ff88;
   }
 
   .mode-label {
@@ -300,6 +293,7 @@
 
   /* MOBILE FIXES */
   @media (max-width: 480px) {
+
     body, html {
       overflow-x: hidden !important;
     }
@@ -340,10 +334,9 @@
   Intelligence associates in active competition. Rankings update in real time.
 </div>
 
-<!-- FIXED APPLY BUTTON -->
-<a href="associate-apply.html" class="btn-primary">
+<button class="btn-primary">
   APPLY TO BE AN INTELLIGENCE ASSOCIATE
-</a>
+</button>
 
 <div class="mode-label">Sort Associates by:</div>
 
@@ -363,8 +356,7 @@
 </div>
 
 <script>
-const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
-
+const BASE_URL = "https://script.google.com/macros/s/AKfycbwMPK8PCo5IgaeObx3Q8vD4dzqz3EQyLQyrS7Bru6Kx1K_DI6uaxIOfFrOx4OCGzDz0/exec";
 
 const params = new URLSearchParams(window.location.search);
 let currentMode = params.get("mode") === "leaderboard" ? "leaderboard" : "newest";
@@ -388,6 +380,7 @@ async function loadAssociates() {
     }
 
     associates = data.associates;
+
     setMode(currentMode);
 
   } catch (e) {
@@ -416,7 +409,6 @@ function renderCurrentMode() {
   }
 }
 
-// ... (rest of your original script remains unchanged)
 function renderDirectory() {
   const container = document.getElementById("directoryContainer");
   container.innerHTML = "";
@@ -485,11 +477,13 @@ function renderLeaderboard() {
 
   sorted.forEach((a, index) => {
     const rank = index + 1;
+
     const avatar = a.photoUrl && a.photoUrl.trim()
       ? a.photoUrl.trim()
       : `https://api.dicebear.com/7.x/thumbs/svg?seed=${encodeURIComponent(a.name || a.associateId || 'associate')}`;
 
     const HIR = parseFloat(a.HIR) || 0;
+
     let badgeClass = "hir-green";
     if (HIR < 70) badgeClass = "hir-yellow";
     if (HIR < 40) badgeClass = "hir-red";
@@ -497,7 +491,9 @@ function renderLeaderboard() {
     container.innerHTML += `
       <div class="leaderboard-row">
         <div class="rank-badge">#${rank}</div>
+
         <img src="${avatar}" class="leaderboard-avatar lb-click" data-id="${a.associateId}">
+
         <div>
           <div class="leaderboard-name">${(a.name || "Unnamed Associate").replace(/\r|\n/g, '')}</div>
           <div class="leaderboard-stats">
@@ -507,6 +503,7 @@ function renderLeaderboard() {
             Community: ${a.avgCommunityRating || "—"}
           </div>
         </div>
+
         <div class="hir-chip ${badgeClass}">
           ${HIR.toFixed(1)}
         </div>
@@ -517,6 +514,7 @@ function renderLeaderboard() {
   attachClickHandlers();
 }
 
+/* CLICK HANDLER FIX */
 function attachClickHandlers() {
   document.querySelectorAll(".lb-click").forEach(img => {
     img.addEventListener("click", () => {
