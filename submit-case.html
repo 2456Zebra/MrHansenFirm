@@ -80,7 +80,7 @@
   <input type="email" id="clientEmail" />
 
   <label>Create Password <span class="required">*</span></label>
-  <input type="password" id="clientPassword" name="new_password_987" autocomplete="new-password" />
+  <input type="password" id="clientPassword" autocomplete="new-password" />
 
   <label>Phone (optional)</label>
   <input type="tel" id="clientPhone" />
@@ -122,79 +122,76 @@
   <div style="font-size:20px; margin:15px 0;"><strong>Total: $<span id="summaryTotal">0</span></strong></div>
 
   <button id="submitButton" class="submit-button" disabled>
-    SUBMIT CASE &amp; PAY NOW
+    SUBMIT CASE & PAY NOW
   </button>
 </div>
 
 <script>
-/* ⭐ Correct backend URL */
 const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
 
 let selectedAssociate = null;
 let addonTotal = 0;
 
-const urlParams = new URLSearchParams(window.location.search);
-const associateId = urlParams.get('id');
+document.addEventListener("DOMContentLoaded", () => {
 
-/* Load associate info */
-async function loadAssociate() {
-  const infoDiv = document.getElementById("associateInfo");
+  const urlParams = new URLSearchParams(window.location.search);
+  const associateId = urlParams.get('id');
 
-  if (!associateId) {
-    infoDiv.innerHTML = `<span style="color:red">No associate ID in URL.</span>`;
-    return;
-  }
+  loadAssociate(associateId);
 
-  infoDiv.innerHTML = "Loading...";
+  // ⭐ GUARANTEED WORKING CLICK HANDLER
+  document.getElementById("submitButton").addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    submitCase(associateId);
+  });
 
-  try {
-    const res = await fetch(BASE_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ action: "getAssociates" })
+  // Addon logic
+  document.querySelectorAll('.addon-row').forEach(row => {
+    row.addEventListener('click', () => {
+      row.classList.toggle('active');
+      addonTotal = 0;
+      document.querySelectorAll('.addon-row.active').forEach(r => addonTotal += parseInt(r.dataset.price) || 0);
+      updateSummary();
     });
+  });
 
-    const data = await res.json();
-
-    if (data.success && data.associates) {
-      const found = data.associates.find(a => (a.associateId || "").trim() === associateId);
-
-      if (found) {
-        selectedAssociate = found;
-
-        const photo = found.photoUrl
-          ? `<img src="${found.photoUrl}" class="associate-photo">`
-          : "";
-
-        infoDiv.innerHTML = `
-          <div class="associate-header">
-            ${photo}
-            <div><strong>${found.name}</strong></div>
-          </div>
-        `;
-
-        document.getElementById("summaryAssociate").textContent = found.name;
-        updateSummary();
-      } else {
-        infoDiv.innerHTML = `<span style="color:red">Associate not found.</span>`;
-      }
-    }
-  } catch (e) {
-    infoDiv.innerHTML = `<span style="color:red">Error loading associate.</span>`;
-  }
-}
-
-/* Add-on selection */
-document.querySelectorAll('.addon-row').forEach(row => {
-  row.addEventListener('click', () => {
-    row.classList.toggle('active');
-    addonTotal = 0;
-    document.querySelectorAll('.addon-row.active').forEach(r => addonTotal += parseInt(r.dataset.price) || 0);
-    updateSummary();
+  // Summary updates
+  document.querySelectorAll("input, textarea, select").forEach(el => {
+    el.addEventListener("input", updateSummary);
+    el.addEventListener("change", updateSummary);
   });
 });
 
-/* Summary logic */
+async function loadAssociate(associateId) {
+  const infoDiv = document.getElementById("associateInfo");
+
+  const res = await fetch(BASE_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ action: "getAssociates" })
+  });
+
+  const data = await res.json();
+  const found = data.associates.find(a => (a.associateId || "").trim() === associateId);
+
+  selectedAssociate = found;
+
+  const photo = found.photoUrl
+    ? `<img src="${found.photoUrl}" class="associate-photo">`
+    : "";
+
+  infoDiv.innerHTML = `
+    <div class="associate-header">
+      ${photo}
+      <div><strong>${found.name}</strong></div>
+    </div>
+  `;
+
+  document.getElementById("summaryAssociate").textContent = found.name;
+  updateSummary();
+}
+
 function updateSummary() {
   const tierSelect = document.getElementById("tier");
   const tierText = tierSelect.options[tierSelect.selectedIndex]?.textContent || "—";
@@ -218,14 +215,7 @@ function updateSummary() {
   document.getElementById("submitButton").disabled = !ready;
 }
 
-/* Attach summary updates */
-document.querySelectorAll("input, textarea, select").forEach(el => {
-  el.addEventListener("input", updateSummary);
-  el.addEventListener("change", updateSummary);
-});
-
-/* ⭐ Submit Case + Stripe Checkout */
-async function submitCase() {
+async function submitCase(associateId) {
   const payload = {
     action: "submitCaseWithSignup",
     clientName: document.getElementById("clientName").value.trim(),
@@ -239,36 +229,21 @@ async function submitCase() {
     addonsTotal: addonTotal
   };
 
-  try {
-    const res = await fetch(BASE_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload)
-    });
+  const res = await fetch(BASE_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  });
 
-    const data = await res.json();
+  const data = await res.json();
 
-    if (!data.success || !data.checkoutUrl) {
-      alert("Error submitting case.");
-      return;
-    }
-
-    window.location.href = data.checkoutUrl;
-
-  } catch (err) {
-    console.error(err);
-    alert("Submission failed.");
+  if (!data.success || !data.checkoutUrl) {
+    alert("Error submitting case.");
+    return;
   }
+
+  window.location.href = data.checkoutUrl;
 }
-
-/* ⭐ Attach click handler — THIS was the missing piece */
-document.getElementById("submitButton").addEventListener("click", function (event) {
-  event.preventDefault();
-  submitCase();
-});
-
-/* Load associate on page load */
-loadAssociate();
 </script>
 </body>
 </html>
