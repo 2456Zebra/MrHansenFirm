@@ -270,10 +270,7 @@ async function loadProfile() {
     );
 
     const data = await res.json();
-
-    // ⭐ FIXED: match backend format
     const associates = data.associates || [];
-
     const associate = associates.find(a => (a.associateId || "").trim() === id);
 
     if (!associate) {
@@ -334,9 +331,12 @@ async function loadProfile() {
             <a class="insta-btn" href="https://instagram.com/${associate.instagram}" target="_blank" rel="noopener noreferrer">
               View Instagram
             </a>
-            <a class="case-btn" href="submit-case.html?id=${(associate.associateId || "").trim()}">
+
+            <!-- ⭐ FIXED LINK BELOW -->
+            <a class="case-btn" href="submit-case-v2.html?id=${(associate.associateId || "").trim()}">
               Submit Case to ${associate.name}
             </a>
+
           </div>
         </div>
       </div>
