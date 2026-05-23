@@ -120,13 +120,13 @@
     }
 
     .addon-row {
-      display: flex; 
-      justify-content: space-between; 
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      padding: 14px; 
-      background: #11151f; 
-      border-radius: 8px; 
-      margin-bottom: 12px; 
+      padding: 14px;
+      background: #11151f;
+      border-radius: 8px;
+      margin-bottom: 12px;
       border: 1px solid var(--border);
       cursor: pointer;
       transition: all 0.2s;
@@ -209,7 +209,7 @@
       <!-- Client Info -->
       <div class="panel">
         <div class="panel-header">Your Information</div>
-        
+       
         <label>Your Full Name <span class="required">*</span></label>
         <input type="text" id="clientName" required autocomplete="off" />
 
@@ -233,9 +233,9 @@
         <div class="panel-header">Select Your Tier <span class="required">*</span></div>
         <select id="tier" required>
           <option value="">— Select Tier —</option>
-          <option value="Level 1 - Quick Read" data-price="35">Level 1 — Quick Read ($35)</option>
-          <option value="Level 2 - Deep Dive Analysis" data-price="95">Level 2 — Deep Dive Analysis ($95)</option>
-          <option value="Level 3 - Crisis Session" data-price="195">Level 3 — Crisis Session ($195)</option>
+          <option value="Level 1 - Quick Read" data-price="35" data-link="https://buy.stripe.com/test_aFadR9c403TR98u9TY77O00">Level 1 — Quick Read ($35)</option>
+          <option value="Level 2 - Deep Dive Analysis" data-price="95" data-link="https://buy.stripe.com/test_4gM00j5FC4XVbgCc2677O01">Level 2 — Deep Dive Analysis ($95)</option>
+          <option value="Level 3 - Crisis Session" data-price="195" data-link="https://buy.stripe.com/test_5kQaEX9VSgGDbgCgim77O02">Level 3 — Crisis Session ($195)</option>
         </select>
       </div>
 
@@ -265,7 +265,7 @@
     <div>
       <div class="panel" style="position: sticky; top: 20px;">
         <div class="panel-header">Case Summary</div>
-        
+       
         <div style="margin-bottom: 12px;"><strong>Associate:</strong> <span id="selectedName">None selected</span></div>
         <div style="margin-bottom: 12px;"><strong>Tier:</strong> <span id="summaryTier">-</span></div>
         <div style="margin-bottom: 12px;"><strong>Add-ons:</strong> <span id="summaryAddons">$0</span></div>
@@ -296,13 +296,18 @@
 </div>
 
 <script>
-const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
-
+const BASE_URL = "https://script.google.com/macros/s/AKfycbwMPK8PCo5IgaeObx3Q8vD4dzqz3EQyLQyrS7Bru6Kx1K_DI6uaxIOfFrOx4OCGzDz0/exec";
 
 let associatesData = [];
 let selectedAssociate = null;
 let selectedTierPrice = 0;
 let addonTotal = 0;
+
+const stripeLinks = {
+  "Level 1 - Quick Read": "https://buy.stripe.com/test_aFadR9c403TR98u9TY77O00",
+  "Level 2 - Deep Dive Analysis": "https://buy.stripe.com/test_4gM00j5FC4XVbgCc2677O01",
+  "Level 3 - Crisis Session": "https://buy.stripe.com/test_5kQaEX9VSgGDbgCgim77O02"
+};
 
 async function loadAssociates() {
   const grid = document.getElementById("associateGrid");
@@ -362,9 +367,7 @@ function updateSummary() {
   const email = document.getElementById("clientEmail").value.trim();
   const pass = document.getElementById("clientPassword").value.trim();
 
-  if (selectedAssociate) {
-    document.getElementById("selectedName").textContent = selectedAssociate.name || 'Unknown';
-  }
+  if (selectedAssociate) document.getElementById("selectedName").textContent = selectedAssociate.name || 'Unknown';
 
   const tierSelect = document.getElementById("tier");
   const selectedTierText = tierSelect.options[tierSelect.selectedIndex]?.textContent || "-";
@@ -381,16 +384,7 @@ function updateSummary() {
   document.getElementById("summaryTotal").textContent = "$" + total;
   document.getElementById("summaryAddons").textContent = "$" + addonTotal;
 
-  const ready =
-    selectedAssociate &&
-    title &&
-    desc &&
-    name &&
-    display &&
-    email &&
-    pass.length >= 6 &&
-    selectedTierPrice > 0;
-
+  const ready = selectedAssociate && title && desc && name && display && email && pass.length >= 6 && selectedTierPrice > 0;
   document.getElementById("submitButton").disabled = !ready;
 }
 
@@ -414,36 +408,33 @@ document.getElementById("submitButton").addEventListener("click", async () => {
   spinner.style.display = "inline-block";
   btn.disabled = true;
 
+  const tierValue = document.getElementById("tier").value;
+  const stripeLink = stripeLinks[tierValue];
+
   const payload = {
     action: "submitCaseWithSignup",
     clientName: document.getElementById("clientName").value.trim(),
     clientDisplayName: document.getElementById("clientDisplayName").value.trim(),
     clientEmail: document.getElementById("clientEmail").value.trim(),
     clientPhone: document.getElementById("clientPhone").value.trim(),
-    clientPassword: document.getElementById("clientPassword").value.trim(),   // REQUIRED
-    caseTitle: document.getElementById("caseTitle").value.trim(),             // REQUIRED
+    caseTitle: document.getElementById("caseTitle").value.trim(),
     caseDescription: document.getElementById("caseDescription").value.trim(),
-    tier: document.getElementById("tier").value,
+    tier: tierValue,
     associateId: selectedAssociate.associateId,
     addonsTotal: addonTotal
   };
 
   try {
-    const result = await fetch(BASE_URL, {
+    await fetch(BASE_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify(payload)
-    }).then(r => r.json());
+    });
 
-    if (result.success && result.checkoutUrl) {
-      window.location.href = result.checkoutUrl;
-    } else {
-      console.log("Backend returned:", result);
-      alert("Stripe checkout could not be created.");
+    if (stripeLink) {
+      window.location.href = stripeLink;
     }
-
   } catch (err) {
-    console.error("Submission error:", err);
     alert("Submission failed.");
   } finally {
     text.style.display = "inline";
@@ -452,8 +443,6 @@ document.getElementById("submitButton").addEventListener("click", async () => {
   }
 });
 
-
-// Search filter
 document.getElementById("searchInput").addEventListener("input", (e) => {
   const term = e.target.value.toLowerCase();
   const filtered = associatesData.filter(a =>
@@ -463,13 +452,11 @@ document.getElementById("searchInput").addEventListener("input", (e) => {
   renderAssociates(filtered);
 });
 
-// Input listeners
 document.querySelectorAll("input, textarea, select").forEach(el => {
   el.addEventListener("input", updateSummary);
   el.addEventListener("change", updateSummary);
 });
 
-// Load associates on page load
 loadAssociates();
 </script>
 
