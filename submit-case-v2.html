@@ -133,20 +133,17 @@ let selectedAssociate = null;
 let addonTotal = 0;
 
 document.addEventListener("DOMContentLoaded", () => {
-
   const urlParams = new URLSearchParams(window.location.search);
   const associateId = urlParams.get('id');
 
   loadAssociate(associateId);
 
-  // ⭐ GUARANTEED WORKING CLICK HANDLER
   document.getElementById("submitButton").addEventListener("click", function (event) {
     event.preventDefault();
     event.stopPropagation();
     submitCase(associateId);
   });
 
-  // Addon logic
   document.querySelectorAll('.addon-row').forEach(row => {
     row.addEventListener('click', () => {
       row.classList.toggle('active');
@@ -156,7 +153,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Summary updates
   document.querySelectorAll("input, textarea, select").forEach(el => {
     el.addEventListener("input", updateSummary);
     el.addEventListener("change", updateSummary);
@@ -237,8 +233,10 @@ async function submitCase(associateId) {
 
   const data = await res.json();
 
+  alert("RAW RESPONSE:\n" + JSON.stringify(data, null, 2));
+
   if (!data.success || !data.checkoutUrl) {
-    alert("Error submitting case.");
+    alert("Error submitting case.\n\n" + JSON.stringify(data, null, 2));
     return;
   }
 
