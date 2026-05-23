@@ -271,12 +271,8 @@ async function loadProfile() {
 
     const data = await res.json();
 
-    // 🔧 Normalize shape: support either [ ... ] or { associates: [ ... ] }
-    const associates = Array.isArray(data)
-      ? data
-      : Array.isArray(data.associates)
-        ? data.associates
-        : [];
+    // ⭐ FIXED: match backend format
+    const associates = data.associates || [];
 
     const associate = associates.find(a => (a.associateId || "").trim() === id);
 
