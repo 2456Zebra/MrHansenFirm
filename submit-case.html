@@ -56,18 +56,9 @@
       width: 100%; padding: 18px; background: #00ff88; color: #000;
       font-weight: bold; font-size: 18px; border: none; cursor: pointer; margin-top: 20px;
     }
-    .back-link {
-      color: #00ff88;
-      text-decoration: none;
-      display: inline-block;
-      margin-bottom: 20px;
-      font-size: 18px;
-    }
   </style>
 </head>
 <body>
-
-<a href="associates.html" class="back-link">&lt; Back to Associates</a>
 
 <h1>SUBMIT CASE</h1>
 <p class="subtitle">An account will be created so you can track updates.</p>
@@ -117,9 +108,9 @@
 <div class="panel">
   <h2>Boost Your Case (Optional)</h2>
   <div id="addonsList">
-    <div class="addon-row" data-price="45" data-name="Featured at the top for 1 week">Featured at the top for 1 week <span style="color:#00ff88">+$45</span></div>
-    <div class="addon-row" data-price="30" data-name="Boost Client Rating by 2 points">Boost Client Rating by 2 points <span style="color:#00ff88">+$30</span></div>
-    <div class="addon-row" data-price="25" data-name="Priority Response">Priority Response <span style="color:#00ff88">+$25</span></div>
+    <div class="addon-row" data-price="45">Featured at the top for 1 week <span style="color:#00ff88">+$45</span></div>
+    <div class="addon-row" data-price="30">Boost Client Rating by 2 points <span style="color:#00ff88">+$30</span></div>
+    <div class="addon-row" data-price="25">Priority Response <span style="color:#00ff88">+$25</span></div>
   </div>
 </div>
 
@@ -127,20 +118,18 @@
   <h2>Summary</h2>
   <div><strong>Associate:</strong> <span id="summaryAssociate">—</span></div>
   <div><strong>Tier:</strong> <span id="summaryTier">—</span></div>
-  <div><strong>Add-ons:</strong> <span id="summaryAddons">None</span></div>
+  <div><strong>Add-ons:</strong> <span id="summaryAddons">$0</span></div>
   <div style="font-size:20px; margin:15px 0;"><strong>Total: $<span id="summaryTotal">0</span></strong></div>
 
   <button id="submitButton" class="submit-button" disabled>
-    SUBMIT CASE & PAY NOW
+    SUBMIT CASE &amp; PAY NOW
   </button>
 </div>
 
 <script>
-const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
-
+const BASE_URL = "https://script.google.com/macros/s/AKfycbwMPK8PCo5IgaeObx3Q8vD4dzqz3EQyLQyrS7Bru6Kx1K_DI6uaxIOfFrOx4OCGzDz0/exec";
 let selectedAssociate = null;
 let addonTotal = 0;
-let addonDescriptions = [];
 
 const urlParams = new URLSearchParams(window.location.search);
 const associateId = urlParams.get('id');
@@ -158,7 +147,7 @@ async function loadAssociate() {
   try {
     const res = await fetch(BASE_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({ action: "getAssociates" })
     });
     const data = await res.json();
@@ -167,9 +156,8 @@ async function loadAssociate() {
       const found = data.associates.find(a => (a.associateId || "").trim() === associateId);
       if (found) {
         selectedAssociate = found;
-        const photo = found.photoUrl ? 
-          `<img src="${found.photoUrl}" class="associate-photo">` : '';
-
+        const photo = found.photoUrl ? `<img src="${found.photoUrl}" class="associate-photo" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #00ff88;">` : '';
+       
         infoDiv.innerHTML = `
           <div class="associate-header">
             ${photo}
@@ -187,19 +175,12 @@ async function loadAssociate() {
   }
 }
 
-// Add-on click logic
+// Addon + Summary logic
 document.querySelectorAll('.addon-row').forEach(row => {
   row.addEventListener('click', () => {
     row.classList.toggle('active');
-
     addonTotal = 0;
-    addonDescriptions = [];
-
-    document.querySelectorAll('.addon-row.active').forEach(r => {
-      addonTotal += parseInt(r.dataset.price) || 0;
-      addonDescriptions.push(r.dataset.name);
-    });
-
+    document.querySelectorAll('.addon-row.active').forEach(r => addonTotal += parseInt(r.dataset.price) || 0);
     updateSummary();
   });
 });
@@ -211,25 +192,17 @@ function updateSummary() {
   const total = tierPrice + addonTotal;
 
   document.getElementById("summaryTier").textContent = tierText;
-
-  if (addonDescriptions.length === 0) {
-    document.getElementById("summaryAddons").textContent = "None";
-  } else {
-    document.getElementById("summaryAddons").textContent =
-      addonDescriptions.join(", ") + ` ($${addonTotal})`;
-  }
-
+  document.getElementById("summaryAddons").textContent = "$" + addonTotal;
   document.getElementById("summaryTotal").textContent = total;
 
-  const ready =
-    selectedAssociate &&
-    document.getElementById("clientName").value.trim() &&
-    document.getElementById("clientDisplayName").value.trim() &&
-    document.getElementById("clientEmail").value.trim() &&
-    document.getElementById("clientPassword").value.length >= 6 &&
-    tierPrice > 0 &&
-    document.getElementById("caseTitle").value.trim() &&
-    document.getElementById("caseDescription").value.trim();
+  const ready = selectedAssociate &&
+                document.getElementById("clientName").value.trim() &&
+                document.getElementById("clientDisplayName").value.trim() &&
+                document.getElementById("clientEmail").value.trim() &&
+                document.getElementById("clientPassword").value.length >= 6 &&
+                tierPrice > 0 &&
+                document.getElementById("caseTitle").value.trim() &&
+                document.getElementById("caseDescription").value.trim();
 
   document.getElementById("submitButton").disabled = !ready;
 }
@@ -240,46 +213,6 @@ document.querySelectorAll("input, textarea, select").forEach(el => {
 });
 
 loadAssociate();
-
-document.getElementById("submitButton").addEventListener("click", async () => {
-  if (!selectedAssociate) return;
-
-  const btn = document.getElementById("submitButton");
-  btn.disabled = true;
-
-  const payload = {
-    action: "submitCaseWithSignup",
-    clientName: document.getElementById("clientName").value.trim(),
-    clientDisplayName: document.getElementById("clientDisplayName").value.trim(),
-    clientEmail: document.getElementById("clientEmail").value.trim(),
-    clientPhone: document.getElementById("clientPhone").value.trim(),
-    caseTitle: document.getElementById("caseTitle").value.trim(),
-    caseDescription: document.getElementById("caseDescription").value.trim(),
-    tier: document.getElementById("tier").value,
-    associateId: selectedAssociate.associateId,
-    addonsTotal: addonTotal
-  };
-
-  try {
-    const result = await fetch(BASE_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    }).then(r => r.json());
-
-    if (result.success && result.checkoutUrl) {
-      window.location.href = result.checkoutUrl;
-    } else {
-      alert("Stripe checkout could not be created.");
-    }
-
-  } catch (err) {
-    alert("Submission failed.");
-  } finally {
-    btn.disabled = false;
-  }
-});
 </script>
-
 </body>
 </html>
