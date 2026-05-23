@@ -258,82 +258,98 @@ function playBootSequence() {
 async function loadProfile() {
   playBootSequence();
   const id = (getQueryParam("id") || "").trim();
-  
-  const res = await fetch(
-    "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec",
-    {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ action: "getAssociates" })
+
+  try {
+    const res = await fetch(
+      "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec",
+      {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "getAssociates" })
+      }
+    );
+
+    const data = await res.json();
+
+    // 🔧 Normalize shape: support either [ ... ] or { associates: [ ... ] }
+    const associates = Array.isArray(data)
+      ? data
+      : Array.isArray(data.associates)
+        ? data.associates
+        : [];
+
+    const associate = associates.find(a => (a.associateId || "").trim() === id);
+
+    if (!associate) {
+      document.getElementById("profileContainer").innerHTML =
+        "<p style='color:red'>Associate not found.</p>";
+      return;
     }
-  );
-  const data = await res.json();
-  const associate = data.associates.find(a => (a.associateId || "").trim() === id);
 
-  if (!associate) {
-    document.getElementById("profileContainer").innerHTML = "<p style='color:red'>Associate not found.</p>";
-    return;
-  }
+    const photoUrl = associate.photoUrl || "https://via.placeholder.com/400x300/111111/00ff88?text=Photo+Unavailable";
+    const rating = Number(associate.avgCommunityRating || 0);
 
-  const photoUrl = associate.photoUrl || "https://via.placeholder.com/400x300/111111/00ff88?text=Photo+Unavailable";
-  const rating = Number(associate.avgCommunityRating || 0);
-  
-  let flexIcons = "";
-  for (let i = 1; i <= 10; i++) {
-    flexIcons += `<img src="https://img.icons8.com/fluency-systems-filled/50/${i <= rating ? 'ffd700' : '777777'}/flex-biceps.png" class="flex-icon">`;
-  }
+    let flexIcons = "";
+    for (let i = 1; i <= 10; i++) {
+      flexIcons += `<img src="https://img.icons8.com/fluency-systems-filled/50/${i <= rating ? 'ffd700' : '777777'}/flex-biceps.png" class="flex-icon">`;
+    }
 
-  document.getElementById("profileContainer").innerHTML = `
-    <div class="profile-wrapper">
-      <img src="${photoUrl}" class="photo" onerror="this.src='https://via.placeholder.com/400x300/111111/00ff88?text=Photo+Unavailable'" />
-      <div class="details">
-        <div class="name">${associate.name}</div>
-        
-        <div class="field" style="animation-delay:2.5s">
-          <div class="field-label">Specialty:</div>
-          <div class="field-value">${associate.specialty || "—"}</div>
-        </div>
-        <div class="field" style="animation-delay:4.5s">
-          <div class="field-label">Bio:</div>
-          <div class="field-value">${associate.bio || "—"}</div>
-        </div>
-        <div class="field" style="animation-delay:6.5s">
-          <div class="field-label">Cases Completed:</div>
-          <div class="field-value">${associate.casesCompleted || 0}</div>
-        </div>
-        <div class="field" style="animation-delay:8.5s">
-          <div class="field-label">Community Rating:</div>
-          <div class="field-value">
-            ${rating.toFixed(1)} 
-            <div class="rating-icons">${flexIcons}</div>
+    document.getElementById("profileContainer").innerHTML = `
+      <div class="profile-wrapper">
+        <img src="${photoUrl}" class="photo" onerror="this.src='https://via.placeholder.com/400x300/111111/00ff88?text=Photo+Unavailable'" />
+        <div class="details">
+          <div class="name">${associate.name}</div>
+          
+          <div class="field" style="animation-delay:2.5s">
+            <div class="field-label">Specialty:</div>
+            <div class="field-value">${associate.specialty || "—"}</div>
           </div>
-        </div>
-
-        <div class="hir-block">
-          <div class="hir-label">Hansen Intelligence Rating (HIR):</div>
-          <div class="hir-row">
-            <div class="hir-value">${associate.HIR || "—"}</div>
-            <div class="hir-outof">out of 100</div>
+          <div class="field" style="animation-delay:4.5s">
+            <div class="field-label">Bio:</div>
+            <div class="field-value">${associate.bio || "—"}</div>
           </div>
-        </div>
+          <div class="field" style="animation-delay:6.5s">
+            <div class="field-label">Cases Completed:</div>
+            <div class="field-value">${associate.casesCompleted || 0}</div>
+          </div>
+          <div class="field" style="animation-delay:8.5s">
+            <div class="field-label">Community Rating:</div>
+            <div class="field-value">
+              ${rating.toFixed(1)} 
+              <div class="rating-icons">${flexIcons}</div>
+            </div>
+          </div>
 
-        <div class="comp-header">ASSOCIATES COMPETITION</div>
-        <div class="hir-explainer">
-          This is a competition among associates. The Hansen Intelligence Rating (HIR) is the core competitive metric...
-          <a href="/associates.html?mode=leaderboard" style="color:#00ffaa; text-decoration:underline;">&lt; View Full Leaderboard</a>
-        </div>
+          <div class="hir-block">
+            <div class="hir-label">Hansen Intelligence Rating (HIR):</div>
+            <div class="hir-row">
+              <div class="hir-value">${associate.HIR || "—"}</div>
+              <div class="hir-outof">out of 100</div>
+            </div>
+          </div>
 
-        <div class="btn-row">
-          <a class="insta-btn" href="https://instagram.com/${associate.instagram}" target="_blank" rel="noopener noreferrer">
-            View Instagram
-          </a>
-          <a class="case-btn" href="submit-case.html?id=${associate.associateId.trim()}">
-            Submit Case to ${associate.name}
-          </a>
+          <div class="comp-header">ASSOCIATES COMPETITION</div>
+          <div class="hir-explainer">
+            This is a competition among associates. The Hansen Intelligence Rating (HIR) is the core competitive metric...
+            <a href="/associates.html?mode=leaderboard" style="color:#00ffaa; text-decoration:underline;">&lt; View Full Leaderboard</a>
+          </div>
+
+          <div class="btn-row">
+            <a class="insta-btn" href="https://instagram.com/${associate.instagram}" target="_blank" rel="noopener noreferrer">
+              View Instagram
+            </a>
+            <a class="case-btn" href="submit-case.html?id=${(associate.associateId || "").trim()}">
+              Submit Case to ${associate.name}
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-  `;
+    `;
+  } catch (e) {
+    document.getElementById("profileContainer").innerHTML =
+      "<p style='color:red'>Failed to load profile.</p>";
+    console.error("Profile load error:", e);
+  }
 }
 
 loadProfile();
