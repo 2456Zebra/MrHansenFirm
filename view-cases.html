@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>View Cases | MR. HANSEN FIRM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg-main: #050608;
+      --bg-panel: #0b0f14;
+      --bg-card: #0f1722;
+      --accent: #4afc7c;
+      --accent-soft: rgba(74, 252, 124, 0.15);
+      --accent-strong: #35d965;
+      --danger: #ff4b6a;
+      --muted: #7b8496;
+      --text-main: #f5f7ff;
+      --border-subtle: #1a2333;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.7);
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-pill: 999px;
+      --transition-fast: 0.18s ease-out;
+      --font-main: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+      background: radial-gradient(circle at top, #0b1220 0, #020308 55%, #000 100%);
+      color: var(--text-main);
+      font-family: var(--font-main);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .page-shell {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 24px clamp(18px, 3vw, 32px);
+      gap: 18px;
+    }
+
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .app-title {
+      font-size: 1.4rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .page-title {
+      font-size: 1.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .page-title span.badge {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      background: linear-gradient(135deg, rgba(74, 252, 124, 0.08), transparent);
+      color: var(--accent);
+    }
+
+    .header-subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      max-width: 520px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+      background: rgba(9, 12, 20, 0.9);
+      padding: 8px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(74, 252, 124, 0.8);
+    }
+
+    .pill-cta {
+      border-color: rgba(74, 252, 124, 0.4);
+      color: var(--accent);
+      background: radial-gradient(circle at top left, rgba(74, 252, 124, 0.18), transparent);
+    }
+
+    .pill-cta strong {
+      font-weight: 600;
+      color: var(--accent-strong);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(260px, 1.3fr);
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, #111827 0, #020617 55%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0 0, rgba(74, 252, 124, 0.06), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(56, 189, 248, 0.05), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .panel-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .feed-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .feed-title {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feed-title span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(74, 252, 124, 0.9);
+    }
+
+    .feed-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .chip {
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+      padding: 4px 9px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      background: rgba(15, 23, 42, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: border-color var(--transition-fast), color var(--transition-fast),
+        background var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .chip span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--muted);
+    }
+
+    .chip.active {
+      border-color: rgba(74, 252, 124, 0.7);
+      color: var(--accent);
+      background: rgba(15, 118, 110, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .chip.active span.dot {
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(74, 252, 124, 0.9);
+    }
+
+    .feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+      max-height: calc(100vh - 190px);
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .feed-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .feed-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .feed-list::-webkit-scrollbar-thumb {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 999px;
+    }
+
+    .case-card {
+      background: radial-gradient(circle at top left, #020617 0, #020617 40%, #020617 100%);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(15, 23, 42, 0.95);
+      padding: 11px 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color var(--transition-fast), transform var(--transition-fast),
+        box-shadow var(--transition-fast), background var(--transition-fast);
+    }
+
+    .case-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at 0 0, rgba(74, 252, 124, 0.06), transparent 55%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-fast);
+    }
+
+    .case-card:hover {
+      border-color: rgba(74, 252, 124, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.85);
+      background: radial-gradient(circle at top left, #020617 0, #020617 45%, #020617 100%);
+    }
+
+    .case-card:hover::before {
+      opacity: 1;
+    }
+
+    .case-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .case-meta-left {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .case-display-name {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .case-display-name span.handle {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .case-timestamp {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .case-meta-right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .tag {
+      border-radius: var(--radius-pill);
+      padding: 3px 8px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border: 1px solid rgba(30, 64, 175, 0.7);
+      color: #bfdbfe;
+      background: rgba(15, 23, 42, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tag span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #60a5fa;
+    }
+
+    .tag-tier {
+      border-color: rgba(74, 252, 124, 0.7);
+      color: var(--accent);
+    }
+
+    .tag-tier span.dot {
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(74, 252, 124, 0.9);
+    }
+
+    .tag-status-open {
+      border-color: rgba(52, 211, 153, 0.7);
+      color: #6ee7b7;
+    }
+
+    .tag-status-closed {
+      border-color: rgba(148, 163, 184, 0.7);
+      color: #cbd5f5;
+    }
+
+    .tag-associate {
+      border-color: rgba(129, 140, 248, 0.7);
+      color: #c7d2fe;
+    }
+
+    .case-title {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .case-description {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.4;
+      max-height: 3.4em;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .case-description.fade::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1.4em;
+      background: linear-gradient(to bottom, transparent, #020617);
+    }
+
+    .case-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .case-actions-left,
+    .case-actions-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-icon {
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(30, 64, 175, 0.7);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--muted);
+      font-size: 0.78rem;
+      padding: 4px 9px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: border-color var(--transition-fast), color var(--transition-fast),
+        background var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .btn-icon span.icon {
+      font-size: 0.9rem;
+    }
+
+    .btn-icon:hover {
+      border-color: rgba(74, 252, 124, 0.7);
+      color: var(--accent);
+      background: rgba(15, 23, 42, 1);
+      transform: translateY(-1px);
+    }
+
+    .btn-icon.primary {
+      border-color: rgba(74, 252, 124, 0.9);
+      color: var(--accent);
+      background: radial-gradient(circle at top left, rgba(74, 252, 124, 0.2), #020617);
+    }
+
+    .btn-icon.primary:hover {
+      background: radial-gradient(circle at top left, rgba(74, 252, 124, 0.28), #020617);
+    }
+
+    .btn-icon.ghost {
+      border-style: dashed;
+      border-color: rgba(148, 163, 184, 0.6);
+    }
+
+    .btn-icon.ghost:hover {
+      border-color: rgba(74, 252, 124, 0.7);
+    }
+
+    .vote-count {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .rating-strip {
+      margin-top: 6px;
+      padding: 6px 8px;
+      border-radius: 9px;
+      border: 1px dashed rgba(74, 252, 124, 0.4);
+      background: radial-gradient(circle at left, rgba(74, 252, 124, 0.12), transparent 60%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .rating-strip-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 0.78rem;
+    }
+
+    .rating-strip-left span.label {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.7rem;
+    }
+
+    .rating-strip-left span.copy {
+      color: var(--muted);
+    }
+
+    .rating-strip-left span.copy strong {
+      color: var(--accent-strong);
+      font-weight: 600;
+    }
+
+    .rating-strip-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .rating-pill {
+      border-radius: var(--radius-pill);
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      border: 1px solid rgba(74, 252, 124, 0.6);
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.95);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rating-pill span.score {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--accent-strong);
+    }
+
+    .rating-pill span.scale {
+      color: var(--muted);
+    }
+
+    .rating-pill span.spark {
+      font-size: 0.9rem;
+    }
+
+    .rating-strip .btn-rate {
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(74, 252, 124, 0.9);
+      background: radial-gradient(circle at top left, rgba(74, 252, 124, 0.25), #020617);
+      color: var(--accent);
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+        background var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .rating-strip .btn-rate span.icon {
+      font-size: 0.9rem;
+    }
+
+    .rating-strip .btn-rate:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 18px rgba(74, 252, 124, 0.5);
+      background: radial-gradient(circle at top left, rgba(74, 252, 124, 0.32), #020617);
+    }
+
+    .empty-state {
+      border-radius: var(--radius-md);
+      border: 1px dashed rgba(148, 163, 184, 0.6);
+      padding: 18px 14px;
+      text-align: left;
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--muted);
+      font-size: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .empty-state strong {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .empty-state span.hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .empty-state span.hint code {
+      font-family: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono",
+        "Courier New", monospace;
+      font-size: 0.78rem;
+      background: rgba(15, 23, 42, 1);
+      padding: 2px 5px;
+      border-radius: 4px;
+      border: 1px solid rgba(30, 64, 175, 0.7);
+      color: #e5e7eb;
+    }
+
+    .side-panel-title {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .side-panel-title span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(74, 252, 124, 0.9);
+    }
+
+    .side-card {
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(15, 23, 42, 0.95);
+      background: radial-gradient(circle at top left, #020617 0, #020617 45%, #020617 100%);
+      padding: 10px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .side-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .side-card-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .side-card-subtitle {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .side-metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .side-metric-row strong {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .side-metric-pill {
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(74, 252, 124, 0.7);
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .side-metric-pill span.score {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--accent-strong);
+    }
+
+    .side-metric-pill span.label {
+      color: var(--muted);
+    }
+
+    .side-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .side-note strong {
+      color: var(--accent-strong);
+      font-weight: 600;
+    }
+
+    .side-footer {
+      margin-top: 4px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .side-footer span.accent {
+      color: var(--accent);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(52, 211, 153, 0.7);
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      color: #6ee7b7;
+    }
+
+    .status-pill span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+    }
+
+    .status-pill.offline {
+      border-color: rgba(148, 163, 184, 0.7);
+      color: #cbd5f5;
+    }
+
+    .status-pill.offline span.dot {
+      background: #9ca3af;
+      box-shadow: none;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal {
+      background: radial-gradient(circle at top left, #020617 0, #020617 45%, #020617 100%);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(15, 23, 42, 0.95);
+      box-shadow: 0 22px 50px rgba(0, 0, 0, 0.9);
+      padding: 16px 16px 14px;
+      width: min(420px, 92vw);
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 500;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .modal-title span.label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+    }
+
+    .modal-title span.main {
+      color: var(--text-main);
+    }
+
+    .modal-close {
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--muted);
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: border-color var(--transition-fast), color var(--transition-fast),
+        background var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .modal-close:hover {
+      border-color: rgba(248, 113, 113, 0.9);
+      color: #fecaca;
+      background: rgba(30, 64, 175, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .modal-body {
+      font-size: 0.85rem;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .modal-body strong {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .rating-scale-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .rating-scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .rating-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .rating-input-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+    }
+
+    .rating-input-row input[type="number"] {
+      width: 64px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(30, 64, 175, 0.7);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-main);
+      font-size: 0.8rem;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+
+    .modal-footer-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(74, 252, 124, 0.9);
+      background: radial-gradient(circle at top left, rgba(74, 252, 124, 0.3), #020617);
+      color: var(--accent);
+      font-size: 0.8rem;
+      padding: 5px 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+        background var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 18px rgba(74, 252, 124, 0.6);
+      background: radial-gradient(circle at top left, rgba(74, 252, 124, 0.36), #020617);
+    }
+
+    .btn-secondary {
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--muted);
+      font-size: 0.8rem;
+      padding: 5px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: border-color var(--transition-fast), color var(--transition-fast),
+        background var(--transition-fast), transform var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .btn-secondary:hover {
+      border-color: rgba(74, 252, 124, 0.7);
+      color: var(--accent);
+      background: rgba(15, 23, 42, 1);
+      transform: translateY(-1px);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      max-width: 260px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(74, 252, 124, 0.7);
+      background: rgba(15, 23, 42, 0.98);
+      color: var(--accent);
+      font-size: 0.8rem;
+      padding: 8px 10px;
+      display: none;
+      z-index: 60;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.9);
+    }
+
+    .toast.active {
+      display: block;
+    }
+
+    .toast strong {
+      color: var(--accent-strong);
+    }
+
+    .toast span.sub {
+      display: block;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="header">
+      <div class="header-left">
+        <div class="app-title">MR. HANSEN FIRM</div>
+        <div class="page-title">
+          View Cases
+          <span class="badge">Community Wall</span>
+        </div>
+        <div class="header-subtitle">
+          Live intelligence feed of approved cases. Client identities are protected. Associates are not.
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="pill">
+          <span class="pill-dot"></span>
+          Live from Backend v49
+        </div>
+        <div class="pill pill-cta">
+          HIR Engine:
+          <strong>Ratings + Output &rarr; Rank</strong>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel">
+        <div class="panel-inner">
+          <div class="feed-header">
+            <div class="feed-title">
+              <span class="dot"></span>
+              Case Stream
+            </div>
+            <div class="feed-filters">
+              <button class="chip active" data-filter="all">
+                <span class="dot"></span>
+                All
+              </button>
+              <button class="chip" data-filter="open">
+                <span class="dot"></span>
+                Open
+              </button>
+              <button class="chip" data-filter="closed">
+                <span class="dot"></span>
+                Closed
+              </button>
+              <button class="chip" data-filter="tier">
+                <span class="dot"></span>
+                Tier &uarr;
+              </button>
+            </div>
+          </div>
+
+          <div id="casesFeed" class="feed-list">
+            <div class="empty-state" id="emptyState">
+              <strong>No cases loaded yet.</strong>
+              <span class="hint">
+                If you know there are cases in your sheet, confirm the backend response for
+                <code>?action=getCases</code> returns JSON.
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <div class="panel-inner">
+          <div class="side-panel-title">
+            <span class="dot"></span>
+            Associate Performance Context
+          </div>
+
+          <div class="side-card">
+            <div class="side-card-header">
+              <div>
+                <div class="side-card-title">HIR Signal</div>
+                <div class="side-card-subtitle">
+                  Ratings here feed directly into the HIR leaderboard.
+                </div>
+              </div>
+              <div class="side-metric-pill">
+                <span class="score" id="sideAvgRating">–</span>
+                <span class="label">/ 10</span>
+              </div>
+            </div>
+            <div class="side-metric-row">
+              <span>Community Weight</span>
+              <strong>High</strong>
+            </div>
+            <div class="side-note">
+              Every rating you submit is treated as a performance datapoint. Associates know this.
+              <strong>Rate like it matters.</strong>
+            </div>
+          </div>
+
+          <div class="side-card">
+            <div class="side-card-header">
+              <div>
+                <div class="side-card-title">Feed Status</div>
+                <div class="side-card-subtitle">
+                  Pulling from Apps Script Web App v49.
+                </div>
+              </div>
+              <div class="status-pill" id="feedStatusPill">
+                <span class="dot"></span>
+                Live
+              </div>
+            </div>
+            <div class="side-metric-row">
+              <span>Cases Loaded</span>
+              <strong id="sideCasesCount">0</strong>
+            </div>
+            <div class="side-metric-row">
+              <span>Last Sync</span>
+              <strong id="sideLastSync">–</strong>
+            </div>
+            <div class="side-footer">
+              <span>Source: <span class="accent">Cases Sheet</span></span>
+              <span id="sideFilterLabel">Filter: All</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="ratingModalBackdrop">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span class="label">Rate This Associate</span>
+          <span class="main" id="ratingModalAssociateName">Associate</span>
+        </div>
+        <button class="modal-close" id="ratingModalClose">
+          ✕ Close
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <strong>How did they handle this case?</strong>
+          <div class="rating-scale-row">
+            <span>1 = Not impressive</span>
+            <span>10 = Ruthlessly effective</span>
+          </div>
+          <div class="rating-input-row">
+            <input
+              type="range"
+              id="ratingSlider"
+              min="1"
+              max="10"
+              step="0.1"
+              value="8"
+            />
+            <input
+              type="number"
+              id="ratingInput"
+              min="1"
+              max="10"
+              step="0.1"
+              value="8"
+            />
+          </div>
+          <div class="rating-scale-labels">
+            <span>Soft</span>
+            <span>Competent</span>
+            <span>Elite</span>
+          </div>
+        </div>
+        <div>
+          <strong>Impact:</strong>
+          <span>
+            Your rating updates their community score and feeds into their HIR rank. No take-backs.
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span>Case ID: <span id="ratingModalCaseId">–</span></span>
+        <div class="modal-footer-actions">
+          <button class="btn-secondary" id="ratingModalCancel">Cancel</button>
+          <button class="btn-primary" id="ratingModalSubmit">
+            <span class="icon">⬆</span>
+            Submit Rating
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">
+    <strong>Rating captured.</strong>
+    <span class="sub">HIR engine will ingest this once the backend endpoint is wired.</span>
+  </div>
+
+  <script>
+    const WEB_APP_URL =
+      "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
+
+    const casesFeedEl = document.getElementById("casesFeed");
+    const emptyStateEl = document.getElementById("emptyState");
+    const sideCasesCountEl = document.getElementById("sideCasesCount");
+    const sideLastSyncEl = document.getElementById("sideLastSync");
+    const sideFilterLabelEl = document.getElementById("sideFilterLabel");
+    const sideAvgRatingEl = document.getElementById("sideAvgRating");
+    const feedStatusPillEl = document.getElementById("feedStatusPill");
+    const toastEl = document.getElementById("toast");
+
+    const ratingModalBackdrop = document.getElementById("ratingModalBackdrop");
+    const ratingModalClose = document.getElementById("ratingModalClose");
+    const ratingModalCancel = document.getElementById("ratingModalCancel");
+    const ratingModalSubmit = document.getElementById("ratingModalSubmit");
+    const ratingModalAssociateName = document.getElementById(
+      "ratingModalAssociateName"
+    );
+    const ratingModalCaseId = document.getElementById("ratingModalCaseId");
+    const ratingSlider = document.getElementById("ratingSlider");
+    const ratingInput = document.getElementById("ratingInput");
+
+    let allCases = [];
+    let currentFilter = "all";
+    let currentRatingContext = null;
+
+    function showToast(message, sub) {
+      toastEl.innerHTML =
+        "<strong>" +
+        (message || "Rating captured.") +
+        "</strong><span class='sub'>" +
+        (sub ||
+          "HIR engine will ingest this once the backend endpoint is wired.") +
+        "</span>";
+      toastEl.classList.add("active");
+      setTimeout(() => {
+        toastEl.classList.remove("active");
+      }, 3200);
+    }
+
+    function openRatingModal(caseItem) {
+      currentRatingContext = caseItem;
+      ratingModalAssociateName.textContent =
+        caseItem.associateName || "Associate";
+      ratingModalCaseId.textContent = caseItem.id || "–";
+      ratingSlider.value = 8;
+      ratingInput.value = 8;
+      ratingModalBackdrop.classList.add("active");
+    }
+
+    function closeRatingModal() {
+      ratingModalBackdrop.classList.remove("active");
+      currentRatingContext = null;
+    }
+
+    ratingSlider.addEventListener("input", () => {
+      ratingInput.value = ratingSlider.value;
+    });
+
+    ratingInput.addEventListener("input", () => {
+      let val = parseFloat(ratingInput.value);
+      if (isNaN(val)) return;
+      if (val < 1) val = 1;
+      if (val > 10) val = 10;
+      ratingInput.value = val.toFixed(1);
+      ratingSlider.value = val;
+    });
+
+    ratingModalClose.addEventListener("click", closeRatingModal);
+    ratingModalCancel.addEventListener("click", closeRatingModal);
+    ratingModalBackdrop.addEventListener("click", (e) => {
+      if (e.target === ratingModalBackdrop) {
+        closeRatingModal();
+      }
+    });
+
+    ratingModalSubmit.addEventListener("click", async () => {
+      if (!currentRatingContext) {
+        closeRatingModal();
+        return;
+      }
+      const ratingValue = parseFloat(ratingInput.value) || 0;
+
+      try {
+        // FRONTEND CONTRACT:
+        // Expect backend to support:
+        //   action=rateAssociate
+        //   method: POST
+        //   body: { caseId, associateId, rating }
+        // Adjust keys to match your Apps Script implementation.
+        await fetch(WEB_APP_URL + "?action=rateAssociate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            caseId: currentRatingContext.id,
+            associateId: currentRatingContext.associateId,
+            rating: ratingValue,
+          }),
+        }).catch(() => {
+          // Silent fail if endpoint not wired yet.
+        });
+
+        showToast(
+          "Rating submitted.",
+          "Once the backend endpoint is live, this will update their HIR score."
+        );
+      } catch (err) {
+        console.error("Rating error", err);
+        showToast(
+          "Rating captured locally.",
+          "Backend endpoint not responding. Check Apps Script logs when ready."
+        );
+      } finally {
+        closeRatingModal();
+      }
+    });
+
+    function formatTimestamp(ts) {
+      if (!ts) return "";
+      try {
+        const d = new Date(ts);
+        if (isNaN(d.getTime())) return ts;
+        return d.toLocaleString(undefined, {
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      } catch {
+        return ts;
+      }
+    }
+
+    function truncateText(text, maxChars) {
+      if (!text) return "";
+      if (text.length <= maxChars) return text;
+      return text.slice(0, maxChars - 1) + "…";
+    }
+
+    function mapStatus(raw) {
+      if (!raw) return { label: "Unknown", key: "unknown" };
+      const v = String(raw).toLowerCase();
+      if (v.includes("open")) return { label: "Open", key: "open" };
+      if (v.includes("close")) return { label: "Closed", key: "closed" };
+      return { label: raw, key: v };
+    }
+
+    function mapTier(raw) {
+      if (!raw) return "Unspecified";
+      return String(raw);
+    }
+
+    function renderCases() {
+      casesFeedEl.innerHTML = "";
+      const filtered = allCases.filter((c) => {
+        if (currentFilter === "open") {
+          return mapStatus(c.status).key === "open";
+        }
+        if (currentFilter === "closed") {
+          return mapStatus(c.status).key === "closed";
+        }
+        return true;
+      });
+
+      if (!filtered.length) {
+        casesFeedEl.appendChild(emptyStateEl);
+        emptyStateEl.style.display = "flex";
+      } else {
+        emptyStateEl.style.display = "none";
+      }
+
+      let ratingSum = 0;
+      let ratingCount = 0;
+
+      filtered.forEach((item) => {
+        const card = document.createElement("article");
+        card.className = "case-card";
+
+        const status = mapStatus(item.status);
+        const tierLabel = mapTier(item.tier);
+
+        const header = document.createElement("div");
+        header.className = "case-header";
+
+        const metaLeft = document.createElement("div");
+        metaLeft.className = "case-meta-left";
+        metaLeft.innerHTML =
+          '<div class="case-display-name">' +
+          (item.displayName || "Client") +
+          '<span class="handle">@' +
+          (item.associateName || "Associate") +
+          "</span></div>" +
+          '<div class="case-timestamp">' +
+          formatTimestamp(item.timestamp || item.createdAt) +
+          "</div>";
+
+        const metaRight = document.createElement("div");
+        metaRight.className = "case-meta-right";
+
+        const tierTag = document.createElement("div");
+        tierTag.className = "tag tag-tier";
+        tierTag.innerHTML =
+          '<span class="dot"></span>' + "Tier " + tierLabel;
+
+        const statusTag = document.createElement("div");
+        statusTag.className =
+          "tag " +
+          (status.key === "open"
+            ? "tag-status-open"
+            : status.key === "closed"
+            ? "tag-status-closed"
+            : "");
+        statusTag.innerHTML =
+          '<span class="dot"></span>' + status.label;
+
+        const associateTag = document.createElement("div");
+        associateTag.className = "tag tag-associate";
+        associateTag.innerHTML =
+          '<span class="dot"></span>' +
+          (item.associateName || "Associate");
+
+        metaRight.appendChild(tierTag);
+        metaRight.appendChild(statusTag);
+        metaRight.appendChild(associateTag);
+
+        header.appendChild(metaLeft);
+        header.appendChild(metaRight);
+
+        const titleEl = document.createElement("div");
+        titleEl.className = "case-title";
+        titleEl.textContent = item.title || "Untitled Case";
+
+        const descEl = document.createElement("div");
+        descEl.className = "case-description fade";
+        descEl.textContent = truncateText(item.description || "", 260);
+
+        const footer = document.createElement("div");
+        footer.className = "case-footer";
+
+        const actionsLeft = document.createElement("div");
+        actionsLeft.className = "case-actions-left";
+
+        const btnComment = document.createElement("button");
+        btnComment.className = "btn-icon";
+        btnComment.innerHTML =
+          '<span class="icon">💬</span><span>Comment</span>';
+
+        const btnUp = document.createElement("button");
+        btnUp.className = "btn-icon";
+        btnUp.innerHTML =
+          '<span class="icon">👍</span><span class="vote-count">' +
+          (item.upvotes || 0) +
+          "</span>";
+
+        const btnDown = document.createElement("button");
+        btnDown.className = "btn-icon";
+        btnDown.innerHTML =
+          '<span class="icon">👎</span><span class="vote-count">' +
+          (item.downvotes || 0) +
+          "</span>";
+
+        actionsLeft.appendChild(btnComment);
+        actionsLeft.appendChild(btnUp);
+        actionsLeft.appendChild(btnDown);
+
+        const actionsRight = document.createElement("div");
+        actionsRight.className = "case-actions-right";
+
+        const btnView = document.createElement("button");
+        btnView.className = "btn-icon ghost";
+        btnView.innerHTML =
+          '<span class="icon">🔍</span><span>View Full Case</span>';
+
+        actionsRight.appendChild(btnView);
+
+        footer.appendChild(actionsLeft);
+        footer.appendChild(actionsRight);
+
+        const ratingStrip = document.createElement("div");
+        ratingStrip.className = "rating-strip";
+
+        const ratingLeft = document.createElement("div");
+        ratingLeft.className = "rating-strip-left";
+        ratingLeft.innerHTML =
+          '<span class="label">Rate This Associate</span>' +
+          '<span class="copy">Think they handled this case well? <strong>Boost or drag their HIR.</strong></span>';
+
+        const ratingRight = document.createElement("div");
+        ratingRight.className = "rating-strip-right";
+
+        const avgRating = parseFloat(item.avgRating || item.rating || 0);
+        if (!isNaN(avgRating) && avgRating > 0) {
+          ratingSum += avgRating;
+          ratingCount += 1;
+        }
+
+        const ratingPill = document.createElement("div");
+        ratingPill.className = "rating-pill";
+        ratingPill.innerHTML =
+          '<span class="spark">✦</span>' +
+          '<span class="score">' +
+          (isNaN(avgRating) || avgRating <= 0
+            ? "–"
+            : avgRating.toFixed(1)) +
+          "</span>" +
+          '<span class="scale">/ 10</span>';
+
+        const btnRate = document.createElement("button");
+        btnRate.className = "btn-rate";
+        btnRate.innerHTML =
+          '<span class="icon">⬆</span><span>Rate This Associate</span>';
+        btnRate.addEventListener("click", () => openRatingModal(item));
+
+        ratingRight.appendChild(ratingPill);
+        ratingRight.appendChild(btnRate);
+
+        ratingStrip.appendChild(ratingLeft);
+        ratingStrip.appendChild(ratingRight);
+
+        card.appendChild(header);
+        card.appendChild(titleEl);
+        card.appendChild(descEl);
+        card.appendChild(footer);
+        card.appendChild(ratingStrip);
+
+        casesFeedEl.appendChild(card);
+      });
+
+      sideCasesCountEl.textContent = filtered.length;
+      if (ratingCount > 0) {
+        sideAvgRatingEl.textContent = (ratingSum / ratingCount).toFixed(1);
+      } else {
+        sideAvgRatingEl.textContent = "–";
+      }
+    }
+
+    async function loadCases() {
+      try {
+        feedStatusPillEl.classList.remove("offline");
+        feedStatusPillEl.innerHTML =
+          '<span class="dot"></span>Live';
+
+        const url = WEB_APP_URL + "?action=getCases";
+
+        const res = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Cache-Control": "no-cache",
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error("HTTP " + res.status);
+        }
+
+        const data = await res.json();
+
+        // EXPECTED SHAPE (adjust mapping if your Apps Script returns differently):
+        // data = [
+        //   {
+        //     id,
+        //     title,
+        //     description,
+        //     tier,
+        //     associateName,
+        //     associateId,
+        //     status,
+        //     timestamp / createdAt,
+        //     displayName,
+        //     avgRating,
+        //     upvotes,
+        //     downvotes
+        //   },
+        //   ...
+        // ]
+        allCases = Array.isArray(data) ? data : [];
+
+        const now = new Date();
+        sideLastSyncEl.textContent = now.toLocaleTimeString(undefined, {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
+
+        renderCases();
+      } catch (err) {
+        console.error("Error loading cases", err);
+        feedStatusPillEl.classList.add("offline");
+        feedStatusPillEl.innerHTML =
+          '<span class="dot"></span>Offline';
+
+        casesFeedEl.innerHTML = "";
+        emptyStateEl.style.display = "flex";
+        emptyStateEl.innerHTML =
+          "<strong>Could not load cases from backend.</strong>" +
+          "<span class='hint'>Check the Apps Script Web App response for <code>?action=getCases</code> and confirm it returns JSON.</span>";
+        casesFeedEl.appendChild(emptyStateEl);
+      }
+    }
+
+    document.querySelectorAll(".chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        document.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
+        chip.classList.add("active");
+        currentFilter = chip.getAttribute("data-filter") || "all";
+        sideFilterLabelEl.textContent =
+          "Filter: " +
+          (currentFilter === "all"
+            ? "All"
+            : currentFilter.charAt(0).toUpperCase() + currentFilter.slice(1));
+        renderCases();
+      });
+    });
+
+    loadCases();
+  </script>
+</body>
+</html>
