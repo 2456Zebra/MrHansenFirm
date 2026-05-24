@@ -1018,7 +1018,7 @@
               <strong>No cases loaded yet.</strong>
               <span class="hint">
                 If you know there are cases in your sheet, confirm the backend response for
-                <code>?action=getCases</code> returns JSON.
+                <code>{"action":"getCases"}</code> returns JSON.
               </span>
             </div>
           </div>
@@ -1131,7 +1131,7 @@
         <div>
           <strong>Impact:</strong>
           <span>
-            Your rating updates their community score and feeds into their HIR rank. No take-backs.
+            Your rating updates their community signal. No take-backs.
           </span>
         </div>
       </div>
@@ -1199,7 +1199,7 @@
       currentRatingContext = caseItem;
       ratingModalAssociateName.textContent =
         caseItem.associateName || "Associate";
-      ratingModalCaseId.textContent = caseItem.id || "–";
+      ratingModalCaseId.textContent = caseItem.caseId || caseItem.id || "–";
       ratingSlider.value = 8;
       ratingInput.value = 8;
       ratingModalBackdrop.classList.add("active");
@@ -1239,24 +1239,21 @@
       const ratingValue = parseFloat(ratingInput.value) || 0;
 
       try {
-        // FRONTEND CONTRACT:
-        // Expect backend to support:
-        //   action=rateAssociate
-        //   method: POST
-        //   body: { caseId, associateId, rating }
-        // Adjust keys to match your Apps Script implementation.
-        await fetch(WEB_APP_URL + "?action=rateAssociate", {
+        // Backend contract:
+        // action: "rateCase"
+        // body: { caseId, rating }
+        await fetch(WEB_APP_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            caseId: currentRatingContext.id,
-            associateId: currentRatingContext.associateId,
+            action: "rateCase",
+            caseId: currentRatingContext.caseId || currentRatingContext.id,
             rating: ratingValue,
           }),
         }).catch(() => {
-          // Silent fail if endpoint not wired yet.
+          // Silent fail if endpoint not wired fully yet.
         });
 
         showToast(
@@ -1299,8 +1296,12 @@
     function mapStatus(raw) {
       if (!raw) return { label: "Unknown", key: "unknown" };
       const v = String(raw).toLowerCase();
-      if (v.includes("open")) return { label: "Open", key: "open" };
-      if (v.includes("close")) return { label: "Closed", key: "closed" };
+      if (v.includes("new") || v.includes("pending") || v.includes("open")) {
+        return { label: raw, key: "open" };
+      }
+      if (v.includes("closed") || v.includes("done") || v.includes("complete")) {
+        return { label: raw, key: "closed" };
+      }
       return { label: raw, key: v };
     }
 
@@ -1345,12 +1346,12 @@
         metaLeft.className = "case-meta-left";
         metaLeft.innerHTML =
           '<div class="case-display-name">' +
-          (item.displayName || "Client") +
+          (item.clientDisplayName || item.clientName || "Client") +
           '<span class="handle">@' +
-          (item.associateName || "Associate") +
+          (item.associateName || item.associateId || "Associate") +
           "</span></div>" +
           '<div class="case-timestamp">' +
-          formatTimestamp(item.timestamp || item.createdAt) +
+          formatTimestamp(item.timestamp) +
           "</div>";
 
         const metaRight = document.createElement("div");
@@ -1359,7 +1360,7 @@
         const tierTag = document.createElement("div");
         tierTag.className = "tag tag-tier";
         tierTag.innerHTML =
-          '<span class="dot"></span>' + "Tier " + tierLabel;
+          '<span class="dot"></span>' + tierLabel;
 
         const statusTag = document.createElement("div");
         statusTag.className =
@@ -1376,7 +1377,7 @@
         associateTag.className = "tag tag-associate";
         associateTag.innerHTML =
           '<span class="dot"></span>' +
-          (item.associateName || "Associate");
+          (item.associateName || item.associateId || "Associate");
 
         metaRight.appendChild(tierTag);
         metaRight.appendChild(statusTag);
@@ -1407,16 +1408,12 @@
         const btnUp = document.createElement("button");
         btnUp.className = "btn-icon";
         btnUp.innerHTML =
-          '<span class="icon">👍</span><span class="vote-count">' +
-          (item.upvotes || 0) +
-          "</span>";
+          '<span class="icon">👍</span><span class="vote-count">0</span>';
 
         const btnDown = document.createElement("button");
         btnDown.className = "btn-icon";
         btnDown.innerHTML =
-          '<span class="icon">👎</span><span class="vote-count">' +
-          (item.downvotes || 0) +
-          "</span>";
+          '<span class="icon">👎</span><span class="vote-count">0</span>';
 
         actionsLeft.appendChild(btnComment);
         actionsLeft.appendChild(btnUp);
@@ -1499,13 +1496,13 @@
         feedStatusPillEl.innerHTML =
           '<span class="dot"></span>Live';
 
-        const url = WEB_APP_URL + "?action=getCases";
-
-        const res = await fetch(url, {
-          method: "GET",
+        const res = await fetch(WEB_APP_URL, {
+          method: "POST",
           headers: {
+            "Content-Type": "application/json",
             "Cache-Control": "no-cache",
           },
+          body: JSON.stringify({ action: "getCases" }),
         });
 
         if (!res.ok) {
@@ -1514,25 +1511,11 @@
 
         const data = await res.json();
 
-        // EXPECTED SHAPE (adjust mapping if your Apps Script returns differently):
-        // data = [
-        //   {
-        //     id,
-        //     title,
-        //     description,
-        //     tier,
-        //     associateName,
-        //     associateId,
-        //     status,
-        //     timestamp / createdAt,
-        //     displayName,
-        //     avgRating,
-        //     upvotes,
-        //     downvotes
-        //   },
-        //   ...
-        // ]
-        allCases = Array.isArray(data) ? data : [];
+        if (!data.success) {
+          throw new Error(data.error || "Backend returned success=false");
+        }
+
+        allCases = Array.isArray(data.cases) ? data.cases : [];
 
         const now = new Date();
         sideLastSyncEl.textContent = now.toLocaleTimeString(undefined, {
@@ -1552,7 +1535,7 @@
         emptyStateEl.style.display = "flex";
         emptyStateEl.innerHTML =
           "<strong>Could not load cases from backend.</strong>" +
-          "<span class='hint'>Check the Apps Script Web App response for <code>?action=getCases</code> and confirm it returns JSON.</span>";
+          "<span class='hint'>Check the Apps Script Web App response for <code>{\"action\":\"getCases\"}</code> and confirm it returns JSON.</span>";
         casesFeedEl.appendChild(emptyStateEl);
       }
     }
