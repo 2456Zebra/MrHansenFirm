@@ -4,21 +4,24 @@
   <meta charset="UTF-8" />
   <title>View Cases | MR. HANSEN FIRM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
     :root {
-      --bg-main: #050608;
-      --bg-panel: #0b0f14;
-      --bg-card: #0f1722;
+      --bg-main: #020308;
+      --bg-panel: #050814;
+      --bg-card: #050814;
+      --bg-card-soft: #070b18;
       --accent: #4afc7c;
       --accent-soft: rgba(74, 252, 124, 0.15);
       --accent-strong: #35d965;
       --danger: #ff4b6a;
       --muted: #7b8496;
       --text-main: #f5f7ff;
-      --border-subtle: #1a2333;
+      --border-subtle: #151827;
+      --border-strong: #1f2937;
       --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.7);
-      --radius-lg: 14px;
-      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
       --radius-pill: 999px;
       --transition-fast: 0.18s ease-out;
       --font-main: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
@@ -34,7 +37,7 @@
     html,
     body {
       height: 100%;
-      background: radial-gradient(circle at top, #0b1220 0, #020308 55%, #000 100%);
+      background: radial-gradient(circle at top, #020617 0, #020308 55%, #000 100%);
       color: var(--text-main);
       font-family: var(--font-main);
     }
@@ -49,9 +52,11 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      padding: 24px clamp(18px, 3vw, 32px);
+      padding: 20px clamp(16px, 3vw, 32px);
       gap: 18px;
     }
+
+    /* Header */
 
     .header {
       display: flex;
@@ -68,8 +73,8 @@
     }
 
     .app-title {
-      font-size: 1.4rem;
-      letter-spacing: 0.12em;
+      font-size: 1.1rem;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--accent);
     }
@@ -110,7 +115,7 @@
       border-radius: var(--radius-pill);
       border: 1px solid var(--border-subtle);
       background: rgba(9, 12, 20, 0.9);
-      padding: 8px 12px;
+      padding: 7px 12px;
       display: inline-flex;
       align-items: center;
       gap: 8px;
@@ -137,9 +142,11 @@
       color: var(--accent-strong);
     }
 
+    /* Layout */
+
     .layout {
       display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(260px, 1.3fr);
+      grid-template-columns: minmax(0, 3fr) minmax(260px, 1.2fr);
       gap: 18px;
       align-items: flex-start;
     }
@@ -151,30 +158,21 @@
     }
 
     .panel {
-      background: radial-gradient(circle at top left, #111827 0, #020617 55%);
+      background: radial-gradient(circle at top left, #020617 0, #020308 55%);
       border-radius: var(--radius-lg);
       border: 1px solid var(--border-subtle);
       box-shadow: var(--shadow-soft);
-      padding: 14px;
+      padding: 14px 14px 16px;
       position: relative;
       overflow: hidden;
-    }
-
-    .panel::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background:
-        radial-gradient(circle at 0 0, rgba(74, 252, 124, 0.06), transparent 55%),
-        radial-gradient(circle at 100% 0, rgba(56, 189, 248, 0.05), transparent 55%);
-      opacity: 0.9;
-      pointer-events: none;
     }
 
     .panel-inner {
       position: relative;
       z-index: 1;
     }
+
+    /* Feed header */
 
     .feed-header {
       display: flex;
@@ -202,11 +200,17 @@
       box-shadow: 0 0 8px rgba(74, 252, 124, 0.9);
     }
 
-    .feed-filters {
+    .feed-subtitle {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .feed-filters-inline {
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
     }
 
     .chip {
@@ -224,13 +228,6 @@
         background var(--transition-fast), transform var(--transition-fast);
     }
 
-    .chip span.dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--muted);
-    }
-
     .chip.active {
       border-color: rgba(74, 252, 124, 0.7);
       color: var(--accent);
@@ -238,105 +235,115 @@
       transform: translateY(-1px);
     }
 
-    .chip.active span.dot {
-      background: var(--accent);
-      box-shadow: 0 0 8px rgba(74, 252, 124, 0.9);
-    }
+    /* Feed list */
 
     .feed-list {
       display: flex;
       flex-direction: column;
       gap: 10px;
       margin-top: 6px;
-      max-height: calc(100vh - 190px);
-      overflow-y: auto;
-      padding-right: 4px;
     }
 
-    .feed-list::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .feed-list::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .feed-list::-webkit-scrollbar-thumb {
-      background: rgba(15, 23, 42, 0.9);
-      border-radius: 999px;
-    }
-
-    .case-card {
-      background: radial-gradient(circle at top left, #020617 0, #020617 40%, #020617 100%);
+    .case-post {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.98));
       border-radius: var(--radius-md);
       border: 1px solid rgba(15, 23, 42, 0.95);
       padding: 11px 12px 10px;
       display: flex;
-      flex-direction: column;
-      gap: 8px;
+      gap: 10px;
       position: relative;
       overflow: hidden;
       transition: border-color var(--transition-fast), transform var(--transition-fast),
         box-shadow var(--transition-fast), background var(--transition-fast);
     }
 
-    .case-card::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background: radial-gradient(circle at 0 0, rgba(74, 252, 124, 0.06), transparent 55%);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity var(--transition-fast);
-    }
-
-    .case-card:hover {
+    .case-post:hover {
       border-color: rgba(74, 252, 124, 0.5);
       transform: translateY(-2px);
       box-shadow: 0 14px 30px rgba(0, 0, 0, 0.85);
-      background: radial-gradient(circle at top left, #020617 0, #020617 45%, #020617 100%);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 1), rgba(2, 6, 23, 1));
     }
 
-    .case-card:hover::before {
-      opacity: 1;
+    .avatar-wrapper {
+      flex-shrink: 0;
+      display: flex;
+      align-items: flex-start;
+      padding-top: 4px;
     }
 
-    .case-header {
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top, #111827, #020617);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #e5e7eb;
+      text-transform: uppercase;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .post-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .post-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       gap: 8px;
     }
 
-    .case-meta-left {
+    .post-meta-left {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
+      min-width: 0;
     }
 
-    .case-display-name {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--text-main);
+    .post-author-row {
       display: flex;
       align-items: center;
       gap: 6px;
+      font-size: 0.85rem;
     }
 
-    .case-display-name span.handle {
+    .post-display-name {
+      font-weight: 500;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .post-handle {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .post-timestamp {
       font-size: 0.75rem;
       color: var(--muted);
     }
 
-    .case-timestamp {
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-
-    .case-meta-right {
+    .post-meta-right {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 4px;
       justify-content: flex-end;
     }
 
@@ -352,23 +359,12 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-    }
-
-    .tag span.dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #60a5fa;
+      white-space: nowrap;
     }
 
     .tag-tier {
       border-color: rgba(74, 252, 124, 0.7);
       color: var(--accent);
-    }
-
-    .tag-tier span.dot {
-      background: var(--accent);
-      box-shadow: 0 0 8px rgba(74, 252, 124, 0.9);
     }
 
     .tag-status-open {
@@ -384,55 +380,58 @@
     .tag-associate {
       border-color: rgba(129, 140, 248, 0.7);
       color: #c7d2fe;
+      cursor: pointer;
     }
 
-    .case-title {
+    .post-title {
       font-size: 1rem;
       font-weight: 500;
       margin-top: 2px;
+      margin-bottom: 2px;
     }
 
-    .case-description {
-      font-size: 0.85rem;
+    .post-description {
+      font-size: 0.86rem;
       color: var(--muted);
-      line-height: 1.4;
-      max-height: 3.4em;
-      overflow: hidden;
+      line-height: 1.45;
       position: relative;
     }
 
-    .case-description.fade::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 1.4em;
-      background: linear-gradient(to bottom, transparent, #020617);
+    .post-description.collapsed {
+      max-height: 3.4em;
+      overflow: hidden;
     }
 
-    .case-footer {
+    .read-more {
+      margin-top: 2px;
+      font-size: 0.78rem;
+      color: var(--accent);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .post-footer {
+      margin-top: 6px;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .engagement-bar {
+      display: flex;
       align-items: center;
       gap: 8px;
-      margin-top: 4px;
-    }
-
-    .case-actions-left,
-    .case-actions-right {
-      display: flex;
-      align-items: center;
-      gap: 6px;
       flex-wrap: wrap;
+      font-size: 0.8rem;
     }
 
-    .btn-icon {
+    .engagement-button {
       border-radius: var(--radius-pill);
-      border: 1px solid rgba(30, 64, 175, 0.7);
+      border: 1px solid rgba(31, 41, 55, 0.9);
       background: rgba(15, 23, 42, 0.95);
       color: var(--muted);
-      font-size: 0.78rem;
       padding: 4px 9px;
       display: inline-flex;
       align-items: center;
@@ -442,135 +441,33 @@
         background var(--transition-fast), transform var(--transition-fast);
     }
 
-    .btn-icon span.icon {
-      font-size: 0.9rem;
-    }
-
-    .btn-icon:hover {
+    .engagement-button:hover {
       border-color: rgba(74, 252, 124, 0.7);
       color: var(--accent);
       background: rgba(15, 23, 42, 1);
       transform: translateY(-1px);
     }
 
-    .btn-icon.primary {
-      border-color: rgba(74, 252, 124, 0.9);
-      color: var(--accent);
-      background: radial-gradient(circle at top left, rgba(74, 252, 124, 0.2), #020617);
-    }
-
-    .btn-icon.primary:hover {
-      background: radial-gradient(circle at top left, rgba(74, 252, 124, 0.28), #020617);
-    }
-
-    .btn-icon.ghost {
-      border-style: dashed;
-      border-color: rgba(148, 163, 184, 0.6);
-    }
-
-    .btn-icon.ghost:hover {
-      border-color: rgba(74, 252, 124, 0.7);
-    }
-
-    .vote-count {
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-
-    .rating-strip {
-      margin-top: 6px;
-      padding: 6px 8px;
-      border-radius: 9px;
-      border: 1px dashed rgba(74, 252, 124, 0.4);
-      background: radial-gradient(circle at left, rgba(74, 252, 124, 0.12), transparent 60%);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .rating-strip-left {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+    .engagement-count {
       font-size: 0.78rem;
-    }
-
-    .rating-strip-left span.label {
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      font-size: 0.7rem;
-    }
-
-    .rating-strip-left span.copy {
       color: var(--muted);
     }
 
-    .rating-strip-left span.copy strong {
-      color: var(--accent-strong);
-      font-weight: 600;
-    }
-
-    .rating-strip-right {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .rating-pill {
-      border-radius: var(--radius-pill);
-      padding: 3px 8px;
-      font-size: 0.75rem;
-      border: 1px solid rgba(74, 252, 124, 0.6);
-      color: var(--accent);
-      background: rgba(15, 23, 42, 0.95);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .rating-pill span.score {
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--accent-strong);
-    }
-
-    .rating-pill span.scale {
-      color: var(--muted);
-    }
-
-    .rating-pill span.spark {
-      font-size: 0.9rem;
-    }
-
-    .rating-strip .btn-rate {
-      border-radius: var(--radius-pill);
-      border: 1px solid rgba(74, 252, 124, 0.9);
-      background: radial-gradient(circle at top left, rgba(74, 252, 124, 0.25), #020617);
-      color: var(--accent);
-      font-size: 0.78rem;
-      padding: 4px 10px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+    .view-link {
+      margin-left: auto;
+      font-size: 0.8rem;
+      color: #93c5fd;
       cursor: pointer;
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast),
-        background var(--transition-fast);
-      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    .rating-strip .btn-rate span.icon {
-      font-size: 0.9rem;
+    .view-link:hover {
+      color: #bfdbfe;
     }
 
-    .rating-strip .btn-rate:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 0 18px rgba(74, 252, 124, 0.5);
-      background: radial-gradient(circle at top left, rgba(74, 252, 124, 0.32), #020617);
-    }
+    /* Empty state */
 
     .empty-state {
       border-radius: var(--radius-md);
@@ -586,311 +483,179 @@
     }
 
     .empty-state strong {
-      color: var(--text-main);
       font-weight: 500;
+      color: var(--text-main);
     }
 
-    .empty-state span.hint {
+    .empty-state code {
       font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    .empty-state span.hint code {
-      font-family: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono",
-        "Courier New", monospace;
-      font-size: 0.78rem;
-      background: rgba(15, 23, 42, 1);
-      padding: 2px 5px;
+      background: rgba(15, 23, 42, 0.9);
+      padding: 2px 4px;
       border-radius: 4px;
-      border: 1px solid rgba(30, 64, 175, 0.7);
-      color: #e5e7eb;
+      border: 1px solid rgba(30, 64, 175, 0.6);
     }
 
-    .side-panel-title {
-      font-size: 0.9rem;
+    /* Sidebar */
+
+    .sidebar-section {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .sidebar-block {
+      background: radial-gradient(circle at top left, #020617 0, #020308 60%);
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      padding: 10px 10px 11px;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .sidebar-title {
+      font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.16em;
       color: var(--muted);
-      margin-bottom: 10px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
-    .side-panel-title span.dot {
-      width: 7px;
-      height: 7px;
+    .sidebar-title span.dot {
+      width: 6px;
+      height: 6px;
       border-radius: 999px;
       background: var(--accent);
       box-shadow: 0 0 8px rgba(74, 252, 124, 0.9);
     }
 
-    .side-card {
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(15, 23, 42, 0.95);
-      background: radial-gradient(circle at top left, #020617 0, #020617 45%, #020617 100%);
-      padding: 10px 11px;
+    .sidebar-body {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    .side-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .side-card-title {
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-
-    .side-card-subtitle {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    .side-metric-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    .side-metric-row strong {
-      color: var(--text-main);
-      font-weight: 500;
-    }
-
-    .side-metric-pill {
-      border-radius: var(--radius-pill);
-      border: 1px solid rgba(74, 252, 124, 0.7);
-      padding: 3px 8px;
-      font-size: 0.75rem;
-      color: var(--accent);
-      display: inline-flex;
-      align-items: center;
       gap: 6px;
+      font-size: 0.82rem;
     }
 
-    .side-metric-pill span.score {
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--accent-strong);
-    }
-
-    .side-metric-pill span.label {
-      color: var(--muted);
-    }
-
-    .side-note {
-      font-size: 0.78rem;
-      color: var(--muted);
-      line-height: 1.4;
-    }
-
-    .side-note strong {
-      color: var(--accent-strong);
-      font-weight: 600;
-    }
-
-    .side-footer {
-      margin-top: 4px;
-      font-size: 0.75rem;
-      color: var(--muted);
+    .sidebar-item {
       display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .side-footer span.accent {
-      color: var(--accent);
-    }
-
-    .status-pill {
-      display: inline-flex;
       align-items: center;
+      justify-content: space-between;
       gap: 6px;
-      border-radius: var(--radius-pill);
-      border: 1px solid rgba(52, 211, 153, 0.7);
-      padding: 3px 8px;
-      font-size: 0.75rem;
-      color: #6ee7b7;
+      padding: 5px 6px;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(15, 23, 42, 0.9);
+      cursor: pointer;
+      transition: border-color var(--transition-fast), background var(--transition-fast),
+        transform var(--transition-fast);
     }
 
-    .status-pill span.dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+    .sidebar-item:hover {
+      border-color: rgba(74, 252, 124, 0.5);
+      background: rgba(15, 23, 42, 0.95);
+      transform: translateY(-1px);
     }
 
-    .status-pill.offline {
-      border-color: rgba(148, 163, 184, 0.7);
-      color: #cbd5f5;
-    }
-
-    .status-pill.offline span.dot {
-      background: #9ca3af;
-      box-shadow: none;
-    }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-    }
-
-    .modal-backdrop.active {
-      display: flex;
-    }
-
-    .modal {
-      background: radial-gradient(circle at top left, #020617 0, #020617 45%, #020617 100%);
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(15, 23, 42, 0.95);
-      box-shadow: 0 22px 50px rgba(0, 0, 0, 0.9);
-      padding: 16px 16px 14px;
-      width: min(420px, 92vw);
-      position: relative;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    .modal-title {
-      font-size: 1rem;
-      font-weight: 500;
+    .sidebar-item-main {
       display: flex;
       flex-direction: column;
       gap: 2px;
+      min-width: 0;
     }
 
-    .modal-title span.label {
+    .sidebar-item-title {
+      font-size: 0.82rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-item-meta {
       font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
       color: var(--muted);
     }
 
-    .modal-title span.main {
-      color: var(--text-main);
+    .sidebar-item-badge {
+      font-size: 0.75rem;
+      color: var(--accent);
     }
 
-    .modal-close {
+    .sidebar-small-text {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    /* Filters in sidebar */
+
+    .filters-toggle {
       border-radius: var(--radius-pill);
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--border-subtle);
+      background: rgba(15, 23, 42, 0.9);
       color: var(--muted);
-      font-size: 0.8rem;
-      padding: 4px 8px;
-      cursor: pointer;
+      padding: 4px 9px;
+      font-size: 0.78rem;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      cursor: pointer;
       transition: border-color var(--transition-fast), color var(--transition-fast),
         background var(--transition-fast), transform var(--transition-fast);
     }
 
-    .modal-close:hover {
-      border-color: rgba(248, 113, 113, 0.9);
-      color: #fecaca;
-      background: rgba(30, 64, 175, 0.4);
+    .filters-toggle:hover {
+      border-color: rgba(74, 252, 124, 0.7);
+      color: var(--accent);
+      background: rgba(15, 23, 42, 1);
       transform: translateY(-1px);
     }
 
-    .modal-body {
-      font-size: 0.85rem;
-      color: var(--muted);
+    .filters-panel {
+      margin-top: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .filters-panel.open {
+      display: flex;
+    }
+
+    .filter-row {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 3px;
     }
 
-    .modal-body strong {
-      color: var(--text-main);
-      font-weight: 500;
-    }
-
-    .rating-scale-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-top: 4px;
-    }
-
-    .rating-scale-labels {
-      display: flex;
-      justify-content: space-between;
+    .filter-label {
       font-size: 0.75rem;
       color: var(--muted);
-      margin-top: 2px;
     }
 
-    .rating-input-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 4px;
-    }
-
-    .rating-input-row input[type="range"] {
-      flex: 1;
-      accent-color: var(--accent);
-    }
-
-    .rating-input-row input[type="number"] {
-      width: 64px;
-      padding: 4px 6px;
-      border-radius: 6px;
-      border: 1px solid rgba(30, 64, 175, 0.7);
+    .filter-select {
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
       background: rgba(15, 23, 42, 0.95);
       color: var(--text-main);
+      padding: 5px 8px;
       font-size: 0.8rem;
+      outline: none;
     }
 
-    .modal-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-top: 10px;
-      font-size: 0.78rem;
-      color: var(--muted);
-      flex-wrap: wrap;
-    }
-
-    .modal-footer-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .btn-primary {
+    .btn-apply {
+      margin-top: 4px;
       border-radius: var(--radius-pill);
       border: 1px solid rgba(74, 252, 124, 0.9);
-      background: radial-gradient(circle at top left, rgba(74, 252, 124, 0.3), #020617);
+      background: radial-gradient(circle at top left, rgba(74, 252, 124, 0.25), #020617);
       color: var(--accent);
-      font-size: 0.8rem;
-      padding: 5px 11px;
+      font-size: 0.78rem;
+      padding: 5px 10px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -898,68 +663,26 @@
       transition: transform var(--transition-fast), box-shadow var(--transition-fast),
         background var(--transition-fast);
       white-space: nowrap;
+      justify-content: center;
     }
 
-    .btn-primary:hover {
+    .btn-apply:hover {
       transform: translateY(-1px);
-      box-shadow: 0 0 18px rgba(74, 252, 124, 0.6);
-      background: radial-gradient(circle at top left, rgba(74, 252, 124, 0.36), #020617);
+      box-shadow: 0 0 18px rgba(74, 252, 124, 0.5);
     }
 
-    .btn-secondary {
-      border-radius: var(--radius-pill);
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      background: rgba(15, 23, 42, 0.95);
-      color: var(--muted);
-      font-size: 0.8rem;
-      padding: 5px 10px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: border-color var(--transition-fast), color var(--transition-fast),
-        background var(--transition-fast), transform var(--transition-fast);
-      white-space: nowrap;
-    }
+    /* Utility */
 
-    .btn-secondary:hover {
-      border-color: rgba(74, 252, 124, 0.7);
+    .text-accent {
       color: var(--accent);
-      background: rgba(15, 23, 42, 1);
-      transform: translateY(-1px);
     }
 
-    .toast {
-      position: fixed;
-      bottom: 16px;
-      right: 16px;
-      max-width: 260px;
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(74, 252, 124, 0.7);
-      background: rgba(15, 23, 42, 0.98);
-      color: var(--accent);
-      font-size: 0.8rem;
-      padding: 8px 10px;
-      display: none;
-      z-index: 60;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.9);
-    }
-
-    .toast.active {
-      display: block;
-    }
-
-    .toast strong {
-      color: var(--accent-strong);
-    }
-
-    .toast span.sub {
-      display: block;
+    .text-muted {
       color: var(--muted);
-      margin-top: 2px;
     }
   </style>
 </head>
+
 <body>
   <div class="page-shell">
     <header class="header">
@@ -967,49 +690,44 @@
         <div class="app-title">MR. HANSEN FIRM</div>
         <div class="page-title">
           View Cases
-          <span class="badge">Community Wall</span>
+          <span class="badge">Community Feed</span>
         </div>
         <div class="header-subtitle">
           Live intelligence feed of approved cases. Client identities are protected. Associates are not.
         </div>
       </div>
+
       <div class="header-right">
         <div class="pill">
           <span class="pill-dot"></span>
-          Live from Backend v49
+          Live from Backend v50
         </div>
         <div class="pill pill-cta">
           HIR Engine:
-          <strong>Ratings + Output &rarr; Rank</strong>
+          <strong>Ratings + Output → Rank</strong>
         </div>
       </div>
     </header>
 
     <main class="layout">
+      <!-- FEED PANEL -->
       <section class="panel">
         <div class="panel-inner">
           <div class="feed-header">
-            <div class="feed-title">
-              <span class="dot"></span>
-              Case Stream
+            <div>
+              <div class="feed-title">
+                <span class="dot"></span>
+                Case Stream
+              </div>
+              <div class="feed-subtitle">
+                Community-style feed of live cases. Scroll, react, and drill into what matters.
+              </div>
             </div>
-            <div class="feed-filters">
-              <button class="chip active" data-filter="all">
-                <span class="dot"></span>
-                All
-              </button>
-              <button class="chip" data-filter="open">
-                <span class="dot"></span>
-                Open
-              </button>
-              <button class="chip" data-filter="closed">
-                <span class="dot"></span>
-                Closed
-              </button>
-              <button class="chip" data-filter="tier">
-                <span class="dot"></span>
-                Tier &uarr;
-              </button>
+
+            <div class="feed-filters-inline">
+              <button class="chip active" data-filter="all">All</button>
+              <button class="chip" data-filter="open">Open</button>
+              <button class="chip" data-filter="closed">Closed</button>
             </div>
           </div>
 
@@ -1025,536 +743,561 @@
         </div>
       </section>
 
+      <!-- SIDEBAR PANEL -->
       <aside class="panel">
         <div class="panel-inner">
-          <div class="side-panel-title">
-            <span class="dot"></span>
-            Associate Performance Context
-          </div>
-
-          <div class="side-card">
-            <div class="side-card-header">
-              <div>
-                <div class="side-card-title">HIR Signal</div>
-                <div class="side-card-subtitle">
-                  Ratings here feed directly into the HIR leaderboard.
+          <div class="sidebar-section">
+            <!-- Trending Cases -->
+            <div class="sidebar-block">
+              <div class="sidebar-header">
+                <div class="sidebar-title">
+                  <span class="dot"></span>
+                  Trending Cases
                 </div>
               </div>
-              <div class="side-metric-pill">
-                <span class="score" id="sideAvgRating">–</span>
-                <span class="label">/ 10</span>
-              </div>
-            </div>
-            <div class="side-metric-row">
-              <span>Community Weight</span>
-              <strong>High</strong>
-            </div>
-            <div class="side-note">
-              Every rating you submit is treated as a performance datapoint. Associates know this.
-              <strong>Rate like it matters.</strong>
-            </div>
-          </div>
-
-          <div class="side-card">
-            <div class="side-card-header">
-              <div>
-                <div class="side-card-title">Feed Status</div>
-                <div class="side-card-subtitle">
-                  Pulling from Apps Script Web App v49.
+              <div id="trendingCases" class="sidebar-body">
+                <div class="sidebar-small-text">
+                  Trending cases will appear here once engagement data is available.
                 </div>
               </div>
-              <div class="status-pill" id="feedStatusPill">
-                <span class="dot"></span>
-                Live
+            </div>
+
+            <!-- Top Associates -->
+            <div class="sidebar-block">
+              <div class="sidebar-header">
+                <div class="sidebar-title">
+                  <span class="dot"></span>
+                  Top Associates
+                </div>
+              </div>
+              <div id="topAssociates" class="sidebar-body">
+                <div class="sidebar-small-text">
+                  Associates will be ranked based on ratings and case performance.
+                </div>
               </div>
             </div>
-            <div class="side-metric-row">
-              <span>Cases Loaded</span>
-              <strong id="sideCasesCount">0</strong>
+
+            <!-- Recent Comments (placeholder for future integration) -->
+            <div class="sidebar-block">
+              <div class="sidebar-header">
+                <div class="sidebar-title">
+                  <span class="dot"></span>
+                  Recent Comments
+                </div>
+              </div>
+              <div id="recentComments" class="sidebar-body">
+                <div class="sidebar-small-text">
+                  Comment activity will surface here once the comment system is wired in.
+                </div>
+              </div>
             </div>
-            <div class="side-metric-row">
-              <span>Last Sync</span>
-              <strong id="sideLastSync">–</strong>
-            </div>
-            <div class="side-footer">
-              <span>Source: <span class="accent">Cases Sheet</span></span>
-              <span id="sideFilterLabel">Filter: All</span>
+
+            <!-- Filters (collapsed) -->
+            <div class="sidebar-block">
+              <div class="sidebar-header">
+                <div class="sidebar-title">
+                  <span class="dot"></span>
+                  Filters
+                </div>
+                <button id="filtersToggle" class="filters-toggle">
+                  Filters
+                </button>
+              </div>
+              <div id="filtersPanel" class="filters-panel">
+                <div class="filter-row">
+                  <label class="filter-label">Tier</label>
+                  <select id="filterTier" class="filter-select">
+                    <option value="all">All</option>
+                    <option value="tier1">Tier 1</option>
+                    <option value="tier2">Tier 2</option>
+                    <option value="tier3">Tier 3</option>
+                  </select>
+                </div>
+
+                <div class="filter-row">
+                  <label class="filter-label">Status</label>
+                  <select id="filterStatus" class="filter-select">
+                    <option value="all">All</option>
+                    <option value="open">Open</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                </div>
+
+                <div class="filter-row">
+                  <label class="filter-label">Associate</label>
+                  <select id="filterAssociate" class="filter-select">
+                    <option value="all">All</option>
+                  </select>
+                </div>
+
+                <button id="applyFilters" class="btn-apply">
+                  Apply Filters
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </aside>
     </main>
-  </div>
 
-  <div class="modal-backdrop" id="ratingModalBackdrop">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">
-          <span class="label">Rate This Associate</span>
-          <span class="main" id="ratingModalAssociateName">Associate</span>
-        </div>
-        <button class="modal-close" id="ratingModalClose">
-          ✕ Close
-        </button>
-      </div>
-      <div class="modal-body">
-        <div>
-          <strong>How did they handle this case?</strong>
-          <div class="rating-scale-row">
-            <span>1 = Not impressive</span>
-            <span>10 = Ruthlessly effective</span>
-          </div>
-          <div class="rating-input-row">
-            <input
-              type="range"
-              id="ratingSlider"
-              min="1"
-              max="10"
-              step="0.1"
-              value="8"
-            />
-            <input
-              type="number"
-              id="ratingInput"
-              min="1"
-              max="10"
-              step="0.1"
-              value="8"
-            />
-          </div>
-          <div class="rating-scale-labels">
-            <span>Soft</span>
-            <span>Competent</span>
-            <span>Elite</span>
-          </div>
-        </div>
-        <div>
-          <strong>Impact:</strong>
-          <span>
-            Your rating updates their community signal. No take-backs.
-          </span>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <span>Case ID: <span id="ratingModalCaseId">–</span></span>
-        <div class="modal-footer-actions">
-          <button class="btn-secondary" id="ratingModalCancel">Cancel</button>
-          <button class="btn-primary" id="ratingModalSubmit">
-            <span class="icon">⬆</span>
-            Submit Rating
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+    <script>
+      const casesFeed = document.getElementById("casesFeed");
+      const emptyState = document.getElementById("emptyState");
 
-  <div class="toast" id="toast">
-    <strong>Rating captured.</strong>
-    <span class="sub">HIR engine will ingest this once the backend endpoint is wired.</span>
-  </div>
+      const filterTier = document.getElementById("filterTier");
+      const filterStatus = document.getElementById("filterStatus");
+      const filterAssociate = document.getElementById("filterAssociate");
+      const applyFilters = document.getElementById("applyFilters");
 
-  <script>
-    const WEB_APP_URL =
-      "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
+      const filtersToggle = document.getElementById("filtersToggle");
+      const filtersPanel = document.getElementById("filtersPanel");
 
-    const casesFeedEl = document.getElementById("casesFeed");
-    const emptyStateEl = document.getElementById("emptyState");
-    const sideCasesCountEl = document.getElementById("sideCasesCount");
-    const sideLastSyncEl = document.getElementById("sideLastSync");
-    const sideFilterLabelEl = document.getElementById("sideFilterLabel");
-    const sideAvgRatingEl = document.getElementById("sideAvgRating");
-    const feedStatusPillEl = document.getElementById("feedStatusPill");
-    const toastEl = document.getElementById("toast");
+      const trendingCasesEl = document.getElementById("trendingCases");
+      const topAssociatesEl = document.getElementById("topAssociates");
+      const recentCommentsEl = document.getElementById("recentComments");
 
-    const ratingModalBackdrop = document.getElementById("ratingModalBackdrop");
-    const ratingModalClose = document.getElementById("ratingModalClose");
-    const ratingModalCancel = document.getElementById("ratingModalCancel");
-    const ratingModalSubmit = document.getElementById("ratingModalSubmit");
-    const ratingModalAssociateName = document.getElementById(
-      "ratingModalAssociateName"
-    );
-    const ratingModalCaseId = document.getElementById("ratingModalCaseId");
-    const ratingSlider = document.getElementById("ratingSlider");
-    const ratingInput = document.getElementById("ratingInput");
+      const chips = document.querySelectorAll(".chip");
 
-    let allCases = [];
-    let currentFilter = "all";
-    let currentRatingContext = null;
+      let allCases = [];
 
-    function showToast(message, sub) {
-      toastEl.innerHTML =
-        "<strong>" +
-        (message || "Rating captured.") +
-        "</strong><span class='sub'>" +
-        (sub ||
-          "HIR engine will ingest this once the backend endpoint is wired.") +
-        "</span>";
-      toastEl.classList.add("active");
-      setTimeout(() => {
-        toastEl.classList.remove("active");
-      }, 3200);
-    }
-
-    function openRatingModal(caseItem) {
-      currentRatingContext = caseItem;
-      ratingModalAssociateName.textContent =
-        caseItem.associateName || "Associate";
-      ratingModalCaseId.textContent = caseItem.caseId || caseItem.id || "–";
-      ratingSlider.value = 8;
-      ratingInput.value = 8;
-      ratingModalBackdrop.classList.add("active");
-    }
-
-    function closeRatingModal() {
-      ratingModalBackdrop.classList.remove("active");
-      currentRatingContext = null;
-    }
-
-    ratingSlider.addEventListener("input", () => {
-      ratingInput.value = ratingSlider.value;
-    });
-
-    ratingInput.addEventListener("input", () => {
-      let val = parseFloat(ratingInput.value);
-      if (isNaN(val)) return;
-      if (val < 1) val = 1;
-      if (val > 10) val = 10;
-      ratingInput.value = val.toFixed(1);
-      ratingSlider.value = val;
-    });
-
-    ratingModalClose.addEventListener("click", closeRatingModal);
-    ratingModalCancel.addEventListener("click", closeRatingModal);
-    ratingModalBackdrop.addEventListener("click", (e) => {
-      if (e.target === ratingModalBackdrop) {
-        closeRatingModal();
-      }
-    });
-
-    ratingModalSubmit.addEventListener("click", async () => {
-      if (!currentRatingContext) {
-        closeRatingModal();
-        return;
-      }
-      const ratingValue = parseFloat(ratingInput.value) || 0;
-
-      try {
-        // Backend contract:
-        // action: "rateCase"
-        // body: { caseId, rating }
-        await fetch(WEB_APP_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            action: "rateCase",
-            caseId: currentRatingContext.caseId || currentRatingContext.id,
-            rating: ratingValue,
-          }),
-        }).catch(() => {
-          // Silent fail if endpoint not wired fully yet.
-        });
-
-        showToast(
-          "Rating submitted.",
-          "Once the backend endpoint is live, this will update their HIR score."
-        );
-      } catch (err) {
-        console.error("Rating error", err);
-        showToast(
-          "Rating captured locally.",
-          "Backend endpoint not responding. Check Apps Script logs when ready."
-        );
-      } finally {
-        closeRatingModal();
-      }
-    });
-
-    function formatTimestamp(ts) {
-      if (!ts) return "";
-      try {
-        const d = new Date(ts);
-        if (isNaN(d.getTime())) return ts;
-        return d.toLocaleString(undefined, {
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-      } catch {
-        return ts;
-      }
-    }
-
-    function truncateText(text, maxChars) {
-      if (!text) return "";
-      if (text.length <= maxChars) return text;
-      return text.slice(0, maxChars - 1) + "…";
-    }
-
-    function mapStatus(raw) {
-      if (!raw) return { label: "Unknown", key: "unknown" };
-      const v = String(raw).toLowerCase();
-      if (v.includes("new") || v.includes("pending") || v.includes("open")) {
-        return { label: raw, key: "open" };
-      }
-      if (v.includes("closed") || v.includes("done") || v.includes("complete")) {
-        return { label: raw, key: "closed" };
-      }
-      return { label: raw, key: v };
-    }
-
-    function mapTier(raw) {
-      if (!raw) return "Unspecified";
-      return String(raw);
-    }
-
-    function renderCases() {
-      casesFeedEl.innerHTML = "";
-      const filtered = allCases.filter((c) => {
-        if (currentFilter === "open") {
-          return mapStatus(c.status).key === "open";
-        }
-        if (currentFilter === "closed") {
-          return mapStatus(c.status).key === "closed";
-        }
-        return true;
+      // Toggle filters panel
+      filtersToggle.addEventListener("click", () => {
+        filtersPanel.classList.toggle("open");
       });
 
-      if (!filtered.length) {
-        casesFeedEl.appendChild(emptyStateEl);
-        emptyStateEl.style.display = "flex";
-      } else {
-        emptyStateEl.style.display = "none";
-      }
-
-      let ratingSum = 0;
-      let ratingCount = 0;
-
-      filtered.forEach((item) => {
-        const card = document.createElement("article");
-        card.className = "case-card";
-
-        const status = mapStatus(item.status);
-        const tierLabel = mapTier(item.tier);
-
-        const header = document.createElement("div");
-        header.className = "case-header";
-
-        const metaLeft = document.createElement("div");
-        metaLeft.className = "case-meta-left";
-        metaLeft.innerHTML =
-          '<div class="case-display-name">' +
-          (item.clientDisplayName || item.clientName || "Client") +
-          '<span class="handle">@' +
-          (item.associateName || item.associateId || "Associate") +
-          "</span></div>" +
-          '<div class="case-timestamp">' +
-          formatTimestamp(item.timestamp) +
-          "</div>";
-
-        const metaRight = document.createElement("div");
-        metaRight.className = "case-meta-right";
-
-        const tierTag = document.createElement("div");
-        tierTag.className = "tag tag-tier";
-        tierTag.innerHTML =
-          '<span class="dot"></span>' + tierLabel;
-
-        const statusTag = document.createElement("div");
-        statusTag.className =
-          "tag " +
-          (status.key === "open"
-            ? "tag-status-open"
-            : status.key === "closed"
-            ? "tag-status-closed"
-            : "");
-        statusTag.innerHTML =
-          '<span class="dot"></span>' + status.label;
-
-        const associateTag = document.createElement("div");
-        associateTag.className = "tag tag-associate";
-        associateTag.innerHTML =
-          '<span class="dot"></span>' +
-          (item.associateName || item.associateId || "Associate");
-
-        metaRight.appendChild(tierTag);
-        metaRight.appendChild(statusTag);
-        metaRight.appendChild(associateTag);
-
-        header.appendChild(metaLeft);
-        header.appendChild(metaRight);
-
-        const titleEl = document.createElement("div");
-        titleEl.className = "case-title";
-        titleEl.textContent = item.title || "Untitled Case";
-
-        const descEl = document.createElement("div");
-        descEl.className = "case-description fade";
-        descEl.textContent = truncateText(item.description || "", 260);
-
-        const footer = document.createElement("div");
-        footer.className = "case-footer";
-
-        const actionsLeft = document.createElement("div");
-        actionsLeft.className = "case-actions-left";
-
-        const btnComment = document.createElement("button");
-        btnComment.className = "btn-icon";
-        btnComment.innerHTML =
-          '<span class="icon">💬</span><span>Comment</span>';
-
-        const btnUp = document.createElement("button");
-        btnUp.className = "btn-icon";
-        btnUp.innerHTML =
-          '<span class="icon">👍</span><span class="vote-count">0</span>';
-
-        const btnDown = document.createElement("button");
-        btnDown.className = "btn-icon";
-        btnDown.innerHTML =
-          '<span class="icon">👎</span><span class="vote-count">0</span>';
-
-        actionsLeft.appendChild(btnComment);
-        actionsLeft.appendChild(btnUp);
-        actionsLeft.appendChild(btnDown);
-
-        const actionsRight = document.createElement("div");
-        actionsRight.className = "case-actions-right";
-
-        const btnView = document.createElement("button");
-        btnView.className = "btn-icon ghost";
-        btnView.innerHTML =
-          '<span class="icon">🔍</span><span>View Full Case</span>';
-
-        actionsRight.appendChild(btnView);
-
-        footer.appendChild(actionsLeft);
-        footer.appendChild(actionsRight);
-
-        const ratingStrip = document.createElement("div");
-        ratingStrip.className = "rating-strip";
-
-        const ratingLeft = document.createElement("div");
-        ratingLeft.className = "rating-strip-left";
-        ratingLeft.innerHTML =
-          '<span class="label">Rate This Associate</span>' +
-          '<span class="copy">Think they handled this case well? <strong>Boost or drag their HIR.</strong></span>';
-
-        const ratingRight = document.createElement("div");
-        ratingRight.className = "rating-strip-right";
-
-        const avgRating = parseFloat(item.avgRating || item.rating || 0);
-        if (!isNaN(avgRating) && avgRating > 0) {
-          ratingSum += avgRating;
-          ratingCount += 1;
-        }
-
-        const ratingPill = document.createElement("div");
-        ratingPill.className = "rating-pill";
-        ratingPill.innerHTML =
-          '<span class="spark">✦</span>' +
-          '<span class="score">' +
-          (isNaN(avgRating) || avgRating <= 0
-            ? "–"
-            : avgRating.toFixed(1)) +
-          "</span>" +
-          '<span class="scale">/ 10</span>';
-
-        const btnRate = document.createElement("button");
-        btnRate.className = "btn-rate";
-        btnRate.innerHTML =
-          '<span class="icon">⬆</span><span>Rate This Associate</span>';
-        btnRate.addEventListener("click", () => openRatingModal(item));
-
-        ratingRight.appendChild(ratingPill);
-        ratingRight.appendChild(btnRate);
-
-        ratingStrip.appendChild(ratingLeft);
-        ratingStrip.appendChild(ratingRight);
-
-        card.appendChild(header);
-        card.appendChild(titleEl);
-        card.appendChild(descEl);
-        card.appendChild(footer);
-        card.appendChild(ratingStrip);
-
-        casesFeedEl.appendChild(card);
+      // Inline chips for open/closed/all
+      chips.forEach(chip => {
+        chip.addEventListener("click", () => {
+          chips.forEach(c => c.classList.remove("active"));
+          chip.classList.add("active");
+          const status = chip.getAttribute("data-filter");
+          applyStatusChipFilter(status);
+        });
       });
 
-      sideCasesCountEl.textContent = filtered.length;
-      if (ratingCount > 0) {
-        sideAvgRatingEl.textContent = (ratingSum / ratingCount).toFixed(1);
-      } else {
-        sideAvgRatingEl.textContent = "–";
-      }
-    }
-
-    async function loadCases() {
-      try {
-        feedStatusPillEl.classList.remove("offline");
-        feedStatusPillEl.innerHTML =
-          '<span class="dot"></span>Live';
-
-        const res = await fetch(WEB_APP_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Cache-Control": "no-cache",
-          },
-          body: JSON.stringify({ action: "getCases" }),
+      function applyStatusChipFilter(status) {
+        const filtered = allCases.filter(c => {
+          if (status === "all") return true;
+          return (c.status || "").toLowerCase() === status;
         });
+        renderCases(filtered);
+      }
 
-        if (!res.ok) {
-          throw new Error("HTTP " + res.status);
+      async function loadCases() {
+        try {
+          google.script.run
+            .withSuccessHandler(handleCases)
+            .withFailureHandler(handleError)
+            .getCases();
+        } catch (err) {
+          console.error("Frontend error:", err);
+        }
+      }
+
+      function handleCases(data) {
+        if (!data || !Array.isArray(data) || data.length === 0) {
+          emptyState.style.display = "flex";
+          return;
         }
 
-        const data = await res.json();
+        allCases = data;
+        emptyState.style.display = "none";
+        renderCases(allCases);
+        populateAssociates(allCases);
+        buildSidebar(allCases);
+      }
 
-        if (!data.success) {
-          throw new Error(data.error || "Backend returned success=false");
-        }
+      function handleError(err) {
+        console.error("Backend error:", err);
+        emptyState.style.display = "flex";
+      }
 
-        allCases = Array.isArray(data.cases) ? data.cases : [];
-
-        const now = new Date();
-        sideLastSyncEl.textContent = now.toLocaleTimeString(undefined, {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
+      function populateAssociates(cases) {
+        const associates = new Set();
+        cases.forEach(c => {
+          if (c.associate && c.associate.trim() !== "") {
+            associates.add(c.associate.trim());
+          }
         });
 
-        renderCases();
-      } catch (err) {
-        console.error("Error loading cases", err);
-        feedStatusPillEl.classList.add("offline");
-        feedStatusPillEl.innerHTML =
-          '<span class="dot"></span>Offline';
-
-        casesFeedEl.innerHTML = "";
-        emptyStateEl.style.display = "flex";
-        emptyStateEl.innerHTML =
-          "<strong>Could not load cases from backend.</strong>" +
-          "<span class='hint'>Check the Apps Script Web App response for <code>{\"action\":\"getCases\"}</code> and confirm it returns JSON.</span>";
-        casesFeedEl.appendChild(emptyStateEl);
+        filterAssociate.innerHTML = `<option value="all">All</option>`;
+        [...associates].forEach(name => {
+          const opt = document.createElement("option");
+          opt.value = name;
+          opt.textContent = name;
+          filterAssociate.appendChild(opt);
+        });
       }
-    }
 
-    document.querySelectorAll(".chip").forEach((chip) => {
-      chip.addEventListener("click", () => {
-        document.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
-        chip.classList.add("active");
-        currentFilter = chip.getAttribute("data-filter") || "all";
-        sideFilterLabelEl.textContent =
-          "Filter: " +
-          (currentFilter === "all"
-            ? "All"
-            : currentFilter.charAt(0).toUpperCase() + currentFilter.slice(1));
-        renderCases();
-      });
-    });
+      function applyCaseFilters() {
+        const tier = filterTier.value;
+        const status = filterStatus.value;
+        const associate = filterAssociate.value;
 
-    loadCases();
-  </script>
+        const filtered = allCases.filter(c => {
+          const tierMatch = tier === "all" || (c.tier || "").toLowerCase() === tier.toLowerCase();
+          const statusMatch = status === "all" || (c.status || "").toLowerCase() === status.toLowerCase();
+          const associateMatch =
+            associate === "all" || (c.associate || "") === associate;
+
+          return tierMatch && statusMatch && associateMatch;
+        });
+
+        renderCases(filtered);
+      }
+
+      applyFilters.addEventListener("click", applyCaseFilters);
+
+      function createAvatarElement(caseObj) {
+        const avatar = document.createElement("div");
+        avatar.className = "avatar";
+
+        const photoUrl = caseObj.photoUrl || caseObj.avatarUrl || "";
+        if (photoUrl) {
+          const img = document.createElement("img");
+          img.src = photoUrl;
+          img.alt = caseObj.displayName || caseObj.associate || "Associate";
+          avatar.appendChild(img);
+        } else {
+          const name = caseObj.displayName || caseObj.associate || "User";
+          const initials = name
+            .split(" ")
+            .map(part => part[0])
+            .join("")
+            .slice(0, 2)
+            .toUpperCase();
+          avatar.textContent = initials;
+        }
+
+        return avatar;
+      }
+
+      function renderCases(cases) {
+        casesFeed.innerHTML = "";
+
+        if (cases.length === 0) {
+          casesFeed.innerHTML = `
+            <div class="empty-state">
+              <strong>No cases match your filters.</strong>
+              <span class="hint">Try adjusting your filter selections.</span>
+            </div>
+          `;
+          return;
+        }
+
+        cases.forEach(c => {
+          const post = document.createElement("article");
+          post.className = "case-post";
+
+          const avatarWrapper = document.createElement("div");
+          avatarWrapper.className = "avatar-wrapper";
+          avatarWrapper.appendChild(createAvatarElement(c));
+
+          const main = document.createElement("div");
+          main.className = "post-main";
+
+          // Header
+          const header = document.createElement("div");
+          header.className = "post-header";
+
+          const metaLeft = document.createElement("div");
+          metaLeft.className = "post-meta-left";
+
+          const authorRow = document.createElement("div");
+          authorRow.className = "post-author-row";
+
+          const displayName = document.createElement("span");
+          displayName.className = "post-display-name";
+          displayName.textContent = c.displayName || c.associate || "Unknown";
+
+          const handle = document.createElement("span");
+          handle.className = "post-handle";
+          const handleValue = c.handle || (c.associate ? c.associate.replace(/\s+/g, "").toLowerCase() : "user");
+          handle.textContent = "@" + handleValue;
+
+          authorRow.appendChild(displayName);
+          authorRow.appendChild(handle);
+
+          const timestamp = document.createElement("div");
+          timestamp.className = "post-timestamp";
+          timestamp.textContent = c.timestamp || "";
+
+          metaLeft.appendChild(authorRow);
+          metaLeft.appendChild(timestamp);
+
+          const metaRight = document.createElement("div");
+          metaRight.className = "post-meta-right";
+
+          const tierTag = document.createElement("span");
+          tierTag.className = "tag tag-tier";
+          tierTag.textContent = c.tier || "Tier";
+
+          const statusTag = document.createElement("span");
+          const status = (c.status || "").toLowerCase();
+          statusTag.className =
+            "tag " +
+            (status === "open"
+              ? "tag-status-open"
+              : status === "closed"
+              ? "tag-status-closed"
+              : "");
+          statusTag.textContent = c.status || "Status";
+
+          const associateTag = document.createElement("span");
+          associateTag.className = "tag tag-associate";
+          associateTag.textContent = c.associate || "Associate";
+
+          metaRight.appendChild(tierTag);
+          metaRight.appendChild(statusTag);
+          metaRight.appendChild(associateTag);
+
+          header.appendChild(metaLeft);
+          header.appendChild(metaRight);
+
+          // Title
+          const titleEl = document.createElement("div");
+          titleEl.className = "post-title";
+          titleEl.textContent = c.title || "(Untitled case)";
+
+          // Description
+          const descEl = document.createElement("div");
+          descEl.className = "post-description collapsed";
+          descEl.textContent = c.description || "";
+
+          const readMore = document.createElement("button");
+          readMore.type = "button";
+          readMore.className = "read-more";
+          readMore.textContent = "Read more";
+          readMore.addEventListener("click", () => {
+            const isCollapsed = descEl.classList.contains("collapsed");
+            if (isCollapsed) {
+              descEl.classList.remove("collapsed");
+              readMore.textContent = "Show less";
+            } else {
+              descEl.classList.add("collapsed");
+              readMore.textContent = "Read more";
+            }
+          });
+
+          // Footer / engagement
+          const footer = document.createElement("div");
+          footer.className = "post-footer";
+
+          const engagementBar = document.createElement("div");
+          engagementBar.className = "engagement-bar";
+
+          const upvotes = c.upvotes || 0;
+          const commentsCount = c.commentsCount || 0;
+          const rating = c.rating || null;
+
+          const upvoteBtn = document.createElement("button");
+          upvoteBtn.type = "button";
+          upvoteBtn.className = "engagement-button";
+          upvoteBtn.innerHTML = `👍 <span class="engagement-count">${upvotes}</span>`;
+          upvoteBtn.addEventListener("click", () => {
+            // Hook into backend later
+            console.log("Upvote case", c.id);
+          });
+
+          const downvoteBtn = document.createElement("button");
+          downvoteBtn.type = "button";
+          downvoteBtn.className = "engagement-button";
+          downvoteBtn.innerHTML = `👎`;
+          downvoteBtn.addEventListener("click", () => {
+            console.log("Downvote case", c.id);
+          });
+
+          const commentsBtn = document.createElement("button");
+          commentsBtn.type = "button";
+          commentsBtn.className = "engagement-button";
+          commentsBtn.innerHTML = `💬 <span class="engagement-count">${commentsCount}</span>`;
+          commentsBtn.addEventListener("click", () => {
+            // Future: open comments drawer / detail
+            console.log("Open comments for case", c.id);
+          });
+
+          const rateBtn = document.createElement("button");
+          rateBtn.type = "button";
+          rateBtn.className = "engagement-button";
+          rateBtn.innerHTML = `⭐ Rate`;
+          rateBtn.addEventListener("click", () => {
+            rateCase(c.id);
+          });
+
+          const viewLink = document.createElement("button");
+          viewLink.type = "button";
+          viewLink.className = "view-link";
+          viewLink.innerHTML = `View case →`;
+          viewLink.addEventListener("click", () => {
+            viewCase(c.id);
+          });
+
+          engagementBar.appendChild(upvoteBtn);
+          engagementBar.appendChild(downvoteBtn);
+          engagementBar.appendChild(commentsBtn);
+          engagementBar.appendChild(rateBtn);
+          engagementBar.appendChild(viewLink);
+
+          footer.appendChild(engagementBar);
+
+          main.appendChild(header);
+          main.appendChild(titleEl);
+          main.appendChild(descEl);
+          if ((c.description || "").length > 140) {
+            main.appendChild(readMore);
+          }
+          main.appendChild(footer);
+
+          post.appendChild(avatarWrapper);
+          post.appendChild(main);
+
+          casesFeed.appendChild(post);
+        });
+      }
+
+      function buildSidebar(cases) {
+        buildTrendingCases(cases);
+        buildTopAssociates(cases);
+        // recentCommentsEl is placeholder until comments backend exists
+      }
+
+      function buildTrendingCases(cases) {
+        trendingCasesEl.innerHTML = "";
+
+        if (!cases.length) {
+          trendingCasesEl.innerHTML = `
+            <div class="sidebar-small-text">
+              No cases available yet.
+            </div>
+          `;
+          return;
+        }
+
+        const sorted = [...cases].sort((a, b) => {
+          const aScore = (a.upvotes || 0) + (a.commentsCount || 0);
+          const bScore = (b.upvotes || 0) + (b.commentsCount || 0);
+          return bScore - aScore;
+        });
+
+        const top = sorted.slice(0, 5);
+
+        top.forEach(c => {
+          const item = document.createElement("div");
+          item.className = "sidebar-item";
+          item.addEventListener("click", () => viewCase(c.id));
+
+          const main = document.createElement("div");
+          main.className = "sidebar-item-main";
+
+          const title = document.createElement("div");
+          title.className = "sidebar-item-title";
+          title.textContent = c.title || "(Untitled case)";
+
+          const meta = document.createElement("div");
+          meta.className = "sidebar-item-meta";
+          meta.textContent = `${c.associate || "Associate"} • ${c.upvotes || 0} upvotes • ${c.commentsCount || 0} comments`;
+
+          main.appendChild(title);
+          main.appendChild(meta);
+
+          const badge = document.createElement("div");
+          badge.className = "sidebar-item-badge";
+          badge.textContent = c.tier || "";
+
+          item.appendChild(main);
+          item.appendChild(badge);
+
+          trendingCasesEl.appendChild(item);
+        });
+      }
+
+      function buildTopAssociates(cases) {
+        topAssociatesEl.innerHTML = "";
+
+        if (!cases.length) {
+          topAssociatesEl.innerHTML = `
+            <div class="sidebar-small-text">
+              No associates available yet.
+            </div>
+          `;
+          return;
+        }
+
+        const map = new Map();
+        cases.forEach(c => {
+          const name = c.associate || "Unknown";
+          if (!map.has(name)) {
+            map.set(name, {
+              name,
+              cases: 0,
+              totalRating: 0,
+              ratingCount: 0,
+              upvotes: 0
+            });
+          }
+          const entry = map.get(name);
+          entry.cases += 1;
+          entry.upvotes += c.upvotes || 0;
+          if (typeof c.rating === "number") {
+            entry.totalRating += c.rating;
+            entry.ratingCount += 1;
+          }
+        });
+
+        const list = Array.from(map.values()).map(e => {
+          const avgRating = e.ratingCount ? e.totalRating / e.ratingCount : null;
+          return { ...e, avgRating };
+        });
+
+        list.sort((a, b) => {
+          const aScore = (a.avgRating || 0) * 2 + a.upvotes;
+          const bScore = (b.avgRating || 0) * 2 + b.upvotes;
+          return bScore - aScore;
+        });
+
+        const top = list.slice(0, 5);
+
+        top.forEach((a, index) => {
+          const item = document.createElement("div");
+          item.className = "sidebar-item";
+
+          const main = document.createElement("div");
+          main.className = "sidebar-item-main";
+
+          const title = document.createElement("div");
+          title.className = "sidebar-item-title";
+          title.textContent = `${index + 1}. ${a.name}`;
+
+          const meta = document.createElement("div");
+          meta.className = "sidebar-item-meta";
+          const ratingText = a.avgRating ? `${a.avgRating.toFixed(1)}★` : "No rating yet";
+          meta.textContent = `${ratingText} • ${a.cases} cases • ${a.upvotes} upvotes`;
+
+          main.appendChild(title);
+          main.appendChild(meta);
+
+          const badge = document.createElement("div");
+          badge.className = "sidebar-item-badge";
+          badge.textContent = "Rank " + (index + 1);
+
+          item.appendChild(main);
+          item.appendChild(badge);
+
+          topAssociatesEl.appendChild(item);
+        });
+      }
+
+      function viewCase(id) {
+        google.script.run.openCase(id);
+      }
+
+      function rateCase(id) {
+        google.script.run.openRating(id);
+      }
+
+      // Auto-load cases on page load
+      window.addEventListener("DOMContentLoaded", loadCases);
+    </script>
+  </div>
 </body>
 </html>
