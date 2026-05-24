@@ -894,18 +894,19 @@
         }
       }
 
-      function handleCases(data) {
-        if (!data || !Array.isArray(data) || data.length === 0) {
-          emptyState.style.display = "flex";
-          return;
-        }
+ function handleCases(data) {
+  if (!data || !Array.isArray(data.cases) || data.cases.length === 0) {
+    emptyState.style.display = "flex";
+    return;
+  }
 
-        allCases = data;
-        emptyState.style.display = "none";
-        renderCases(allCases);
-        populateAssociates(allCases);
-        buildSidebar(allCases);
-      }
+  allCases = data.cases;
+  emptyState.style.display = "none";
+  renderCases(allCases);
+  populateAssociates(allCases);
+  buildSidebar(allCases);
+}
+
 
       function handleError(err) {
         console.error("Backend error:", err);
