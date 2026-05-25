@@ -245,15 +245,18 @@ function updateSummary() {
 }
 
 async function submitCase(associateId) {
-  if (!document.getElementById("clientName").value.trim() ||
-      !document.getElementById("clientDisplayName").value.trim() ||
-      !document.getElementById("clientEmail").value.trim() ||
-      document.getElementById("clientPassword").value.length < 6 ||
-      !document.getElementById("caseTitle").value.trim() ||
-      !document.getElementById("caseDescription").value.trim() ||
-      !document.getElementById("tier").value) {
-    
-    alert("⚠️ Please fill in all required fields (scroll up if needed).");
+  // Strong validation
+  const missing = [];
+  if (!document.getElementById("clientName").value.trim()) missing.push("Full Name");
+  if (!document.getElementById("clientDisplayName").value.trim()) missing.push("Display Name");
+  if (!document.getElementById("clientEmail").value.trim()) missing.push("Email");
+  if (document.getElementById("clientPassword").value.length < 6) missing.push("Password (min 6 characters)");
+  if (!document.getElementById("caseTitle").value.trim()) missing.push("Case Title");
+  if (!document.getElementById("caseDescription").value.trim()) missing.push("Case Description");
+  if (!document.getElementById("tier").value) missing.push("Tier");
+
+  if (missing.length > 0) {
+    alert("⚠️ Please fill in the following required fields:\n\n• " + missing.join("\n• "));
     return;
   }
 
