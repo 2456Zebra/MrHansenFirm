@@ -104,17 +104,18 @@ function clearErrors() {
 }
 
 async function loginUser(email, password) {
+    const formData = new FormData();
+    formData.append("action", "loginUser");
+    formData.append("email", email);
+    formData.append("password", password);
+
     const res = await fetch(BASE_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            action: "loginUser",
-            email,
-            password
-        })
+        body: formData
     });
 
     const data = await res.json();
+
     if (!data.success) {
         alert(data.error || "Invalid login.");
         return;
