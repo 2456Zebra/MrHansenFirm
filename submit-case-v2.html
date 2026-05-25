@@ -229,17 +229,6 @@ function updateSummary() {
   breakdownDiv.innerHTML = selectedAddons.length 
     ? selectedAddons.map(addon => `<div>• ${addon}</div>`).join('')
     : "<div style='color:#666;'>No add-ons selected</div>";
-
-  const ready = selectedAssociate &&
-                document.getElementById("clientName").value.trim() &&
-                document.getElementById("clientDisplayName").value.trim() &&
-                document.getElementById("clientEmail").value.trim() &&
-                document.getElementById("clientPassword").value.length >= 6 &&
-                tierPrice > 0 &&
-                document.getElementById("caseTitle").value.trim() &&
-                document.getElementById("caseDescription").value.trim();
-
-  document.getElementById("submitButton").disabled = !ready;
 }
 
 async function submitCase(associateId) {
@@ -258,7 +247,7 @@ async function submitCase(associateId) {
     return;
   }
 
-  // All good - proceed to Stripe
+  // All good - go to Stripe
   const button = document.getElementById("submitButton");
   const originalText = button.textContent;
   button.disabled = true;
