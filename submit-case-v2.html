@@ -45,6 +45,7 @@
       border: 1px solid #00ff88;
       color: #00ff88;
       margin-top: 6px;
+      box-sizing: border-box;
     }
     textarea { min-height: 120px; resize: vertical; }
     .addon-row {
@@ -55,10 +56,23 @@
     .submit-button {
       width: 100%; padding: 18px; background: #00ff88; color: #000;
       font-weight: bold; font-size: 18px; border: none; cursor: pointer; margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
+    .back-button {
+      color: #00ff88;
+      text-decoration: none;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+    .back-button:hover { color: #ffffff; }
   </style>
 </head>
 <body>
+
+<a href="https://mrhansenfirm.com/associates.html" class="back-button">← Back to Associates</a>
 
 <h1>SUBMIT CASE</h1>
 <p class="subtitle">An account will be created so you can track updates.</p>
@@ -113,8 +127,9 @@
   <h2>Summary</h2>
   <div><strong>Associate:</strong> <span id="summaryAssociate">—</span></div>
   <div><strong>Tier:</strong> <span id="summaryTier">—</span></div>
-  <div><strong>Add-ons:</strong> <span id="summaryAddons">$0</span></div>
-  <div style="font-size:20px; margin:15px 0;"><strong>Total: $<span id="summaryTotal">0</span></strong></div>
+  <div><strong>Add-ons:</strong></div>
+  <div id="addonBreakdown" style="margin-left:20px; font-size:0.95em;"></div>
+  <div style="font-size:22px; margin:15px 0; font-weight:bold;">Total: $<span id="summaryTotal">0</span></div>
 
   <button id="submitButton" class="submit-button" disabled>
     SUBMIT CASE & PAY NOW
@@ -126,6 +141,7 @@ const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk
 
 let selectedAssociate = null;
 let addonTotal = 0;
+let selectedAddons = [];
 
 document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -138,19 +154,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadAssociate(associateId);
 
-  // Addon click handlers
   document.querySelectorAll('.addon-row').forEach(row => {
     row.addEventListener('click', () => {
       row.classList.toggle('active');
-      addonTotal = 0;
-      document.querySelectorAll('.addon-row.active').forEach(r => {
-        addonTotal += parseInt(r.dataset.price) || 0;
-      });
+      updateAddonTotal();
       updateSummary();
     });
   });
 
-  // Real-time summary updates
   document.querySelectorAll("input, textarea, select").forEach(el => {
     el.addEventListener("input", updateSummary);
     el.addEventListener("change", updateSummary);
@@ -162,6 +173,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+function updateAddonTotal() {
+  addonTotal = 0;
+  selectedAddons = [];
+  document.querySelectorAll('.addon-row.active').forEach(row => {
+    const price = parseInt(row.dataset.price) || 0;
+    addonTotal += price;
+    selectedAddons.push(row.textContent.trim());
+  });
+}
+
 async function loadAssociate(associateId) {
   const infoDiv = document.getElementById("associateInfo");
   infoDiv.textContent = "Loading...";
@@ -169,21 +190,18 @@ async function loadAssociate(associateId) {
   try {
     const res = await fetch(BASE_URL, {
       method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },   // ← This is what worked before
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({ action: "getAssociates" })
     });
 
     const data = await res.json();
-
     const found = data.associates?.find(a => (a.associateId || "").trim() === associateId);
+
     if (!found) throw new Error("Associate not found");
 
     selectedAssociate = found;
 
-    const photo = found.photoUrl 
-      ? `<img src="${found.photoUrl}" class="associate-photo">` 
-      : "";
-
+    const photo = found.photoUrl ? `<img src="${found.photoUrl}" class="associate-photo">` : "";
     infoDiv.innerHTML = `
       <div class="associate-header">
         ${photo}
@@ -207,23 +225,32 @@ function updateSummary() {
   const total = tierPrice + addonTotal;
 
   document.getElementById("summaryTier").textContent = tierText;
-  document.getElementById("summaryAddons").textContent = "$" + addonTotal;
   document.getElementById("summaryTotal").textContent = total;
 
-  const ready = 
-    selectedAssociate &&
-    document.getElementById("clientName").value.trim() &&
-    document.getElementById("clientDisplayName").value.trim() &&
-    document.getElementById("clientEmail").value.trim() &&
-    document.getElementById("clientPassword").value.length >= 6 &&
-    tierPrice > 0 &&
-    document.getElementById("caseTitle").value.trim() &&
-    document.getElementById("caseDescription").value.trim();
+  // Show individual addons
+  const breakdownDiv = document.getElementById("addonBreakdown");
+  breakdownDiv.innerHTML = selectedAddons.length 
+    ? selectedAddons.map(addon => `<div>• ${addon}</div>`).join('')
+    : "<div style='color:#666;'>No add-ons selected</div>";
+
+  const ready = selectedAssociate &&
+                document.getElementById("clientName").value.trim() &&
+                document.getElementById("clientDisplayName").value.trim() &&
+                document.getElementById("clientEmail").value.trim() &&
+                document.getElementById("clientPassword").value.length >= 6 &&
+                tierPrice > 0 &&
+                document.getElementById("caseTitle").value.trim() &&
+                document.getElementById("caseDescription").value.trim();
 
   document.getElementById("submitButton").disabled = !ready;
 }
 
 async function submitCase(associateId) {
+  const button = document.getElementById("submitButton");
+  const originalText = button.textContent;
+  button.disabled = true;
+  button.innerHTML = `Processing <span style="display:inline-block; animation: spin 1s linear infinite;">⟳</span>`;
+
   const payload = {
     action: "submitCaseWithSignup",
     clientName: document.getElementById("clientName").value.trim(),
@@ -256,6 +283,9 @@ async function submitCase(associateId) {
   } catch (err) {
     alert("Connection error. Please try again.");
     console.error(err);
+  } finally {
+    button.disabled = false;
+    button.textContent = originalText;
   }
 }
 </script>
