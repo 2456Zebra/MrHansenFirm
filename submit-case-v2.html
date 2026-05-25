@@ -64,7 +64,7 @@
 
 <div class="panel">
   <h2>Selected Associate</h2>
-  <div id="associateInfo">Loading...</div>
+  <div id="associateInfo">Loading associate...</div>
 </div>
 
 <div class="panel">
@@ -128,15 +128,15 @@ let addonTotal = 0;
 document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);
   const associateId = urlParams.get('id');
-  
+
   if (!associateId) {
-    alert("Error: No associate ID found in URL.");
+    document.getElementById("associateInfo").innerHTML = `<strong style="color:red">Error: No associate ID in URL.</strong>`;
     return;
   }
 
   loadAssociate(associateId);
 
-  // Addon click handlers
+  // Addon handlers
   document.querySelectorAll('.addon-row').forEach(row => {
     row.addEventListener('click', () => {
       row.classList.toggle('active');
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Enable real-time summary updates
+  // Real-time summary
   document.querySelectorAll("input, textarea, select").forEach(el => {
     el.addEventListener("input", updateSummary);
     el.addEventListener("change", updateSummary);
@@ -161,12 +161,18 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function loadAssociate(associateId) {
+  const infoDiv = document.getElementById("associateInfo");
+  infoDiv.textContent = "Loading associate...";
+
   try {
     const res = await fetch(BASE_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "getAssociates" })
     });
+
+    if (!res.ok) throw new Error("Failed to reach backend");
+
     const data = await res.json();
 
     const found = data.associates?.find(a => (a.associateId || "").trim() === associateId);
@@ -178,7 +184,7 @@ async function loadAssociate(associateId) {
       ? `<img src="${found.photoUrl}" class="associate-photo">` 
       : "";
 
-    document.getElementById("associateInfo").innerHTML = `
+    infoDiv.innerHTML = `
       <div class="associate-header">
         ${photo}
         <div><strong>${found.name}</strong></div>
@@ -187,9 +193,10 @@ async function loadAssociate(associateId) {
 
     document.getElementById("summaryAssociate").textContent = found.name;
     updateSummary();
+
   } catch (err) {
-    document.getElementById("associateInfo").innerHTML = `<strong style="color:red">Error loading associate.</strong>`;
     console.error(err);
+    infoDiv.innerHTML = `<strong style="color:red">Error loading associate. Please try again.</strong>`;
   }
 }
 
@@ -244,7 +251,6 @@ async function submitCase(associateId) {
       return;
     }
 
-    // Success - go to Stripe
     window.location.href = data.checkoutUrl;
 
   } catch (err) {
