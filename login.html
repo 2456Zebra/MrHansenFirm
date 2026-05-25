@@ -87,115 +87,93 @@
         </div>
     </div>
 
-<!-- FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
 <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCXijSyw_EqvRSKwJH0M-xPs5piNfiCiYI",
-      authDomain: "mrhansenfirm-b57c1.firebaseapp.com",
-      projectId: "mrhansenfirm-b57c1",
-      storageBucket: "mrhansenfirm-b57c1.appspot.com",
-      messagingSenderId: "1007101301706",
-      appId: "1:1007101301706:web:bbbac146ca9411e41af533"
-    };
+const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+const urlParams = new URLSearchParams(window.location.search);
+const intendedRole = urlParams.get("role") || null; // firm_admin, associate, client_admin, community_user
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const intendedRole = urlParams.get("role") || null;
+function showError(fieldId, message) {
+    const errorDiv = document.getElementById(fieldId + 'Error');
+    if (!errorDiv) return;
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+}
 
-    function showError(fieldId, message) {
-        const errorDiv = document.getElementById(fieldId + 'Error');
-        if (errorDiv) {
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-        }
-    }
+function clearErrors() {
+    document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+}
 
-    function clearErrors() {
-        document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
-    }
-
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        clearErrors();
-
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value.trim();
-
-        let isValid = true;
-
-        if (!email) {
-            showError('email', 'Please enter your email');
-            isValid = false;
-        }
-        if (!password) {
-            showError('password', 'Please enter your password');
-            isValid = false;
-        } else if (password.length < 4) {
-            showError('password', 'Password must be at least 4 characters');
-            isValid = false;
-        }
-
-        if (!isValid) return;
-
-        try {
-            const userCred = await firebase.auth().signInWithEmailAndPassword(email, password);
-            const uid = userCred.user.uid;
-
-            const doc = await db.collection("users").doc(uid).get();
-            if (!doc.exists) {
-                alert("No user profile found. Contact support.");
-                return;
-            }
-
-            const role = doc.data().role;
-            const associateId = doc.data().associateId || null;
-
-            if (intendedRole && intendedRole !== role) {
-                alert(`You do not have ${intendedRole.replace("_", " ")} access. Redirecting to your assigned portal.`);
-            }
-
-            // FIRM ADMIN
-            if (role === "firm_admin") {
-                window.location.href = "firm-admin.html";
-            }
-
-            // CLIENT ADMIN
-            else if (role === "client_admin") {
-                window.location.href = "client-admin.html";
-            }
-
-            // ASSOCIATES (normal + admin)
-            else if (role === "associate" || role === "associate_admin") {
-
-                if (!associateId) {
-                    alert("Your account is missing an associateId. Contact support.");
-                    return;
-                }
-
-                window.location.href = `associate-admin.html?id=${associateId}`;
-            }
-
-            // COMMUNITY USER
-            else if (role === "community_user") {
-                window.location.href = "community.html";
-            }
-
-            // UNKNOWN ROLE
-            else {
-                alert("Your account has no valid role assigned.");
-            }
-
-        } catch (err) {
-            console.error(err);
-            alert("Invalid login. Check your email and password.");
-        }
+async function loginUser(email, password) {
+    const res = await fetch(BASE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            action: "loginUser",
+            email,
+            password
+        })
     });
+
+    const data = await res.json();
+    if (!data.success) {
+        alert(data.error || "Invalid login.");
+        return;
+    }
+
+    const role = data.role;
+
+    if (intendedRole && intendedRole !== role) {
+        alert(`You do not have ${intendedRole.replace("_", " ")} access. Redirecting to your assigned portal.`);
+    }
+
+    if (role === "firm_admin") {
+        window.location.href = "firm-admin.html";
+    } else if (role === "client_admin") {
+        window.location.href = "client-admin.html";
+    } else if (role === "associate") {
+        if (!data.associateId) {
+            alert("No associateId linked to this account.");
+            return;
+        }
+        window.location.href = `associate-admin.html?id=${encodeURIComponent(data.associateId)}`;
+    } else if (role === "community_user") {
+        window.location.href = "community.html";
+    } else {
+        alert("Your account has no valid role assigned.");
+    }
+}
+
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    clearErrors();
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    let isValid = true;
+
+    if (!email) {
+        showError('email', 'Please enter your email');
+        isValid = false;
+    }
+    if (!password) {
+        showError('password', 'Please enter your password');
+        isValid = false;
+    } else if (password.length < 4) {
+        showError('password', 'Password must be at least 4 characters');
+        isValid = false;
+    }
+
+    if (!isValid) return;
+
+    try {
+        await loginUser(email, password);
+    } catch (err) {
+        console.error(err);
+        alert("Login error. Please try again.");
+    }
+});
 </script>
 
 </body>
