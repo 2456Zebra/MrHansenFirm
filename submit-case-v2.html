@@ -154,7 +154,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadAssociate(associateId);
 
-  // Addon handlers
   document.querySelectorAll('.addon-row').forEach(row => {
     row.addEventListener('click', () => {
       row.classList.toggle('active');
@@ -163,13 +162,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Input listeners
   document.querySelectorAll("input, textarea, select").forEach(el => {
     el.addEventListener("input", updateSummary);
     el.addEventListener("change", updateSummary);
   });
 
-  // Submit button
   document.getElementById("submitButton").addEventListener("click", function() {
     submitCase(associateId);
   });
@@ -246,12 +243,14 @@ function updateSummary() {
 }
 
 async function submitCase(associateId) {
+  console.log("Submit button clicked");
+
   // Validation
   const missing = [];
   if (!document.getElementById("clientName").value.trim()) missing.push("Full Name");
   if (!document.getElementById("clientDisplayName").value.trim()) missing.push("Display Name");
   if (!document.getElementById("clientEmail").value.trim()) missing.push("Email");
-  if (document.getElementById("clientPassword").value.length < 6) missing.push("Password (at least 6 characters)");
+  if (document.getElementById("clientPassword").value.length < 6) missing.push("Password (min 6 chars)");
   if (!document.getElementById("caseTitle").value.trim()) missing.push("Case Title");
   if (!document.getElementById("caseDescription").value.trim()) missing.push("Case Description");
   if (!document.getElementById("tier").value) missing.push("Tier");
