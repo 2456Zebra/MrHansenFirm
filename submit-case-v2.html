@@ -59,12 +59,13 @@
   </style>
 </head>
 <body>
+
 <h1>SUBMIT CASE</h1>
 <p class="subtitle">An account will be created so you can track updates.</p>
 
 <div class="panel">
   <h2>Selected Associate</h2>
-  <div id="associateInfo">Loading associate...</div>
+  <div id="associateInfo">Loading...</div>
 </div>
 
 <div class="panel">
@@ -114,6 +115,7 @@
   <div><strong>Tier:</strong> <span id="summaryTier">—</span></div>
   <div><strong>Add-ons:</strong> <span id="summaryAddons">$0</span></div>
   <div style="font-size:20px; margin:15px 0;"><strong>Total: $<span id="summaryTotal">0</span></strong></div>
+
   <button id="submitButton" class="submit-button" disabled>
     SUBMIT CASE & PAY NOW
   </button>
@@ -136,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadAssociate(associateId);
 
-  // Addon handlers
+  // Addon click handlers
   document.querySelectorAll('.addon-row').forEach(row => {
     row.addEventListener('click', () => {
       row.classList.toggle('active');
@@ -148,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Real-time summary
+  // Real-time summary updates
   document.querySelectorAll("input, textarea, select").forEach(el => {
     el.addEventListener("input", updateSummary);
     el.addEventListener("change", updateSummary);
@@ -162,16 +164,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadAssociate(associateId) {
   const infoDiv = document.getElementById("associateInfo");
-  infoDiv.textContent = "Loading associate...";
+  infoDiv.textContent = "Loading...";
 
   try {
     const res = await fetch(BASE_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "text/plain;charset=utf-8" },   // ← This is what worked before
       body: JSON.stringify({ action: "getAssociates" })
     });
-
-    if (!res.ok) throw new Error("Failed to reach backend");
 
     const data = await res.json();
 
@@ -240,7 +240,7 @@ async function submitCase(associateId) {
   try {
     const res = await fetch(BASE_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify(payload)
     });
 
