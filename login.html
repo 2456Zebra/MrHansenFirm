@@ -27,7 +27,7 @@
         }
         h2 { text-align: center; margin-bottom: 30px; color: #fff; }
         label { display: block; margin: 15px 0 6px; color: #ccc; }
-        select, input {
+        input {
             width: 100%;
             padding: 12px;
             background: #222;
@@ -36,7 +36,7 @@
             color: #fff;
             font-size: 16px;
         }
-        input:focus, select:focus {
+        input:focus {
             border-color: #0066ff;
             outline: none;
         }
@@ -72,11 +72,11 @@
             <input type="password" style="display:none;" aria-hidden="true">
 
             <label for="email">Email</label>
-            <input type="text" id="email" autocomplete="off" placeholder="your@email.com" required>
+            <input type="text" id="email" autocomplete="off" placeholder="your@email.com">
             <div id="emailError" class="error-message"></div>
 
             <label for="password">Password</label>
-            <input type="password" id="password" autocomplete="new-password" placeholder="Enter password" required>
+            <input type="password" id="password" autocomplete="new-password" placeholder="Enter password">
             <div id="passwordError" class="error-message"></div>
 
             <button type="submit">Sign In</button>
@@ -91,11 +91,10 @@
 const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
 
 const urlParams = new URLSearchParams(window.location.search);
-const intendedRole = urlParams.get("role") || null; // firm_admin, associate, client_admin, community_user
+const intendedRole = urlParams.get("role") || null;
 
 function showError(fieldId, message) {
     const errorDiv = document.getElementById(fieldId + 'Error');
-    if (!errorDiv) return;
     errorDiv.textContent = message;
     errorDiv.style.display = 'block';
 }
@@ -132,10 +131,6 @@ async function loginUser(email, password) {
     } else if (role === "client_admin") {
         window.location.href = "client-admin.html";
     } else if (role === "associate") {
-        if (!data.associateId) {
-            alert("No associateId linked to this account.");
-            return;
-        }
         window.location.href = `associate-admin.html?id=${encodeURIComponent(data.associateId)}`;
     } else if (role === "community_user") {
         window.location.href = "community.html";
@@ -151,28 +146,10 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
 
-    let isValid = true;
+    if (!email) return showError('email', 'Please enter your email');
+    if (!password) return showError('password', 'Please enter your password');
 
-    if (!email) {
-        showError('email', 'Please enter your email');
-        isValid = false;
-    }
-    if (!password) {
-        showError('password', 'Please enter your password');
-        isValid = false;
-    } else if (password.length < 4) {
-        showError('password', 'Password must be at least 4 characters');
-        isValid = false;
-    }
-
-    if (!isValid) return;
-
-    try {
-        await loginUser(email, password);
-    } catch (err) {
-        console.error(err);
-        alert("Login error. Please try again.");
-    }
+    await loginUser(email, password);
 });
 </script>
 
