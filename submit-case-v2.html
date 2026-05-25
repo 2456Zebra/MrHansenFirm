@@ -5,68 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Submit Case — MR. HANSEN FIRM</title>
   <style>
-    body {
-      font-family: "Courier New", monospace;
-      background: #000;
-      color: #00ff88;
-      padding: 40px 20px;
-      max-width: 900px;
-      margin: auto;
-      line-height: 1.5;
-    }
+    body { font-family: "Courier New", monospace; background: #000; color: #00ff88; padding: 40px 20px; max-width: 900px; margin: auto; line-height: 1.5; }
     h1 { text-shadow: 0 0 15px #00ff88; margin-bottom: 10px; }
     .subtitle { opacity: 0.9; margin-bottom: 30px; }
-    .panel {
-      background: #0a0a0a;
-      border: 1px solid #00ff88;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 25px;
-    }
-    .associate-header {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 15px;
-    }
-    .associate-photo {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid #00ff88;
-    }
+    .panel { background: #0a0a0a; border: 1px solid #00ff88; border-radius: 8px; padding: 20px; margin-bottom: 25px; }
+    .associate-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+    .associate-photo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #00ff88; }
     label { display: block; margin-top: 15px; }
     .required { color: #ff6666; }
-    input, textarea, select {
-      width: 100%;
-      padding: 12px;
-      background: #111;
-      border: 1px solid #00ff88;
-      color: #00ff88;
-      margin-top: 6px;
-      box-sizing: border-box;
-    }
+    input, textarea, select { width: 100%; padding: 12px; background: #111; border: 1px solid #00ff88; color: #00ff88; margin-top: 6px; box-sizing: border-box; }
     textarea { min-height: 120px; resize: vertical; }
-    .addon-row {
-      display: flex; justify-content: space-between; padding: 12px;
-      background: #111; border: 1px solid #00ff88; margin-bottom: 10px; cursor: pointer;
-    }
+    .addon-row { display: flex; justify-content: space-between; padding: 12px; background: #111; border: 1px solid #00ff88; margin-bottom: 10px; cursor: pointer; }
     .addon-row.active { background: #003300; border-color: #00ff88; }
-    .submit-button {
-      width: 100%; padding: 18px; background: #00ff88; color: #000;
-      font-weight: bold; font-size: 18px; border: none; cursor: pointer; margin-top: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-    .back-button {
-      color: #00ff88;
-      text-decoration: none;
-      margin-bottom: 20px;
-      display: inline-block;
-    }
+    .submit-button { width: 100%; padding: 18px; background: #00ff88; color: #000; font-weight: bold; font-size: 18px; border: none; cursor: pointer; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .back-button { color: #00ff88; text-decoration: none; margin-bottom: 20px; display: inline-block; }
     .back-button:hover { color: #ffffff; }
   </style>
 </head>
@@ -154,7 +106,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadAssociate(associateId);
 
-  // Addon handlers
   document.querySelectorAll('.addon-row').forEach(row => {
     row.addEventListener('click', () => {
       row.classList.toggle('active');
@@ -163,13 +114,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Input listeners
   document.querySelectorAll("input, textarea, select").forEach(el => {
     el.addEventListener("input", updateSummary);
     el.addEventListener("change", updateSummary);
   });
 
-  // Submit button
   document.getElementById("submitButton").addEventListener("click", function() {
     submitCase(associateId);
   });
@@ -246,9 +195,8 @@ function updateSummary() {
 }
 
 async function submitCase(associateId) {
-  console.log("=== Submit button clicked ===");
+  console.log("Submit button clicked");
 
-  // Validation
   const missing = [];
   if (!document.getElementById("clientName").value.trim()) missing.push("Full Name");
   if (!document.getElementById("clientDisplayName").value.trim()) missing.push("Display Name");
@@ -260,11 +208,11 @@ async function submitCase(associateId) {
 
   if (missing.length > 0) {
     alert("⚠️ Please fill in the following required fields:\n\n• " + missing.join("\n• "));
-    console.log("Missing fields:", missing);
+    console.log("Missing:", missing);
     return;
   }
 
-  console.log("Validation passed. Sending to backend...");
+  console.log("Validation passed - sending to backend");
 
   const button = document.getElementById("submitButton");
   const originalText = button.textContent;
