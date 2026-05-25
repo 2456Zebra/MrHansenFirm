@@ -59,7 +59,6 @@
   </style>
 </head>
 <body>
-
 <h1>SUBMIT CASE</h1>
 <p class="subtitle">An account will be created so you can track updates.</p>
 
@@ -72,16 +71,12 @@
   <h2>Your Information</h2>
   <label>Your Full Name <span class="required">*</span></label>
   <input type="text" id="clientName" />
-
   <label>Display Name (Public) <span class="required">*</span></label>
   <input type="text" id="clientDisplayName" />
-
   <label>Your Email <span class="required">*</span></label>
   <input type="email" id="clientEmail" />
-
   <label>Create Password <span class="required">*</span></label>
   <input type="password" id="clientPassword" autocomplete="new-password" />
-
   <label>Phone (optional)</label>
   <input type="tel" id="clientPhone" />
 </div>
@@ -100,7 +95,6 @@
   <h2>Case Details</h2>
   <label>Case Title <span class="required">*</span></label>
   <input type="text" id="caseTitle" />
-
   <label>Describe Your Situation <span class="required">*</span></label>
   <textarea id="caseDescription"></textarea>
 </div>
@@ -120,7 +114,6 @@
   <div><strong>Tier:</strong> <span id="summaryTier">—</span></div>
   <div><strong>Add-ons:</strong> <span id="summaryAddons">$0</span></div>
   <div style="font-size:20px; margin:15px 0;"><strong>Total: $<span id="summaryTotal">0</span></strong></div>
-
   <button id="submitButton" class="submit-button" disabled>
     SUBMIT CASE & PAY NOW
   </button>
@@ -135,57 +128,69 @@ let addonTotal = 0;
 document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);
   const associateId = urlParams.get('id');
+  
+  if (!associateId) {
+    alert("Error: No associate ID found in URL.");
+    return;
+  }
 
   loadAssociate(associateId);
 
-  document.getElementById("submitButton").addEventListener("click", function (event) {
-    event.preventDefault();
-    event.stopPropagation();
-    submitCase(associateId);
-  });
-
+  // Addon click handlers
   document.querySelectorAll('.addon-row').forEach(row => {
     row.addEventListener('click', () => {
       row.classList.toggle('active');
       addonTotal = 0;
-      document.querySelectorAll('.addon-row.active').forEach(r => addonTotal += parseInt(r.dataset.price) || 0);
+      document.querySelectorAll('.addon-row.active').forEach(r => {
+        addonTotal += parseInt(r.dataset.price) || 0;
+      });
       updateSummary();
     });
   });
 
+  // Enable real-time summary updates
   document.querySelectorAll("input, textarea, select").forEach(el => {
     el.addEventListener("input", updateSummary);
     el.addEventListener("change", updateSummary);
   });
+
+  document.getElementById("submitButton").addEventListener("click", (event) => {
+    event.preventDefault();
+    submitCase(associateId);
+  });
 });
 
 async function loadAssociate(associateId) {
-  const infoDiv = document.getElementById("associateInfo");
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "getAssociates" })
+    });
+    const data = await res.json();
 
-  const res = await fetch(BASE_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({ action: "getAssociates" })
-  });
+    const found = data.associates?.find(a => (a.associateId || "").trim() === associateId);
+    if (!found) throw new Error("Associate not found");
 
-  const data = await res.json();
-  const found = data.associates.find(a => (a.associateId || "").trim() === associateId);
+    selectedAssociate = found;
 
-  selectedAssociate = found;
+    const photo = found.photoUrl 
+      ? `<img src="${found.photoUrl}" class="associate-photo">` 
+      : "";
 
-  const photo = found.photoUrl
-    ? `<img src="${found.photoUrl}" class="associate-photo">`
-    : "";
+    document.getElementById("associateInfo").innerHTML = `
+      <div class="associate-header">
+        ${photo}
+        <div><strong>${found.name}</strong></div>
+      </div>
+    `;
 
-  infoDiv.innerHTML = `
-    <div class="associate-header">
-      ${photo}
-      <div><strong>${found.name}</strong></div>
-    </div>
-  `;
-
-  document.getElementById("summaryAssociate").textContent = found.name;
-  updateSummary();
+    document.getElementById("summaryAssociate").textContent = found.name;
+    updateSummary();
+  } catch (err) {
+    document.getElementById("associateInfo").innerHTML = `<strong style="color:red">Error loading associate.</strong>`;
+    console.error(err);
+  }
 }
 
 function updateSummary() {
@@ -198,7 +203,7 @@ function updateSummary() {
   document.getElementById("summaryAddons").textContent = "$" + addonTotal;
   document.getElementById("summaryTotal").textContent = total;
 
-  const ready =
+  const ready = 
     selectedAssociate &&
     document.getElementById("clientName").value.trim() &&
     document.getElementById("clientDisplayName").value.trim() &&
@@ -225,22 +230,27 @@ async function submitCase(associateId) {
     addonsTotal: addonTotal
   };
 
-  const res = await fetch(BASE_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(payload)
-  });
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  alert("RAW RESPONSE:\n" + JSON.stringify(data, null, 2));
+    if (!data.success || !data.checkoutUrl) {
+      alert("Error: " + (data.error || "Failed to create payment session"));
+      return;
+    }
 
-  if (!data.success || !data.checkoutUrl) {
-    alert("Error submitting case.\n\n" + JSON.stringify(data, null, 2));
-    return;
+    // Success - go to Stripe
+    window.location.href = data.checkoutUrl;
+
+  } catch (err) {
+    alert("Connection error. Please try again.");
+    console.error(err);
   }
-
-  window.location.href = data.checkoutUrl;
 }
 </script>
 </body>
