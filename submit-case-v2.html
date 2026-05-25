@@ -144,8 +144,6 @@ let addonTotal = 0;
 let selectedAddons = [];
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("✅ Page loaded - script running");
-
   const urlParams = new URLSearchParams(window.location.search);
   const associateId = urlParams.get('id');
 
@@ -169,9 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
     el.addEventListener("change", updateSummary);
   });
 
-  const submitBtn = document.getElementById("submitButton");
-  submitBtn.addEventListener("click", function() {
-    console.log("🟢 Submit button clicked!");
+  document.getElementById("submitButton").addEventListener("click", function() {
     submitCase(associateId);
   });
 });
@@ -247,8 +243,7 @@ function updateSummary() {
 }
 
 async function submitCase(associateId) {
-  console.log("🚀 submitCase() function called");
-
+  // Validation
   const missing = [];
   if (!document.getElementById("clientName").value.trim()) missing.push("Full Name");
   if (!document.getElementById("clientDisplayName").value.trim()) missing.push("Display Name");
@@ -260,15 +255,51 @@ async function submitCase(associateId) {
 
   if (missing.length > 0) {
     alert("⚠️ Please fill in the following required fields:\n\n• " + missing.join("\n• "));
-    console.log("❌ Missing fields:", missing);
     return;
   }
 
-  console.log("✅ All fields valid - proceeding to backend");
+  // All good - proceed to Stripe
+  const button = document.getElementById("submitButton");
+  const originalText = button.textContent;
+  button.disabled = true;
+  button.innerHTML = `Processing... <span style="animation: spin 1s linear infinite;">⟳</span>`;
 
-  // ... rest of submit logic (Stripe call)
-  alert("All fields good! Would go to Stripe now.");
-  // (We'll add the actual fetch after we confirm validation works)
+  const payload = {
+    action: "submitCaseWithSignup",
+    clientName: document.getElementById("clientName").value.trim(),
+    clientDisplayName: document.getElementById("clientDisplayName").value.trim(),
+    clientEmail: document.getElementById("clientEmail").value.trim(),
+    clientPhone: document.getElementById("clientPhone").value.trim(),
+    caseTitle: document.getElementById("caseTitle").value.trim(),
+    caseDescription: document.getElementById("caseDescription").value.trim(),
+    tier: document.getElementById("tier").value,
+    associateId: associateId,
+    addonsTotal: addonTotal
+  };
+
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (!data.success || !data.checkoutUrl) {
+      alert("Error: " + (data.error || "Failed to create payment session"));
+      return;
+    }
+
+    window.location.href = data.checkoutUrl;
+
+  } catch (err) {
+    alert("Connection error. Please try again.");
+    console.error(err);
+  } finally {
+    button.disabled = false;
+    button.textContent = originalText;
+  }
 }
 </script>
 </body>
