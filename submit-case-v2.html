@@ -45,6 +45,7 @@
       border: 1px solid #00ff88;
       color: #00ff88;
       margin-top: 6px;
+      box-sizing: border-box;
     }
     textarea { min-height: 120px; resize: vertical; }
     .addon-row {
@@ -55,10 +56,23 @@
     .submit-button {
       width: 100%; padding: 18px; background: #00ff88; color: #000;
       font-weight: bold; font-size: 18px; border: none; cursor: pointer; margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
+    .back-button {
+      color: #00ff88;
+      text-decoration: none;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+    .back-button:hover { color: #ffffff; }
   </style>
 </head>
 <body>
+
+<a href="https://mrhansenfirm.com/associates.html" class="back-button">← Back to Associates</a>
 
 <h1>SUBMIT CASE</h1>
 <p class="subtitle">An account will be created so you can track updates.</p>
@@ -72,16 +86,12 @@
   <h2>Your Information</h2>
   <label>Your Full Name <span class="required">*</span></label>
   <input type="text" id="clientName" />
-
   <label>Display Name (Public) <span class="required">*</span></label>
   <input type="text" id="clientDisplayName" />
-
   <label>Your Email <span class="required">*</span></label>
   <input type="email" id="clientEmail" />
-
   <label>Create Password <span class="required">*</span></label>
-  <input type="password" id="clientPassword" name="new_password_987" autocomplete="new-password" />
-
+  <input type="password" id="clientPassword" autocomplete="new-password" />
   <label>Phone (optional)</label>
   <input type="tel" id="clientPhone" />
 </div>
@@ -100,7 +110,6 @@
   <h2>Case Details</h2>
   <label>Case Title <span class="required">*</span></label>
   <input type="text" id="caseTitle" />
-
   <label>Describe Your Situation <span class="required">*</span></label>
   <textarea id="caseDescription"></textarea>
 </div>
@@ -118,31 +127,67 @@
   <h2>Summary</h2>
   <div><strong>Associate:</strong> <span id="summaryAssociate">—</span></div>
   <div><strong>Tier:</strong> <span id="summaryTier">—</span></div>
-  <div><strong>Add-ons:</strong> <span id="summaryAddons">$0</span></div>
-  <div style="font-size:20px; margin:15px 0;"><strong>Total: $<span id="summaryTotal">0</span></strong></div>
+  <div><strong>Add-ons:</strong></div>
+  <div id="addonBreakdown" style="margin-left:20px; font-size:0.95em; color:#00ffaa;"></div>
+  <div style="font-size:22px; margin:15px 0; font-weight:bold;">Total: $<span id="summaryTotal">0</span></div>
 
   <button id="submitButton" class="submit-button" disabled>
-    SUBMIT CASE &amp; PAY NOW
+    SUBMIT CASE & PAY NOW
   </button>
 </div>
 
 <script>
-const BASE_URL = "https://script.google.com/macros/s/AKfycbwMPK8PCo5IgaeObx3Q8vD4dzqz3EQyLQyrS7Bru6Kx1K_DI6uaxIOfFrOx4OCGzDz0/exec";
+const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
+
 let selectedAssociate = null;
 let addonTotal = 0;
+let selectedAddons = [];
 
-const urlParams = new URLSearchParams(window.location.search);
-const associateId = urlParams.get('id');
+document.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const associateId = urlParams.get('id');
 
-async function loadAssociate() {
-  const infoDiv = document.getElementById("associateInfo");
- 
   if (!associateId) {
-    infoDiv.innerHTML = `<span style="color:red">No associate ID in URL.</span>`;
+    document.getElementById("associateInfo").innerHTML = `<strong style="color:red">Error: No associate ID in URL.</strong>`;
     return;
   }
 
-  infoDiv.innerHTML = "Loading...";
+  loadAssociate(associateId);
+
+  // Addon handlers
+  document.querySelectorAll('.addon-row').forEach(row => {
+    row.addEventListener('click', () => {
+      row.classList.toggle('active');
+      updateAddonTotal();
+      updateSummary();
+    });
+  });
+
+  // Input listeners
+  document.querySelectorAll("input, textarea, select").forEach(el => {
+    el.addEventListener("input", updateSummary);
+    el.addEventListener("change", updateSummary);
+  });
+
+  // Submit button
+  document.getElementById("submitButton").addEventListener("click", function() {
+    submitCase(associateId);
+  });
+});
+
+function updateAddonTotal() {
+  addonTotal = 0;
+  selectedAddons = [];
+  document.querySelectorAll('.addon-row.active').forEach(row => {
+    const price = parseInt(row.dataset.price) || 0;
+    addonTotal += price;
+    selectedAddons.push(row.textContent.trim().replace(/ \+\$\d+/, ''));
+  });
+}
+
+async function loadAssociate(associateId) {
+  const infoDiv = document.getElementById("associateInfo");
+  infoDiv.textContent = "Loading...";
 
   try {
     const res = await fetch(BASE_URL, {
@@ -150,40 +195,29 @@ async function loadAssociate() {
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({ action: "getAssociates" })
     });
-    const data = await res.json();
 
-    if (data.success && data.associates) {
-      const found = data.associates.find(a => (a.associateId || "").trim() === associateId);
-      if (found) {
-        selectedAssociate = found;
-        const photo = found.photoUrl ? `<img src="${found.photoUrl}" class="associate-photo" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #00ff88;">` : '';
-       
-        infoDiv.innerHTML = `
-          <div class="associate-header">
-            ${photo}
-            <div><strong>${found.name}</strong></div>
-          </div>
-        `;
-        document.getElementById("summaryAssociate").textContent = found.name;
-        updateSummary();
-      } else {
-        infoDiv.innerHTML = `<span style="color:red">Associate not found.</span>`;
-      }
-    }
-  } catch (e) {
-    infoDiv.innerHTML = `<span style="color:red">Error loading associate.</span>`;
+    const data = await res.json();
+    const found = data.associates?.find(a => (a.associateId || "").trim() === associateId);
+
+    if (!found) throw new Error("Associate not found");
+
+    selectedAssociate = found;
+
+    const photo = found.photoUrl ? `<img src="${found.photoUrl}" class="associate-photo">` : "";
+    infoDiv.innerHTML = `
+      <div class="associate-header">
+        ${photo}
+        <div><strong>${found.name}</strong></div>
+      </div>
+    `;
+
+    document.getElementById("summaryAssociate").textContent = found.name;
+    updateSummary();
+  } catch (err) {
+    console.error(err);
+    infoDiv.innerHTML = `<strong style="color:red">Error loading associate.</strong>`;
   }
 }
-
-// Addon + Summary logic
-document.querySelectorAll('.addon-row').forEach(row => {
-  row.addEventListener('click', () => {
-    row.classList.toggle('active');
-    addonTotal = 0;
-    document.querySelectorAll('.addon-row.active').forEach(r => addonTotal += parseInt(r.dataset.price) || 0);
-    updateSummary();
-  });
-});
 
 function updateSummary() {
   const tierSelect = document.getElementById("tier");
@@ -192,8 +226,12 @@ function updateSummary() {
   const total = tierPrice + addonTotal;
 
   document.getElementById("summaryTier").textContent = tierText;
-  document.getElementById("summaryAddons").textContent = "$" + addonTotal;
   document.getElementById("summaryTotal").textContent = total;
+
+  const breakdownDiv = document.getElementById("addonBreakdown");
+  breakdownDiv.innerHTML = selectedAddons.length 
+    ? selectedAddons.map(addon => `<div>• ${addon}</div>`).join('')
+    : "<div style='color:#666;'>No add-ons selected</div>";
 
   const ready = selectedAssociate &&
                 document.getElementById("clientName").value.trim() &&
@@ -207,12 +245,69 @@ function updateSummary() {
   document.getElementById("submitButton").disabled = !ready;
 }
 
-document.querySelectorAll("input, textarea, select").forEach(el => {
-  el.addEventListener("input", updateSummary);
-  el.addEventListener("change", updateSummary);
-});
+async function submitCase(associateId) {
+  console.log("=== Submit button clicked ===");
 
-loadAssociate();
+  // Validation
+  const missing = [];
+  if (!document.getElementById("clientName").value.trim()) missing.push("Full Name");
+  if (!document.getElementById("clientDisplayName").value.trim()) missing.push("Display Name");
+  if (!document.getElementById("clientEmail").value.trim()) missing.push("Email");
+  if (document.getElementById("clientPassword").value.length < 6) missing.push("Password (min 6 characters)");
+  if (!document.getElementById("caseTitle").value.trim()) missing.push("Case Title");
+  if (!document.getElementById("caseDescription").value.trim()) missing.push("Case Description");
+  if (!document.getElementById("tier").value) missing.push("Tier");
+
+  if (missing.length > 0) {
+    alert("⚠️ Please fill in the following required fields:\n\n• " + missing.join("\n• "));
+    console.log("Missing fields:", missing);
+    return;
+  }
+
+  console.log("Validation passed. Sending to backend...");
+
+  const button = document.getElementById("submitButton");
+  const originalText = button.textContent;
+  button.disabled = true;
+  button.innerHTML = `Processing... <span style="animation: spin 1s linear infinite;">⟳</span>`;
+
+  const payload = {
+    action: "submitCaseWithSignup",
+    clientName: document.getElementById("clientName").value.trim(),
+    clientDisplayName: document.getElementById("clientDisplayName").value.trim(),
+    clientEmail: document.getElementById("clientEmail").value.trim(),
+    clientPhone: document.getElementById("clientPhone").value.trim(),
+    caseTitle: document.getElementById("caseTitle").value.trim(),
+    caseDescription: document.getElementById("caseDescription").value.trim(),
+    tier: document.getElementById("tier").value,
+    associateId: associateId,
+    addonsTotal: addonTotal
+  };
+
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (!data.success || !data.checkoutUrl) {
+      alert("Error: " + (data.error || "Failed to create payment session"));
+      return;
+    }
+
+    window.location.href = data.checkoutUrl;
+
+  } catch (err) {
+    alert("Connection error. Please try again.");
+    console.error(err);
+  } finally {
+    button.disabled = false;
+    button.textContent = originalText;
+  }
+}
 </script>
 </body>
 </html>
