@@ -70,18 +70,17 @@
     .back-button:hover { color: #ffffff; }
 
     .spinner {
-      border: 3px solid #00ff88;
-      border-top: 3px solid transparent;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
-      width: 16px;
-      height: 16px;
-      animation: spin 0.7s linear infinite;
+      background: #000;
+      animation: pulse 0.6s infinite alternate;
       display: inline-block;
     }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    @keyframes pulse {
+      from { transform: scale(0.6); opacity: 0.6; }
+      to   { transform: scale(1); opacity: 1; }
     }
   </style>
 </head>
@@ -169,7 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadAssociate(associateId);
 
-  // Addon handlers
   document.querySelectorAll('.addon-row').forEach(row => {
     row.addEventListener('click', () => {
       row.classList.toggle('active');
@@ -178,13 +176,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Input listeners
   document.querySelectorAll("input, textarea, select").forEach(el => {
     el.addEventListener("input", updateSummary);
     el.addEventListener("change", updateSummary);
   });
 
-  // Submit button
   document.getElementById("submitButton").addEventListener("click", function() {
     submitCase(associateId);
   });
@@ -196,7 +192,8 @@ function updateAddonTotal() {
   document.querySelectorAll('.addon-row.active').forEach(row => {
     const price = parseInt(row.dataset.price) || 0;
     addonTotal += price;
-    selectedAddons.push(row.textContent.trim().replace(/ \+\$\d+/, ''));
+    const name = row.textContent.trim().replace(/ \+\$\d+/, '');
+    selectedAddons.push({ name, price });
   });
 }
 
@@ -245,14 +242,13 @@ function updateSummary() {
 
   const breakdownDiv = document.getElementById("addonBreakdown");
   breakdownDiv.innerHTML = selectedAddons.length 
-    ? selectedAddons.map(addon => `<div>• ${addon}</div>`).join('')
+    ? selectedAddons.map(a => `<div>• ${a.name} (+$${a.price})</div>`).join('')
     : "<div style='color:#666;'>No add-ons selected</div>";
 }
 
 async function submitCase(associateId) {
   console.log("=== Submit button clicked ===");
 
-  // Validation
   const missing = [];
   if (!document.getElementById("clientName").value.trim()) missing.push("Full Name");
   if (!document.getElementById("clientDisplayName").value.trim()) missing.push("Display Name");
