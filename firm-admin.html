@@ -48,14 +48,22 @@
     .main {
       flex: 1;
       padding: 40px;
-      overflow-x: auto; /* Enables horizontal scroll */
+      overflow-x: auto;
       overflow-y: auto;
     }
-    /* Neon Green Scrollbar */
-    .main::-webkit-scrollbar { height: 14px; }
+
+    /* Chunky Neon Green Scrollbar - Always Visible */
+    .main::-webkit-scrollbar {
+      height: 18px;
+      width: 18px;
+    }
     .main::-webkit-scrollbar-thumb {
       background: var(--green);
-      border-radius: 7px;
+      border-radius: 9px;
+      border: 3px solid #000;
+    }
+    .main::-webkit-scrollbar-track {
+      background: #111;
     }
 
     .tabs {
@@ -96,7 +104,7 @@
       width: 100%;
       border-collapse: collapse;
       background: var(--gray);
-      min-width: 1600px; /* Forces horizontal scroll */
+      min-width: 1600px;
     }
     th, td {
       padding: 14px;
@@ -105,27 +113,6 @@
     }
     th { background: #111; color: var(--green); }
     tr:hover { background: #222; cursor: pointer; }
-
-    /* Popup */
-    .popup {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.95);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-    .popup-content {
-      background: #111;
-      border: 2px solid var(--green);
-      padding: 30px;
-      width: 90%;
-      max-width: 850px;
-      max-height: 90vh;
-      overflow-y: auto;
-      border-radius: 10px;
-    }
   </style>
 </head>
 <body>
@@ -141,9 +128,6 @@
     <a href="#">👥 Associates</a>
     <a href="#">👤 Clients</a>
     <a href="#">🌐 Community Users</a>
-    <a href="#">💰 Revenue</a>
-    <a href="#">⚙️ Settings</a>
-    <a href="#">🚪 Logout</a>
   </div>
 
   <div class="main">
@@ -155,7 +139,7 @@
       <div class="tab" onclick="switchTab(4)">Community</div>
     </div>
 
-    <!-- Overview Tab -->
+    <!-- Overview -->
     <div id="tab0">
       <h2>Firm Overview</h2>
       <div class="stats">
@@ -171,14 +155,10 @@
           <div class="stat-number">27</div>
           <div>Associates</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-number">$72,340</div>
-          <div>Revenue (30 days)</div>
-        </div>
       </div>
     </div>
 
-    <!-- All Cases Tab - YOUR REQUESTED LAYOUT -->
+    <!-- All Cases -->
     <div id="tab1" style="display:none;">
       <h2>All Cases (Newest First)</h2>
       <table>
@@ -198,7 +178,7 @@
       </table>
     </div>
 
-    <!-- Other tabs unchanged -->
+    <!-- Associates -->
     <div id="tab2" style="display:none;">
       <h2>Associates Management</h2>
       <table>
@@ -214,27 +194,15 @@
         <tbody id="associatesTable"></tbody>
       </table>
     </div>
+
     <div id="tab3" style="display:none;">
       <h2>Clients Management</h2>
-      <p>Client list coming soon...</p>
+      <p>Coming soon...</p>
     </div>
     <div id="tab4" style="display:none;">
       <h2>Community Users</h2>
-      <p>Community user management coming soon...</p>
+      <p>Coming soon...</p>
     </div>
-  </div>
-</div>
-
-<!-- Case Popup -->
-<div id="casePopup" class="popup">
-  <div class="popup-content">
-    <h2 style="color:var(--green);">Case Management</h2>
-    <div id="popupContent"></div>
-    <br><br>
-    <button onclick="closePopup()" style="padding:12px 24px; margin-right:10px;">Close</button>
-    <button onclick="alert('Reassign feature coming soon')" style="background:#0066ff; color:white; padding:12px 24px; margin-right:10px;">Reassign Associate</button>
-    <button onclick="alert('Status updated')" style="background:#ff8800; color:white; padding:12px 24px; margin-right:10px;">Change Status</button>
-    <button onclick="alert('Case archived')" style="background:#666; color:white; padding:12px 24px;">Archive Case</button>
   </div>
 </div>
 
@@ -242,15 +210,12 @@
 const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
 
 function switchTab(n) {
-  document.querySelectorAll('.tab').forEach((t,i) => {
-    t.classList.toggle('active', i === n);
-  });
-  document.querySelectorAll('#tab0, #tab1, #tab2, #tab3, #tab4').forEach(tab => {
-    tab.style.display = 'none';
-  });
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i === n));
+  document.querySelectorAll('#tab0, #tab1, #tab2, #tab3, #tab4').forEach(tab => tab.style.display = 'none');
   document.getElementById('tab' + n).style.display = 'block';
 
   if (n === 1) loadAllCases();
+  if (n === 2) loadAssociates();
 }
 
 async function loadAllCases() {
@@ -260,12 +225,11 @@ async function loadAllCases() {
       body: JSON.stringify({ action: "getCases" })
     });
     const data = await res.json();
-
     const tbody = document.getElementById('casesTable');
     tbody.innerHTML = '';
 
-    if (data.cases && data.cases.length > 0) {
-      const sorted = data.cases.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    if (data.cases) {
+      const sorted = data.cases.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
 
       sorted.forEach(c => {
         const tr = document.createElement('tr');
@@ -276,36 +240,43 @@ async function loadAllCases() {
           <td>${c.tier}</td>
           <td>${c.status}</td>
           <td>${c.title}</td>
-          <td style="max-width:380px;">${(c.description || '').substring(0, 90)}...</td>
+          <td style="max-width:380px;">${(c.description || '').substring(0,90)}...</td>
           <td>${c.id}</td>
         `;
-        tr.onclick = () => showCasePopup(c);
         tbody.appendChild(tr);
       });
     }
-  } catch(e) {
-    console.error(e);
-  }
+  } catch(e) { console.error(e); }
 }
 
-function showCasePopup(c) {
-  const content = document.getElementById('popupContent');
-  content.innerHTML = `
-    <p><strong>Case ID:</strong> ${c.id}</p>
-    <p><strong>Date:</strong> ${new Date(c.timestamp).toLocaleString()}</p>
-    <p><strong>Client:</strong> ${c.clientName}</p>
-    <p><strong>Associate:</strong> ${c.associateName || 'Unassigned'}</p>
-    <p><strong>Tier:</strong> ${c.tier}</p>
-    <p><strong>Status:</strong> ${c.status}</p>
-    <p><strong>Title:</strong> ${c.title}</p>
-    <p><strong>Description:</strong><br>${c.description || 'No description provided'}</p>
-  `;
-  document.getElementById('casePopup').style.display = 'flex';
+async function loadAssociates() {
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "getAssociates" })
+    });
+    const data = await res.json();
+    const tbody = document.getElementById('associatesTable');
+    tbody.innerHTML = '';
+
+    if (data.associates) {
+      data.associates.forEach(a => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${a.name}</td>
+          <td>${a.specialty}</td>
+          <td>${a.HIR}</td>
+          <td>${a.casesCompleted || 0}</td>
+          <td>Active</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+  } catch(e) { console.error(e); }
 }
 
-function closePopup() {
-  document.getElementById('casePopup').style.display = 'none';
-}
+// Load All Cases on start
+loadAllCases();
 </script>
 </body>
 </html>
