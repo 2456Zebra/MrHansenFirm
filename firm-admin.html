@@ -55,7 +55,6 @@
       gap: 10px;
       margin-bottom: 30px;
       border-bottom: 1px solid #333;
-      padding-bottom: 10px;
     }
     .tab {
       padding: 10px 24px;
@@ -109,9 +108,6 @@
     <a href="#">👥 Associates</a>
     <a href="#">👤 Clients</a>
     <a href="#">🌐 Community Users</a>
-    <a href="#">💰 Revenue</a>
-    <a href="#">⚙️ Settings</a>
-    <a href="#">🚪 Logout</a>
   </div>
 
   <div class="main">
@@ -120,33 +116,28 @@
       <div class="tab" onclick="switchTab(1)">All Cases</div>
       <div class="tab" onclick="switchTab(2)">Associates</div>
       <div class="tab" onclick="switchTab(3)">Clients</div>
-      <div class="tab" onclick="switchTab(4)">Community</div>
     </div>
 
-    <!-- Overview Tab -->
+    <!-- Overview -->
     <div id="tab0">
       <h2>Firm Overview</h2>
       <div class="stats">
         <div class="stat-card">
-          <div class="stat-number">156</div>
+          <div class="stat-number" id="totalCases">0</div>
           <div>Total Cases</div>
         </div>
         <div class="stat-card">
-          <div class="stat-number">41</div>
+          <div class="stat-number" id="activeCases">0</div>
           <div>Active Cases</div>
         </div>
         <div class="stat-card">
-          <div class="stat-number">27</div>
+          <div class="stat-number" id="totalAssociates">0</div>
           <div>Associates</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">$72,340</div>
-          <div>Revenue (30 days)</div>
         </div>
       </div>
     </div>
 
-    <!-- All Cases Tab -->
+    <!-- All Cases -->
     <div id="tab1" style="display:none;">
       <h2>All Cases</h2>
       <table>
@@ -164,15 +155,15 @@
       </table>
     </div>
 
-    <!-- Associates Tab -->
+    <!-- Associates -->
     <div id="tab2" style="display:none;">
-      <h2>Associates Management</h2>
+      <h2>Associates</h2>
       <table>
         <thead>
           <tr>
             <th>Name</th>
             <th>Specialty</th>
-            <th>HIR Rank</th>
+            <th>HIR</th>
             <th>Cases</th>
             <th>Status</th>
           </tr>
@@ -181,61 +172,85 @@
       </table>
     </div>
 
-    <!-- Clients Tab -->
+    <!-- Clients -->
     <div id="tab3" style="display:none;">
-      <h2>Clients Management</h2>
-      <p>Client list coming soon...</p>
-    </div>
-
-    <!-- Community Tab -->
-    <div id="tab4" style="display:none;">
-      <h2>Community Users</h2>
-      <p>Community user management coming soon...</p>
+      <h2>Clients</h2>
+      <p>Client management panel coming soon...</p>
     </div>
   </div>
 </div>
 
 <script>
+const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
+
 function switchTab(n) {
-  document.querySelectorAll('.tab').forEach((t,i) => {
-    t.classList.toggle('active', i === n);
-  });
-  document.querySelectorAll('#tab0, #tab1, #tab2, #tab3, #tab4').forEach(tab => {
-    tab.style.display = 'none';
-  });
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i === n));
+  document.querySelectorAll('#tab0, #tab1, #tab2, #tab3').forEach(tab => tab.style.display = 'none');
   document.getElementById('tab' + n).style.display = 'block';
+
+  if (n === 1) loadCases();
+  if (n === 2) loadAssociates();
 }
 
-// Sample data
-const sampleCases = [
-  ["CASE_8923", "Sarah Chen", "Level 3", "assoc_asitl34adtr", "In Progress", "May 25"],
-  ["CASE_8921", "Michael Torres", "Level 2", "assoc_xeprv9fqvib", "Pending", "May 24"]
-];
+async function loadCases() {
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "getCases" })
+    });
+    const data = await res.json();
 
-const sampleAssociates = [
-  ["Problem Solver", "Human Behavior Analysis", "77.9", "14", "Active"],
-  ["Karly", "Make-up Application", "61.2", "8", "Active"]
-];
+    const tbody = document.getElementById('casesTable');
+    tbody.innerHTML = '';
 
-sampleCases.forEach(row => {
-  const tr = document.createElement('tr');
-  row.forEach(cell => {
-    const td = document.createElement('td');
-    td.textContent = cell;
-    tr.appendChild(td);
-  });
-  document.getElementById('casesTable').appendChild(tr);
-});
+    if (data.cases) {
+      data.cases.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${c.id}</td>
+          <td>${c.clientName}</td>
+          <td>${c.tier}</td>
+          <td>${c.associateName}</td>
+          <td>${c.status}</td>
+          <td>${new Date(c.timestamp).toLocaleDateString()}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('totalCases').textContent = data.cases.length;
+    }
+  } catch(e) { console.error(e); }
+}
 
-sampleAssociates.forEach(row => {
-  const tr = document.createElement('tr');
-  row.forEach(cell => {
-    const td = document.createElement('td');
-    td.textContent = cell;
-    tr.appendChild(td);
-  });
-  document.getElementById('associatesTable').appendChild(tr);
-});
+async function loadAssociates() {
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "getAssociates" })
+    });
+    const data = await res.json();
+
+    const tbody = document.getElementById('associatesTable');
+    tbody.innerHTML = '';
+
+    if (data.associates) {
+      data.associates.forEach(a => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${a.name}</td>
+          <td>${a.specialty}</td>
+          <td>${a.HIR}</td>
+          <td>${a.casesCompleted || 0}</td>
+          <td>Active</td>
+        `;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('totalAssociates').textContent = data.associates.length;
+    }
+  } catch(e) { console.error(e); }
+}
+
+// Initial load
+loadCases();
 </script>
 </body>
 </html>
