@@ -37,7 +37,7 @@
             font-size: 16px;
         }
         input:focus {
-            border-color: #0066ff;
+            border-color: #00ff88;
             outline: none;
         }
         .error-message {
@@ -49,15 +49,16 @@
         button {
             width: 100%;
             padding: 14px;
-            background: #0066ff;
-            color: white;
+            background: #00ff88;
+            color: #000;
             border: none;
             border-radius: 6px;
             font-size: 17px;
             margin-top: 25px;
             cursor: pointer;
+            font-weight: bold;
         }
-        button:hover { background: #3388ff; }
+        button:hover { background: #33ffaa; }
         .back-link { text-align: center; margin-top: 20px; }
         .back-link a { color: #888; text-decoration: none; }
         .back-link a:hover { color: #ddd; }
@@ -65,14 +66,11 @@
 </head>
 <body>
     <div class="login-container">
-        <h2>Admin Login</h2>
-        
+        <h2>Login to Mr. Hansen Firm</h2>
+       
         <form id="loginForm" autocomplete="off">
-            <input type="text" style="display:none;" aria-hidden="true">
-            <input type="password" style="display:none;" aria-hidden="true">
-
             <label for="email">Email</label>
-            <input type="text" id="email" autocomplete="off" placeholder="your@email.com">
+            <input type="email" id="email" autocomplete="off" placeholder="your@email.com">
             <div id="emailError" class="error-message"></div>
 
             <label for="password">Password</label>
@@ -90,9 +88,6 @@
 <script>
 const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
 
-const urlParams = new URLSearchParams(window.location.search);
-const intendedRole = urlParams.get("role") || null;
-
 function showError(fieldId, message) {
     const errorDiv = document.getElementById(fieldId + 'Error');
     errorDiv.textContent = message;
@@ -104,39 +99,42 @@ function clearErrors() {
 }
 
 async function loginUser(email, password) {
-    const formData = new FormData();
-    formData.append("action", "loginUser");
-    formData.append("email", email);
-    formData.append("password", password);
+    try {
+        const res = await fetch(BASE_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                action: "loginUser",
+                email: email,
+                password: password
+            })
+        });
 
-    const res = await fetch(BASE_URL, {
-        method: "POST",
-        body: formData
-    });
+        const data = await res.json();
 
-    const data = await res.json();
+        if (!data.success) {
+            alert(data.error || "Invalid login credentials.");
+            return;
+        }
 
-    if (!data.success) {
-        alert(data.error || "Invalid login.");
-        return;
-    }
+        // Successful login - redirect based on role
+        const role = data.role;
 
-    const role = data.role;
+        if (role === "firm_admin") {
+            window.location.href = "firm-admin.html";
+        } else if (role === "associate") {
+            window.location.href = `associate-admin.html?id=${encodeURIComponent(data.associateId || '')}`;
+        } else if (role === "client" || role === "client_admin") {
+            window.location.href = "client-admin.html";
+        } else if (role === "community_user") {
+            window.location.href = "community.html";
+        } else {
+            alert("Your account role is not properly configured.");
+        }
 
-    if (intendedRole && intendedRole !== role) {
-        alert(`You do not have ${intendedRole.replace("_", " ")} access. Redirecting to your assigned portal.`);
-    }
-
-    if (role === "firm_admin") {
-        window.location.href = "firm-admin.html";
-    } else if (role === "client_admin") {
-        window.location.href = "client-admin.html";
-    } else if (role === "associate") {
-        window.location.href = `associate-admin.html?id=${encodeURIComponent(data.associateId)}`;
-    } else if (role === "community_user") {
-        window.location.href = "community.html";
-    } else {
-        alert("Your account has no valid role assigned.");
+    } catch (err) {
+        console.error(err);
+        alert("Connection error. Please try again.");
     }
 }
 
@@ -153,6 +151,5 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     await loginUser(email, password);
 });
 </script>
-
 </body>
 </html>
