@@ -100,14 +100,14 @@ function clearErrors() {
 
 async function loginUser(email, password) {
     try {
+        const formData = new FormData();
+        formData.append("action", "loginUser");
+        formData.append("email", email);
+        formData.append("password", password);
+
         const res = await fetch(BASE_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                action: "loginUser",
-                email: email,
-                password: password
-            })
+            body: formData
         });
 
         const data = await res.json();
@@ -117,7 +117,6 @@ async function loginUser(email, password) {
             return;
         }
 
-        // Successful login - redirect based on role
         const role = data.role;
 
         if (role === "firm_admin") {
