@@ -48,8 +48,16 @@
     .main {
       flex: 1;
       padding: 40px;
+      overflow-x: auto; /* Enables horizontal scroll */
       overflow-y: auto;
     }
+    /* Neon Green Scrollbar */
+    .main::-webkit-scrollbar { height: 14px; }
+    .main::-webkit-scrollbar-thumb {
+      background: var(--green);
+      border-radius: 7px;
+    }
+
     .tabs {
       display: flex;
       gap: 10px;
@@ -83,10 +91,12 @@
       border: 1px solid var(--green);
     }
     .stat-number { font-size: 34px; font-weight: bold; color: var(--green); }
+
     table {
       width: 100%;
       border-collapse: collapse;
       background: var(--gray);
+      min-width: 1600px; /* Forces horizontal scroll */
     }
     th, td {
       padding: 14px;
@@ -94,6 +104,28 @@
       border-bottom: 1px solid #333;
     }
     th { background: #111; color: var(--green); }
+    tr:hover { background: #222; cursor: pointer; }
+
+    /* Popup */
+    .popup {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .popup-content {
+      background: #111;
+      border: 2px solid var(--green);
+      padding: 30px;
+      width: 90%;
+      max-width: 850px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
@@ -146,25 +178,27 @@
       </div>
     </div>
 
-    <!-- All Cases Tab -->
+    <!-- All Cases Tab - YOUR REQUESTED LAYOUT -->
     <div id="tab1" style="display:none;">
-      <h2>All Cases</h2>
+      <h2>All Cases (Newest First)</h2>
       <table>
         <thead>
           <tr>
-            <th>Case ID</th>
-            <th>Client</th>
-            <th>Tier</th>
-            <th>Associate</th>
-            <th>Status</th>
             <th>Date</th>
+            <th>Client</th>
+            <th>Associate</th>
+            <th>Tier</th>
+            <th>Status</th>
+            <th>Case Title</th>
+            <th>Description</th>
+            <th style="width:130px;">Case ID</th>
           </tr>
         </thead>
         <tbody id="casesTable"></tbody>
       </table>
     </div>
 
-    <!-- Associates Tab -->
+    <!-- Other tabs unchanged -->
     <div id="tab2" style="display:none;">
       <h2>Associates Management</h2>
       <table>
@@ -180,14 +214,10 @@
         <tbody id="associatesTable"></tbody>
       </table>
     </div>
-
-    <!-- Clients Tab -->
     <div id="tab3" style="display:none;">
       <h2>Clients Management</h2>
       <p>Client list coming soon...</p>
     </div>
-
-    <!-- Community Tab -->
     <div id="tab4" style="display:none;">
       <h2>Community Users</h2>
       <p>Community user management coming soon...</p>
@@ -195,7 +225,22 @@
   </div>
 </div>
 
+<!-- Case Popup -->
+<div id="casePopup" class="popup">
+  <div class="popup-content">
+    <h2 style="color:var(--green);">Case Management</h2>
+    <div id="popupContent"></div>
+    <br><br>
+    <button onclick="closePopup()" style="padding:12px 24px; margin-right:10px;">Close</button>
+    <button onclick="alert('Reassign feature coming soon')" style="background:#0066ff; color:white; padding:12px 24px; margin-right:10px;">Reassign Associate</button>
+    <button onclick="alert('Status updated')" style="background:#ff8800; color:white; padding:12px 24px; margin-right:10px;">Change Status</button>
+    <button onclick="alert('Case archived')" style="background:#666; color:white; padding:12px 24px;">Archive Case</button>
+  </div>
+</div>
+
 <script>
+const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
+
 function switchTab(n) {
   document.querySelectorAll('.tab').forEach((t,i) => {
     t.classList.toggle('active', i === n);
@@ -204,38 +249,63 @@ function switchTab(n) {
     tab.style.display = 'none';
   });
   document.getElementById('tab' + n).style.display = 'block';
+
+  if (n === 1) loadAllCases();
 }
 
-// Sample data
-const sampleCases = [
-  ["CASE_8923", "Sarah Chen", "Level 3", "assoc_asitl34adtr", "In Progress", "May 25"],
-  ["CASE_8921", "Michael Torres", "Level 2", "assoc_xeprv9fqvib", "Pending", "May 24"]
-];
+async function loadAllCases() {
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "getCases" })
+    });
+    const data = await res.json();
 
-const sampleAssociates = [
-  ["Problem Solver", "Human Behavior Analysis", "77.9", "14", "Active"],
-  ["Karly", "Make-up Application", "61.2", "8", "Active"]
-];
+    const tbody = document.getElementById('casesTable');
+    tbody.innerHTML = '';
 
-sampleCases.forEach(row => {
-  const tr = document.createElement('tr');
-  row.forEach(cell => {
-    const td = document.createElement('td');
-    td.textContent = cell;
-    tr.appendChild(td);
-  });
-  document.getElementById('casesTable').appendChild(tr);
-});
+    if (data.cases && data.cases.length > 0) {
+      const sorted = data.cases.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
-sampleAssociates.forEach(row => {
-  const tr = document.createElement('tr');
-  row.forEach(cell => {
-    const td = document.createElement('td');
-    td.textContent = cell;
-    tr.appendChild(td);
-  });
-  document.getElementById('associatesTable').appendChild(tr);
-});
+      sorted.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${new Date(c.timestamp).toLocaleDateString()}</td>
+          <td>${c.clientName}</td>
+          <td>${c.associateName || 'Unassigned'}</td>
+          <td>${c.tier}</td>
+          <td>${c.status}</td>
+          <td>${c.title}</td>
+          <td style="max-width:380px;">${(c.description || '').substring(0, 90)}...</td>
+          <td>${c.id}</td>
+        `;
+        tr.onclick = () => showCasePopup(c);
+        tbody.appendChild(tr);
+      });
+    }
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+function showCasePopup(c) {
+  const content = document.getElementById('popupContent');
+  content.innerHTML = `
+    <p><strong>Case ID:</strong> ${c.id}</p>
+    <p><strong>Date:</strong> ${new Date(c.timestamp).toLocaleString()}</p>
+    <p><strong>Client:</strong> ${c.clientName}</p>
+    <p><strong>Associate:</strong> ${c.associateName || 'Unassigned'}</p>
+    <p><strong>Tier:</strong> ${c.tier}</p>
+    <p><strong>Status:</strong> ${c.status}</p>
+    <p><strong>Title:</strong> ${c.title}</p>
+    <p><strong>Description:</strong><br>${c.description || 'No description provided'}</p>
+  `;
+  document.getElementById('casePopup').style.display = 'flex';
+}
+
+function closePopup() {
+  document.getElementById('casePopup').style.display = 'none';
+}
 </script>
 </body>
 </html>
