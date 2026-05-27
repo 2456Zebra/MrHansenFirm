@@ -141,9 +141,6 @@
     <a onclick="switchTab(2)">👥 Associates</a>
     <a onclick="switchTab(3)">👤 Clients</a>
     <a onclick="switchTab(4)">🌐 Community Users</a>
-    <a onclick="switchTab(5)">💰 Revenue</a>
-    <a href="#">⚙️ Settings</a>
-    <a href="#">🚪 Logout</a>
   </div>
 
   <div class="main">
@@ -174,10 +171,6 @@
         <div class="stat-card">
           <div class="stat-number" id="totalClients">0</div>
           <div>Clients</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="totalCommunity">0</div>
-          <div>Community Users</div>
         </div>
       </div>
     </div>
@@ -217,15 +210,6 @@
         </thead>
         <tbody id="associatesTable"></tbody>
       </table>
-    </div>
-
-    <div id="tab3" style="display:none;">
-      <h2>Clients Management</h2>
-      <p>Client list coming soon...</p>
-    </div>
-    <div id="tab4" style="display:none;">
-      <h2>Community Users</h2>
-      <p>Community user management coming soon...</p>
     </div>
   </div>
 </div>
@@ -283,6 +267,10 @@ async function loadAllCases() {
         tr.addEventListener('click', () => showCasePopup(c));
         tbody.appendChild(tr);
       });
+
+      // Update stats
+      document.getElementById('totalCases').textContent = data.cases.length;
+      document.getElementById('activeCases').textContent = data.cases.filter(c => c.status === "Pending" || c.status === "In Progress").length;
     }
   } catch(e) { console.error(e); }
 }
@@ -309,6 +297,7 @@ async function loadAssociates() {
         `;
         tbody.appendChild(tr);
       });
+      document.getElementById('totalAssociates').textContent = data.associates.length;
     }
   } catch(e) { console.error(e); }
 }
