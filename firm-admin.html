@@ -107,6 +107,23 @@
     th { background: #111; color: var(--green); }
     tr:hover { background: #222; cursor: pointer; }
 
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--green);
+      font-size: 18px;
+    }
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #333;
+      border-top: 3px solid var(--green);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     .popup {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -141,6 +158,9 @@
     <a onclick="switchTab(2)">👥 Associates</a>
     <a onclick="switchTab(3)">👤 Clients</a>
     <a onclick="switchTab(4)">🌐 Community Users</a>
+    <a onclick="switchTab(5)">💰 Revenue</a>
+    <a href="#">⚙️ Settings</a>
+    <a href="#">🚪 Logout</a>
   </div>
 
   <div class="main">
@@ -172,13 +192,18 @@
           <div class="stat-number" id="totalClients">0</div>
           <div>Clients</div>
         </div>
+        <div class="stat-card">
+          <div class="stat-number" id="totalCommunity">0</div>
+          <div>Community Users</div>
+        </div>
       </div>
     </div>
 
     <!-- All Cases -->
     <div id="tab1" style="display:none;">
       <h2>All Cases (Newest First)</h2>
-      <table>
+      <div id="casesLoading" class="loading"><div class="spinner"></div> Loading cases...</div>
+      <table id="casesTableContainer" style="display:none;">
         <thead>
           <tr>
             <th>Date</th>
@@ -198,7 +223,8 @@
     <!-- Associates -->
     <div id="tab2" style="display:none;">
       <h2>Associates Management</h2>
-      <table>
+      <div id="associatesLoading" class="loading"><div class="spinner"></div> Loading associates...</div>
+      <table id="associatesTableContainer" style="display:none;">
         <thead>
           <tr>
             <th>Name</th>
@@ -240,6 +266,11 @@ function switchTab(n) {
 }
 
 async function loadAllCases() {
+  const loading = document.getElementById('casesLoading');
+  const container = document.getElementById('casesTableContainer');
+  loading.style.display = 'block';
+  container.style.display = 'none';
+
   try {
     const res = await fetch(BASE_URL, {
       method: "POST",
@@ -249,7 +280,7 @@ async function loadAllCases() {
     const tbody = document.getElementById('casesTable');
     tbody.innerHTML = '';
 
-    if (data.cases) {
+    if (data.cases && data.cases.length > 0) {
       const sorted = data.cases.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
 
       sorted.forEach(c => {
@@ -267,15 +298,22 @@ async function loadAllCases() {
         tr.addEventListener('click', () => showCasePopup(c));
         tbody.appendChild(tr);
       });
-
-      // Update stats
-      document.getElementById('totalCases').textContent = data.cases.length;
-      document.getElementById('activeCases').textContent = data.cases.filter(c => c.status === "Pending" || c.status === "In Progress").length;
     }
-  } catch(e) { console.error(e); }
+    document.getElementById('totalCases').textContent = data.cases ? data.cases.length : 0;
+  } catch(e) {
+    console.error(e);
+  } finally {
+    loading.style.display = 'none';
+    container.style.display = 'table';
+  }
 }
 
 async function loadAssociates() {
+  const loading = document.getElementById('associatesLoading');
+  const container = document.getElementById('associatesTableContainer');
+  loading.style.display = 'block';
+  container.style.display = 'none';
+
   try {
     const res = await fetch(BASE_URL, {
       method: "POST",
@@ -299,7 +337,12 @@ async function loadAssociates() {
       });
       document.getElementById('totalAssociates').textContent = data.associates.length;
     }
-  } catch(e) { console.error(e); }
+  } catch(e) {
+    console.error(e);
+  } finally {
+    loading.style.display = 'none';
+    container.style.display = 'table';
+  }
 }
 
 function showCasePopup(c) {
