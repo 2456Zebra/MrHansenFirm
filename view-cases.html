@@ -38,7 +38,7 @@
       border: 1px solid #333;
       border-radius: 8px;
       padding: 14px 18px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       transition: all 0.2s;
       cursor: pointer;
     }
@@ -50,10 +50,9 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 6px;
     }
     .case-title {
-      font-size: 18px;
+      font-size: 18.5px;
       color: var(--green);
       flex: 1;
     }
@@ -62,18 +61,14 @@
       color: #888;
       text-align: right;
       white-space: nowrap;
-    }
-    .case-desc {
-      font-size: 13.5px;
-      color: #bbb;
-      line-height: 1.35;
-      margin-bottom: 10px;
+      line-height: 1.3;
     }
     .case-stats {
       display: flex;
       gap: 20px;
       font-size: 12.5px;
       color: #aaa;
+      margin-top: 10px;
     }
     .notification { color: var(--green); font-weight: bold; }
     .pink { color: #ff66aa; font-weight: bold; }
@@ -90,7 +85,7 @@
     @media (max-width: 768px) {
       .header { flex-direction: column; text-align: center; }
       .case-header { flex-direction: column; align-items: flex-start; }
-      .case-meta { text-align: left; margin-top: 4px; }
+      .case-meta { text-align: left; margin-top: 6px; }
     }
   </style>
 </head>
@@ -139,10 +134,10 @@ async function loadCases() {
           <div class="case-header">
             <div class="case-title">${c.title}</div>
             <div class="case-meta">
-              ${new Date(c.timestamp).toLocaleDateString()} • ${c.associateName || 'Unassigned'}
+              ${new Date(c.timestamp).toLocaleDateString()}<br>
+              ${c.associateName || 'Unassigned'}
             </div>
           </div>
-          <div class="case-desc">${(c.description || '').substring(0, 160)}...</div>
           <div class="case-stats">
             <span>💬 ${Math.floor(Math.random()*12)+3} comments</span>
             <span>👍 ${Math.floor(Math.random()*25)+5}</span>
