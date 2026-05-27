@@ -107,23 +107,6 @@
     th { background: #111; color: var(--green); }
     tr:hover { background: #222; cursor: pointer; }
 
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: var(--green);
-      font-size: 18px;
-    }
-    .spinner {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid #333;
-      border-top: 3px solid var(--green);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
     .popup {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -158,9 +141,6 @@
     <a onclick="switchTab(2)">👥 Associates</a>
     <a onclick="switchTab(3)">👤 Clients</a>
     <a onclick="switchTab(4)">🌐 Community Users</a>
-    <a onclick="switchTab(5)">💰 Revenue</a>
-    <a href="#">⚙️ Settings</a>
-    <a href="#">🚪 Logout</a>
   </div>
 
   <div class="main">
@@ -188,22 +168,13 @@
           <div class="stat-number" id="totalAssociates">0</div>
           <div>Associates</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-number" id="totalClients">0</div>
-          <div>Clients</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="totalCommunity">0</div>
-          <div>Community Users</div>
-        </div>
       </div>
     </div>
 
     <!-- All Cases -->
     <div id="tab1" style="display:none;">
       <h2>All Cases (Newest First)</h2>
-      <div id="casesLoading" class="loading"><div class="spinner"></div> Loading cases...</div>
-      <table id="casesTableContainer" style="display:none;">
+      <table>
         <thead>
           <tr>
             <th>Date</th>
@@ -223,8 +194,7 @@
     <!-- Associates -->
     <div id="tab2" style="display:none;">
       <h2>Associates Management</h2>
-      <div id="associatesLoading" class="loading"><div class="spinner"></div> Loading associates...</div>
-      <table id="associatesTableContainer" style="display:none;">
+      <table>
         <thead>
           <tr>
             <th>Name</th>
@@ -244,12 +214,22 @@
 <div id="casePopup" class="popup">
   <div class="popup-content">
     <h2 style="color:var(--green);">Case Details</h2>
-    <div id="popupContent"></div>
+    <div id="casePopupContent"></div>
     <br><br>
-    <button onclick="closePopup()" style="padding:12px 24px; margin-right:10px;">Close</button>
+    <button onclick="closeCasePopup()" style="padding:12px 24px; margin-right:10px;">Close</button>
     <button onclick="alert('Reassign coming soon')" style="background:#0066ff; color:white; padding:12px 24px;">Reassign Associate</button>
     <button onclick="alert('Status updated')" style="background:#ff8800; color:white; padding:12px 24px;">Change Status</button>
-    <button onclick="alert('Case archived')" style="background:#666; color:white; padding:12px 24px;">Archive Case</button>
+  </div>
+</div>
+
+<!-- Associate Popup -->
+<div id="associatePopup" class="popup">
+  <div class="popup-content">
+    <h2 style="color:var(--green);">Associate Profile</h2>
+    <div id="associatePopupContent"></div>
+    <br><br>
+    <button onclick="closeAssociatePopup()" style="padding:12px 24px; margin-right:10px;">Close</button>
+    <button onclick="alert('Edit profile coming soon')" style="background:#0066ff; color:white; padding:12px 24px;">Edit Profile</button>
   </div>
 </div>
 
@@ -266,11 +246,6 @@ function switchTab(n) {
 }
 
 async function loadAllCases() {
-  const loading = document.getElementById('casesLoading');
-  const container = document.getElementById('casesTableContainer');
-  loading.style.display = 'block';
-  container.style.display = 'none';
-
   try {
     const res = await fetch(BASE_URL, {
       method: "POST",
@@ -280,7 +255,7 @@ async function loadAllCases() {
     const tbody = document.getElementById('casesTable');
     tbody.innerHTML = '';
 
-    if (data.cases && data.cases.length > 0) {
+    if (data.cases) {
       const sorted = data.cases.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
 
       sorted.forEach(c => {
@@ -299,21 +274,10 @@ async function loadAllCases() {
         tbody.appendChild(tr);
       });
     }
-    document.getElementById('totalCases').textContent = data.cases ? data.cases.length : 0;
-  } catch(e) {
-    console.error(e);
-  } finally {
-    loading.style.display = 'none';
-    container.style.display = 'table';
-  }
+  } catch(e) { console.error(e); }
 }
 
 async function loadAssociates() {
-  const loading = document.getElementById('associatesLoading');
-  const container = document.getElementById('associatesTableContainer');
-  loading.style.display = 'block';
-  container.style.display = 'none';
-
   try {
     const res = await fetch(BASE_URL, {
       method: "POST",
@@ -333,20 +297,15 @@ async function loadAssociates() {
           <td>${a.casesCompleted || 0}</td>
           <td>Active</td>
         `;
+        tr.addEventListener('click', () => showAssociatePopup(a));
         tbody.appendChild(tr);
       });
-      document.getElementById('totalAssociates').textContent = data.associates.length;
     }
-  } catch(e) {
-    console.error(e);
-  } finally {
-    loading.style.display = 'none';
-    container.style.display = 'table';
-  }
+  } catch(e) { console.error(e); }
 }
 
 function showCasePopup(c) {
-  const content = document.getElementById('popupContent');
+  const content = document.getElementById('casePopupContent');
   content.innerHTML = `
     <p><strong>Case ID:</strong> ${c.id}</p>
     <p><strong>Date:</strong> ${new Date(c.timestamp).toLocaleString()}</p>
@@ -360,8 +319,24 @@ function showCasePopup(c) {
   document.getElementById('casePopup').style.display = 'flex';
 }
 
-function closePopup() {
+function showAssociatePopup(a) {
+  const content = document.getElementById('associatePopupContent');
+  content.innerHTML = `
+    <p><strong>Name:</strong> ${a.name}</p>
+    <p><strong>Specialty:</strong> ${a.specialty}</p>
+    <p><strong>HIR Rank:</strong> ${a.HIR || 'N/A'}</p>
+    <p><strong>Cases Completed:</strong> ${a.casesCompleted || 0}</p>
+    <p><strong>Bio:</strong><br>${a.bio || 'No bio available'}</p>
+  `;
+  document.getElementById('associatePopup').style.display = 'flex';
+}
+
+function closeCasePopup() {
   document.getElementById('casePopup').style.display = 'none';
+}
+
+function closeAssociatePopup() {
+  document.getElementById('associatePopup').style.display = 'none';
 }
 
 // Initial load
