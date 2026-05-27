@@ -141,6 +141,9 @@
     <a onclick="switchTab(2)">👥 Associates</a>
     <a onclick="switchTab(3)">👤 Clients</a>
     <a onclick="switchTab(4)">🌐 Community Users</a>
+    <a onclick="switchTab(5)">💰 Revenue</a>
+    <a href="#">⚙️ Settings</a>
+    <a href="#">🚪 Logout</a>
   </div>
 
   <div class="main">
@@ -152,7 +155,7 @@
       <div class="tab" onclick="switchTab(4)">Community</div>
     </div>
 
-    <!-- Overview -->
+    <!-- Overview Tab -->
     <div id="tab0">
       <h2>Firm Overview</h2>
       <div class="stats">
@@ -168,7 +171,31 @@
           <div class="stat-number" id="totalAssociates">0</div>
           <div>Associates</div>
         </div>
+        <div class="stat-card">
+          <div class="stat-number" id="totalClients">0</div>
+          <div>Clients</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="totalCommunity">0</div>
+          <div>Community Users</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="revenue">$0</div>
+          <div>Revenue (30 days)</div>
+        </div>
       </div>
+
+      <h2>Latest Activity</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Event</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody id="activityLog"></tbody>
+      </table>
     </div>
 
     <!-- All Cases -->
