@@ -52,15 +52,14 @@
       overflow-y: auto;
     }
 
-    /* Chunky Neon Green Scrollbar - Always Visible */
+    /* Chunky Neon Green Scrollbar */
     .main::-webkit-scrollbar {
-      height: 18px;
-      width: 18px;
+      height: 20px;
     }
     .main::-webkit-scrollbar-thumb {
       background: var(--green);
-      border-radius: 9px;
-      border: 3px solid #000;
+      border-radius: 10px;
+      border: 4px solid #000;
     }
     .main::-webkit-scrollbar-track {
       background: #111;
@@ -104,7 +103,7 @@
       width: 100%;
       border-collapse: collapse;
       background: var(--gray);
-      min-width: 1600px;
+      min-width: 1650px;
     }
     th, td {
       padding: 14px;
@@ -128,6 +127,9 @@
     <a href="#">👥 Associates</a>
     <a href="#">👤 Clients</a>
     <a href="#">🌐 Community Users</a>
+    <a href="#">💰 Revenue</a>
+    <a href="#">⚙️ Settings</a>
+    <a href="#">🚪 Logout</a>
   </div>
 
   <div class="main">
@@ -155,10 +157,14 @@
           <div class="stat-number">27</div>
           <div>Associates</div>
         </div>
+        <div class="stat-card">
+          <div class="stat-number">$72,340</div>
+          <div>Revenue (30 days)</div>
+        </div>
       </div>
     </div>
 
-    <!-- All Cases -->
+    <!-- All Cases - YOUR REQUESTED ORDER -->
     <div id="tab1" style="display:none;">
       <h2>All Cases (Newest First)</h2>
       <table>
@@ -197,11 +203,11 @@
 
     <div id="tab3" style="display:none;">
       <h2>Clients Management</h2>
-      <p>Coming soon...</p>
+      <p>Client list coming soon...</p>
     </div>
     <div id="tab4" style="display:none;">
       <h2>Community Users</h2>
-      <p>Coming soon...</p>
+      <p>Community user management coming soon...</p>
     </div>
   </div>
 </div>
@@ -239,7 +245,7 @@ async function loadAllCases() {
           <td>${c.associateName || 'Unassigned'}</td>
           <td>${c.tier}</td>
           <td>${c.status}</td>
-          <td>${c.title}</td>
+          <td>${c.title || ''}</td>
           <td style="max-width:380px;">${(c.description || '').substring(0,90)}...</td>
           <td>${c.id}</td>
         `;
@@ -275,7 +281,7 @@ async function loadAssociates() {
   } catch(e) { console.error(e); }
 }
 
-// Load All Cases on start
+// Initial load
 loadAllCases();
 </script>
 </body>
