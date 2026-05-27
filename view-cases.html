@@ -50,10 +50,10 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     .case-title {
-      font-size: 17px;
+      font-size: 18px;
       color: var(--green);
       flex: 1;
     }
@@ -86,12 +86,11 @@
       cursor: pointer;
       font-weight: bold;
       font-size: 13px;
-      white-space: nowrap;
     }
     @media (max-width: 768px) {
       .header { flex-direction: column; text-align: center; }
       .case-header { flex-direction: column; align-items: flex-start; }
-      .case-meta { text-align: left; margin-top: 6px; }
+      .case-meta { text-align: left; margin-top: 4px; }
     }
   </style>
 </head>
@@ -140,8 +139,7 @@ async function loadCases() {
           <div class="case-header">
             <div class="case-title">${c.title}</div>
             <div class="case-meta">
-              ${new Date(c.timestamp).toLocaleDateString()}<br>
-              ${c.associateName || 'Unassigned'}
+              ${new Date(c.timestamp).toLocaleDateString()} • ${c.associateName || 'Unassigned'}
             </div>
           </div>
           <div class="case-desc">${(c.description || '').substring(0, 160)}...</div>
@@ -171,14 +169,16 @@ function openCase(c) {
     <hr style="border-color:#333; margin:18px 0;">
     <p style="line-height:1.6;">${c.description}</p>
     
-    <h3 style="color:var(--green); margin:25px 0 12px;">Rate this Associate's Potential Answer (1-10)</h3>
-    <div style="display:flex; gap:8px; margin-bottom:20px;">
-      ${[1,2,3,4,5,6,7,8,9,10].map(n => `<button onclick="rateAssociate(${n})" style="padding:8px 14px; background:#222; border:1px solid #555; color:white; border-radius:4px;">${n}</button>`).join('')}
+    <h3 style="color:var(--green); margin:22px 0 10px; font-size:15px;">Rate this Associate's Answer (1-10)</h3>
+    <div style="display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap;">
+      ${[1,2,3,4,5,6,7,8,9,10].map(n => 
+        `<button onclick="rateAssociate(${n})" style="padding:6px 12px; background:#222; border:1px solid #555; color:white; border-radius:4px; font-size:13px;">${n}</button>`
+      ).join('')}
     </div>
 
-    <h3 style="color:var(--green); margin:25px 0 12px;">Comments</h3>
+    <h3 style="color:var(--green); margin:22px 0 12px;">Comments</h3>
     <div style="background:#0a0a0a; padding:15px; border-radius:8px; margin-bottom:15px;">
-      <p><strong>@ProblemSolver:</strong> This is a deep pattern. I can help unpack it.</p>
+      <p><strong>@ProblemSolver:</strong> This is a deep behavioral pattern. I can help break it down.</p>
       <div style="margin-top:8px;">
         <button onclick="vote(1)" style="background:none; border:none; color:#0f0; font-size:18px;">👍</button>
         <button onclick="vote(-1)" style="background:none; border:none; color:#f66; font-size:18px;">👎</button>
