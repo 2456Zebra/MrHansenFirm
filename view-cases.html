@@ -15,67 +15,81 @@
       font-family: 'Courier New', monospace;
       background: #000;
       color: #ddd;
-      min-height: 100vh;
+      line-height: 1.5;
     }
     .header {
       background: var(--dark);
-      padding: 20px 40px;
+      padding: 15px 30px;
       border-bottom: 2px solid var(--green);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .logo { color: var(--green); font-size: 26px; font-weight: bold; }
+    .logo { color: var(--green); font-size: 24px; font-weight: bold; }
     .main {
       max-width: 1200px;
-      margin: 40px auto;
+      margin: 30px auto;
       padding: 0 20px;
     }
     .case-card {
       background: var(--gray);
       border: 1px solid #333;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 25px;
-      transition: all 0.3s;
+      border-radius: 8px;
+      padding: 18px;
+      margin-bottom: 20px;
+      transition: all 0.2s;
+      display: flex;
+      gap: 20px;
     }
     .case-card:hover {
       border-color: var(--green);
-      transform: translateY(-3px);
+      transform: translateY(-2px);
     }
-    .case-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 12px;
+    .case-left {
+      flex: 1;
     }
     .case-title {
-      font-size: 20px;
+      font-size: 18px;
       color: var(--green);
+      margin-bottom: 8px;
     }
-    .meta {
+    .case-meta {
       color: #888;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+    .case-desc {
       font-size: 14px;
+      color: #bbb;
+      margin-bottom: 12px;
+      line-height: 1.4;
     }
-    .stats {
+    .case-stats {
       display: flex;
-      gap: 20px;
-      margin: 15px 0;
-      color: #aaa;
+      gap: 25px;
+      font-size: 13px;
     }
-    .btn {
-      background: var(--green);
-      color: #000;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
+    .case-stats span {
+      color: #aaa;
     }
     .notification {
       color: var(--green);
       font-weight: bold;
     }
-    .pink { color: #ff66aa; }
+    .pink { color: #ff66aa; font-weight: bold; }
+    .btn {
+      background: var(--green);
+      color: #000;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn-small {
+      padding: 5px 12px;
+      font-size: 13px;
+    }
   </style>
 </head>
 <body>
@@ -83,20 +97,20 @@
 <div class="header">
   <div class="logo">MR. HANSEN FIRM</div>
   <div>
-    <button onclick="showSignup()" class="btn">Join Community</button>
+    <button onclick="showSignup()" class="btn">Join Community / Become Associate</button>
   </div>
 </div>
 
 <div class="main">
-  <h1 style="color:var(--green); margin-bottom:30px;">Active Cases</h1>
+  <h1 style="color:var(--green); margin-bottom:25px;">Active Cases</h1>
   
   <div id="casesList"></div>
 </div>
 
 <!-- Case Detail Modal -->
 <div id="caseModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; overflow-y:auto;">
-  <div style="max-width:900px; margin:40px auto; background:#111; padding:30px; border:2px solid var(--green);">
-    <button onclick="closeModal()" style="float:right; background:none; border:none; color:var(--green); font-size:24px;">×</button>
+  <div style="max-width:900px; margin:40px auto; background:#111; padding:30px; border:2px solid var(--green); border-radius:10px;">
+    <button onclick="closeModal()" style="float:right; background:none; border:none; color:var(--green); font-size:28px; cursor:pointer;">×</button>
     <div id="modalContent"></div>
   </div>
 </div>
@@ -120,18 +134,19 @@ async function loadCases() {
         const card = document.createElement('div');
         card.className = 'case-card';
         card.innerHTML = `
-          <div class="case-header">
+          <div class="case-left">
             <div class="case-title">${c.title}</div>
-            <div class="meta">${new Date(c.timestamp).toLocaleDateString()}</div>
+            <div class="case-meta">${new Date(c.timestamp).toLocaleDateString()} • ${c.associateName || 'Unassigned'}</div>
+            <div class="case-desc">${(c.description || '').substring(0, 160)}...</div>
+            <div class="case-stats">
+              <span>💬 ${Math.floor(Math.random()*12)+3} comments</span>
+              <span>👍 ${Math.floor(Math.random()*25)+5}</span>
+              <span class="notification">+12 new</span>
+            </div>
           </div>
-          <p>${(c.description || '').substring(0, 140)}...</p>
-          <div class="stats">
-            <span>👤 ${c.associateName || 'Unassigned'}</span>
-            <span>💬 ${Math.floor(Math.random()*15)} comments</span>
-            <span>👍 ${Math.floor(Math.random()*28)}</span>
-            <span class="notification">+12 new</span>
+          <div>
+            <button onclick="openCase(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="btn btn-small">View Full Case</button>
           </div>
-          <button onclick="openCase(${JSON.stringify(c).replace(/"/g, '&quot;')})" class="btn">View Full Case</button>
         `;
         container.appendChild(card);
       });
@@ -146,22 +161,21 @@ function openCase(c) {
   const content = document.getElementById('modalContent');
   
   content.innerHTML = `
-    <h2 style="color:var(--green);">${c.title}</h2>
-    <p><strong>By:</strong> ${c.clientName} • ${new Date(c.timestamp).toLocaleString()}</p>
+    <h2 style="color:var(--green); margin-bottom:15px;">${c.title}</h2>
+    <p><strong>Posted:</strong> ${new Date(c.timestamp).toLocaleString()} • <strong>By:</strong> ${c.clientName}</p>
     <p><strong>Associate:</strong> ${c.associateName || 'Unassigned'}</p>
     <hr style="border-color:#333; margin:20px 0;">
-    <p>${c.description}</p>
+    <p style="line-height:1.6;">${c.description}</p>
     
-    <h3 style="color:var(--green); margin:25px 0 15px;">Comments</h3>
-    <div style="background:#0a0a0a; padding:15px; border-radius:8px;">
-      <p><strong>@ProblemSolver:</strong> This looks like a deep behavioral pattern. I can help break it down.</p>
-      <p style="margin-top:12px; color:#888;">👍 7 &nbsp; 👎 1</p>
+    <h3 style="color:var(--green); margin:30px 0 15px;">Comments &amp; Interaction</h3>
+    <div style="background:#0a0a0a; padding:20px; border-radius:8px; margin-bottom:20px;">
+      <p><strong>@ProblemSolver:</strong> This is a classic case of cognitive dissonance. I can help unpack it.</p>
+      <p style="margin-top:12px; color:#888;">👍 12 &nbsp; 👎 2</p>
     </div>
     
-    <textarea placeholder="Write a comment..." style="width:100%; height:80px; background:#222; border:1px solid #444; color:#ddd; margin-top:20px; padding:12px;"></textarea>
-    <button onclick="alert('Comment posted! (Demo)')" class="btn" style="margin-top:10px;">Post Comment</button>
+    <textarea placeholder="Add your comment..." style="width:100%; height:90px; background:#222; border:1px solid #444; color:#ddd; padding:12px; margin-bottom:10px;"></textarea>
+    <button onclick="alert('Comment posted! (Live demo)')" class="btn">Post Comment</button>
   `;
-  
   modal.style.display = 'block';
 }
 
@@ -170,10 +184,10 @@ function closeModal() {
 }
 
 function showSignup() {
-  alert("Signup modal coming soon!\n\nOptions: Join as Community User or Apply as Associate");
+  alert("Community / Associate Signup coming soon!");
 }
 
-// Load cases on page load
+// Load on start
 loadCases();
 </script>
 </body>
