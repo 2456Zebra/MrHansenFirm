@@ -19,17 +19,19 @@
     }
     .header {
       background: var(--dark);
-      padding: 15px 30px;
+      padding: 15px 20px;
       border-bottom: 2px solid var(--green);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-    .logo { color: var(--green); font-size: 24px; font-weight: bold; }
+    .logo { color: var(--green); font-size: 22px; font-weight: bold; }
     .main {
       max-width: 1200px;
-      margin: 25px auto;
-      padding: 0 20px;
+      margin: 20px auto;
+      padding: 0 15px;
     }
     .case-card {
       background: var(--gray);
@@ -38,26 +40,28 @@
       padding: 14px 18px;
       margin-bottom: 16px;
       transition: all 0.2s;
-      display: flex;
-      gap: 20px;
       cursor: pointer;
     }
     .case-card:hover {
       border-color: var(--green);
       transform: translateY(-2px);
     }
-    .case-left {
-      flex: 1;
+    .case-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
     }
     .case-title {
       font-size: 17px;
       color: var(--green);
-      margin-bottom: 6px;
+      flex: 1;
     }
     .case-meta {
-      color: #888;
       font-size: 12.5px;
-      margin-bottom: 8px;
+      color: #888;
+      text-align: right;
+      white-space: nowrap;
     }
     .case-desc {
       font-size: 13.5px;
@@ -69,11 +73,9 @@
       display: flex;
       gap: 20px;
       font-size: 12.5px;
+      color: #aaa;
     }
-    .notification {
-      color: var(--green);
-      font-weight: bold;
-    }
+    .notification { color: var(--green); font-weight: bold; }
     .pink { color: #ff66aa; font-weight: bold; }
     .btn {
       background: var(--green);
@@ -84,6 +86,12 @@
       cursor: pointer;
       font-weight: bold;
       font-size: 13px;
+      white-space: nowrap;
+    }
+    @media (max-width: 768px) {
+      .header { flex-direction: column; text-align: center; }
+      .case-header { flex-direction: column; align-items: flex-start; }
+      .case-meta { text-align: left; margin-top: 6px; }
     }
   </style>
 </head>
@@ -99,7 +107,6 @@
 
 <div class="main">
   <h1 style="color:var(--green); margin-bottom:20px;">Active Cases</h1>
-  
   <div id="casesList"></div>
 </div>
 
@@ -130,18 +137,20 @@ async function loadCases() {
         const card = document.createElement('div');
         card.className = 'case-card';
         card.innerHTML = `
-          <div class="case-left">
+          <div class="case-header">
             <div class="case-title">${c.title}</div>
-            <div class="case-meta">${new Date(c.timestamp).toLocaleDateString()} • ${c.associateName || 'Unassigned'}</div>
-            <div class="case-desc">${(c.description || '').substring(0, 140)}...</div>
-            <div class="case-stats">
-              <span>💬 ${Math.floor(Math.random()*12)+2} comments</span>
-              <span>👍 ${Math.floor(Math.random()*22)+4}</span>
-              <span class="notification">+12 new</span>
+            <div class="case-meta">
+              ${new Date(c.timestamp).toLocaleDateString()}<br>
+              ${c.associateName || 'Unassigned'}
             </div>
           </div>
+          <div class="case-desc">${(c.description || '').substring(0, 160)}...</div>
+          <div class="case-stats">
+            <span>💬 ${Math.floor(Math.random()*12)+3} comments</span>
+            <span>👍 ${Math.floor(Math.random()*25)+5}</span>
+            <span class="notification">+12 new</span>
+          </div>
         `;
-        // Click anywhere on card opens full case
         card.addEventListener('click', () => openCase(c));
         container.appendChild(card);
       });
@@ -156,25 +165,46 @@ function openCase(c) {
   const content = document.getElementById('modalContent');
   
   content.innerHTML = `
-    <h2 style="color:var(--green); margin-bottom:15px;">${c.title}</h2>
-    <p><strong>Posted:</strong> ${new Date(c.timestamp).toLocaleString()} • <strong>By:</strong> ${c.clientName}</p>
+    <h2 style="color:var(--green); margin-bottom:12px;">${c.title}</h2>
+    <p><strong>Date:</strong> ${new Date(c.timestamp).toLocaleString()} • <strong>Client:</strong> ${c.clientName}</p>
     <p><strong>Associate:</strong> ${c.associateName || 'Unassigned'}</p>
-    <hr style="border-color:#333; margin:20px 0;">
+    <hr style="border-color:#333; margin:18px 0;">
     <p style="line-height:1.6;">${c.description}</p>
     
-    <h3 style="color:var(--green); margin:25px 0 15px;">Comments</h3>
-    <div style="background:#0a0a0a; padding:15px; border-radius:8px;">
-      <p><strong>@ProblemSolver:</strong> Interesting case. I see several behavioral patterns here.</p>
+    <h3 style="color:var(--green); margin:25px 0 12px;">Rate this Associate's Potential Answer (1-10)</h3>
+    <div style="display:flex; gap:8px; margin-bottom:20px;">
+      ${[1,2,3,4,5,6,7,8,9,10].map(n => `<button onclick="rateAssociate(${n})" style="padding:8px 14px; background:#222; border:1px solid #555; color:white; border-radius:4px;">${n}</button>`).join('')}
+    </div>
+
+    <h3 style="color:var(--green); margin:25px 0 12px;">Comments</h3>
+    <div style="background:#0a0a0a; padding:15px; border-radius:8px; margin-bottom:15px;">
+      <p><strong>@ProblemSolver:</strong> This is a deep pattern. I can help unpack it.</p>
+      <div style="margin-top:8px;">
+        <button onclick="vote(1)" style="background:none; border:none; color:#0f0; font-size:18px;">👍</button>
+        <button onclick="vote(-1)" style="background:none; border:none; color:#f66; font-size:18px;">👎</button>
+      </div>
     </div>
     
-    <textarea placeholder="Write a comment..." style="width:100%; height:80px; background:#222; border:1px solid #444; color:#ddd; margin-top:15px; padding:12px;"></textarea>
-    <button onclick="alert('Comment posted!')" class="btn" style="margin-top:10px;">Post Comment</button>
+    <textarea placeholder="Write a comment..." style="width:100%; height:70px; background:#222; border:1px solid #444; color:#ddd; padding:12px; margin-bottom:10px;"></textarea>
+    <button onclick="postComment()" class="btn">Post Comment</button>
   `;
   modal.style.display = 'block';
 }
 
 function closeModal() {
   document.getElementById('caseModal').style.display = 'none';
+}
+
+function rateAssociate(score) {
+  alert(`You rated this associate ${score}/10. Live rating updated!`);
+}
+
+function vote(direction) {
+  alert(direction > 0 ? "Thumbs Up!" : "Thumbs Down!");
+}
+
+function postComment() {
+  alert("Comment posted! (Live demo)");
 }
 
 function showJoinCommunity() {
