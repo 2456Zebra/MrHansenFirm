@@ -40,6 +40,7 @@
       text-decoration: none;
       margin-bottom: 8px;
       border-radius: 6px;
+      cursor: pointer;
     }
     .sidebar a:hover, .sidebar a.active {
       background: #111;
@@ -51,8 +52,6 @@
       overflow-x: auto;
       overflow-y: auto;
     }
-
-    /* Chunky Neon Green Scrollbar */
     .main::-webkit-scrollbar {
       height: 20px;
     }
@@ -61,10 +60,6 @@
       border-radius: 10px;
       border: 4px solid #000;
     }
-    .main::-webkit-scrollbar-track {
-      background: #111;
-    }
-
     .tabs {
       display: flex;
       gap: 10px;
@@ -98,7 +93,6 @@
       border: 1px solid var(--green);
     }
     .stat-number { font-size: 34px; font-weight: bold; color: var(--green); }
-
     table {
       width: 100%;
       border-collapse: collapse;
@@ -122,12 +116,12 @@
 
 <div class="container">
   <div class="sidebar">
-    <a href="#" class="active">📊 Overview</a>
-    <a href="#">📋 All Cases</a>
-    <a href="#">👥 Associates</a>
-    <a href="#">👤 Clients</a>
-    <a href="#">🌐 Community Users</a>
-    <a href="#">💰 Revenue</a>
+    <a onclick="switchTab(0)" class="active">📊 Overview</a>
+    <a onclick="switchTab(1)">📋 All Cases</a>
+    <a onclick="switchTab(2)">👥 Associates</a>
+    <a onclick="switchTab(3)">👤 Clients</a>
+    <a onclick="switchTab(4)">🌐 Community Users</a>
+    <a onclick="switchTab(5)">💰 Revenue</a>
     <a href="#">⚙️ Settings</a>
     <a href="#">🚪 Logout</a>
   </div>
@@ -141,30 +135,50 @@
       <div class="tab" onclick="switchTab(4)">Community</div>
     </div>
 
-    <!-- Overview -->
+    <!-- Overview Tab -->
     <div id="tab0">
       <h2>Firm Overview</h2>
       <div class="stats">
         <div class="stat-card">
-          <div class="stat-number">156</div>
+          <div class="stat-number" id="totalCases">0</div>
           <div>Total Cases</div>
         </div>
         <div class="stat-card">
-          <div class="stat-number">41</div>
+          <div class="stat-number" id="activeCases">0</div>
           <div>Active Cases</div>
         </div>
         <div class="stat-card">
-          <div class="stat-number">27</div>
+          <div class="stat-number" id="totalAssociates">0</div>
           <div>Associates</div>
         </div>
         <div class="stat-card">
-          <div class="stat-number">$72,340</div>
+          <div class="stat-number" id="totalClients">0</div>
+          <div>Clients</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="totalCommunity">0</div>
+          <div>Community Users</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="revenue">$72,340</div>
           <div>Revenue (30 days)</div>
         </div>
       </div>
+
+      <h2>Latest Activity</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Event</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody id="activityLog"></tbody>
+      </table>
     </div>
 
-    <!-- All Cases - YOUR REQUESTED ORDER -->
+    <!-- All Cases Tab -->
     <div id="tab1" style="display:none;">
       <h2>All Cases (Newest First)</h2>
       <table>
@@ -184,7 +198,7 @@
       </table>
     </div>
 
-    <!-- Associates -->
+    <!-- Associates Tab -->
     <div id="tab2" style="display:none;">
       <h2>Associates Management</h2>
       <table>
@@ -236,7 +250,6 @@ async function loadAllCases() {
 
     if (data.cases) {
       const sorted = data.cases.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
-
       sorted.forEach(c => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -251,6 +264,7 @@ async function loadAllCases() {
         `;
         tbody.appendChild(tr);
       });
+      document.getElementById('totalCases').textContent = data.cases.length;
     }
   } catch(e) { console.error(e); }
 }
@@ -277,12 +291,14 @@ async function loadAssociates() {
         `;
         tbody.appendChild(tr);
       });
+      document.getElementById('totalAssociates').textContent = data.associates.length;
     }
   } catch(e) { console.error(e); }
 }
 
 // Initial load
 loadAllCases();
+loadAssociates();
 </script>
 </body>
 </html>
