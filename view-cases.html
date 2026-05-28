@@ -1,200 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>View Cases - MR. HANSEN FIRM</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forum - Latest Posts</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
-    :root {
-      --green: #00ff88;
-      --dark: #0a0a0a;
-      --gray: #1a1a1a;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: 'Courier New', monospace;
-      background: #000;
-      color: #ddd;
-      line-height: 1.4;
+      background: #0a0a0a;
+      font-family: 'Inter', system-ui, sans-serif;
     }
-    .header {
-      background: var(--dark);
-      padding: 12px 20px;
-      border-bottom: 2px solid var(--green);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
+    .neon-green {
+      color: #00ff9d;
+      text-shadow: 0 0 8px #00ff9d;
     }
-    .logo { color: var(--green); font-size: 21px; font-weight: bold; }
-    .main {
-      max-width: 1200px;
-      margin: 15px auto;
-      padding: 0 15px;
+    .post-card {
+      transition: all 0.2s ease;
     }
-    .case-card {
-      background: var(--gray);
-      border: 1px solid #333;
-      border-radius: 6px;
-      padding: 10px 14px;
-      margin-bottom: 12px;
-      transition: all 0.2s;
-      cursor: pointer;
-      min-height: 68px;
+    .post-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px rgba(0, 255, 157, 0.15);
     }
-    .case-card:hover {
-      border-color: var(--green);
-      transform: translateY(-1px);
-    }
-    .case-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 6px;
-    }
-    .case-title {
-      font-size: 16.5px;
-      color: var(--green);
-      flex: 1;
-      line-height: 1.2;
-    }
-    .case-meta {
-      font-size: 11.5px;
-      color: #888;
-      text-align: right;
-      white-space: nowrap;
-      line-height: 1.2;
-    }
-    .case-stats {
-      display: flex;
-      gap: 16px;
-      font-size: 12px;
-      color: #aaa;
-    }
-    .notification { color: var(--green); font-weight: bold; }
-    .btn {
-      background: var(--green);
-      color: #000;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 12.5px;
-    }
-    @media (max-width: 768px) {
-      .header { flex-direction: column; text-align: center; }
-      .case-header { flex-direction: column; align-items: flex-start; }
-      .case-meta { text-align: left; margin-top: 4px; }
+    .category-pill {
+      transition: all 0.2s ease;
     }
   </style>
 </head>
-<body>
+<body class="bg-zinc-950 text-zinc-200 min-h-screen pb-12">
 
-<div class="header">
-  <div class="logo">MR. HANSEN FIRM</div>
-  <div>
-    <button onclick="showJoinCommunity()" class="btn" style="margin-right:6px;">Join Community</button>
-    <button onclick="showBecomeAssociate()" class="btn">Become Associate</button>
-  </div>
-</div>
-
-<div class="main">
-  <h1 style="color:var(--green); margin-bottom:15px; font-size:22px;">Active Cases</h1>
-  <div id="casesList"></div>
-</div>
-
-<!-- Case Detail Modal -->
-<div id="caseModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; overflow-y:auto;">
-  <div style="max-width:900px; margin:25px auto; background:#111; padding:20px; border:2px solid var(--green); border-radius:8px;">
-    <button onclick="closeModal()" style="float:right; background:none; border:none; color:var(--green); font-size:26px; cursor:pointer;">×</button>
-    <div id="modalContent"></div>
-  </div>
-</div>
-
-<script>
-const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
-
-async function loadCases() {
-  try {
-    const res = await fetch(BASE_URL, {
-      method: "POST",
-      body: JSON.stringify({ action: "getCases" })
-    });
-    const data = await res.json();
-
-    const container = document.getElementById('casesList');
-    container.innerHTML = '';
-
-    if (data.cases) {
-      data.cases.forEach(c => {
-        const card = document.createElement('div');
-        card.className = 'case-card';
-        card.innerHTML = `
-          <div class="case-header">
-            <div class="case-title">${c.title}</div>
-            <div class="case-meta">
-              ${new Date(c.timestamp).toLocaleDateString()}<br>
-              ${c.associateName || 'Unassigned'}
-            </div>
-          </div>
-          <div class="case-stats">
-            <span>💬 ${Math.floor(Math.random()*12)+3}</span>
-            <span>👍 ${Math.floor(Math.random()*25)+5}</span>
-            <span class="notification">+12 new</span>
-          </div>
-        `;
-        card.addEventListener('click', () => openCase(c));
-        container.appendChild(card);
-      });
-    }
-  } catch(e) {
-    console.error(e);
-  }
-}
-
-function openCase(c) {
-  const modal = document.getElementById('caseModal');
-  const content = document.getElementById('modalContent');
-  
-  content.innerHTML = `
-    <h2 style="color:var(--green); margin-bottom:10px;">${c.title}</h2>
-    <p><strong>Date:</strong> ${new Date(c.timestamp).toLocaleString()} • <strong>Client:</strong> ${c.clientName}</p>
-    <p><strong>Associate:</strong> ${c.associateName || 'Unassigned'}</p>
-    <hr style="border-color:#333; margin:15px 0;">
-    <p style="line-height:1.5;">${c.description}</p>
-    
-    <h3 style="color:var(--green); margin:20px 0 8px; font-size:14px;">Rate Associate (1-10)</h3>
-    <div style="display:flex; gap:5px; margin-bottom:18px; flex-wrap:wrap;">
-      ${[1,2,3,4,5,6,7,8,9,10].map(n => 
-        `<button onclick="rateAssociate(${n})" style="padding:5px 10px; background:#222; border:1px solid #555; color:white; border-radius:4px; font-size:13px;">${n}</button>`
-      ).join('')}
+  <div class="max-w-5xl mx-auto px-4 pt-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+      <h1 class="text-3xl font-bold tracking-tight">All Forums</h1>
     </div>
 
-    <button onclick="closeModal()" class="btn">Close</button>
-  `;
-  modal.style.display = 'block';
-}
+    <!-- Category Toggles -->
+    <div class="flex flex-wrap gap-2 mb-10">
+      <button class="category-pill px-5 py-2 rounded-full bg-emerald-500 text-black font-medium">Latest</button>
+      <button class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Romance</button>
+      <button class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Sports</button>
+      <button class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Travel</button>
+      <button class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Visa & Paperwork</button>
+      <button class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Buy/Sell/Rent</button>
+      <button class="category-pill px-5 py-2 rounded-full bg-emerald-600 text-white">Friendly Talkzone</button>
+      <button class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Health</button>
+    </div>
 
-function closeModal() {
-  document.getElementById('caseModal').style.display = 'none';
-}
+    <!-- Posts List -->
+    <div class="space-y-6">
 
-function rateAssociate(score) {
-  alert(`Rated ${score}/10. Live rating updated!`);
-}
+      <!-- Sticky Post -->
+      <div class="post-card bg-zinc-900 border border-zinc-800 rounded-xl p-6 flex gap-6">
+        <div class="flex-1">
+          <span class="inline-block px-3 py-1 text-xs font-bold bg-amber-500 text-black rounded">STICKY</span>
+          <h2 class="text-xl font-bold mt-3 leading-tight">PBH Cookbook: Need More Recipes</h2>
+          <p class="text-zinc-400 text-sm mt-2">
+            Desideria (Moderator) — Jan 10, 2010, 03:08 — Friendly Talkzone
+          </p>
+        </div>
+        
+        <div class="flex flex-col items-end justify-center min-w-[140px] text-right">
+          <div class="neon-green text-5xl font-bold leading-none">75</div>
+          <div class="text-emerald-400 text-sm mt-1">Associate: <span class="font-medium">fitness_princess</span></div>
+          
+          <div class="flex gap-4 mt-4 text-sm">
+            <span class="flex items-center gap-1"><i class="fa-solid fa-thumbs-up text-emerald-400"></i> 12</span>
+            <span class="flex items-center gap-1"><i class="fa-solid fa-thumbs-down"></i> 3</span>
+          </div>
+        </div>
+      </div>
 
-function showJoinCommunity() {
-  alert("Community Signup coming soon!");
-}
+      <!-- More Posts -->
+      <div class="post-card bg-zinc-900 border border-zinc-800 rounded-xl p-6 flex gap-6">
+        <div class="flex-1">
+          <span class="inline-block px-3 py-1 text-xs font-bold bg-amber-500 text-black rounded">STICKY</span>
+          <h2 class="text-xl font-bold mt-3 leading-tight">Big Help for Those Wanting to Change Visas</h2>
+          <p class="text-zinc-400 text-sm mt-2">
+            Gator — Sep 8, 2009, 19:03 — Friendly Talkzone
+          </p>
+        </div>
+        
+        <div class="flex flex-col items-end justify-center min-w-[140px] text-right">
+          <div class="neon-green text-5xl font-bold leading-none">119</div>
+          <div class="text-emerald-400 text-sm mt-1">Associate: <span class="font-medium">Matt B</span></div>
+          <div class="flex gap-4 mt-4 text-sm">
+            <span class="flex items-center gap-1"><i class="fa-solid fa-thumbs-up text-emerald-400"></i> 28</span>
+            <span class="flex items-center gap-1"><i class="fa-solid fa-thumbs-down"></i> 1</span>
+          </div>
+        </div>
+      </div>
 
-function showBecomeAssociate() {
-  alert("Associate Application coming soon!");
-}
+      <div class="post-card bg-zinc-900 border border-zinc-800 rounded-xl p-6 flex gap-6">
+        <div class="flex-1">
+          <h2 class="text-xl font-bold leading-tight">3 living room sets for sale..(Pictures) BOGOTA</h2>
+          <p class="text-zinc-400 text-sm mt-2">
+            Colombiano_81 — Feb 7, 2010, 19:07 — Friendly Talkzone
+          </p>
+        </div>
+        
+        <div class="flex flex-col items-end justify-center min-w-[140px] text-right">
+          <div class="neon-green text-5xl font-bold leading-none">12</div>
+          <div class="text-emerald-400 text-sm mt-1">Associate: <span class="font-medium">Colombiano_81</span></div>
+          <div class="flex gap-4 mt-4 text-sm">
+            <span class="flex items-center gap-1"><i class="fa-solid fa-thumbs-up text-emerald-400"></i> 19</span>
+            <span class="flex items-center gap-1"><i class="fa-solid fa-thumbs-down"></i> 0</span>
+          </div>
+        </div>
+      </div>
 
-// Load cases
-loadCases();
-</script>
+      <!-- Add more posts following the same structure -->
+
+    </div>
+  </div>
+
 </body>
 </html>
