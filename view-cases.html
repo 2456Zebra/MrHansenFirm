@@ -9,7 +9,9 @@
 
   <style>
     body { background: #0a0a0a; font-family: 'Inter', system-ui, sans-serif; }
-    .neon-green { color: #00ff9d; text-shadow: 0 0 4px #00ff9d; }
+
+    /* Clean neon — NO glow */
+    .neon-clean { color: #00ff9d; }
 
     .post-card { transition: all 0.18s ease; }
     .post-card:hover {
@@ -52,10 +54,7 @@
     <!-- HEADER -->
     <div class="flex items-center justify-between mb-6 border-b border-zinc-800 pb-4">
       <div>
-        <h1 class="text-4xl font-extrabold tracking-tight" style="color:#00ff9d;">
-  Mr Hansen
-</h1>
-
+        <h1 class="text-4xl font-extrabold tracking-tight neon-clean">Mr Hansen</h1>
         <p class="text-emerald-400 text-sm mt-1">We Solve Problems!</p>
       </div>
 
@@ -91,7 +90,7 @@
 
       <div class="p-5 border-b border-zinc-700 flex items-start justify-between sticky top-0 bg-zinc-900 z-10">
         <div>
-          <h2 id="modal-title" class="text-2xl font-bold underline decoration-emerald-400 underline-offset-4"></h2>
+          <h2 id="modal-title" class="text-2xl font-bold underline decoration-emerald-400 underline-offset-4 neon-clean"></h2>
           <p id="modal-meta" class="text-zinc-400 text-sm mt-1"></p>
         </div>
         <button onclick="closeModal()" class="text-3xl text-zinc-400 hover:text-white">×</button>
@@ -195,9 +194,9 @@
 
             ${post.featured ? `<span class="sticky-badge">Featured</span>` : ""}
 
-            <h2 class="text-[18px] font-extrabold leading-snug underline decoration-emerald-400 underline-offset-4"
-    style="color:#00ff9d;">
-
+            <h2 class="text-[18px] font-extrabold leading-snug underline decoration-emerald-400 underline-offset-4 neon-clean">
+              ${post.title}
+            </h2>
 
             <p class="text-[11px] text-zinc-400 mt-0.5">
               ${post.clientName} • ${post.timestamp} • ${post.tier} • Associate: ${post.associateName}
@@ -206,7 +205,7 @@
 
           <div class="text-right min-w-[60px]">
             <div class="text-[10px] uppercase tracking-widest text-zinc-500">Comments</div>
-            <div class="neon-green text-2xl font-bold leading-none">${post.commentsCount ?? 0}</div>
+            <div class="neon-clean text-2xl font-bold leading-none">${post.commentsCount ?? 0}</div>
           </div>
         `;
 
