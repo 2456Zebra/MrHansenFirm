@@ -241,8 +241,9 @@
     }
 
     window.onload = () => {
-      renderCases(mockCases);  // backend will replace this call
-    };
+  google.script.run.withSuccessHandler(renderCases).getPublicCases();
+};
+
   </script>
 
 </body>
