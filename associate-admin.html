@@ -54,7 +54,7 @@
     .assoc-main {
         max-width: 1100px;
         margin: 0 auto 40px auto;
-        padding: 0 20px 20px 20px;
+        padding: 0 20px 20px 20;
         box-sizing: border-box;
     }
 
@@ -336,7 +336,6 @@
         line-height: 1.4;
     }
 
-    /* Modal */
     .modal-overlay {
         display: none;
         position: fixed;
@@ -539,6 +538,8 @@
 </div>
 
 <script>
+const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
+
 /* ---------- MOCK DATA (replace with live wiring) ---------- */
 
 let associateSelf = {
@@ -831,6 +832,7 @@ function renderAssocCases(list) {
             <div style="margin-top:6px; display:flex; justify-content:flex-end; gap:6px; flex-wrap:wrap;">
                 <button class="small-btn" onclick="openCaseModal('${c.id}')">Open Case</button>
                 <button class="small-btn" onclick="openMessagesForCase('${c.id}')">View Messages</button>
+                <button class="small-btn" onclick="markCaseCompleted('${c.id}')">Mark Completed</button>
             </div>
         </div>
     `).join("");
@@ -927,13 +929,13 @@ function openCaseModal(caseId) {
         <div class="message-reply-box">
             <label style="font-size:13px; color:#ccc;">Reply to client</label>
             <textarea id="caseReplyText" placeholder="Type your reply..."></textarea>
-            <div style="margin-top:6px; display:flex; justify-content:flex-end;">
+            <div style="margin-top:6px; display:flex; justify-content:flex-end; gap:6px; flex-wrap:wrap;">
                 <button class="small-btn" onclick="sendCaseReply('${c.id}')">Send Reply</button>
+                <button class="small-btn" onclick="markCaseCompleted('${c.id}')">Mark Completed</button>
             </div>
         </div>
     `;
 
-    // Mark client messages for this case as read
     associateMessages.forEach(m => {
         if (m.caseId === caseId && m.from === "client") {
             m.read = true;
@@ -1061,7 +1063,7 @@ function sendCaseReply(caseId) {
     });
 
     textarea.value = "";
-    openCaseModal(caseId); // re-render modal with new message
+    openCaseModal(caseId);
     alert(`Your message has been sent to ${clientName}.`);
 }
 
@@ -1115,14 +1117,48 @@ function assocChangePassword() {
     alert("Password change flow would be triggered here (integrated with your auth system).");
 }
 
+/* ---------- MARK CASE COMPLETED (writes to Sheets via BASE_URL) ---------- */
+
+async function markCaseCompleted(caseId) {
+    if (!confirm("Mark this case as completed?")) return;
+
+    try {
+        const res = await fetch(BASE_URL, {
+            method: "POST",
+            body: JSON.stringify({
+                action: "completeCase",
+                caseId: caseId
+            })
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+            alert("Error: " + (data.error || "Unable to mark case completed."));
+            return;
+        }
+
+        const c = associateCases.find(x => x.id === caseId);
+        if (c) {
+            c.status = "completed";
+            c.lastUpdate = new Date().toISOString();
+        }
+
+        alert("Case marked as completed.");
+        renderAssocCases(associateCases);
+        renderDashboard();
+        closeCaseModal();
+    } catch (err) {
+        console.error(err);
+        alert("Unexpected error marking case completed.");
+    }
+}
+
 /* ---------- INIT ---------- */
 
 document.addEventListener("DOMContentLoaded", () => {
     showPanel("dashboard");
 });
 </script>
-
-<!-- ========================= FOOTER ========================= -->
 
 <div style="text-align:center; margin:20px 0 30px 0;">
     <a href="index.html" style="color:#77c0ff; text-decoration:none; font-family:Consolas, monospace;">
