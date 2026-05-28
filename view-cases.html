@@ -9,15 +9,31 @@
   <style>
     body { background: #0a0a0a; font-family: 'Inter', system-ui, sans-serif; }
     .neon-green { color: #00ff9d; text-shadow: 0 0 4px #00ff9d; }
-    .post-card {
-      transition: all 0.2s ease;
-    }
+    .post-card { transition: all 0.18s ease; }
     .post-card:hover {
       transform: translateY(-1px);
-      box-shadow: 0 0 12px rgba(0, 255, 157, 0.1);
+      box-shadow: 0 0 12px rgba(0, 255, 157, 0.12);
       border-color: #00ff9d;
     }
-    .compact-card { padding: 14px 18px; }
+    .compact-card { padding: 10px 14px; }
+    .category-pill.active {
+      background: linear-gradient(135deg, #22c55e, #a3e635);
+      color: #020617;
+      font-weight: 600;
+    }
+    .category-pill {
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .sticky-badge {
+      background: #facc15;
+      color: #1f2933;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      box-shadow: 0 0 6px rgba(250, 204, 21, 0.7);
+    }
   </style>
 </head>
 <body class="bg-zinc-950 text-zinc-200 min-h-screen pb-12">
@@ -26,24 +42,56 @@
     <!-- Header -->
     <div class="flex items-center justify-between mb-6 border-b border-zinc-800 pb-4">
       <div>
-        <h1 class="text-3xl font-bold tracking-tight text-white">Mr Hansen</h1>
-        <p class="text-emerald-400 text-sm">Live Cases</p>
+        <h1 class="text-4xl font-extrabold tracking-tight neon-green">Mr Hansen</h1>
+        <p class="text-emerald-400 text-sm mt-1">We Solve Problems!</p>
       </div>
-      <a href="#" onclick="goHome()" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 text-sm font-medium">
+      <a href="/index.html" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 text-sm font-medium">
         <span class="text-lg">←</span> Back To Home
       </a>
     </div>
 
     <!-- Category Toggles -->
-    <div class="flex flex-wrap gap-2 mb-8">
-      <button onclick="filterCategory(this)" class="category-pill active px-5 py-2 rounded-full bg-emerald-500 text-black font-medium">Latest</button>
-      <button onclick="filterCategory(this)" class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Level 1</button>
-      <button onclick="filterCategory(this)" class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Level 2</button>
-      <button onclick="filterCategory(this)" class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Level 3</button>
+    <div class="flex flex-wrap gap-2 mb-6">
+      <button onclick="filterCategory(this, 'latest')" class="category-pill active px-4 py-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700">
+        Latest
+      </button>
+      <button onclick="filterCategory(this, 'popular')" class="category-pill px-4 py-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700">
+        Most Popular
+      </button>
+      <button onclick="filterCategory(this, 'relationships')" class="category-pill px-4 py-1.5 rounded-full bg-fuchsia-700/70 hover:bg-fuchsia-600/80">
+        Relationships
+      </button>
+      <button onclick="filterCategory(this, 'family')" class="category-pill px-4 py-1.5 rounded-full bg-sky-700/70 hover:bg-sky-600/80">
+        Family
+      </button>
+      <button onclick="filterCategory(this, 'fitness')" class="category-pill px-4 py-1.5 rounded-full bg-emerald-700/70 hover:bg-emerald-600/80">
+        Fitness
+      </button>
+      <button onclick="filterCategory(this, 'health')" class="category-pill px-4 py-1.5 rounded-full bg-rose-700/70 hover:bg-rose-600/80">
+        Health
+      </button>
+      <button onclick="filterCategory(this, 'work')" class="category-pill px-4 py-1.5 rounded-full bg-indigo-700/70 hover:bg-indigo-600/80">
+        Work
+      </button>
+      <button onclick="filterCategory(this, 'money')" class="category-pill px-4 py-1.5 rounded-full bg-amber-700/70 hover:bg-amber-600/80">
+        Money
+      </button>
+      <button onclick="filterCategory(this, 'legal')" class="category-pill px-4 py-1.5 rounded-full bg-lime-700/70 hover:bg-lime-600/80">
+        Legal
+      </button>
+      <button onclick="filterCategory(this, 'travel')" class="category-pill px-4 py-1.5 rounded-full bg-cyan-700/70 hover:bg-cyan-600/80">
+        Travel
+      </button>
+      <button onclick="filterCategory(this, 'spiritual')" class="category-pill px-4 py-1.5 rounded-full bg-purple-700/70 hover:bg-purple-600/80">
+        Spiritual
+      </button>
+      <button onclick="filterCategory(this, 'other')" class="category-pill px-4 py-1.5 rounded-full bg-zinc-800 hover:bg-zinc-700">
+        Other
+      </button>
     </div>
 
     <!-- Live Cases -->
-    <div class="space-y-3" id="posts-container"></div>
+    <div class="space-y-2" id="posts-container"></div>
   </div>
 
   <!-- Expanded Case Modal -->
@@ -51,134 +99,200 @@
     <div class="modal bg-zinc-900 border border-zinc-700 rounded-3xl w-full max-w-3xl mx-4 mb-12 flex flex-col max-h-[88vh]">
       <div class="p-5 border-b border-zinc-700 flex items-start justify-between sticky top-0 bg-zinc-900 z-10">
         <div>
-          <h2 id="modal-title" class="text-2xl font-bold"></h2>
+          <h2 id="modal-title" class="text-2xl font-bold underline decoration-emerald-400 underline-offset-4"></h2>
           <p id="modal-meta" class="text-zinc-400 text-sm mt-1"></p>
         </div>
         <button onclick="closeModal()" class="text-3xl text-zinc-400 hover:text-white">×</button>
       </div>
       <div class="flex-1 p-6 overflow-auto" id="modal-body"></div>
       <div class="p-4 border-t border-zinc-700 bg-zinc-950 flex gap-3">
-        <button class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-black font-medium py-3 rounded-2xl">Reply / Add Note</button>
-        <button onclick="closeModal()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 py-3 rounded-2xl">Close</button>
+        <button class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-black font-medium py-3 rounded-2xl">
+          Reply / Add Note
+        </button>
+        <button onclick="closeModal()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 py-3 rounded-2xl">
+          Close
+        </button>
       </div>
     </div>
   </div>
 
   <script>
-    // Your Live Cases from Sheets
-    const liveCases = [
+    // FRONTEND DATA CONTRACT (backend should match this shape)
+    // Each case object:
+    // {
+    //   id: string,
+    //   title: string,
+    //   clientName: string,
+    //   associateName: string,   // <-- FIXED: real associate, not client
+    //   timestamp: string,       // "5/19/2026 16:47:47"
+    //   tier: string,            // "Level 1 - Quick Read"
+    //   category: string,        // "relationships" | "fitness" | ...
+    //   description: string,
+    //   commentsCount: number,
+    //   likes: number,
+    //   dislikes: number,
+    //   featured: boolean        // true = yellow sticky
+    // }
+
+    // TEMP: mock data so UI is live now.
+    // Backend will later call renderCases(...) with real data.
+    const mockCases = [
       {
+        id: "CASE_a7c16184-225c-4295-8f86-82a01f77396b",
         title: "I need to lose some weight",
-        meta: "Daisy Malibu — 5/19/2026 16:47 — Level 3 - Crisis Session",
-        comments: 12,
-        associate: "Daisy Malibu",
+        clientName: "Daisy Malibu",
+        associateName: "Seidi", // example associate
+        timestamp: "5/19/2026 16:47:47",
+        tier: "Level 3 - Crisis Session",
+        category: "health",
+        description: "I can't stop eating. You put a cake in front of me and I'm going to finish it. What can I do? I don't have the willpower.",
+        commentsCount: 12,
         likes: 8,
         dislikes: 1,
-        description: "I can't stop eating. You put a cake in front of me and I'm going to finish it. What can I do? I don't have the willpower."
+        featured: true
       },
       {
+        id: "CASE_29576e75-2d67-4a5e-b642-9637ab1eb39e",
         title: "How do I get a passport",
-        meta: "Mark Davies — 5/19/2026 17:12 — Level 1 - Quick Read",
-        comments: 5,
-        associate: "Mark Davies",
+        clientName: "Mark Davies",
+        associateName: "Mr Hansen",
+        timestamp: "5/19/2026 17:12:42",
+        tier: "Level 1 - Quick Read",
+        category: "legal",
+        description: "It's worth a few bucks to get the correct path to getting a passport. Can you assist me?",
+        commentsCount: 5,
         likes: 3,
         dislikes: 0,
-        description: "It's worth a few bucks to get the correct path to getting a passport. Can you assist me?"
+        featured: false
       },
       {
+        id: "CASE_d0eb672a-59f3-443c-8ac2-8cd2ede7ee70",
         title: "I need makeup help",
-        meta: "Poppy Smart — 5/20/2026 16:27 — Level 1 - Quick Read",
-        comments: 18,
-        associate: "Poppy Smart",
+        clientName: "Poppy Smart",
+        associateName: "Seidi",
+        timestamp: "5/20/2026 16:27:14",
+        tier: "Level 1 - Quick Read",
+        category: "beauty",
+        description: "My mother never let me wear makeup and I have a new boyfriend. I wanted to surprise him with having makeup on. Can you help me and tell me where to start?",
+        commentsCount: 18,
         likes: 14,
         dislikes: 0,
-        description: "My mother never let me wear makeup and I have a new boyfriend. I wanted to surprise him with having makeup on."
+        featured: false
       },
       {
+        id: "CASE_3e498c6d-a3ca-4b0d-87ba-c83e445ba06b",
         title: "Hiking from Mexico to Canada",
-        meta: "Molly Hemingway — 5/20/2026 16:52 — Level 3 - Crisis Session",
-        comments: 22,
-        associate: "Molly H",
+        clientName: "Molly Hemingway",
+        associateName: "Mr Hansen",
+        timestamp: "5/20/2026 16:52:52",
+        tier: "Level 3 - Crisis Session",
+        category: "travel",
+        description: "I'm going to be hiking from Mexico to Canada and need help choosing my route. Pacific Crest Trail?",
+        commentsCount: 22,
         likes: 11,
         dislikes: 2,
-        description: "I'm going to be hiking from Mexico to Canada and need help choosing my route. Pacific Crest Trail?"
-      },
-      {
-        title: "Can I feed my dog pizza?",
-        meta: "Meagen Taylor — 5/20/2026 18:20 — Level 1 - Quick Read",
-        comments: 9,
-        associate: "Taylor",
-        likes: 7,
-        dislikes: 1,
-        description: "All my life people have said, never feed your dog pizza. I don't see what the big deal is."
-      },
-      // ... (I included the first few - you can keep adding from your list)
-      {
-        title: "Cheese Importation",
-        meta: "Lewis Mazella — 5/21/2026 18:42 — Level 3 - Crisis Session",
-        comments: 15,
-        associate: "Mazella",
-        likes: 6,
-        dislikes: 0,
-        description: "I import cheese from South America... need a new source due to tariffs."
-      },
-      {
-        title: "My Ex says she's pregnant with my baby",
-        meta: "Johnathon Spencer — 5/21/2026 19:22 — Level 1 - Quick Read",
-        comments: 31,
-        associate: "Spencer",
-        likes: 12,
-        dislikes: 3,
-        description: "The months line up. But she's with a new guy now..."
+        featured: true
       }
-      // Add the rest of your cases here following the same format
+      // Backend will provide the full list; this is just enough to see layout.
     ];
 
-    function renderPosts() {
+    let allCases = [];
+    let currentCategory = 'latest';
+
+    function sortCasesForCategory(cases, category) {
+      let sorted = [...cases];
+
+      if (category === 'latest') {
+        sorted.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      } else if (category === 'popular') {
+        sorted.sort((a, b) => (b.commentsCount || 0) - (a.commentsCount || 0));
+      } else {
+        sorted = sorted.filter(c => (c.category || 'other') === category);
+      }
+
+      // Featured (sticky) cases float to the top
+      sorted.sort((a, b) => (b.featured === true) - (a.featured === true));
+
+      return sorted;
+    }
+
+    function renderCases(cases) {
+      allCases = cases || [];
       const container = document.getElementById('posts-container');
       container.innerHTML = '';
 
-      liveCases.forEach(post => {
+      const visible = sortCasesForCategory(allCases, currentCategory);
+
+      visible.forEach(post => {
         const div = document.createElement('div');
-        div.className = `post-card clickable compact-card bg-zinc-900 border border-zinc-800 rounded-2xl flex gap-5 hover:border-emerald-500`;
+        div.className = "post-card clickable compact-card bg-zinc-900 border border-zinc-800 rounded-2xl flex gap-4 items-center cursor-pointer";
+
         div.onclick = () => openPostModal(post);
+
+        const featuredBadge = post.featured
+          ? `<div class="mb-1"><span class="sticky-badge">Featured</span></div>`
+          : '';
 
         div.innerHTML = `
           <div class="flex-1">
-            <h2 class="text-base font-bold mt-1 leading-tight">${post.title}</h2>
-            <p class="text-zinc-400 text-xs mt-1">${post.meta}</p>
-            <div class="flex gap-4 mt-3 text-xs text-zinc-400">
-              <span onclick="event.stopImmediatePropagation(); likePost()" class="flex items-center gap-1 hover:text-emerald-400 cursor-pointer">
-                <i class="fa-solid fa-thumbs-up"></i> ${post.likes}
-              </span>
-              <span onclick="event.stopImmediatePropagation(); dislikePost()" class="flex items-center gap-1 hover:text-red-400 cursor-pointer">
-                <i class="fa-solid fa-thumbs-down"></i> ${post.dislikes}
+            ${featuredBadge}
+            <div class="flex justify-between items-baseline gap-3">
+              <h2 class="text-sm font-semibold leading-snug underline decoration-emerald-400 underline-offset-4">
+                ${post.title}
+              </h2>
+              <span class="text-[10px] text-zinc-500 whitespace-nowrap">
+                ${post.tier}
               </span>
             </div>
+            <p class="text-[11px] text-zinc-400 mt-1">
+              <span class="font-medium text-zinc-200">${post.clientName}</span>
+              <span class="mx-1 text-zinc-500">•</span>
+              ${post.timestamp}
+            </p>
           </div>
-          <div class="flex flex-col items-end justify-center min-w-[110px] text-right border-l border-zinc-700 pl-5">
+          <div class="flex flex-col items-end justify-center min-w-[110px] text-right border-l border-zinc-800 pl-4">
             <div class="text-[10px] uppercase tracking-widest text-zinc-500 mb-0.5">Comments</div>
-            <div class="neon-green text-4xl font-bold leading-none">${post.comments}</div>
-            <div class="text-emerald-400 text-xs mt-1">Associate: <span class="font-medium">${post.associate}</span></div>
+            <div class="neon-green text-3xl font-bold leading-none">${post.commentsCount ?? 0}</div>
+            <div class="text-emerald-400 text-[11px] mt-1">
+              Associate:
+              <span class="font-medium">${post.associateName || '—'}</span>
+            </div>
+            <div class="flex gap-3 mt-2 text-[11px] text-zinc-400">
+              <span onclick="event.stopImmediatePropagation(); likePost()" class="flex items-center gap-1 hover:text-emerald-400 cursor-pointer">
+                <i class="fa-solid fa-thumbs-up text-[11px]"></i> ${post.likes ?? 0}
+              </span>
+              <span onclick="event.stopImmediatePropagation(); dislikePost()" class="flex items-center gap-1 hover:text-red-400 cursor-pointer">
+                <i class="fa-solid fa-thumbs-down text-[11px]"></i> ${post.dislikes ?? 0}
+              </span>
+            </div>
           </div>
         `;
         container.appendChild(div);
       });
+
+      if (visible.length === 0) {
+        container.innerHTML = `
+          <div class="text-sm text-zinc-500 italic py-6 text-center border border-dashed border-zinc-700 rounded-2xl">
+            No cases in this category yet.
+          </div>
+        `;
+      }
     }
 
     function openPostModal(post) {
       document.getElementById('modal-title').textContent = post.title;
-      document.getElementById('modal-meta').textContent = post.meta;
+      document.getElementById('modal-meta').textContent =
+        `${post.clientName} • ${post.timestamp} • ${post.tier} • Associate: ${post.associateName || '—'}`;
 
       document.getElementById('modal-body').innerHTML = `
-        <div class="prose prose-invert text-zinc-300">
-          <p class="text-lg">${post.description}</p>
-          <p class="mt-8 text-sm text-emerald-400">• This case is currently <strong>${post.meta.includes('Pending') ? 'Pending' : 'In Progress'}</strong></p>
+        <div class="prose prose-invert text-zinc-300 max-w-none">
+          <p class="text-base leading-relaxed">${post.description}</p>
         </div>
       `;
 
-      document.getElementById('post-modal').classList.remove('hidden');
-      document.getElementById('post-modal').classList.add('flex');
+      const modal = document.getElementById('post-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
     }
 
     function closeModal() {
@@ -187,17 +301,32 @@
       modal.classList.remove('flex');
     }
 
-    function filterCategory(btn) {
+    function filterCategory(btn, category) {
       document.querySelectorAll('.category-pill').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      currentCategory = category;
+      renderCases(allCases);
     }
 
-    function likePost() { event.stopImmediatePropagation(); alert("👍 Liked"); }
-    function dislikePost() { event.stopImmediatePropagation(); alert("👎 Disliked"); }
-    function goHome() { alert("Back to Mr Hansen Home"); }
+    function likePost() {
+      // placeholder – backend can wire this later
+      console.log("Liked");
+    }
 
-    // Initialize
-    window.onload = renderPosts;
+    function dislikePost() {
+      // placeholder – backend can wire this later
+      console.log("Disliked");
+    }
+
+    // FRONTEND ENTRY POINT
+    // Right now we load mockCases.
+    // When backend is ready, replace this with:
+    //
+    // google.script.run.withSuccessHandler(renderCases).getPublicCases();
+    //
+    window.onload = function () {
+      renderCases(mockCases);
+    };
   </script>
 </body>
 </html>
