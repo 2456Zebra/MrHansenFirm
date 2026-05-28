@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forum - Latest Posts</title>
+  <title>Mr Hansen - Colombia Forum</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
@@ -19,28 +19,38 @@
       transition: all 0.2s ease;
     }
     .post-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 15px rgba(0, 255, 157, 0.15);
+      transform: translateY(-1px);
+      box-shadow: 0 0 12px rgba(0, 255, 157, 0.1);
       border-color: #00ff9d;
+    }
+    .compact-card {
+      padding: 14px 18px;
     }
     .modal {
       animation: fadeIn 0.2s ease;
     }
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
 <body class="bg-zinc-950 text-zinc-200 min-h-screen pb-12">
 
-  <div class="max-w-4xl mx-auto px-4 pt-8">
-    <div class="flex items-center justify-between mb-8">
-      <h1 class="text-3xl font-bold tracking-tight">All Forums</h1>
+  <div class="max-w-4xl mx-auto px-4 pt-6">
+    <!-- Mr Hansen Header -->
+    <div class="flex items-center justify-between mb-6 border-b border-zinc-800 pb-4">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight text-white">Mr Hansen</h1>
+        <p class="text-emerald-400 text-sm">Colombia Expat Community</p>
+      </div>
+      <a href="#" onclick="goHome()" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 text-sm font-medium">
+        <span class="text-lg">←</span> Back To Home
+      </a>
     </div>
 
     <!-- Category Toggles -->
-    <div class="flex flex-wrap gap-2 mb-10" id="category-filters">
+    <div class="flex flex-wrap gap-2 mb-8" id="category-filters">
       <button onclick="filterCategory(this)" class="category-pill active px-5 py-2 rounded-full bg-emerald-500 text-black font-medium">Latest</button>
       <button onclick="filterCategory(this)" class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Romance</button>
       <button onclick="filterCategory(this)" class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Sports</button>
@@ -51,36 +61,27 @@
       <button onclick="filterCategory(this)" class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Health</button>
     </div>
 
-    <!-- Posts List -->
-    <div class="space-y-4" id="posts-container">
-      <!-- Posts will be populated by JS -->
-    </div>
+    <!-- Posts List - Compact -->
+    <div class="space-y-3" id="posts-container"></div>
   </div>
 
   <!-- Post Modal -->
-  <div id="post-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-    <div class="modal bg-zinc-900 border border-zinc-700 rounded-3xl max-w-3xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
-      <!-- Modal Header -->
-      <div class="p-6 border-b border-zinc-700 flex items-start justify-between">
-        <div>
-          <h2 id="modal-title" class="text-2xl font-bold"></h2>
-          <p id="modal-meta" class="text-zinc-400 text-sm mt-2"></p>
+  <div id="post-modal" class="hidden fixed inset-0 bg-black/90 flex items-start justify-center pt-12 z-50 overflow-auto">
+    <div class="modal bg-zinc-900 border border-zinc-700 rounded-3xl w-full max-w-3xl mx-4 mb-12 flex flex-col max-h-[88vh]">
+      <div class="p-5 border-b border-zinc-700 flex items-start justify-between sticky top-0 bg-zinc-900 z-10">
+        <div class="pr-8">
+          <h2 id="modal-title" class="text-2xl font-bold leading-tight"></h2>
+          <p id="modal-meta" class="text-zinc-400 text-sm mt-1"></p>
         </div>
-        <button onclick="closeModal()" class="text-zinc-400 hover:text-white text-2xl leading-none">×</button>
+        <button onclick="closeModal()" class="text-3xl text-zinc-400 hover:text-white">×</button>
       </div>
 
-      <!-- Modal Content -->
-      <div class="flex-1 p-6 overflow-auto">
-        <div id="modal-content" class="prose prose-invert text-zinc-300">
-          <p>This is a simulated thread view. In a real application, this would load the full post and all replies.</p>
-          <br>
-          <p class="text-emerald-400">Neon green comment count means you have unread replies.</p>
-        </div>
+      <div class="flex-1 p-6 overflow-auto" id="modal-body">
+        <!-- Simulated thread content loaded via JS -->
       </div>
 
-      <!-- Modal Footer -->
-      <div class="p-4 border-t border-zinc-700 flex items-center gap-4">
-        <button class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-black font-medium py-3 rounded-2xl">Reply</button>
+      <div class="p-4 border-t border-zinc-700 bg-zinc-950 flex items-center gap-3">
+        <button class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-black font-medium py-3 rounded-2xl">Reply to Thread</button>
         <button onclick="closeModal()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 py-3 rounded-2xl">Close</button>
       </div>
     </div>
@@ -88,85 +89,84 @@
 
   <script>
     const posts = [
-      {
-        sticky: true,
-        title: "PBH Cookbook: Need More Recipes",
-        meta: "Desideria (Moderator) — Jan 10, 2010, 03:08 — Friendly Talkzone",
-        comments: 75,
-        associate: "fitness_princess",
-        likes: 12,
-        dislikes: 3
-      },
-      {
-        sticky: true,
-        title: "Big Help for Those Wanting to Change Visas",
-        meta: "Gator — Sep 8, 2009, 19:03 — Friendly Talkzone",
-        comments: 119,
-        associate: "Matt B",
-        likes: 28,
-        dislikes: 1
-      },
-      {
-        sticky: true,
-        title: "Helpful info for those with a current VISA TEMPORAL CONYUGE O COMPAÑERO PERMANENTE DE NACIONAL COLOMBIANO, REFUGIADO O ASILADO Y VISA DE RESIDENTE.",
-        meta: "adrienne79 — Jan 7, 2010, 05:23 — Visa & Paperwork",
-        comments: 24,
-        associate: "thepieman",
-        likes: 8,
-        dislikes: 0
-      },
-      {
-        update: true,
-        title: "Medellin Radio - New episode up",
-        meta: "The Arepa — Feb 7, 2010, 19:19 — Friendly Talkzone",
-        comments: 3,
-        associate: "Robert Jorge",
-        likes: 5,
-        dislikes: 2
-      },
-      // Add the rest of your posts here (same format)
+      { sticky: true, title: "PBH Cookbook: Need More Recipes", meta: "Desideria (Moderator) — Jan 10, 2010, 03:08 — Friendly Talkzone", comments: 75, associate: "fitness_princess", likes: 12, dislikes: 3 },
+      { sticky: true, title: "Big Help for Those Wanting to Change Visas", meta: "Gator — Sep 8, 2009, 19:03 — Friendly Talkzone", comments: 119, associate: "Matt B", likes: 28, dislikes: 1 },
+      { sticky: true, title: "Helpful info for those with a current VISA TEMPORAL CONYUGE O COMPAÑERO PERMANENTE DE NACIONAL COLOMBIANO...", meta: "adrienne79 — Jan 7, 2010, 05:23 — Visa & Paperwork", comments: 24, associate: "thepieman", likes: 8, dislikes: 0 },
+      { update: true, title: "Medellin Radio - New episode up", meta: "The Arepa — Feb 7, 2010, 19:19 — Friendly Talkzone", comments: 3, associate: "Robert Jorge", likes: 5, dislikes: 2 },
       { title: "3 living room sets for sale..(Pictures)BOGOTA", meta: "Colombiano_81 — Feb 7, 2010, 19:07 — Friendly Talkzone", comments: 12, associate: "Colombiano_81", likes: 19, dislikes: 0 },
       { title: "How to post regular size pics?", meta: "Colombiano_81 — Feb 7, 2010, 18:40 — Friendly Talkzone", comments: 2, associate: "Colombiano_81", likes: 4, dislikes: 1 },
       { title: "Congrats to the Ho Dat Nation", meta: "Bill Turley (Moderator) — Feb 7, 2010, 18:32 — Friendly Talkzone", comments: 20, associate: "RobbieRobNJ", likes: 45, dislikes: 2 },
       { title: "Some Spanish slang / colloquial phrases and words of Colombia. Advertencia. Contains offensive words.", meta: "Learnersrealm — Feb 7, 2010, 17:58 — Friendly Talkzone", comments: 13, associate: "La_Huella", likes: 67, dislikes: 5 },
-      // ... (I shortened for response length - full list is in previous messages)
+      { title: "Colombian Regional channels now on internet.", meta: "webmanco — Feb 7, 2010, 17:40 — Friendly Talkzone", comments: 0, associate: "webmanco", likes: 0, dislikes: 0 },
+      { title: "Colombia Will Export 500 Million Flowers For Valentine's Day", meta: "jimbo67856 — Feb 7, 2010, 16:59 — Friendly Talkzone", comments: 3, associate: "Simon", likes: 3, dislikes: 0 },
+      // ... (more posts as needed)
     ];
 
-    // Render all posts
     function renderPosts() {
       const container = document.getElementById('posts-container');
       container.innerHTML = '';
 
-      posts.forEach((post, index) => {
+      posts.forEach(post => {
         const div = document.createElement('div');
-        div.className = `post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500`;
+        div.className = `post-card clickable compact-card bg-zinc-900 border border-zinc-800 rounded-2xl flex gap-5 hover:border-emerald-500`;
         div.onclick = () => openPostModal(post);
         
         div.innerHTML = `
           <div class="flex-1">
-            ${post.sticky ? `<span class="inline-block px-3 py-1 text-xs font-bold bg-amber-500 text-black rounded">STICKY</span>` : ''}
-            ${post.update ? `<span class="inline-block px-3 py-1 text-xs font-bold bg-emerald-500 text-black rounded">UPDATE</span>` : ''}
-            <h2 class="text-lg font-bold mt-3 leading-tight">${post.title}</h2>
-            <p class="text-zinc-400 text-sm mt-1.5">${post.meta}</p>
-            <div class="flex gap-5 mt-4 text-sm text-zinc-400">
-              <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> ${post.likes}</span>
-              <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> ${post.dislikes}</span>
+            ${post.sticky ? `<span class="inline-block px-3 py-0.5 text-xs font-bold bg-amber-500 text-black rounded">STICKY</span>` : ''}
+            ${post.update ? `<span class="inline-block px-3 py-0.5 text-xs font-bold bg-emerald-500 text-black rounded">UPDATE</span>` : ''}
+            <h2 class="text-base font-bold mt-2 leading-tight">${post.title}</h2>
+            <p class="text-zinc-400 text-xs mt-1">${post.meta}</p>
+            
+            <div class="flex gap-4 mt-3 text-xs text-zinc-400">
+              <span onclick="event.stopImmediatePropagation(); likePost()" class="flex items-center gap-1 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> ${post.likes}</span>
+              <span onclick="event.stopImmediatePropagation(); dislikePost()" class="flex items-center gap-1 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> ${post.dislikes}</span>
             </div>
           </div>
-          <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
-            <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="flex flex-col items-end justify-center min-w-[110px] text-right border-l border-zinc-700 pl-5">
+            <div class="text-[10px] uppercase tracking-widest text-zinc-500 mb-0.5">Comments</div>
             <div class="neon-green text-4xl font-bold leading-none">${post.comments}</div>
-            <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">${post.associate}</span></div>
+            <div class="text-emerald-400 text-xs mt-1">Associate: <span class="font-medium">${post.associate}</span></div>
           </div>
         `;
         container.appendChild(div);
       });
     }
 
-    // Open Modal
     function openPostModal(post) {
       document.getElementById('modal-title').textContent = post.title;
       document.getElementById('modal-meta').textContent = post.meta;
+
+      const body = document.getElementById('modal-body');
+      body.innerHTML = `
+        <div class="prose prose-invert text-zinc-300 max-w-none">
+          <p>After a little break for holidays I'm back now and ready to get started sending in the recipes. I need around 100, have perhaps 30-35 publishable recipes of both Colombian recipes with adaptations and international cooking adapted to what's available in Colombia.</p>
+          <p class="mt-4">All recipes will be accredited.</p>
+          <p class="mt-4">If you want to be part of this please PM me for the password and username.</p>
+          <p class="mt-6 text-emerald-400">Cheers</p>
+          
+          <div class="mt-8 border-t border-zinc-700 pt-6">
+            <p class="text-emerald-400 font-medium">Desideria (Moderator) says on Jan 10, 2010, 07:53:</p>
+            <p>I don't want your recipes either. Send them to the troll book.</p>
+            <p class="text-xs text-zinc-500 mt-1">A fronte praecipitium a tergo lupi • 1 funny, 1 helpful</p>
+          </div>
+          
+          <div class="mt-6">
+            <p class="text-emerald-400 font-medium">viajero_del_sur (newbie) says on Jan 10, 2010, 10:44:</p>
+            <p>So far, in two years of blessed matrimony... [full comment as provided]</p>
+            <p class="text-xs text-zinc-500 mt-1">2 funny, 1 helpful</p>
+          </div>
+          
+          <div class="mt-6">
+            <p class="text-emerald-400 font-medium">Darloup says on Jan 10, 2010, 22:01:</p>
+            <p>Desi, after Nelly's recipe... [full comment]</p>
+            <p class="text-xs text-zinc-500 mt-1">0 funny, 0 helpful</p>
+          </div>
+          
+          <!-- More simulated replies can be added -->
+        </div>
+      `;
+
       document.getElementById('post-modal').classList.remove('hidden');
       document.getElementById('post-modal').classList.add('flex');
     }
@@ -177,11 +177,14 @@
       modal.classList.remove('flex');
     }
 
-    // Category Filter (basic)
     function filterCategory(btn) {
       document.querySelectorAll('.category-pill').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     }
+
+    function likePost() { alert("👍 Liked! (In real app this would update count)"); }
+    function dislikePost() { alert("👎 Disliked!"); }
+    function goHome() { alert("Going back to Mr Hansen Home Page..."); }
 
     // Initialize
     renderPosts();
