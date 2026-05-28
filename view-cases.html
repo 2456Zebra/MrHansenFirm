@@ -13,23 +13,22 @@
     }
     .neon-green {
       color: #00ff9d;
-      text-shadow: 0 0 8px #00ff9d;
+      text-shadow: 0 0 4px #00ff9d;
     }
     .post-card {
       transition: all 0.2s ease;
     }
     .post-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 0 20px rgba(0, 255, 157, 0.15);
+      box-shadow: 0 0 15px rgba(0, 255, 157, 0.1);
+      border-color: #00ff9d;
     }
-    .category-pill {
-      transition: all 0.2s ease;
-    }
+    .clickable { cursor: pointer; }
   </style>
 </head>
 <body class="bg-zinc-950 text-zinc-200 min-h-screen pb-12">
 
-  <div class="max-w-5xl mx-auto px-4 pt-8">
+  <div class="max-w-4xl mx-auto px-4 pt-8">
     <!-- Header -->
     <div class="flex items-center justify-between mb-8">
       <h1 class="text-3xl font-bold tracking-tight">All Forums</h1>
@@ -37,79 +36,362 @@
 
     <!-- Category Toggles -->
     <div class="flex flex-wrap gap-2 mb-10">
-      <button class="category-pill px-5 py-2 rounded-full bg-emerald-500 text-black font-medium">Latest</button>
-      <button class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Romance</button>
-      <button class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Sports</button>
-      <button class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Travel</button>
-      <button class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Visa & Paperwork</button>
-      <button class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Buy/Sell/Rent</button>
-      <button class="category-pill px-5 py-2 rounded-full bg-emerald-600 text-white">Friendly Talkzone</button>
-      <button class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Health</button>
+      <button class="px-5 py-2 rounded-full bg-emerald-500 text-black font-medium">Latest</button>
+      <button class="px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Romance</button>
+      <button class="px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Sports</button>
+      <button class="px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Travel</button>
+      <button class="px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Visa & Paperwork</button>
+      <button class="px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Buy/Sell/Rent</button>
+      <button class="px-5 py-2 rounded-full bg-emerald-600 text-white">Friendly Talkzone</button>
+      <button class="px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Health</button>
     </div>
 
     <!-- Posts List -->
-    <div class="space-y-6">
+    <div class="space-y-4">
 
-      <!-- Sticky Post -->
-      <div class="post-card bg-zinc-900 border border-zinc-800 rounded-xl p-6 flex gap-6">
+      <!-- 1 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
         <div class="flex-1">
           <span class="inline-block px-3 py-1 text-xs font-bold bg-amber-500 text-black rounded">STICKY</span>
-          <h2 class="text-xl font-bold mt-3 leading-tight">PBH Cookbook: Need More Recipes</h2>
-          <p class="text-zinc-400 text-sm mt-2">
-            Desideria (Moderator) — Jan 10, 2010, 03:08 — Friendly Talkzone
-          </p>
-        </div>
-        
-        <div class="flex flex-col items-end justify-center min-w-[140px] text-right">
-          <div class="neon-green text-5xl font-bold leading-none">75</div>
-          <div class="text-emerald-400 text-sm mt-1">Associate: <span class="font-medium">fitness_princess</span></div>
-          
-          <div class="flex gap-4 mt-4 text-sm">
-            <span class="flex items-center gap-1"><i class="fa-solid fa-thumbs-up text-emerald-400"></i> 12</span>
-            <span class="flex items-center gap-1"><i class="fa-solid fa-thumbs-down"></i> 3</span>
+          <h2 class="text-lg font-bold mt-3 leading-tight">PBH Cookbook: Need More Recipes</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">Desideria (Moderator) — Jan 10, 2010, 03:08 — Friendly Talkzone</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 12</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 3</span>
           </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">75</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">fitness_princess</span></div>
         </div>
       </div>
 
-      <!-- More Posts -->
-      <div class="post-card bg-zinc-900 border border-zinc-800 rounded-xl p-6 flex gap-6">
+      <!-- 2 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
         <div class="flex-1">
           <span class="inline-block px-3 py-1 text-xs font-bold bg-amber-500 text-black rounded">STICKY</span>
-          <h2 class="text-xl font-bold mt-3 leading-tight">Big Help for Those Wanting to Change Visas</h2>
-          <p class="text-zinc-400 text-sm mt-2">
-            Gator — Sep 8, 2009, 19:03 — Friendly Talkzone
-          </p>
-        </div>
-        
-        <div class="flex flex-col items-end justify-center min-w-[140px] text-right">
-          <div class="neon-green text-5xl font-bold leading-none">119</div>
-          <div class="text-emerald-400 text-sm mt-1">Associate: <span class="font-medium">Matt B</span></div>
-          <div class="flex gap-4 mt-4 text-sm">
-            <span class="flex items-center gap-1"><i class="fa-solid fa-thumbs-up text-emerald-400"></i> 28</span>
-            <span class="flex items-center gap-1"><i class="fa-solid fa-thumbs-down"></i> 1</span>
+          <h2 class="text-lg font-bold mt-3 leading-tight">Big Help for Those Wanting to Change Visas</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">Gator — Sep 8, 2009, 19:03 — Friendly Talkzone</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 28</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 1</span>
           </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">119</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">Matt B</span></div>
         </div>
       </div>
 
-      <div class="post-card bg-zinc-900 border border-zinc-800 rounded-xl p-6 flex gap-6">
+      <!-- 3 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
         <div class="flex-1">
-          <h2 class="text-xl font-bold leading-tight">3 living room sets for sale..(Pictures) BOGOTA</h2>
-          <p class="text-zinc-400 text-sm mt-2">
-            Colombiano_81 — Feb 7, 2010, 19:07 — Friendly Talkzone
-          </p>
-        </div>
-        
-        <div class="flex flex-col items-end justify-center min-w-[140px] text-right">
-          <div class="neon-green text-5xl font-bold leading-none">12</div>
-          <div class="text-emerald-400 text-sm mt-1">Associate: <span class="font-medium">Colombiano_81</span></div>
-          <div class="flex gap-4 mt-4 text-sm">
-            <span class="flex items-center gap-1"><i class="fa-solid fa-thumbs-up text-emerald-400"></i> 19</span>
-            <span class="flex items-center gap-1"><i class="fa-solid fa-thumbs-down"></i> 0</span>
+          <span class="inline-block px-3 py-1 text-xs font-bold bg-amber-500 text-black rounded">STICKY</span>
+          <h2 class="text-lg font-bold mt-3 leading-tight">Helpful info for those with a current VISA TEMPORAL CONYUGE O COMPAÑERO PERMANENTE DE NACIONAL COLOMBIANO, REFUGIADO O ASILADO Y VISA DE RESIDENTE.</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">adrienne79 — Jan 7, 2010, 05:23 — Visa & Paperwork</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 8</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 0</span>
           </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">24</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">thepieman</span></div>
         </div>
       </div>
 
-      <!-- Add more posts following the same structure -->
+      <!-- 4 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <span class="inline-block px-3 py-1 text-xs font-bold bg-emerald-500 text-black rounded">UPDATE</span>
+          <h2 class="text-lg font-bold mt-3 leading-tight">Medellin Radio - New episode up</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">The Arepa — Feb 7, 2010, 19:19 — Friendly Talkzone</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 5</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 2</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">3</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">Robert Jorge</span></div>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <h2 class="text-lg font-bold mt-3 leading-tight">3 living room sets for sale..(Pictures)BOGOTA</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">Colombiano_81 — Feb 7, 2010, 19:07 — Friendly Talkzone</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 19</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 0</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">12</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">Colombiano_81</span></div>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <h2 class="text-lg font-bold mt-3 leading-tight">How to post regular size pics?</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">Colombiano_81 — Feb 7, 2010, 18:40 — Friendly Talkzone</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 4</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 1</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">2</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">Colombiano_81</span></div>
+        </div>
+      </div>
+
+      <!-- 7 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <h2 class="text-lg font-bold mt-3 leading-tight">Congrats to the Ho Dat Nation</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">Bill Turley (Moderator) — Feb 7, 2010, 18:32 — Friendly Talkzone</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 45</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 2</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">20</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">RobbieRobNJ</span></div>
+        </div>
+      </div>
+
+      <!-- 8 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <h2 class="text-lg font-bold mt-3 leading-tight">Some Spanish slang / colloquial phrases and words of Colombia. Advertencia. Contains offensive words.</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">Learnersrealm — Feb 7, 2010, 17:58 — Friendly Talkzone</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 67</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 5</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">13</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">La_Huella</span></div>
+        </div>
+      </div>
+
+      <!-- 9 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <h2 class="text-lg font-bold mt-3 leading-tight">Colombian Regional channels now on internet.</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">webmanco — Feb 7, 2010, 17:40 — Friendly Talkzone</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 0</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 0</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">0</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">webmanco</span></div>
+        </div>
+      </div>
+
+      <!-- 10 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <h2 class="text-lg font-bold mt-3 leading-tight">Colombia Will Export 500 Million Flowers For Valentine's Day</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">jimbo67856 — Feb 7, 2010, 16:59 — Friendly Talkzone</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 3</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 0</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">3</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">Simon</span></div>
+        </div>
+      </div>
+
+      <!-- 11 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <h2 class="text-lg font-bold mt-3 leading-tight">Learning English in Medellin</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">tabla — Feb 7, 2010, 16:57 — Friendly Talkzone</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 3</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 1</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">3</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">clyde</span></div>
+        </div>
+      </div>
+
+      <!-- 12 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <h2 class="text-lg font-bold mt-3 leading-tight">Health Care Reform And "Ya mean I gotta pay"? Hueputa!</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">Atrevido — Feb 7, 2010, 16:00 — Friendly Talkzone</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 1</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 0</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">1</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">La_Huella</span></div>
+        </div>
+      </div>
+
+      <!-- 13 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <h2 class="text-lg font-bold mt-3 leading-tight">themedellinmap.com - Medellin es una Ganga</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">englishman — Feb 7, 2010, 14:26 — Travel tips</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 2</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 0</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">2</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">makopp5</span></div>
+        </div>
+      </div>
+
+      <!-- 14 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <h2 class="text-lg font-bold mt-3 leading-tight">Hiring English Teachers (Bogota, Medellin)</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">henrytraveler — Feb 7, 2010, 13:00 — Friendly Talkzone</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 7</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 1</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">7</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">yummyj</span></div>
+        </div>
+      </div>
+
+      <!-- 15 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <h2 class="text-lg font-bold mt-3 leading-tight">Super Bowl Broadcast in Medellin?</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">luck4unme — Feb 7, 2010, 12:13 — Friendly Talkzone</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 14</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 2</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">14</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">lpdiver</span></div>
+        </div>
+      </div>
+
+      <!-- 16 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <h2 class="text-lg font-bold mt-3 leading-tight">National Hick Day Today!!!!</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">yummyj — Feb 7, 2010, 11:41 — Friendly Talkzone</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 53</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 4</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">53</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">Matt B</span></div>
+        </div>
+      </div>
+
+      <!-- 17 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <h2 class="text-lg font-bold mt-3 leading-tight">State of emergency declared in Cali over dengue outbreak</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">jimbo67856 — Feb 7, 2010, 10:58 — Friendly Talkzone</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 16</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 1</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">16</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">morgum</span></div>
+        </div>
+      </div>
+
+      <!-- 18 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <h2 class="text-lg font-bold mt-3 leading-tight">I am looking for a long term 2 / 3 bed Apartment in Bogota (North)</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">alezzz — Feb 7, 2010, 10:08 — Buy, Sell & Rent</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 3</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 0</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">3</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">alezzz</span></div>
+        </div>
+      </div>
+
+      <!-- 19 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <h2 class="text-lg font-bold mt-3 leading-tight">BBC next weekend in Bogota? Anyone??</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">goin_south — Feb 7, 2010, 09:14 — Friendly Talkzone</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 5</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 1</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">5</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">Gringo_Colin</span></div>
+        </div>
+      </div>
+
+      <!-- 20 -->
+      <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
+        <div class="flex-1">
+          <h2 class="text-lg font-bold mt-3 leading-tight">ARRIENDO APTO SIN AMOBLAR CALLE 156 CRA 9 EN BOGOTA</h2>
+          <p class="text-zinc-400 text-sm mt-1.5">Osamayor — Feb 7, 2010, 08:14 — Buy, Sell & Rent</p>
+          <div class="flex gap-5 mt-4 text-sm text-zinc-400">
+            <span class="flex items-center gap-1.5 hover:text-emerald-400 cursor-pointer"><i class="fa-solid fa-thumbs-up"></i> 1</span>
+            <span class="flex items-center gap-1.5 hover:text-red-400 cursor-pointer"><i class="fa-solid fa-thumbs-down"></i> 0</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end justify-center min-w-[120px] text-right border-l border-zinc-700 pl-6">
+          <div class="text-xs uppercase tracking-widest text-zinc-500 mb-1">Comments</div>
+          <div class="neon-green text-4xl font-bold leading-none">1</div>
+          <div class="text-emerald-400 text-xs mt-2">Associate: <span class="font-medium">webmanco</span></div>
+        </div>
+      </div>
 
     </div>
   </div>
