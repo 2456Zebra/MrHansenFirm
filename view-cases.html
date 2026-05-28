@@ -24,6 +24,16 @@
       border-color: #00ff9d;
     }
     .clickable { cursor: pointer; }
+    
+    .category-pill {
+      transition: all 0.2s ease;
+    }
+    .category-pill.active {
+      background-color: #10b981;
+      color: black;
+      font-weight: 600;
+      box-shadow: 0 0 10px #34d399;
+    }
   </style>
 </head>
 <body class="bg-zinc-950 text-zinc-200 min-h-screen pb-12">
@@ -35,19 +45,19 @@
     </div>
 
     <!-- Category Toggles -->
-    <div class="flex flex-wrap gap-2 mb-10">
-      <button class="px-5 py-2 rounded-full bg-emerald-500 text-black font-medium">Latest</button>
-      <button class="px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Romance</button>
-      <button class="px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Sports</button>
-      <button class="px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Travel</button>
-      <button class="px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Visa & Paperwork</button>
-      <button class="px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Buy/Sell/Rent</button>
-      <button class="px-5 py-2 rounded-full bg-emerald-600 text-white">Friendly Talkzone</button>
-      <button class="px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Health</button>
+    <div class="flex flex-wrap gap-2 mb-10" id="category-filters">
+      <button onclick="filterCategory(this)" class="category-pill active px-5 py-2 rounded-full bg-emerald-500 text-black font-medium">Latest</button>
+      <button onclick="filterCategory(this)" class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Romance</button>
+      <button onclick="filterCategory(this)" class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Sports</button>
+      <button onclick="filterCategory(this)" class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Travel</button>
+      <button onclick="filterCategory(this)" class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Visa & Paperwork</button>
+      <button onclick="filterCategory(this)" class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Buy/Sell/Rent</button>
+      <button onclick="filterCategory(this)" class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Friendly Talkzone</button>
+      <button onclick="filterCategory(this)" class="category-pill px-5 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700">Health</button>
     </div>
 
     <!-- Posts List -->
-    <div class="space-y-4">
+    <div class="space-y-4" id="posts-container">
 
       <!-- 1 -->
       <div onclick="window.location.href='#'" class="post-card clickable bg-zinc-900 border border-zinc-800 rounded-2xl p-5 flex gap-6 hover:border-emerald-500">
@@ -395,6 +405,15 @@
 
     </div>
   </div>
+
+  <script>
+    function filterCategory(btn) {
+      document.querySelectorAll('.category-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      console.log('Showing category:', btn.textContent);
+      // Future: Add real filtering logic here
+    }
+  </script>
 
 </body>
 </html>
