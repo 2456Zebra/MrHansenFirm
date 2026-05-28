@@ -52,7 +52,10 @@
     <!-- HEADER -->
     <div class="flex items-center justify-between mb-6 border-b border-zinc-800 pb-4">
       <div>
-        <h1 class="text-4xl font-extrabold tracking-tight neon-green">Mr Hansen</h1>
+        <h1 class="text-4xl font-extrabold tracking-tight" style="color:#00ff9d;">
+  Mr Hansen
+</h1>
+
         <p class="text-emerald-400 text-sm mt-1">We Solve Problems!</p>
       </div>
 
@@ -192,9 +195,9 @@
 
             ${post.featured ? `<span class="sticky-badge">Featured</span>` : ""}
 
-            <h2 class="text-[17px] font-extrabold neon-green underline decoration-emerald-400 underline-offset-4 leading-snug">
-              ${post.title}
-            </h2>
+            <h2 class="text-[18px] font-extrabold leading-snug underline decoration-emerald-400 underline-offset-4"
+    style="color:#00ff9d;">
+
 
             <p class="text-[11px] text-zinc-400 mt-0.5">
               ${post.clientName} • ${post.timestamp} • ${post.tier} • Associate: ${post.associateName}
