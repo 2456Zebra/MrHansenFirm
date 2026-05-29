@@ -22,6 +22,28 @@
         padding: 0;
     }
 
+    /* FULL SCREEN LOADING OVERLAY */
+    #loadingOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .loading-text {
+        font-size: 22px;
+        color: var(--neon);
+        font-family: monospace;
+        text-shadow: 0 0 8px var(--neon);
+        letter-spacing: 0.1em;
+    }
+
     a.back-link {
         display: inline-block;
         margin: 20px;
@@ -149,6 +171,29 @@
         line-height: 1.4;
     }
 
+    .reply-input {
+        width: 100%;
+        background: #111;
+        border: 1px solid var(--neon);
+        color: var(--neon);
+        padding: 8px;
+        border-radius: 4px;
+        margin-top: 8px;
+    }
+
+    .reply-submit {
+        margin-top: 6px;
+        background: var(--neon);
+        color: #000;
+        padding: 8px 14px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 13px;
+        box-shadow: 0 0 8px var(--neon);
+    }
+
     .rating-numbers span {
         display: inline-block;
         margin-right: 8px;
@@ -207,6 +252,16 @@
         font-size: 14px;
     }
 
+    .add-comment-input {
+        width: 100%;
+        background: #111;
+        border: 1px solid var(--neon);
+        color: var(--neon);
+        padding: 8px;
+        border-radius: 4px;
+        margin-top: 8px;
+    }
+
     .add-comment-btn {
         margin-top: 6px;
         background: var(--neon);
@@ -234,6 +289,11 @@
 
 <body>
 
+<!-- SINGLE FULL-SCREEN LOADING OVERLAY -->
+<div id="loadingOverlay">
+    <div class="loading-text">LOADING CASE FILE...</div>
+</div>
+
 <a class="back-link" href="view-cases.html">&lt; Back to Cases</a>
 
 <div class="top-buttons">
@@ -247,7 +307,7 @@
     <div class="case-row">
         <div class="label-col">CASE:</div>
         <div class="value-col">
-            <div class="case-title" id="caseTitle">Loading...</div>
+            <div class="case-title" id="caseTitle"></div>
         </div>
     </div>
 
@@ -255,38 +315,39 @@
     <div class="case-row">
         <div class="label-col">DETAILS:</div>
         <div class="value-col">
-            <div class="case-description" id="caseDescription">Loading...</div>
-            <div class="case-meta" id="caseMeta">Loading...</div>
+            <div class="case-description" id="caseDescription"></div>
+            <div class="case-meta" id="caseMeta"></div>
         </div>
     </div>
 
-    <!-- ASSOCIATE ASSIGNED TO CASE -->
+    <!-- ASSOCIATE -->
     <div class="case-row">
         <div class="label-col">ASSOCIATE ASSIGNED TO CASE:</div>
         <div class="value-col">
             <div class="associate-block">
                 <img id="associateImage" src="default.jpg">
                 <div class="associate-info">
-                    <div class="name" id="associateName">Loading...</div>
-                    <div class="hir" id="associateHIR">HIR: --</div>
+                    <div class="name" id="associateName"></div>
+                    <div class="hir" id="associateHIR"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ASSOCIATE’S REPLY -->
+    <!-- ASSOCIATE REPLY -->
     <div class="case-row">
         <div class="label-col">ASSOCIATE’S REPLY:</div>
         <div class="value-col">
             <div class="reply-box">
-                <div class="reply-text" id="associateReply">
-                    Associate reply goes here.
-                </div>
+                <div class="reply-text" id="associateReply"></div>
+
+                <textarea id="associateReplyInput" class="reply-input" placeholder="Write your reply..."></textarea>
+                <button class="reply-submit" onclick="submitReply()">Submit Reply</button>
             </div>
         </div>
     </div>
 
-    <!-- RATE THIS ASSOCIATE -->
+    <!-- RATE ASSOCIATE -->
     <div class="case-row">
         <div class="label-col">RATE THIS ASSOCIATE:</div>
         <div class="value-col">
@@ -314,10 +375,11 @@
         <div class="value-col">
             <div class="comments-section">
                 <h3>Comments</h3>
-                <div id="commentsList">No comments yet.</div>
-                <button class="add-comment-btn" onclick="alert('Comments backend coming next.')">
-                    Add Comment
-                </button>
+
+                <div id="commentsList"></div>
+
+                <textarea id="newComment" class="add-comment-input" placeholder="Write a comment..."></textarea>
+                <button class="add-comment-btn" onclick="submitComment()">Add Comment</button>
             </div>
         </div>
     </div>
@@ -325,39 +387,157 @@
 </div>
 
 <script>
-const urlParams = new URLSearchParams(window.location.search);
-const caseId = urlParams.get("id");
+const caseId = new URLSearchParams(window.location.search).get("id");
+const API = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
 
-fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec?action=getPublicCases")
+function hideLoading() {
+    document.getElementById("loadingOverlay").style.display = "none";
+}
+
+/* LOAD CASE */
+fetch(API + "?action=getPublicCases")
   .then(r => r.json())
   .then(data => {
-      const post = data.find(p => p.id == caseId);
+      const post = data.cases.find(p => p.id === caseId);
 
       if (!post) {
-          document.getElementById("caseTitle").textContent = "Case not found.";
-          document.getElementById("caseDescription").textContent = "";
-          document.getElementById("caseMeta").textContent = "";
+          alert("Case not found.");
+          hideLoading();
           return;
       }
 
       document.getElementById("caseTitle").textContent = post.title;
       document.getElementById("caseDescription").textContent = post.description;
       document.getElementById("caseMeta").textContent =
-          `By ${post.clientName || "Client"} on ${post.timestamp || ""} • ${post.tier || ""}`;
+          `By ${post.clientDisplayName} • ${post.tier}`;
 
-      document.getElementById("associateName").textContent = post.associateName || "Unknown";
-      document.getElementById("associateHIR").textContent = "HIR: " + (post.hir || "--");
+      document.getElementById("associateName").textContent = post.associateName;
+      document.getElementById("associateHIR").textContent = "HIR: " + post.hir;
       document.getElementById("associateImage").src = post.photo || "default.jpg";
 
-      document.getElementById("upCount").textContent = post.likes || 0;
-      document.getElementById("downCount").textContent = post.dislikes || 0;
+      document.getElementById("associateReply").textContent = post.associateReply || "No reply yet.";
+
+      document.getElementById("upCount").textContent = post.likes;
+      document.getElementById("downCount").textContent = post.dislikes;
+
+      loadComments();
+
+      hideLoading();
   });
 
+/* SUBMIT ASSOCIATE REPLY */
+function submitReply() {
+    const reply = document.getElementById("associateReplyInput").value;
+
+    fetch(API, {
+        method: "POST",
+        body: JSON.stringify({
+            action: "submitAssociateReply",
+            caseId: caseId,
+            reply: reply
+        })
+    })
+    .then(r => r.json())
+    .then(res => {
+        if (res.success) {
+            document.getElementById("associateReply").textContent = reply;
+            document.getElementById("associateReplyInput").value = "";
+        } else {
+            alert("Error saving reply.");
+        }
+    });
+}
+
+/* THUMBS */
+document.getElementById("thumbUp").onclick = () => {
+    fetch(API, {
+        method: "POST",
+        body: JSON.stringify({
+            action: "thumbUpCase",
+            caseId: caseId
+        })
+    })
+    .then(r => r.json())
+    .then(res => {
+        if (res.success) {
+            document.getElementById("upCount").textContent = res.likes;
+        }
+    });
+};
+
+document.getElementById("thumbDown").onclick = () => {
+    fetch(API, {
+        method: "POST",
+        body: JSON.stringify({
+            action: "thumbDownCase",
+            caseId: caseId
+        })
+    })
+    .then(r => r.json())
+    .then(res => {
+        if (res.success) {
+            document.getElementById("downCount").textContent = res.dislikes;
+        }
+    });
+};
+
+/* RATING */
 document.getElementById("ratingNumbers").addEventListener("click", (e) => {
     if (e.target.tagName !== "SPAN") return;
+
     document.querySelectorAll("#ratingNumbers span").forEach(s => s.classList.remove("selected"));
     e.target.classList.add("selected");
+
+    fetch(API, {
+        method: "POST",
+        body: JSON.stringify({
+            action: "rateCase",
+            caseId: caseId,
+            rating: e.target.dataset.score
+        })
+    });
 });
+
+/* COMMENTS */
+function loadComments() {
+    fetch(API + "?action=getForumComments&threadId=" + caseId)
+      .then(r => r.json())
+      .then(res => {
+          const list = document.getElementById("commentsList");
+          list.innerHTML = "";
+
+          res.comments.forEach(c => {
+              const div = document.createElement("div");
+              div.className = "comment";
+              div.innerHTML = `
+                  <div class="comment-author">${c.username}</div>
+                  <div class="comment-text">${c.body}</div>
+              `;
+              list.appendChild(div);
+          });
+      });
+}
+
+function submitComment() {
+    const text = document.getElementById("newComment").value;
+
+    fetch(API, {
+        method: "POST",
+        body: JSON.stringify({
+            action: "postForumComment",
+            threadId: caseId,
+            username: "Community User",
+            body: text
+        })
+    })
+    .then(r => r.json())
+    .then(res => {
+        if (res.success) {
+            document.getElementById("newComment").value = "";
+            loadComments();
+        }
+    });
+}
 </script>
 
 </body>
