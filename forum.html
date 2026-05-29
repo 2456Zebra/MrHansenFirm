@@ -31,7 +31,6 @@
         text-shadow: 0 0 6px var(--neon);
     }
 
-    /* TOP BUTTONS */
     .top-buttons {
         width: 90%;
         max-width: 1100px;
@@ -54,7 +53,6 @@
         text-shadow: 0 0 6px var(--neon);
     }
 
-    /* MAIN WRAPPER */
     .case-wrapper {
         width: 90%;
         max-width: 1100px;
@@ -64,31 +62,27 @@
         border: 2px solid var(--neon);
         border-radius: 10px;
         box-shadow: 0 0 20px rgba(0,255,157,0.2);
-        display: flex;
-        gap: 16px; /* tightened */
     }
 
-    /* LEFT COLUMN (labels only) */
-    .left-col {
-        width: 300px;
+    .case-row {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 14px;
+        align-items: flex-start;
+    }
+
+    .label-col {
+        width: 230px;
         flex-shrink: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 18px; /* tightened */
-    }
-
-    .label {
         font-size: 12px;
         color: var(--neon);
         letter-spacing: 0.05em;
+        text-transform: uppercase;
+        padding-top: 2px;
     }
 
-    /* RIGHT COLUMN (content only) */
-    .right-col {
+    .value-col {
         flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 18px; /* tightened */
     }
 
     .case-title {
@@ -102,16 +96,15 @@
         font-size: 16px;
         line-height: 1.45;
         color: var(--text-dim);
+        margin-bottom: 4px;
     }
 
     .case-meta {
         font-size: 12px;
         color: #999;
         font-style: italic;
-        margin-top: -6px; /* tighten under description */
     }
 
-    /* ASSOCIATE INFO */
     .associate-block {
         background: var(--panel2);
         border: 1px solid #222;
@@ -143,12 +136,11 @@
         color: #aaa;
     }
 
-    /* ASSOCIATE REPLY */
     .reply-box {
         background: var(--panel2);
         border: 1px solid #222;
         border-radius: 6px;
-        padding: 12px;
+        padding: 10px;
     }
 
     .reply-text {
@@ -157,7 +149,6 @@
         line-height: 1.4;
     }
 
-    /* RATING */
     .rating-numbers span {
         display: inline-block;
         margin-right: 8px;
@@ -176,7 +167,6 @@
         color: #000;
     }
 
-    /* THUMBS */
     .thumbs {
         display: flex;
         align-items: center;
@@ -191,7 +181,6 @@
         color: var(--neon);
     }
 
-    /* COMMENTS */
     .comments-section h3 {
         color: var(--neon);
         margin-bottom: 6px;
@@ -231,17 +220,13 @@
         box-shadow: 0 0 8px var(--neon);
     }
 
-    /* MOBILE STACKING */
     @media (max-width: 800px) {
-        .case-wrapper {
+        .case-row {
             flex-direction: column;
+            gap: 4px;
         }
-        .left-col {
+        .label-col {
             width: 100%;
-            gap: 12px;
-        }
-        .label {
-            margin-bottom: -6px;
         }
     }
 </style>
@@ -258,77 +243,91 @@
 
 <div class="case-wrapper">
 
-    <!-- LEFT COLUMN (labels only) -->
-    <div class="left-col">
-        <div class="label">CASE:</div>
-        <div class="label">DETAILS:</div>
-        <div class="label">ASSOCIATE ASSIGNED TO CASE:</div>
-        <div class="label">ASSOCIATE’S REPLY:</div>
-        <div class="label">RATE THIS ASSOCIATE:</div>
-        <div class="label">CASE RATING:</div>
-        <div class="label">COMMENTS:</div>
+    <!-- CASE -->
+    <div class="case-row">
+        <div class="label-col">CASE:</div>
+        <div class="value-col">
+            <div class="case-title" id="caseTitle">Loading...</div>
+        </div>
     </div>
 
-    <!-- RIGHT COLUMN (content only) -->
-    <div class="right-col">
+    <!-- DETAILS -->
+    <div class="case-row">
+        <div class="label-col">DETAILS:</div>
+        <div class="value-col">
+            <div class="case-description" id="caseDescription">Loading...</div>
+            <div class="case-meta" id="caseMeta">Loading...</div>
+        </div>
+    </div>
 
-        <!-- CASE TITLE -->
-        <div class="case-title" id="caseTitle">Loading...</div>
-
-        <!-- DESCRIPTION -->
-        <div class="case-description" id="caseDescription">Loading...</div>
-
-        <!-- META (no label) -->
-        <div class="case-meta" id="caseMeta">Loading...</div>
-
-        <!-- ASSOCIATE INFO -->
-        <div class="associate-block">
-            <img id="associateImage" src="default.jpg">
-            <div class="associate-info">
-                <div class="name" id="associateName">Loading...</div>
-                <div class="hir" id="associateHIR">HIR: --</div>
+    <!-- ASSOCIATE ASSIGNED TO CASE -->
+    <div class="case-row">
+        <div class="label-col">ASSOCIATE ASSIGNED TO CASE:</div>
+        <div class="value-col">
+            <div class="associate-block">
+                <img id="associateImage" src="default.jpg">
+                <div class="associate-info">
+                    <div class="name" id="associateName">Loading...</div>
+                    <div class="hir" id="associateHIR">HIR: --</div>
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- ASSOCIATE REPLY -->
-        <div class="reply-box">
-            <div class="reply-text" id="associateReply">
-                Associate reply goes here.
+    <!-- ASSOCIATE’S REPLY -->
+    <div class="case-row">
+        <div class="label-col">ASSOCIATE’S REPLY:</div>
+        <div class="value-col">
+            <div class="reply-box">
+                <div class="reply-text" id="associateReply">
+                    Associate reply goes here.
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- RATING -->
-        <div class="rating-numbers" id="ratingNumbers">
-            <span data-score="1">1</span><span data-score="2">2</span><span data-score="3">3</span><span data-score="4">4</span><span data-score="5">5</span>
-            <span data-score="6">6</span><span data-score="7">7</span><span data-score="8">8</span><span data-score="9">9</span><span data-score="10">10</span>
+    <!-- RATE THIS ASSOCIATE -->
+    <div class="case-row">
+        <div class="label-col">RATE THIS ASSOCIATE:</div>
+        <div class="value-col">
+            <div class="rating-numbers" id="ratingNumbers">
+                <span data-score="1">1</span><span data-score="2">2</span><span data-score="3">3</span><span data-score="4">4</span><span data-score="5">5</span>
+                <span data-score="6">6</span><span data-score="7">7</span><span data-score="8">8</span><span data-score="9">9</span><span data-score="10">10</span>
+            </div>
         </div>
+    </div>
 
-        <!-- THUMBS -->
-        <div class="thumbs">
-            <div id="thumbUp">👍 <span id="upCount">0</span></div>
-            <div id="thumbDown">👎 <span id="downCount">0</span></div>
+    <!-- CASE RATING -->
+    <div class="case-row">
+        <div class="label-col">CASE RATING:</div>
+        <div class="value-col">
+            <div class="thumbs">
+                <div id="thumbUp">👍 <span id="upCount">0</span></div>
+                <div id="thumbDown">👎 <span id="downCount">0</span></div>
+            </div>
         </div>
+    </div>
 
-        <!-- COMMENTS -->
-        <div class="comments-section">
-            <h3>COMMENTS</h3>
-            <div id="commentsList">No comments yet.</div>
-
-            <button class="add-comment-btn" onclick="alert('Comments backend coming next.')">
-                Add Comment
-            </button>
+    <!-- COMMENTS -->
+    <div class="case-row">
+        <div class="label-col">COMMENTS:</div>
+        <div class="value-col">
+            <div class="comments-section">
+                <h3>Comments</h3>
+                <div id="commentsList">No comments yet.</div>
+                <button class="add-comment-btn" onclick="alert('Comments backend coming next.')">
+                    Add Comment
+                </button>
+            </div>
         </div>
-
     </div>
 
 </div>
 
 <script>
-/* GET CASE ID */
 const urlParams = new URLSearchParams(window.location.search);
 const caseId = urlParams.get("id");
 
-/* LOAD CASE FROM EXISTING BACKEND */
 fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec?action=getPublicCases")
   .then(r => r.json())
   .then(data => {
@@ -336,13 +335,13 @@ fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo
 
       if (!post) {
           document.getElementById("caseTitle").textContent = "Case not found.";
+          document.getElementById("caseDescription").textContent = "";
+          document.getElementById("caseMeta").textContent = "";
           return;
       }
 
-      /* POPULATE RIGHT COLUMN */
       document.getElementById("caseTitle").textContent = post.title;
       document.getElementById("caseDescription").textContent = post.description;
-
       document.getElementById("caseMeta").textContent =
           `By ${post.clientName || "Client"} on ${post.timestamp || ""} • ${post.tier || ""}`;
 
@@ -354,7 +353,6 @@ fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo
       document.getElementById("downCount").textContent = post.dislikes || 0;
   });
 
-/* LOCAL RATING UI (visual only for now) */
 document.getElementById("ratingNumbers").addEventListener("click", (e) => {
     if (e.target.tagName !== "SPAN") return;
     document.querySelectorAll("#ratingNumbers span").forEach(s => s.classList.remove("selected"));
