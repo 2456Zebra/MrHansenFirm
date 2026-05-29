@@ -22,6 +22,16 @@
         padding: 0;
     }
 
+    /* PULSING LOADING */
+    .loading {
+        animation: pulse 1.2s infinite;
+    }
+    @keyframes pulse {
+        0% { opacity: 0.3; }
+        50% { opacity: 1; }
+        100% { opacity: 0.3; }
+    }
+
     a.back-link {
         display: inline-block;
         margin: 20px;
@@ -31,11 +41,14 @@
         text-shadow: 0 0 6px var(--neon);
     }
 
+    /* TOP BUTTONS MOVED LEFT */
     .top-buttons {
         display: flex;
-        justify-content: flex-end;
+        justify-content: flex-start;
         gap: 10px;
-        padding: 10px 20px;
+        padding: 0 20px;
+        margin-top: -10px;
+        margin-bottom: 10px;
     }
 
     .top-buttons button {
@@ -52,7 +65,7 @@
     .case-wrapper {
         width: 90%;
         max-width: 900px;
-        margin: 20px auto;
+        margin: 0 auto 40px auto;
         padding: 20px;
         background: var(--panel);
         border: 2px solid var(--neon);
@@ -63,9 +76,15 @@
     .case-title {
         font-size: 26px;
         font-weight: bold;
-        margin-bottom: 10px;
+        margin-bottom: 4px;
         color: var(--neon);
         text-shadow: 0 0 8px var(--neon);
+    }
+
+    .case-meta {
+        font-size: 13px;
+        color: var(--text-dim);
+        margin-bottom: 20px;
     }
 
     .case-description {
@@ -75,7 +94,16 @@
         color: var(--text-dim);
     }
 
+    /* ASSOCIATE + RATING SIDE BY SIDE */
+    .associate-rating-row {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
     .associate-block {
+        flex: 1;
+        min-width: 200px;
         display: flex;
         align-items: center;
         gap: 15px;
@@ -83,7 +111,6 @@
         background: var(--panel2);
         border: 1px solid #222;
         border-radius: 6px;
-        margin-bottom: 20px;
     }
 
     .associate-block img {
@@ -107,6 +134,16 @@
         color: #aaa;
     }
 
+    /* RATING BOX */
+    .rating-section {
+        flex: 1;
+        min-width: 200px;
+        padding: 15px;
+        background: var(--panel2);
+        border: 1px solid #222;
+        border-radius: 6px;
+    }
+
     .rating-section label {
         display: block;
         margin-bottom: 8px;
@@ -126,61 +163,13 @@
         text-shadow: 0 0 6px var(--neon);
     }
 
-    .thumbs {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        margin: 20px 0;
+    /* MOBILE FRIENDLY */
+    @media (max-width: 600px) {
+        .case-title { font-size: 22px; }
+        .associate-block img { width: 50px; height: 50px; }
+        .rating-numbers span { padding: 4px 8px; }
     }
 
-    .thumbs div {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        cursor: pointer;
-        color: var(--neon);
-        text-shadow: 0 0 6px var(--neon);
-    }
-
-    .thumbs span.count {
-        color: var(--neon);
-    }
-
-    .comments-section h3 {
-        color: var(--neon);
-        text-shadow: 0 0 6px var(--neon);
-    }
-
-    .comment {
-        padding: 12px;
-        background: var(--panel2);
-        border: 1px solid #222;
-        border-radius: 6px;
-        margin-bottom: 12px;
-    }
-
-    .comment-author {
-        font-weight: bold;
-        color: var(--neon);
-        text-shadow: 0 0 6px var(--neon);
-    }
-
-    .comment-text {
-        margin-top: 6px;
-        color: var(--text-dim);
-    }
-
-    .add-comment-btn {
-        margin-top: 20px;
-        background: var(--neon);
-        color: #000;
-        padding: 10px 16px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: bold;
-        box-shadow: 0 0 10px var(--neon);
-    }
 </style>
 </head>
 
@@ -195,48 +184,41 @@
 
 <div class="case-wrapper">
 
-    <div class="case-title" id="caseTitle">Loading...</div>
+    <div class="case-title loading" id="caseTitle">Loading...</div>
+    <div class="case-meta loading" id="caseMeta">Loading...</div>
 
-    <div class="case-description" id="caseDescription">
-        Loading full description...
+    <div class="case-description loading" id="caseDescription">
+        Loading...
     </div>
 
-    <div class="associate-block">
-        <img id="associateImage" src="default.jpg">
-        <div class="associate-info">
-            <div class="name" id="associateName">Loading...</div>
-            <div class="hir" id="associateHIR">HIR: --</div>
+    <div class="associate-rating-row">
+
+        <div class="associate-block">
+            <img id="associateImage" src="default.jpg">
+            <div class="associate-info">
+                <div class="name" id="associateName">Loading...</div>
+                <div class="hir" id="associateHIR">HIR: --</div>
+            </div>
         </div>
-    </div>
 
-    <div class="rating-section">
-        <label>Rate this associate's reply (1–10):</label>
-        <div class="rating-numbers" id="ratingNumbers">
-            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-            <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+        <div class="rating-section">
+            <label>Rate this associate's reply (1–10):</label>
+            <div class="rating-numbers" id="ratingNumbers">
+                <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+            </div>
         </div>
-    </div>
 
-    <div class="thumbs">
-        <div id="thumbUp">👍 <span class="count" id="upCount">0</span></div>
-        <div id="thumbDown">👎 <span class="count" id="downCount">0</span></div>
-    </div>
-
-    <div class="comments-section">
-        <h3>Comments</h3>
-        <div id="commentsList">No comments yet.</div>
-
-        <button class="add-comment-btn" onclick="alert('Commenting not enabled yet.')">Add Comment</button>
     </div>
 
 </div>
 
 <script>
-/* GET CASE ID FROM URL */
+/* GET CASE ID */
 const urlParams = new URLSearchParams(window.location.search);
 const caseId = urlParams.get("id");
 
-/* LOAD ALL CASES FROM SHEETS */
+/* LOAD CASE FROM EXISTING BACKEND */
 fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec?action=getPublicCases")
   .then(r => r.json())
   .then(data => {
@@ -247,34 +229,19 @@ fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo
           return;
       }
 
-      /* POPULATE PAGE */
+      /* POPULATE */
       document.getElementById("caseTitle").textContent = post.title;
+      document.getElementById("caseMeta").textContent =
+          `${post.clientName} • ${post.timestamp} • ${post.tier}`;
+
       document.getElementById("caseDescription").textContent = post.description;
 
       document.getElementById("associateName").textContent = post.associateName || "Unknown";
       document.getElementById("associateHIR").textContent = "HIR: " + (post.hir || "--");
-
-      /* If you store associate photos in Sheets, use that column */
       document.getElementById("associateImage").src = post.photo || "default.jpg";
 
-      /* Likes / dislikes */
-      document.getElementById("upCount").textContent = post.likes || 0;
-      document.getElementById("downCount").textContent = post.dislikes || 0;
-
-      /* Comments (if stored in Sheets) */
-      if (post.comments) {
-          const list = document.getElementById("commentsList");
-          list.innerHTML = "";
-
-          post.comments.forEach(c => {
-              list.innerHTML += `
-                <div class="comment">
-                    <div class="comment-author">${c.author}</div>
-                    <div class="comment-text">${c.text}</div>
-                </div>
-              `;
-          });
-      }
+      /* Remove loading animation */
+      document.querySelectorAll(".loading").forEach(el => el.classList.remove("loading"));
   });
 </script>
 
