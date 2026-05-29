@@ -52,11 +52,19 @@
 
     <!-- HEADER -->
     <div class="flex items-center justify-between mb-6 border-b border-zinc-800 pb-4">
-      <div>
-        <h1 class="text-4xl font-extrabold tracking-tight neon-clean">Mr Hansen</h1>
-        <p class="text-emerald-400 text-sm mt-1">We Solve Problems!</p>
+
+      <!-- LEFT: TITLE + SPINNER -->
+      <div class="flex items-center gap-3">
+        <div>
+          <h1 class="text-4xl font-extrabold tracking-tight neon-clean">Mr Hansen</h1>
+          <p class="text-emerald-400 text-sm mt-1">We Solve Problems!</p>
+        </div>
+
+        <!-- SAFE INLINE SPINNER (NEVER BREAKS LAYOUT) -->
+        <div id="headerSpinner" class="w-5 h-5 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
       </div>
 
+      <!-- RIGHT: BACK LINK -->
       <a href="/index.html" class="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 text-sm font-medium">
         <span class="text-lg">←</span> Back To Home
       </a>
@@ -161,11 +169,14 @@
         .then(r => r.json())
         .then(data => {
           console.log("Loaded cases:", data);
-          // backend returns { success: true, cases: [...] }
           renderCases(data.cases || []);
+
+          // HIDE SPINNER
+          document.getElementById("headerSpinner").style.display = "none";
         })
         .catch(err => {
           console.error("Error loading cases:", err);
+          document.getElementById("headerSpinner").style.display = "none";
           document.getElementById("posts-container").innerHTML =
             `<p class="text-red-400 text-sm">Error loading cases.</p>`;
         });
