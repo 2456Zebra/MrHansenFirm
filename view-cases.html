@@ -10,7 +10,6 @@
   <style>
     body { background: #0a0a0a; font-family: 'Inter', system-ui, sans-serif; }
 
-    /* Clean neon — NO glow */
     .neon-clean { color: #00ff9d; }
 
     .post-card { transition: all 0.18s ease; }
@@ -84,81 +83,7 @@
     <div class="space-y-2" id="posts-container"></div>
   </div>
 
-  <!-- MODAL -->
-  <div id="post-modal" class="hidden fixed inset-0 bg-black/90 flex items-start justify-center pt-12 z-50 overflow-auto">
-    <div class="modal bg-zinc-900 border border-zinc-700 rounded-3xl w-full max-w-3xl mx-4 mb-12 flex flex-col max-h-[88vh]">
-
-      <div class="p-5 border-b border-zinc-700 flex items-start justify-between sticky top-0 bg-zinc-900 z-10">
-        <div>
-          <h2 id="modal-title" class="text-2xl font-bold underline decoration-emerald-400 underline-offset-4 neon-clean"></h2>
-          <p id="modal-meta" class="text-zinc-400 text-sm mt-1"></p>
-        </div>
-        <button onclick="closeModal()" class="text-3xl text-zinc-400 hover:text-white">×</button>
-      </div>
-
-      <div class="flex-1 p-6 overflow-auto" id="modal-body"></div>
-
-      <div class="p-4 border-t border-zinc-700 bg-zinc-950 flex gap-3">
-        <button class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-black font-medium py-3 rounded-2xl">Reply / Add Note</button>
-        <button onclick="closeModal()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 py-3 rounded-2xl">Close</button>
-      </div>
-
-    </div>
-  </div>
-
   <script>
-    /*  
-      FRONTEND DATA CONTRACT  
-      Backend must return an array of objects shaped like:
-
-      {
-        id: string,
-        title: string,
-        clientName: string,
-        associateName: string,
-        timestamp: string,
-        tier: string,
-        category: string,
-        description: string,
-        commentsCount: number,
-        likes: number,
-        dislikes: number,
-        featured: boolean
-      }
-    */
-
-    /* TEMP MOCK DATA — backend will replace this */
-    const mockCases = [
-      {
-        id: "1",
-        title: "I need to lose some weight",
-        clientName: "Daisy Malibu",
-        associateName: "Seidi",
-        timestamp: "5/19/2026 16:47:47",
-        tier: "Level 3 - Crisis Session",
-        category: "health",
-        description: "I can't stop eating...",
-        commentsCount: 12,
-        likes: 8,
-        dislikes: 1,
-        featured: true
-      },
-      {
-        id: "2",
-        title: "How do I get a passport",
-        clientName: "Mark Davies",
-        associateName: "Mr Hansen",
-        timestamp: "5/19/2026 17:12:42",
-        tier: "Level 1 - Quick Read",
-        category: "legal",
-        description: "It's worth a few bucks...",
-        commentsCount: 5,
-        likes: 3,
-        dislikes: 0,
-        featured: false
-      }
-    ];
-
     let allCases = [];
     let currentCategory = "latest";
 
@@ -187,17 +112,18 @@
       visible.forEach(post => {
         const div = document.createElement("div");
         div.className = "post-card compact-card bg-zinc-900 border border-zinc-800 rounded-xl flex items-start gap-3 cursor-pointer";
-        div.onclick = () => openPostModal(post);
+
+        /* ⭐ NEW BEHAVIOR — redirect to forum.html */
+        div.onclick = () => {
+          window.location.href = "forum.html?id=" + post.id;
+        };
 
         div.innerHTML = `
           <div class="flex-1 leading-tight">
-
             ${post.featured ? `<span class="sticky-badge">Featured</span>` : ""}
-
             <h2 class="text-[18px] font-extrabold leading-snug underline decoration-emerald-400 underline-offset-4 neon-clean">
               ${post.title}
             </h2>
-
             <p class="text-[11px] text-zinc-400 mt-0.5">
               ${post.clientName} • ${post.timestamp} • ${post.tier} • Associate: ${post.associateName}
             </p>
@@ -213,26 +139,6 @@
       });
     }
 
-    function openPostModal(post) {
-      document.getElementById("modal-title").textContent = post.title;
-      document.getElementById("modal-meta").textContent =
-        `${post.clientName} • ${post.timestamp} • ${post.tier} • Associate: ${post.associateName}`;
-
-      document.getElementById("modal-body").innerHTML = `
-        <p class="text-base leading-relaxed text-zinc-300">${post.description}</p>
-      `;
-
-      const modal = document.getElementById("post-modal");
-      modal.classList.remove("hidden");
-      modal.classList.add("flex");
-    }
-
-    function closeModal() {
-      const modal = document.getElementById("post-modal");
-      modal.classList.add("hidden");
-      modal.classList.remove("flex");
-    }
-
     function filterCategory(btn, category) {
       document.querySelectorAll(".category-pill").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
@@ -240,16 +146,15 @@
       renderCases(allCases);
     }
 
-window.onload = () => {
-  fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec?action=getPublicCases")
-    .then(r => r.json())
-    .then(data => {
-      console.log("Loaded cases:", data);
-      renderCases(data);
-    })
-    .catch(err => console.error("Error loading cases:", err));
-};
-
+    window.onload = () => {
+      fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec?action=getPublicCases")
+        .then(r => r.json())
+        .then(data => {
+          console.log("Loaded cases:", data);
+          renderCases(data);
+        })
+        .catch(err => console.error("Error loading cases:", err));
+    };
   </script>
 
 </body>
