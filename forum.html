@@ -38,7 +38,7 @@
         margin: 0 auto;
         display: flex;
         justify-content: flex-end;
-        gap: 10px;
+        gap: 8px;
         margin-top: -10px;
         margin-bottom: 10px;
     }
@@ -47,9 +47,10 @@
         background: #111;
         border: 1px solid var(--neon);
         color: var(--neon);
-        padding: 8px 14px;
+        padding: 6px 12px;
         cursor: pointer;
         border-radius: 4px;
+        font-size: 13px;
         text-shadow: 0 0 6px var(--neon);
     }
 
@@ -64,7 +65,7 @@
         border-radius: 10px;
         box-shadow: 0 0 20px rgba(0,255,157,0.2);
         display: flex;
-        gap: 30px;
+        gap: 16px; /* tightened */
     }
 
     /* LEFT COLUMN (labels only) */
@@ -73,14 +74,13 @@
         flex-shrink: 0;
         display: flex;
         flex-direction: column;
-        gap: 40px;
+        gap: 18px; /* tightened */
     }
 
     .label {
         font-size: 12px;
         color: var(--neon);
         letter-spacing: 0.05em;
-        margin-bottom: 4px;
     }
 
     /* RIGHT COLUMN (content only) */
@@ -88,26 +88,27 @@
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 40px;
+        gap: 18px; /* tightened */
     }
 
     .case-title {
-        font-size: 24px;
+        font-size: 22px;
         font-weight: bold;
         color: var(--neon);
-        text-shadow: 0 0 4px var(--neon);
+        text-shadow: 0 0 3px var(--neon);
     }
 
     .case-description {
-        font-size: 17px;
-        line-height: 1.6;
+        font-size: 16px;
+        line-height: 1.45;
         color: var(--text-dim);
     }
 
     .case-meta {
-        font-size: 13px;
+        font-size: 12px;
         color: #999;
         font-style: italic;
+        margin-top: -6px; /* tighten under description */
     }
 
     /* ASSOCIATE INFO */
@@ -115,30 +116,30 @@
         background: var(--panel2);
         border: 1px solid #222;
         border-radius: 6px;
-        padding: 12px;
+        padding: 10px;
         display: flex;
         align-items: center;
-        gap: 12px;
-        max-width: 350px;
+        gap: 10px;
+        max-width: 330px;
     }
 
     .associate-block img {
-        width: 55px;
-        height: 55px;
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
         object-fit: cover;
         border: 2px solid var(--neon);
-        box-shadow: 0 0 10px var(--neon);
+        box-shadow: 0 0 8px var(--neon);
     }
 
     .associate-info .name {
-        font-size: 16px;
+        font-size: 15px;
         font-weight: bold;
         color: var(--neon);
     }
 
     .associate-info .hir {
-        font-size: 13px;
+        font-size: 12px;
         color: #aaa;
     }
 
@@ -147,41 +148,27 @@
         background: var(--panel2);
         border: 1px solid #222;
         border-radius: 6px;
-        padding: 15px;
-    }
-
-    .reply-title {
-        font-size: 14px;
-        color: var(--neon);
-        margin-bottom: 8px;
-        letter-spacing: 0.04em;
+        padding: 12px;
     }
 
     .reply-text {
-        font-size: 16px;
+        font-size: 15px;
         color: var(--text-dim);
-        line-height: 1.5;
+        line-height: 1.4;
     }
 
     /* RATING */
-    .rating-section label {
-        display: block;
-        margin-bottom: 6px;
-        font-size: 14px;
-        color: var(--neon);
-    }
-
     .rating-numbers span {
         display: inline-block;
-        margin-right: 10px;
-        margin-bottom: 6px;
-        padding: 6px 10px;
+        margin-right: 8px;
+        margin-bottom: 4px;
+        padding: 5px 9px;
         background: #222;
         border-radius: 4px;
         cursor: pointer;
         border: 1px solid var(--neon);
         color: var(--neon);
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .rating-numbers span.selected {
@@ -193,13 +180,13 @@
     .thumbs {
         display: flex;
         align-items: center;
-        gap: 20px;
+        gap: 16px;
     }
 
     .thumbs div {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 4px;
         cursor: pointer;
         color: var(--neon);
     }
@@ -207,37 +194,41 @@
     /* COMMENTS */
     .comments-section h3 {
         color: var(--neon);
-        margin-bottom: 10px;
+        margin-bottom: 6px;
+        font-size: 15px;
     }
 
     .comment {
-        padding: 12px;
+        padding: 10px;
         background: var(--panel2);
         border: 1px solid #222;
         border-radius: 6px;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
     }
 
     .comment-author {
         font-weight: bold;
         color: var(--neon);
+        font-size: 13px;
     }
 
     .comment-text {
-        margin-top: 6px;
+        margin-top: 4px;
         color: var(--text-dim);
+        font-size: 14px;
     }
 
     .add-comment-btn {
-        margin-top: 10px;
+        margin-top: 6px;
         background: var(--neon);
         color: #000;
-        padding: 10px 16px;
+        padding: 8px 14px;
         border: none;
         border-radius: 4px;
         cursor: pointer;
         font-weight: bold;
-        box-shadow: 0 0 10px var(--neon);
+        font-size: 13px;
+        box-shadow: 0 0 8px var(--neon);
     }
 
     /* MOBILE STACKING */
@@ -247,12 +238,10 @@
         }
         .left-col {
             width: 100%;
-            flex-direction: row;
-            flex-wrap: wrap;
-            gap: 20px;
+            gap: 12px;
         }
         .label {
-            width: 100%;
+            margin-bottom: -6px;
         }
     }
 </style>
@@ -274,6 +263,10 @@
         <div class="label">CASE:</div>
         <div class="label">DETAILS:</div>
         <div class="label">ASSOCIATE ASSIGNED TO CASE:</div>
+        <div class="label">ASSOCIATE’S REPLY:</div>
+        <div class="label">RATE THIS ASSOCIATE:</div>
+        <div class="label">CASE RATING:</div>
+        <div class="label">COMMENTS:</div>
     </div>
 
     <!-- RIGHT COLUMN (content only) -->
@@ -299,19 +292,15 @@
 
         <!-- ASSOCIATE REPLY -->
         <div class="reply-box">
-            <div class="reply-title">ASSOCIATE’S REPLY:</div>
             <div class="reply-text" id="associateReply">
                 Associate reply goes here.
             </div>
         </div>
 
         <!-- RATING -->
-        <div class="rating-section">
-            <label>RATE THIS ASSOCIATE:</label>
-            <div class="rating-numbers" id="ratingNumbers">
-                <span data-score="1">1</span><span data-score="2">2</span><span data-score="3">3</span><span data-score="4">4</span><span data-score="5">5</span>
-                <span data-score="6">6</span><span data-score="7">7</span><span data-score="8">8</span><span data-score="9">9</span><span data-score="10">10</span>
-            </div>
+        <div class="rating-numbers" id="ratingNumbers">
+            <span data-score="1">1</span><span data-score="2">2</span><span data-score="3">3</span><span data-score="4">4</span><span data-score="5">5</span>
+            <span data-score="6">6</span><span data-score="7">7</span><span data-score="8">8</span><span data-score="9">9</span><span data-score="10">10</span>
         </div>
 
         <!-- THUMBS -->
