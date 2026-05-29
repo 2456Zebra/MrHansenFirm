@@ -143,6 +143,26 @@ body {
 }
 
 /* Nav links */
+
+/* ⭐ VIEW CASES — Neon Primary Button */
+nav a.view-cases-btn {
+    background: #00ff9d !important;
+    color: #000 !important;
+    padding: 8px 16px !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 12px #00ff9d !important;
+    transition: 0.2s ease !important;
+    display: inline-block !important;
+}
+
+nav a.view-cases-btn:hover {
+    background: #5bffbe !important;
+    box-shadow: 0 0 18px #00ff9d !important;
+    color: #000 !important;
+}
+
+    
 nav a {
     color: #ccc;
     margin: 0 15px;
@@ -481,8 +501,9 @@ const auth = firebase.auth();
     <a href="case-intake.html">Case Intake Hub</a>
     <a onclick="showPage('pricing')">Pricing</a>
 
-    <!-- NEW: View Cases tab -->
-    <a href="/view-cases.html">View Cases</a>
+<!-- NEW: View Cases tab -->
+<a href="/view-cases.html" class="view-cases-btn">VIEW CASES</a>
+
 
     <!-- Admin Portal Dropdown -->
     <span id="adminPortalTrigger" style="margin-left:20px; position:relative; display:inline-block;">
