@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Case View</title>
+
 <style>
     :root {
         --neon: #00ff9d;
@@ -174,3 +180,54 @@
         box-shadow: 0 0 10px var(--neon);
     }
 </style>
+</head>
+
+<body>
+
+<a class="back-link" href="view-cases.html">&lt; Back to Cases</a>
+
+<div class="top-buttons">
+    <button onclick="window.location='community-signup.html'">Join Community Users</button>
+    <button onclick="window.location='associate-signup.html'">Become an Associate</button>
+</div>
+
+<div class="case-container">
+
+    <div class="case-title" id="caseTitle">Loading...</div>
+
+    <div class="case-description" id="caseDescription">
+        Loading full description...
+    </div>
+
+    <div class="associate-block">
+        <img id="associateImage" src="default.jpg">
+        <div class="associate-info">
+            <div class="name" id="associateName">Associate Name</div>
+            <div class="hir" id="associateHIR">HIR: --</div>
+        </div>
+    </div>
+
+    <div class="rating-section">
+        <label>Rate this associate's reply (1–10):</label>
+        <div class="rating-numbers" id="ratingNumbers">
+            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+            <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+        </div>
+    </div>
+
+    <div class="thumbs">
+        <div id="thumbUp">👍 <span class="count" id="upCount">0</span></div>
+        <div id="thumbDown">👎 <span class="count" id="downCount">0</span></div>
+    </div>
+
+    <div class="comments-section">
+        <h3>Comments</h3>
+        <div id="commentsList"></div>
+
+        <button class="add-comment-btn" onclick="openCommentBox()">Add Comment</button>
+    </div>
+
+</div>
+
+</body>
+</html>
