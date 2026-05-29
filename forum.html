@@ -224,9 +224,9 @@
 
     <div class="comments-section">
         <h3>Comments</h3>
-        <div id="commentsList"></div>
+        <div id="commentsList">No comments yet.</div>
 
-        <button class="add-comment-btn" onclick="openCommentBox()">Add Comment</button>
+        <button class="add-comment-btn" onclick="alert('Commenting not enabled yet.')">Add Comment</button>
     </div>
 
 </div>
@@ -236,37 +236,37 @@
 const urlParams = new URLSearchParams(window.location.search);
 const caseId = urlParams.get("id");
 
-/* LOAD CASE */
-fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec?action=getCase&id=" + caseId)
+/* LOAD ALL CASES FROM SHEETS */
+fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec?action=getPublicCases")
   .then(r => r.json())
   .then(data => {
-      document.getElementById("caseTitle").textContent = data.title;
-      document.getElementById("caseDescription").textContent = data.description;
+      const post = data.find(p => p.id == caseId);
 
-      loadAssociate(data.associateId);
-      loadComments(caseId);
-  });
+      if (!post) {
+          document.getElementById("caseTitle").textContent = "Case not found.";
+          return;
+      }
 
-/* LOAD ASSOCIATE */
-function loadAssociate(associateId) {
-    fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec?action=getAssociate&id=" + associateId)
-      .then(r => r.json())
-      .then(a => {
-          document.getElementById("associateName").textContent = a.name;
-          document.getElementById("associateHIR").textContent = "HIR: " + a.hir;
-          document.getElementById("associateImage").src = a.photo || "default.jpg";
-      });
-}
+      /* POPULATE PAGE */
+      document.getElementById("caseTitle").textContent = post.title;
+      document.getElementById("caseDescription").textContent = post.description;
 
-/* LOAD COMMENTS */
-function loadComments(caseId) {
-    fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec?action=getComments&id=" + caseId)
-      .then(r => r.json())
-      .then(comments => {
+      document.getElementById("associateName").textContent = post.associateName || "Unknown";
+      document.getElementById("associateHIR").textContent = "HIR: " + (post.hir || "--");
+
+      /* If you store associate photos in Sheets, use that column */
+      document.getElementById("associateImage").src = post.photo || "default.jpg";
+
+      /* Likes / dislikes */
+      document.getElementById("upCount").textContent = post.likes || 0;
+      document.getElementById("downCount").textContent = post.dislikes || 0;
+
+      /* Comments (if stored in Sheets) */
+      if (post.comments) {
           const list = document.getElementById("commentsList");
           list.innerHTML = "";
 
-          comments.forEach(c => {
+          post.comments.forEach(c => {
               list.innerHTML += `
                 <div class="comment">
                     <div class="comment-author">${c.author}</div>
@@ -274,23 +274,8 @@ function loadComments(caseId) {
                 </div>
               `;
           });
-      });
-}
-
-/* ADD COMMENT */
-function openCommentBox() {
-    const text = prompt("Enter your comment:");
-    if (!text) return;
-
-    fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec", {
-        method: "POST",
-        body: JSON.stringify({
-            action: "addComment",
-            caseId: caseId,
-            text: text
-        })
-    }).then(() => loadComments(caseId));
-}
+      }
+  });
 </script>
 
 </body>
