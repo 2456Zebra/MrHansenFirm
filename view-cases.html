@@ -240,13 +240,16 @@
       renderCases(allCases);
     }
 
-    window.onload = () => {
-  google.script.run.withSuccessHandler(renderCases).getPublicCases();
+window.onload = () => {
+  fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec?action=getPublicCases")
+    .then(r => r.json())
+    .then(data => {
+      console.log("Loaded cases:", data);
+      renderCases(data);
+    })
+    .catch(err => console.error("Error loading cases:", err));
 };
 
-console.log("google.script.run =", google.script.run);
-
-    
   </script>
 
 </body>
