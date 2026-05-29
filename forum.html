@@ -48,14 +48,16 @@
         text-shadow: 0 0 6px var(--neon);
     }
 
-    .case-container {
+    /* MAIN BOX */
+    .case-wrapper {
         width: 90%;
         max-width: 900px;
-        margin: 0 auto;
+        margin: 20px auto;
         padding: 20px;
         background: var(--panel);
-        border: 1px solid #222;
-        border-radius: 6px;
+        border: 2px solid var(--neon);
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,255,157,0.2);
     }
 
     .case-title {
@@ -191,7 +193,7 @@
     <button onclick="window.location='associate-signup.html'">Become an Associate</button>
 </div>
 
-<div class="case-container">
+<div class="case-wrapper">
 
     <div class="case-title" id="caseTitle">Loading...</div>
 
@@ -202,7 +204,7 @@
     <div class="associate-block">
         <img id="associateImage" src="default.jpg">
         <div class="associate-info">
-            <div class="name" id="associateName">Associate Name</div>
+            <div class="name" id="associateName">Loading...</div>
             <div class="hir" id="associateHIR">HIR: --</div>
         </div>
     </div>
@@ -228,6 +230,68 @@
     </div>
 
 </div>
+
+<script>
+/* GET CASE ID FROM URL */
+const urlParams = new URLSearchParams(window.location.search);
+const caseId = urlParams.get("id");
+
+/* LOAD CASE */
+fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec?action=getCase&id=" + caseId)
+  .then(r => r.json())
+  .then(data => {
+      document.getElementById("caseTitle").textContent = data.title;
+      document.getElementById("caseDescription").textContent = data.description;
+
+      loadAssociate(data.associateId);
+      loadComments(caseId);
+  });
+
+/* LOAD ASSOCIATE */
+function loadAssociate(associateId) {
+    fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec?action=getAssociate&id=" + associateId)
+      .then(r => r.json())
+      .then(a => {
+          document.getElementById("associateName").textContent = a.name;
+          document.getElementById("associateHIR").textContent = "HIR: " + a.hir;
+          document.getElementById("associateImage").src = a.photo || "default.jpg";
+      });
+}
+
+/* LOAD COMMENTS */
+function loadComments(caseId) {
+    fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec?action=getComments&id=" + caseId)
+      .then(r => r.json())
+      .then(comments => {
+          const list = document.getElementById("commentsList");
+          list.innerHTML = "";
+
+          comments.forEach(c => {
+              list.innerHTML += `
+                <div class="comment">
+                    <div class="comment-author">${c.author}</div>
+                    <div class="comment-text">${c.text}</div>
+                </div>
+              `;
+          });
+      });
+}
+
+/* ADD COMMENT */
+function openCommentBox() {
+    const text = prompt("Enter your comment:");
+    if (!text) return;
+
+    fetch("https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec", {
+        method: "POST",
+        body: JSON.stringify({
+            action: "addComment",
+            caseId: caseId,
+            text: text
+        })
+    }).then(() => loadComments(caseId));
+}
+</script>
 
 </body>
 </html>
