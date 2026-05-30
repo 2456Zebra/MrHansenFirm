@@ -27,9 +27,9 @@
       align-items: center;
     }
     .logo { color: var(--green); font-size: 24px; font-weight: bold; }
+    .user-info { color: #888; font-size: 14px; }
     .container { display: flex; min-height: calc(100vh - 68px); }
     
-    /* Sidebar */
     .sidebar {
       width: 260px;
       background: var(--dark);
@@ -90,31 +90,12 @@
       font-weight: bold;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #111;
-    }
-    th, td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #333;
-    }
-    th { background: #0a0a0a; color: var(--green); }
-
     .case-card {
       background: #111;
       border: 1px solid var(--border);
-      padding: 14px;
+      padding: 16px;
       border-radius: 6px;
-      margin-bottom: 12px;
-    }
-
-    .badge {
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      margin-left: 6px;
+      margin-bottom: 14px;
     }
 
     .small-btn {
@@ -125,11 +106,13 @@
       border-radius: 4px;
       cursor: pointer;
       font-size: 13px;
+      margin-right: 6px;
     }
     .small-btn:hover {
       background: var(--green);
       color: #000;
     }
+    .small-btn.reject { border-color: #ff4444; color: #ff4444; }
 
     .modal {
       position: fixed;
@@ -155,9 +138,7 @@
 <body>
   <div class="header">
     <div class="logo">MR. HANSEN FIRM • ASSOCIATE ADMIN</div>
-    <div style="color:#666; font-size:14px;">
-      <a href="firm-admin.html" style="color:var(--green); text-decoration:none;">← Back to Firm Admin</a>
-    </div>
+    <div class="user-info">Signed in as: <strong id="currentUser">Raven Hale</strong></div>
   </div>
 
   <div class="container">
@@ -166,6 +147,7 @@
       <div class="nav-item active" onclick="setActiveNav(this); showPanel('dashboard')">📊 Dashboard</div>
       <div class="nav-item" onclick="setActiveNav(this); showPanel('cases')">🛡 My Cases</div>
       <div class="nav-item" onclick="setActiveNav(this); showPanel('messages')">🔐 Messages</div>
+      <div class="nav-item" onclick="setActiveNav(this); showPanel('revenue')">💰 Revenue</div>
       <div class="nav-item" onclick="setActiveNav(this); showPanel('profile')">👤 Profile</div>
     </div>
 
@@ -176,39 +158,38 @@
         <div class="panel-title">Operational Overview</div>
         <div class="metric-row">
           <div class="metric-tile"><div class="metric-value" id="metricAssigned">0</div><div>Assigned Cases</div></div>
-          <div class="metric-tile"><div class="metric-value" id="metricHighRisk">0</div><div>High Risk</div></div>
-          <div class="metric-tile"><div class="metric-value" id="metricOverdue">0</div><div>Overdue</div></div>
+          <div class="metric-tile"><div class="metric-value" id="metricActive">0</div><div>Active Cases</div></div>
+          <div class="metric-tile"><div class="metric-value" id="metricCompleted">0</div><div>Completed</div></div>
           <div class="metric-tile"><div class="metric-value" id="metricUnread">0</div><div>Unread Messages</div></div>
         </div>
-        <h3 style="color:var(--green); margin:20px 0 10px;">High Risk & Overdue</h3>
-        <div id="riskCases"></div>
       </div>
 
-      <!-- Cases -->
+      <!-- My Cases -->
       <div id="panel-cases" class="panel" style="display:none;">
         <div class="panel-title">My Cases</div>
-        <div style="margin-bottom:12px;">
-          <button class="small-btn" onclick="filterCases('all')">All</button>
-          <button class="small-btn" onclick="filterCases('open')">Open</button>
-          <button class="small-btn" onclick="filterCases('review')">Review</button>
-          <button class="small-btn" onclick="filterCases('completed')">Completed</button>
-        </div>
         <div id="caseList"></div>
       </div>
 
       <!-- Messages -->
       <div id="panel-messages" class="panel" style="display:none;">
-        <div class="panel-title">Messages</div>
-        <select id="msgFilter" onchange="renderMessages()" style="width:100%; padding:8px; background:#0a0a0a; border:1px solid var(--border); color:#ddd;">
-          <option value="all">All Cases</option>
-        </select>
-        <div id="messageList" style="margin-top:15px; max-height:420px; overflow-y:auto;"></div>
+        <div class="panel-title">Messages & Replies</div>
+        <div id="messageList"></div>
+        <!-- Reply box will appear per case in modal -->
+      </div>
+
+      <!-- Revenue -->
+      <div id="panel-revenue" class="panel" style="display:none;">
+        <div class="panel-title">Revenue & Commissions</div>
+        <div id="revenueContent">
+          <p>Awaiting commissions • Past payouts • Case-related transactions</p>
+          <!-- Populated via backend or mock -->
+        </div>
       </div>
 
       <!-- Profile -->
       <div id="panel-profile" class="panel" style="display:none;">
-        <div class="panel-title">Associate Profile</div>
-        <div id="profileInfo"></div>
+        <div class="panel-title">Profile & Ratings</div>
+        <div id="profileContent"></div>
       </div>
     </div>
   </div>
@@ -216,7 +197,7 @@
   <!-- Case Modal -->
   <div id="caseModal" class="modal">
     <div class="modal-content">
-      <h2 style="color:var(--green);">Case Details</h2>
+      <h2 style="color:var(--green);">Case #<span id="modalCaseId"></span></h2>
       <div id="modalContent"></div>
       <br>
       <button class="small-btn" onclick="closeModal()">Close</button>
@@ -224,15 +205,20 @@
   </div>
 
 <script>
-// ==================== DATA & STATE ====================
-let associateSelf = { ... }; // Keep your mock data here (same as before)
-let associateCases = [ ... ];   // Paste your mock cases
-let associateMessages = [ ... ]; // Paste your mock messages
-let associateActivityLog = [ ... ];
+const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
 
-// ==================== UTILITIES & RENDERERS ====================
-// (All your excellent helper functions: getStatusBadge, getSeverityBadge, etc. go here - unchanged)
+// Mock data (replace with real fetches from Cases_Rebuilt etc.)
+let currentAssociate = {
+  id: "A-001",
+  name: "Raven Hale",
+  username: "ravenhale"
+};
 
+let myCases = [ /* your existing cases, filtered by assignment */ ];
+
+let messages = [ /* your messages */ ];
+
+// Navigation
 function setActiveNav(el) {
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
   el.classList.add('active');
@@ -243,25 +229,79 @@ function showPanel(name) {
   document.getElementById(`panel-${name}`).style.display = 'block';
   
   if (name === 'dashboard') renderDashboard();
-  if (name === 'cases') renderCases();
+  if (name === 'cases') renderMyCases();
   if (name === 'messages') renderMessages();
+  if (name === 'revenue') renderRevenue();
   if (name === 'profile') renderProfile();
 }
 
-// Render functions (cleaned & adapted to new style)
-function renderDashboard() { /* ... your logic ... */ }
-function renderCases() { /* ... */ }
-function renderMessages() { /* ... */ }
-function renderProfile() { /* ... */ }
+// Render functions
+function renderDashboard() {
+  document.getElementById('metricAssigned').textContent = myCases.length;
+  // Add more real metrics as needed
+}
 
-// Modal functions
-function openCaseModal(id) { /* ... your original logic ... */ }
+function renderMyCases() {
+  const container = document.getElementById('caseList');
+  container.innerHTML = myCases.map(c => `
+    <div class="case-card">
+      <strong>Case #${c.id}</strong> - ${c.title}<br>
+      Status: ${c.status} 
+      <button class="small-btn" onclick="acceptCase('${c.id}')">Accept</button>
+      <button class="small-btn reject" onclick="rejectCase('${c.id}')">Reject</button>
+      <button class="small-btn" onclick="openCaseModal('${c.id}')">View / Reply</button>
+      ${c.status === 'open' ? `<button class="small-btn" onclick="markCompleted('${c.id}')">Mark Completed</button>` : ''}
+    </div>
+  `).join('');
+}
+
+function acceptCase(id) {
+  // Call backend to update assignment in Cases_Rebuilt
+  alert(`Case ${id} accepted.`);
+  renderMyCases();
+}
+
+function rejectCase(id) {
+  alert(`Case ${id} rejected.`);
+  // Backend notification
+}
+
+function markCompleted(id) {
+  // Trigger email to client + post to public View Cases
+  alert(`Case ${id} marked completed. Client notified & public view updated.`);
+  renderMyCases();
+}
+
+function openCaseModal(id) {
+  const c = myCases.find(x => x.id === id);
+  document.getElementById('modalCaseId').textContent = c.id;
+  document.getElementById('modalContent').innerHTML = `
+    <p>${c.clientStatement || ''}</p>
+    <textarea id="replyText" placeholder="Your answer / update to client..."></textarea>
+    <button class="small-btn" onclick="sendReply('${id}')">Send Answer</button>
+  `;
+  document.getElementById('caseModal').style.display = 'flex';
+}
+
+function sendReply(id) {
+  const text = document.getElementById('replyText').value.trim();
+  if (!text) return;
+  // Push to backend so it appears in public expanded case view
+  alert(`Answer posted for Case ${id}`);
+  closeModal();
+}
+
 function closeModal() {
   document.getElementById('caseModal').style.display = 'none';
 }
 
+function renderMessages() { /* similar to before */ }
+function renderRevenue() { /* commissions from backend */ }
+function renderProfile() { /* include ratings/comments/thumbs */ }
+
 // Init
 document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('currentUser').textContent = currentAssociate.name;
   showPanel('dashboard');
 });
 </script>
