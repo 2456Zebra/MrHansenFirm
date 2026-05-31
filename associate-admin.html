@@ -39,7 +39,6 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: 32px; /* more space between avatar block and back link */
       gap: 32px; /* more space between associate info and back link */
     }
     .user-info { color: #ccc; font-size: 14px; text-align: right; }
@@ -49,7 +48,6 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      justify-content: center; /* visually centers the associate info block */
       justify-content: center; /* visually centers associate info block */
     }
     .user-avatar {
@@ -587,7 +585,6 @@
       <div id="panel-revenue" class="panel" style="display:none;">
         <div class="panel-title">
           <span>Revenue & Commissions</span>
-          <span class="panel-subtitle" id="revenueSubtitle">Coming soon.</span>
           <span class="panel-subtitle" id="revenueSubtitle">Loading revenue…</span>
         </div>
 
@@ -596,7 +593,6 @@
             <div class="revenue-card">
               <div class="revenue-label">Total Earned</div>
               <div class="revenue-value" id="revTotal">$0.00</div>
-              <div class="revenue-sub">All-time commissions.</div>
               <div class="revenue-sub">All-time commissions (paid cases only).</div>
             </div>
             <div class="revenue-card">
@@ -606,15 +602,10 @@
             </div>
             <div class="revenue-card">
               <div class="revenue-label">Commission Rate</div>
-              <div class="revenue-value" id="revRate">0%</div>
-              <div class="revenue-sub">Applied to eligible cases.</div>
               <div class="revenue-value" id="revRate">70%</div>
               <div class="revenue-sub">Applied to Stripe-paid cases.</div>
             </div>
             <div class="revenue-card">
-              <div class="revenue-label">Completed Cases</div>
-              <div class="revenue-value" id="revCompletedCases">0</div>
-              <div class="revenue-sub">Cases contributing to revenue.</div>
               <div class="revenue-label">Paid Cases</div>
               <div class="revenue-value" id="revPaidCases">0</div>
               <div class="revenue-sub">Cases with confirmed payment.</div>
@@ -704,7 +695,6 @@
 
       <div class="modal-body">
         <div>
-          <div class="modal-section-title">Client Question</div>
           <div class="modal-section-title">Case Title</div>
           <div class="modal-block" id="modalCaseTitle"></div>
 
@@ -859,17 +849,6 @@ async function loadMyCases() {
 
     const rawCases = data.cases || [];
 
-    myCases = rawCases.map(c => ({
-      caseId: c.caseId,
-      clientName: c.name,
-      clientEmail: c.email,
-      clientPhone: c.phone,
-      description: c.description,
-      status: c.status,
-      timestamp: "",   // not returned by backend handler
-      tier: "",        // not returned by backend handler
-      unreadCount: 0   // no unread tracking yet
-    }));
     myCases = rawCases.map(c => {
       const title = c.caseTitle || c.title || (c.description ? (String(c.description).slice(0, 80) + '…') : 'Untitled Case');
       return {
@@ -932,7 +911,6 @@ function applyCaseFilters() {
     if (statusFilter && c.status !== statusFilter) ok = false;
 
     if (search) {
-      const blob = (c.caseId + " " + (c.clientName || "") + " " + (c.description || "")).toLowerCase();
       const blob = (c.caseId + " " + (c.clientName || "") + " " + (c.caseTitle || "") + " " + (c.description || "")).toLowerCase();
       if (!blob.includes(search)) ok = false;
     }
@@ -968,13 +946,11 @@ function renderMyCases() {
       <div class="case-card">
         <div class="case-header-line">
           <div>
-            <span class="case-title">Case #${c.caseId}</span>
             <span class="case-title">${c.caseTitle || 'Untitled Case'}</span>
           </div>
           <div class="case-meta">${c.timestamp || ''}</div>
         </div>
         <div class="case-meta">
-          Client: ${c.clientName || 'Unknown'} • Email: ${c.clientEmail || 'N/A'}
           Case ID: ${c.caseId} • Client: ${c.clientName || 'Unknown'} • Email: ${c.clientEmail || 'N/A'}
         </div>
         <div class="case-tags">
