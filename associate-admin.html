@@ -10,6 +10,9 @@
       --dark: #0a0a0a;
       --gray: #1a1a1a;
       --border: #222;
+      --accent: #ffcc00;
+      --danger: #ff4444;
+      --muted: #777;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
@@ -18,104 +21,475 @@
       color: #ddd;
       min-height: 100vh;
     }
+    a { color: var(--green); }
+
     .header {
       background: var(--dark);
-      padding: 18px 40px;
+      padding: 14px 24px;
       border-bottom: 2px solid var(--green);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-    .logo { color: var(--green); font-size: 24px; font-weight: bold; }
-    .user-info { color: #888; font-size: 14px; }
-    .back-home { color: var(--green); text-decoration: none; font-size: 14px; }
-    
-    .container { display: flex; min-height: calc(100vh - 68px); }
+    .logo { color: var(--green); font-size: 20px; font-weight: bold; }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .user-info { color: #ccc; font-size: 13px; text-align: right; }
+    .user-name { font-weight: bold; color: var(--green); }
+    .user-sub { font-size: 11px; color: var(--muted); }
+    .user-mini {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--green);
+      object-fit: cover;
+      background:#111;
+    }
+    .back-home { color: var(--green); text-decoration: none; font-size: 13px; }
+
+    .container { display: flex; min-height: calc(100vh - 60px); }
+
     .sidebar {
       width: 260px;
       background: var(--dark);
-      padding: 25px 15px;
+      padding: 20px 12px;
       border-right: 1px solid var(--border);
+      position: sticky;
+      top: 60px;
+      align-self: flex-start;
+      max-height: calc(100vh - 60px);
+      overflow-y: auto;
     }
     .nav-item {
       display: block;
-      padding: 14px 18px;
+      padding: 12px 14px;
       color: #ccc;
       margin-bottom: 6px;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 15px;
+      font-size: 14px;
     }
     .nav-item:hover, .nav-item.active {
       background: #111;
       color: var(--green);
     }
 
-    .main { flex: 1; padding: 30px; overflow-y: auto; }
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 14px 4px 6px;
+      letter-spacing: 0.08em;
+    }
+
+    .main { flex: 1; padding: 22px 18px; overflow-y: auto; }
+
     .panel {
       background: var(--gray);
       border: 1px solid var(--green);
       border-radius: 8px;
-      padding: 22px;
-      margin-bottom: 25px;
+      padding: 18px;
+      margin-bottom: 20px;
     }
     .panel-title {
       color: var(--green);
-      font-size: 18px;
-      margin-bottom: 15px;
+      font-size: 17px;
+      margin-bottom: 12px;
       border-bottom: 1px solid #222;
-      padding-bottom: 8px;
+      padding-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-subtitle {
+      font-size: 11px;
+      color: var(--muted);
     }
 
     .metric-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 15px;
-      margin-bottom: 25px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
     }
     .metric-tile {
       background: #111;
-      padding: 16px;
+      padding: 12px;
       border: 1px solid var(--border);
       border-radius: 6px;
     }
-    .metric-value { font-size: 28px; color: var(--green); font-weight: bold; }
+    .metric-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .metric-value { font-size: 24px; color: var(--green); font-weight: bold; }
+    .metric-extra { font-size: 11px; color: #aaa; margin-top: 4px; }
+
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+    .filters-row label {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .input, select {
+      background:#000;
+      border:1px solid var(--border);
+      color:#ddd;
+      padding:6px 8px;
+      border-radius:4px;
+      font-size:12px;
+    }
+    .input:focus, select:focus {
+      outline:none;
+      border-color:var(--green);
+    }
+
+    .badge {
+      display:inline-block;
+      padding:2px 6px;
+      border-radius:4px;
+      font-size:10px;
+      text-transform:uppercase;
+      letter-spacing:0.06em;
+    }
+    .badge-status-pending { background:#332400; color:#ffcc66; }
+    .badge-status-open { background:#002933; color:#66e0ff; }
+    .badge-status-completed { background:#00331f; color:#66ffb2; }
+    .badge-tier-1 { border:1px solid #66ffb2; color:#66ffb2; }
+    .badge-tier-2 { border:1px solid #ffcc66; color:#ffcc66; }
+    .badge-tier-3 { border:1px solid #ff6666; color:#ff6666; }
 
     .case-card {
       background: #111;
       border: 1px solid var(--border);
-      padding: 16px;
+      padding: 12px;
       border-radius: 6px;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
     }
-    .new-messages { color: #ff0; font-size: 13px; }
+    .case-header-line {
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      align-items:center;
+      font-size:13px;
+    }
+    .case-title {
+      font-weight:bold;
+      color:#eee;
+    }
+    .case-meta {
+      font-size:11px;
+      color:var(--muted);
+    }
+    .case-tags {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-top:2px;
+    }
+    .case-actions {
+      margin-top:8px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
 
     .small-btn {
       background: transparent;
       border: 1px solid var(--green);
       color: var(--green);
-      padding: 6px 14px;
+      padding: 5px 10px;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 13px;
-      margin: 4px 4px 4px 0;
+      font-size: 11px;
     }
     .small-btn:hover { background: var(--green); color: #000; }
-    .small-btn.reject { border-color: #ff4444; color: #ff4444; }
+    .small-btn.reject { border-color: var(--danger); color: var(--danger); }
+    .small-btn.reject:hover { background: var(--danger); color:#000; }
+    .small-btn.secondary {
+      border-color: var(--border);
+      color: #aaa;
+    }
+    .small-btn.secondary:hover {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .new-messages { color: var(--accent); font-size: 11px; }
+
+    .profile-grid {
+      display:grid;
+      grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+      gap:16px;
+      align-items:flex-start;
+    }
+    .profile-card {
+      background:#111;
+      border:1px solid var(--border);
+      border-radius:6px;
+      padding:12px;
+      text-align:center;
+    }
+    .profile-avatar {
+      width:90px;
+      height:90px;
+      border-radius:50%;
+      border:2px solid var(--green);
+      object-fit:cover;
+      background:#000;
+      margin-bottom:8px;
+    }
+    .profile-name { font-size:16px; color:var(--green); font-weight:bold; }
+    .profile-role { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; }
+    .profile-specialty { font-size:12px; margin-top:6px; }
+    .profile-instagram { font-size:12px; margin-top:6px; }
+    .profile-bio { font-size:12px; margin-top:10px; color:#ddd; text-align:left; }
+
+    .profile-stats {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap:10px;
+      margin-top:10px;
+    }
+    .profile-stat {
+      background:#000;
+      border:1px solid var(--border);
+      border-radius:4px;
+      padding:8px;
+      font-size:11px;
+    }
+    .profile-stat-label { color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; }
+    .profile-stat-value { color:var(--green); font-size:14px; font-weight:bold; }
+
+    .revenue-grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap:12px;
+      margin-top:8px;
+    }
+    .revenue-card {
+      background:#111;
+      border:1px solid var(--border);
+      border-radius:6px;
+      padding:10px;
+      font-size:12px;
+    }
+    .revenue-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; }
+    .revenue-value { font-size:18px; color:var(--green); font-weight:bold; }
+    .revenue-sub { font-size:11px; color:#aaa; margin-top:4px; }
+
+    .revenue-table {
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+      font-size:12px;
+    }
+    .revenue-table th, .revenue-table td {
+      border:1px solid #222;
+      padding:6px 8px;
+      text-align:left;
+    }
+    .revenue-table th {
+      background:#111;
+      color:var(--muted);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+    }
+
+    /* Modal */
+    #caseModal {
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.95);
+      align-items:center;
+      justify-content:center;
+      z-index:2000;
+    }
+    .modal-inner {
+      background:#111;
+      border:2px solid var(--green);
+      padding:18px;
+      width:96%;
+      max-width:980px;
+      max-height:94vh;
+      overflow-y:auto;
+      border-radius:8px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .modal-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+    }
+    .modal-title {
+      color:var(--green);
+      font-size:18px;
+      font-weight:bold;
+    }
+    .modal-meta {
+      font-size:11px;
+      color:var(--muted);
+    }
+    .modal-tags {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-top:4px;
+    }
+    .modal-body {
+      display:grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap:14px;
+      margin-top:8px;
+    }
+    .modal-section-title {
+      font-size:12px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+      margin-bottom:4px;
+    }
+    .modal-block {
+      background:#000;
+      border:1px solid #222;
+      border-radius:4px;
+      padding:8px;
+      font-size:12px;
+    }
+
+    .thread {
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      max-height:260px;
+      overflow-y:auto;
+      padding-right:4px;
+    }
+    .msg {
+      padding:6px 8px;
+      border-radius:4px;
+      font-size:12px;
+      border:1px solid #222;
+    }
+    .msg-client {
+      background:#151515;
+      border-color:#333;
+    }
+    .msg-associate {
+      background:#061b12;
+      border-color:#0f3;
+    }
+    .msg-header {
+      font-size:11px;
+      color:var(--muted);
+      margin-bottom:2px;
+      display:flex;
+      justify-content:space-between;
+      gap:6px;
+    }
+    .msg-body {
+      white-space:pre-wrap;
+    }
+
+    .reply-box {
+      margin-top:8px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .reply-textarea {
+      width:100%;
+      height:120px;
+      background:#000;
+      color:#ddd;
+      border:1px solid var(--green);
+      padding:8px;
+      border-radius:4px;
+      font-family:'Courier New', monospace;
+      font-size:12px;
+      resize:vertical;
+    }
+
+    .modal-footer {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+      margin-top:8px;
+      flex-wrap:wrap;
+    }
+
+    .timeline {
+      font-size:11px;
+      color:var(--muted);
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .timeline-item::before {
+      content:"• ";
+      color:var(--green);
+    }
+
+    @media (max-width: 900px) {
+      .container { flex-direction:column; }
+      .sidebar {
+        width:100%;
+        position:static;
+        max-height:none;
+        display:flex;
+        flex-wrap:wrap;
+        border-right:none;
+        border-bottom:1px solid var(--border);
+      }
+      .nav-item { flex:1 1 45%; text-align:center; }
+      .main { padding:16px 10px; }
+      .profile-grid, .modal-body {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
   </style>
 </head>
 <body>
   <div class="header">
     <div class="logo">MR. HANSEN FIRM • ASSOCIATE ADMIN</div>
-    <div>
-      <span class="user-info">Signed in as: <strong id="currentUser">Loading...</strong></span>
-      &nbsp;&nbsp;&nbsp;
+    <div class="header-right">
+      <div class="user-mini">
+        <img id="headerAvatar" class="user-avatar" src="" alt="Associate">
+        <div class="user-info">
+          <div class="user-name" id="currentUser">Loading...</div>
+          <div class="user-sub" id="currentUserSub">Associate Console</div>
+        </div>
+      </div>
       <a href="index.html" class="back-home">← Back to Home</a>
     </div>
   </div>
 
   <div class="container">
     <div class="sidebar">
+      <div class="sidebar-section-title">Navigation</div>
       <div class="nav-item active" onclick="setActiveNav(this); showPanel('dashboard')">📊 Dashboard</div>
       <div class="nav-item" onclick="setActiveNav(this); showPanel('cases')">🛡 My Cases</div>
       <div class="nav-item" onclick="setActiveNav(this); showPanel('revenue')">💰 Revenue</div>
@@ -123,58 +497,323 @@
     </div>
 
     <div class="main">
+      <!-- DASHBOARD -->
       <div id="panel-dashboard" class="panel">
-        <div class="panel-title">Operational Overview</div>
+        <div class="panel-title">
+          <span>Operational Overview</span>
+          <span class="panel-subtitle" id="dashboardSubtitle">Loading metrics…</span>
+        </div>
         <div class="metric-row">
-          <div class="metric-tile"><div class="metric-value" id="metricAssigned">0</div><div>Assigned Cases</div></div>
-          <div class="metric-tile"><div class="metric-value" id="metricActive">0</div><div>Active Cases</div></div>
-          <div class="metric-tile"><div class="metric-value" id="metricCompleted">0</div><div>Completed</div></div>
-          <div class="metric-tile"><div class="metric-value" id="metricUnread">0</div><div>Unread Messages</div></div>
+          <div class="metric-tile">
+            <div class="metric-label">Assigned Cases</div>
+            <div class="metric-value" id="metricAssigned">0</div>
+            <div class="metric-extra">Total cases currently linked to you.</div>
+          </div>
+          <div class="metric-tile">
+            <div class="metric-label">Active Cases</div>
+            <div class="metric-value" id="metricActive">0</div>
+            <div class="metric-extra">Pending or open cases in progress.</div>
+          </div>
+          <div class="metric-tile">
+            <div class="metric-label">Completed</div>
+            <div class="metric-value" id="metricCompleted">0</div>
+            <div class="metric-extra">Cases marked as completed.</div>
+          </div>
+          <div class="metric-tile">
+            <div class="metric-label">Unread Messages</div>
+            <div class="metric-value" id="metricUnread">0</div>
+            <div class="metric-extra">New client replies awaiting review.</div>
+          </div>
         </div>
       </div>
 
+      <!-- CASES -->
       <div id="panel-cases" class="panel" style="display:none;">
-        <div class="panel-title">My Cases</div>
+        <div class="panel-title">
+          <span>My Cases</span>
+          <span class="panel-subtitle" id="casesSubtitle">Loading cases…</span>
+        </div>
+
+        <div class="filters-row">
+          <label>Search:</label>
+          <input id="caseSearch" class="input" type="text" placeholder="Client, title, caseId…" oninput="applyCaseFilters()">
+          <label>Status:</label>
+          <select id="caseStatusFilter" onchange="applyCaseFilters()">
+            <option value="">All</option>
+            <option value="Pending">Pending</option>
+            <option value="open">Open</option>
+            <option value="completed">Completed</option>
+          </select>
+          <label>Tier:</label>
+          <select id="caseTierFilter" onchange="applyCaseFilters()">
+            <option value="">All</option>
+            <option value="Level 1 - Quick Read">Level 1 - Quick Read</option>
+            <option value="Level 2 - Deep Dive Analysis">Level 2 - Deep Dive Analysis</option>
+            <option value="Level 3 - Crisis Session">Level 3 - Crisis Session</option>
+          </select>
+          <label>Sort:</label>
+          <select id="caseSort" onchange="applyCaseFilters()">
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="tier">Tier</option>
+            <option value="status">Status</option>
+          </select>
+          <button class="small-btn secondary" onclick="reloadCases()">⟳ Refresh</button>
+        </div>
+
         <div id="caseList">Loading cases...</div>
       </div>
 
+      <!-- REVENUE -->
       <div id="panel-revenue" class="panel" style="display:none;">
-        <div class="panel-title">Revenue & Commissions</div>
-        <div id="revenueContent">Coming soon...</div>
+        <div class="panel-title">
+          <span>Revenue & Commissions</span>
+          <span class="panel-subtitle" id="revenueSubtitle">Loading revenue…</span>
+        </div>
+
+        <div id="revenueContent">
+          <div class="revenue-grid">
+            <div class="revenue-card">
+              <div class="revenue-label">Total Earned</div>
+              <div class="revenue-value" id="revTotal">$0.00</div>
+              <div class="revenue-sub">All-time commissions.</div>
+            </div>
+            <div class="revenue-card">
+              <div class="revenue-label">This Month</div>
+              <div class="revenue-value" id="revMonth">$0.00</div>
+              <div class="revenue-sub">Current month earnings.</div>
+            </div>
+            <div class="revenue-card">
+              <div class="revenue-label">Commission Rate</div>
+              <div class="revenue-value" id="revRate">0%</div>
+              <div class="revenue-sub">Applied to eligible cases.</div>
+            </div>
+            <div class="revenue-card">
+              <div class="revenue-label">Completed Cases</div>
+              <div class="revenue-value" id="revCompletedCases">0</div>
+              <div class="revenue-sub">Cases contributing to revenue.</div>
+            </div>
+          </div>
+
+          <table class="revenue-table" id="revenueTable">
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th>Cases</th>
+                <th>Gross</th>
+                <th>Commission</th>
+              </tr>
+            </thead>
+            <tbody id="revenueTableBody">
+              <tr><td colspan="4">Loading breakdown…</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
+      <!-- PROFILE -->
       <div id="panel-profile" class="panel" style="display:none;">
-        <div class="panel-title">Profile</div>
-        <div id="profileContent">Coming soon...</div>
+        <div class="panel-title">
+          <span>Profile</span>
+          <span class="panel-subtitle">Your public-facing associate profile.</span>
+        </div>
+
+        <div id="profileContent">
+          <div class="profile-grid">
+            <div class="profile-card">
+              <img id="profileAvatar" class="profile-avatar" src="" alt="Associate">
+              <div class="profile-name" id="profileName">Loading…</div>
+              <div class="profile-role" id="profileRole">Associate</div>
+              <div class="profile-specialty" id="profileSpecialty"></div>
+              <div class="profile-instagram" id="profileInstagram"></div>
+
+              <div class="profile-stats">
+                <div class="profile-stat">
+                  <div class="profile-stat-label">HIR</div>
+                  <div class="profile-stat-value" id="profileHIR">0.0</div>
+                </div>
+                <div class="profile-stat">
+                  <div class="profile-stat-label">Rank</div>
+                  <div class="profile-stat-value" id="profileRank">0</div>
+                </div>
+                <div class="profile-stat">
+                  <div class="profile-stat-label">Cases Completed</div>
+                  <div class="profile-stat-value" id="profileCasesCompleted">0</div>
+                </div>
+                <div class="profile-stat">
+                  <div class="profile-stat-label">Client Rating</div>
+                  <div class="profile-stat-value" id="profileClientRating">0.0</div>
+                </div>
+                <div class="profile-stat">
+                  <div class="profile-stat-label">Community Rating</div>
+                  <div class="profile-stat-value" id="profileCommunityRating">0.0</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="profile-card" style="text-align:left;">
+              <div class="profile-bio" id="profileBio">Loading bio…</div>
+              <div style="margin-top:12px; font-size:11px; color:var(--muted);">
+                Profile data is sourced from the Associates sheet. To change your bio, specialty, or social links, contact the firm administrator.
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
     </div>
   </div>
 
-  <!-- Case Modal -->
-  <div id="caseModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); align-items:center; justify-content:center; z-index:2000;">
-    <div style="background:#111; border:2px solid var(--green); padding:25px; width:90%; max-width:920px; max-height:92vh; overflow-y:auto; border-radius:8px;">
-      <h2 style="color:var(--green);">Case #<span id="modalCaseId"></span></h2>
-      <div id="modalContent"></div>
-      <br>
-      <button class="small-btn" onclick="closeModal()">Close</button>
+  <!-- CASE MODAL -->
+  <div id="caseModal">
+    <div class="modal-inner">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Case #<span id="modalCaseId"></span></div>
+          <div class="modal-meta" id="modalMeta"></div>
+          <div class="modal-tags" id="modalTags"></div>
+        </div>
+        <div class="timeline" id="modalTimeline"></div>
+      </div>
+
+      <div class="modal-body">
+        <div>
+          <div class="modal-section-title">Client Question</div>
+          <div class="modal-block" id="modalQuestion"></div>
+
+          <div class="modal-section-title" style="margin-top:10px;">Message Thread</div>
+          <div class="modal-block">
+            <div class="thread" id="modalThread"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="modal-section-title">Reply</div>
+          <div class="modal-block">
+            <div class="reply-box">
+              <textarea id="replyText" class="reply-textarea" placeholder="Write your answer here..."></textarea>
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <button class="small-btn" onclick="sendReplyFromModal()">Send Answer</button>
+                <button class="small-btn secondary" onclick="reloadCaseMessages()">⟳ Refresh Thread</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-section-title" style="margin-top:10px;">Case Controls</div>
+          <div class="modal-block">
+            <div class="case-actions">
+              <button class="small-btn" onclick="acceptCase(currentModalCaseId)">Accept</button>
+              <button class="small-btn reject" onclick="rejectCase(currentModalCaseId)">Reject</button>
+              <button class="small-btn secondary" onclick="markCaseCompleted()">Mark Completed</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="modal-meta" id="modalFooterStatus"></div>
+        <button class="small-btn secondary" onclick="closeModal()">Close</button>
+      </div>
     </div>
   </div>
 
 <script>
 const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
 
-let currentAssociate = { id: null, name: "Associate" };
+let currentAssociate = {
+  id: null,
+  name: "Associate",
+  photoUrl: "",
+  specialty: "",
+  bio: "",
+  instagram: "",
+  HIR: 0,
+  rank: 0,
+  casesCompleted: 0,
+  avgClientRating: 0,
+  avgCommunityRating: 0
+};
+
 let myCases = [];
+let filteredCases = [];
+let unreadCount = 0;
+let currentModalCaseId = null;
+let currentModalCase = null;
+let currentCaseMessages = [];
+let revenueData = null;
 
 function getAssociateFromUrl() {
   const params = new URLSearchParams(window.location.search);
   currentAssociate.id = params.get('id');
-  document.getElementById('currentUser').textContent = currentAssociate.id ? currentAssociate.id : "Unknown Associate";
+  if (!currentAssociate.id) {
+    document.getElementById('currentUser').textContent = "Unknown Associate";
+    document.getElementById('currentUserSub').textContent = "Missing associate ID in URL";
+  } else {
+    document.getElementById('currentUser').textContent = currentAssociate.id;
+    document.getElementById('currentUserSub').textContent = "Associate Console";
+  }
+}
+
+async function loadAssociateProfile() {
+  if (!currentAssociate.id) return;
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "getAssociateProfile",
+        associateId: currentAssociate.id
+      })
+    });
+    const data = await res.json();
+    if (data && data.success) {
+      currentAssociate.name = data.name || currentAssociate.id;
+      currentAssociate.photoUrl = data.photoUrl || "";
+      currentAssociate.specialty = data.specialty || "";
+      currentAssociate.bio = data.bio || "";
+      currentAssociate.instagram = data.instagram || "";
+      currentAssociate.HIR = data.HIR || 0;
+      currentAssociate.rank = data.rank || 0;
+      currentAssociate.casesCompleted = data.casesCompleted || 0;
+      currentAssociate.avgClientRating = data.avgClientRating || 0;
+      currentAssociate.avgCommunityRating = data.avgCommunityRating || 0;
+
+      document.getElementById('currentUser').textContent = currentAssociate.name;
+      document.getElementById('currentUserSub').textContent = "Associate Console";
+
+      const avatarUrl = currentAssociate.photoUrl || "";
+      if (avatarUrl) {
+        document.getElementById('headerAvatar').src = avatarUrl;
+        document.getElementById('profileAvatar').src = avatarUrl;
+      }
+
+      document.getElementById('profileName').textContent = currentAssociate.name;
+      document.getElementById('profileRole').textContent = "Associate";
+      document.getElementById('profileSpecialty').textContent = currentAssociate.specialty ? ("Specialty: " + currentAssociate.specialty) : "";
+      document.getElementById('profileBio').textContent = currentAssociate.bio || "No bio available.";
+
+      if (currentAssociate.instagram) {
+        document.getElementById('profileInstagram').innerHTML =
+          'Instagram: <a href="https://instagram.com/' + currentAssociate.instagram + '" target="_blank">@' +
+          currentAssociate.instagram + '</a>';
+      } else {
+        document.getElementById('profileInstagram').textContent = "";
+      }
+
+      document.getElementById('profileHIR').textContent = currentAssociate.HIR;
+      document.getElementById('profileRank').textContent = currentAssociate.rank;
+      document.getElementById('profileCasesCompleted').textContent = currentAssociate.casesCompleted;
+      document.getElementById('profileClientRating').textContent = currentAssociate.avgClientRating;
+      document.getElementById('profileCommunityRating').textContent = currentAssociate.avgCommunityRating;
+    }
+  } catch (e) {
+    console.error("Error loading associate profile", e);
+  }
 }
 
 async function loadMyCases() {
   if (!currentAssociate.id) {
-    document.getElementById('caseList').innerHTML = "<p style='color:#ff6666;'>No associate ID in URL. Example: associate-admin.html?id=assoc_1t7za9c9909</p>";
+    document.getElementById('caseList').innerHTML =
+      "<p style='color:#ff6666;'>No associate ID in URL. Example: associate-admin.html?id=assoc_1t7za9c9909</p>";
     return;
   }
 
@@ -186,11 +825,14 @@ async function loadMyCases() {
     const data = await res.json();
 
     myCases = data.cases || [];
-    
+    filteredCases = [...myCases];
+
     renderDashboard();
-    renderMyCases();
-  } catch(e) {
-    document.getElementById('caseList').innerHTML = "<p style='color:#ff6666;'>Error connecting to backend.</p>";
+    applyCaseFilters();
+    document.getElementById('casesSubtitle').textContent = myCases.length + " total cases loaded.";
+  } catch (e) {
+    document.getElementById('caseList').innerHTML =
+      "<p style='color:#ff6666;'>Error connecting to backend.</p>";
     console.error(e);
   }
 }
@@ -199,55 +841,155 @@ function renderDashboard() {
   const assigned = myCases.length;
   const active = myCases.filter(c => c.status === "Pending" || c.status === "open").length;
   const completed = myCases.filter(c => c.status === "completed").length;
-  const unread = 0; // Will improve later
+  const unread = myCases.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
+
+  unreadCount = unread;
 
   document.getElementById('metricAssigned').textContent = assigned;
   document.getElementById('metricActive').textContent = active;
   document.getElementById('metricCompleted').textContent = completed;
   document.getElementById('metricUnread').textContent = unread;
+
+  document.getElementById('dashboardSubtitle').textContent =
+    "Assigned: " + assigned + " • Active: " + active + " • Completed: " + completed;
+}
+
+function tierBadgeClass(tier) {
+  if (!tier) return "";
+  if (tier.indexOf("Level 1") === 0) return "badge-tier-1";
+  if (tier.indexOf("Level 2") === 0) return "badge-tier-2";
+  if (tier.indexOf("Level 3") === 0) return "badge-tier-3";
+  return "";
+}
+
+function statusBadgeClass(status) {
+  if (status === "Pending") return "badge-status-pending";
+  if (status === "open") return "badge-status-open";
+  if (status === "completed") return "badge-status-completed";
+  return "";
+}
+
+function applyCaseFilters() {
+  const search = document.getElementById('caseSearch').value.toLowerCase();
+  const statusFilter = document.getElementById('caseStatusFilter').value;
+  const tierFilter = document.getElementById('caseTierFilter').value;
+  const sort = document.getElementById('caseSort').value;
+
+  filteredCases = myCases.filter(c => {
+    let ok = true;
+    if (statusFilter && c.status !== statusFilter) ok = false;
+    if (tierFilter && c.tier !== tierFilter) ok = false;
+
+    if (search) {
+      const blob = (c.caseId + " " + (c.caseTitle || "") + " " + (c.clientName || "") + " " + (c.description || "")).toLowerCase();
+      if (!blob.includes(search)) ok = false;
+    }
+    return ok;
+  });
+
+  filteredCases.sort((a, b) => {
+    if (sort === "newest") {
+      return (b.timestamp || "").localeCompare(a.timestamp || "");
+    } else if (sort === "oldest") {
+      return (a.timestamp || "").localeCompare(b.timestamp || "");
+    } else if (sort === "tier") {
+      return (a.tier || "").localeCompare(b.tier || "");
+    } else if (sort === "status") {
+      return (a.status || "").localeCompare(b.status || "");
+    }
+    return 0;
+  });
+
+  renderMyCases();
 }
 
 function renderMyCases() {
   const container = document.getElementById('caseList');
-  if (myCases.length === 0) {
-    container.innerHTML = "<p>No cases assigned to you yet.</p>";
+  if (!filteredCases || filteredCases.length === 0) {
+    container.innerHTML = "<p>No cases match your filters.</p>";
     return;
   }
 
-  container.innerHTML = myCases.map(c => `
-    <div class="case-card">
-      <strong>Case #${c.caseId}</strong> — ${c.caseTitle || 'No Title'}<br>
-      Client: ${c.clientName}<br>
-      Status: ${c.status} | Tier: ${c.tier}
-      <div style="margin-top:12px;">
-        <button class="small-btn" onclick="acceptCase('${c.caseId}')">Accept</button>
-        <button class="small-btn reject" onclick="rejectCase('${c.caseId}')">Reject</button>
-        <button class="small-btn" onclick="openCaseModal('${c.caseId}')">View & Reply</button>
+  container.innerHTML = filteredCases.map(c => {
+    const statusClass = statusBadgeClass(c.status);
+    const tierClass = tierBadgeClass(c.tier);
+    const unread = c.unreadCount || 0;
+
+    return `
+      <div class="case-card">
+        <div class="case-header-line">
+          <div>
+            <span class="case-title">Case #${c.caseId}</span>
+            <span class="case-meta"> • ${c.caseTitle || 'No Title'}</span>
+          </div>
+          <div class="case-meta">${c.timestamp || ''}</div>
+        </div>
+        <div class="case-meta">
+          Client: ${c.clientName || 'Unknown'} • Email: ${c.clientEmail || 'N/A'}
+        </div>
+        <div class="case-tags">
+          <span class="badge ${statusClass}">${c.status || 'Unknown'}</span>
+          <span class="badge ${tierClass}">${c.tier || 'No Tier'}</span>
+          ${unread > 0 ? `<span class="new-messages">${unread} new message(s)</span>` : ``}
+        </div>
+        <div class="case-actions">
+          <button class="small-btn" onclick="acceptCase('${c.caseId}')">Accept</button>
+          <button class="small-btn reject" onclick="rejectCase('${c.caseId}')">Reject</button>
+          <button class="small-btn" onclick="openCaseModal('${c.caseId}')">View & Reply</button>
+        </div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
-function acceptCase() { alert("Accept function ready - backend needed"); }
-function rejectCase() { alert("Reject function ready - backend needed"); }
-
-function openCaseModal(caseId) {
-  const c = myCases.find(x => x.caseId === caseId);
-  if (!c) return;
-
-  document.getElementById('modalCaseId').textContent = c.caseId;
-  document.getElementById('modalContent').innerHTML = `
-    <p><strong>Client:</strong> ${c.clientName}</p>
-    <p><strong>Question:</strong> ${c.description}</p>
-    <textarea id="replyText" style="width:100%; height:140px; background:#000; color:#ddd; border:1px solid var(--green); padding:10px;" placeholder="Write your answer here..."></textarea>
-    <br><br>
-    <button class="small-btn" onclick="sendReply('${caseId}')">Send Answer</button>
-  `;
-  document.getElementById('caseModal').style.display = 'flex';
+function reloadCases() {
+  loadMyCases();
 }
 
-function sendReply() { alert("Reply function ready - backend needed"); }
-function closeModal() { document.getElementById('caseModal').style.display = 'none'; }
+async function loadRevenue() {
+  if (!currentAssociate.id) return;
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "getRevenue",
+        associateId: currentAssociate.id
+      })
+    });
+    const data = await res.json();
+    revenueData = data || {};
+
+    const total = revenueData.totalCommission || 0;
+    const month = revenueData.monthCommission || 0;
+    const rate = revenueData.commissionRate || 0;
+    const completedCases = revenueData.completedCases || 0;
+
+    document.getElementById('revTotal').textContent = "$" + total.toFixed(2);
+    document.getElementById('revMonth').textContent = "$" + month.toFixed(2);
+    document.getElementById('revRate').textContent = rate + "%";
+    document.getElementById('revCompletedCases').textContent = completedCases;
+
+    const tbody = document.getElementById('revenueTableBody');
+    const breakdown = revenueData.breakdown || [];
+    if (!breakdown.length) {
+      tbody.innerHTML = '<tr><td colspan="4">No revenue data yet.</td></tr>';
+    } else {
+      tbody.innerHTML = breakdown.map(row => `
+        <tr>
+          <td>${row.month}</td>
+          <td>${row.cases}</td>
+          <td>$${row.gross.toFixed(2)}</td>
+          <td>$${row.commission.toFixed(2)}</td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('revenueSubtitle').textContent = "Revenue data loaded.";
+  } catch (e) {
+    console.error("Error loading revenue", e);
+    document.getElementById('revenueSubtitle').textContent = "Error loading revenue.";
+  }
+}
 
 function setActiveNav(el) {
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -257,11 +999,216 @@ function setActiveNav(el) {
 function showPanel(name) {
   document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
   document.getElementById(`panel-${name}`).style.display = 'block';
+
+  if (name === 'revenue') {
+    loadRevenue();
+  }
 }
 
-// Init
+async function openCaseModal(caseId) {
+  currentModalCaseId = caseId;
+  currentModalCase = myCases.find(x => x.caseId === caseId);
+  if (!currentModalCase) return;
+
+  document.getElementById('modalCaseId').textContent = currentModalCase.caseId;
+  document.getElementById('modalMeta').textContent =
+    (currentModalCase.clientName || 'Unknown') + " • " +
+    (currentModalCase.clientEmail || 'N/A');
+
+  const tagsEl = document.getElementById('modalTags');
+  tagsEl.innerHTML = `
+    <span class="badge ${statusBadgeClass(currentModalCase.status)}">${currentModalCase.status || 'Unknown'}</span>
+    <span class="badge ${tierBadgeClass(currentModalCase.tier)}">${currentModalCase.tier || 'No Tier'}</span>
+  `;
+
+  document.getElementById('modalQuestion').textContent = currentModalCase.description || '';
+
+  const timelineEl = document.getElementById('modalTimeline');
+  const timeline = currentModalCase.timeline || [];
+  if (timeline.length) {
+    timelineEl.innerHTML = timeline.map(t => `<div class="timeline-item">${t}</div>`).join('');
+  } else {
+    timelineEl.innerHTML = `<div class="timeline-item">Case created: ${currentModalCase.timestamp || 'Unknown time'}</div>`;
+  }
+
+  document.getElementById('replyText').value = "";
+
+  await loadCaseMessages(caseId);
+
+  document.getElementById('caseModal').style.display = 'flex';
+  document.getElementById('modalFooterStatus').textContent = "Ready.";
+}
+
+function closeModal() {
+  document.getElementById('caseModal').style.display = 'none';
+  currentModalCaseId = null;
+  currentModalCase = null;
+  currentCaseMessages = [];
+}
+
+async function loadCaseMessages(caseId) {
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "getCaseMessages",
+        caseId: caseId,
+        associateId: currentAssociate.id
+      })
+    });
+    const data = await res.json();
+    currentCaseMessages = data.messages || [];
+
+    const threadEl = document.getElementById('modalThread');
+    if (!currentCaseMessages.length) {
+      threadEl.innerHTML = "<div class='msg msg-client'><div class='msg-body'>No messages yet. Your reply will start the thread.</div></div>";
+    } else {
+      threadEl.innerHTML = currentCaseMessages.map(m => {
+        const cls = m.sender === 'associate' ? 'msg msg-associate' : 'msg msg-client';
+        const who = m.sender === 'associate' ? currentAssociate.name : (currentModalCase.clientName || 'Client');
+        const when = m.timestamp || '';
+        return `
+          <div class="${cls}">
+            <div class="msg-header">
+              <span>${who}</span>
+              <span>${when}</span>
+            </div>
+            <div class="msg-body">${(m.text || '').replace(/\n/g, '<br>')}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    const threadDiv = document.getElementById('modalThread');
+    threadDiv.scrollTop = threadDiv.scrollHeight;
+
+    document.getElementById('modalFooterStatus').textContent = "Thread updated.";
+  } catch (e) {
+    console.error("Error loading messages", e);
+    document.getElementById('modalFooterStatus').textContent = "Error loading messages.";
+  }
+}
+
+function reloadCaseMessages() {
+  if (!currentModalCaseId) return;
+  loadCaseMessages(currentModalCaseId);
+}
+
+async function sendReplyFromModal() {
+  if (!currentModalCaseId) return;
+  const text = document.getElementById('replyText').value.trim();
+  if (!text) {
+    document.getElementById('modalFooterStatus').textContent = "Reply is empty.";
+    return;
+  }
+
+  try {
+    document.getElementById('modalFooterStatus').textContent = "Sending reply…";
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "sendAssociateReply",
+        caseId: currentModalCaseId,
+        associateId: currentAssociate.id,
+        replyText: text
+      })
+    });
+    const data = await res.json();
+    if (data && data.success) {
+      document.getElementById('replyText').value = "";
+      await loadCaseMessages(currentModalCaseId);
+      await loadMyCases();
+      document.getElementById('modalFooterStatus').textContent = "Reply sent.";
+    } else {
+      document.getElementById('modalFooterStatus').textContent = "Error sending reply.";
+    }
+  } catch (e) {
+    console.error("Error sending reply", e);
+    document.getElementById('modalFooterStatus').textContent = "Error sending reply.";
+  }
+}
+
+async function acceptCase(caseId) {
+  if (!caseId) return;
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "acceptCase",
+        caseId: caseId,
+        associateId: currentAssociate.id
+      })
+    });
+    const data = await res.json();
+    if (data && data.success) {
+      await loadMyCases();
+      if (currentModalCaseId === caseId) {
+        document.getElementById('modalFooterStatus').textContent = "Case accepted.";
+      }
+    } else {
+      alert("Error accepting case.");
+    }
+  } catch (e) {
+    console.error("Error accepting case", e);
+    alert("Error accepting case.");
+  }
+}
+
+async function rejectCase(caseId) {
+  if (!caseId) return;
+  const reason = prompt("Optional: provide a brief reason for rejection (or leave blank).", "");
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "rejectCase",
+        caseId: caseId,
+        associateId: currentAssociate.id,
+        reason: reason || ""
+      })
+    });
+    const data = await res.json();
+    if (data && data.success) {
+      await loadMyCases();
+      if (currentModalCaseId === caseId) {
+        document.getElementById('modalFooterStatus').textContent = "Case rejected.";
+      }
+    } else {
+      alert("Error rejecting case.");
+    }
+  } catch (e) {
+    console.error("Error rejecting case", e);
+    alert("Error rejecting case.");
+  }
+}
+
+async function markCaseCompleted() {
+  if (!currentModalCaseId) return;
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "markCaseCompleted",
+        caseId: currentModalCaseId,
+        associateId: currentAssociate.id
+      })
+    });
+    const data = await res.json();
+    if (data && data.success) {
+      await loadMyCases();
+      document.getElementById('modalFooterStatus').textContent = "Case marked completed.";
+    } else {
+      document.getElementById('modalFooterStatus').textContent = "Error marking completed.";
+    }
+  } catch (e) {
+    console.error("Error marking completed", e);
+    document.getElementById('modalFooterStatus').textContent = "Error marking completed.";
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   getAssociateFromUrl();
+  loadAssociateProfile();
   loadMyCases();
   showPanel('dashboard');
 });
