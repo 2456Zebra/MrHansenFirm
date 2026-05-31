@@ -39,7 +39,7 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: 32px; /* more space between avatar block and back link */
+      gap: 32px; /* more space between associate info and back link */
     }
     .user-info { color: #ccc; font-size: 14px; text-align: right; }
     .user-name { font-weight: bold; color: var(--green); font-size: 18px; }
@@ -48,7 +48,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      justify-content: center; /* visually centers the associate info block */
+      justify-content: center; /* visually centers associate info block */
     }
     .user-avatar {
       width: 40px;
@@ -585,7 +585,7 @@
       <div id="panel-revenue" class="panel" style="display:none;">
         <div class="panel-title">
           <span>Revenue & Commissions</span>
-          <span class="panel-subtitle" id="revenueSubtitle">Coming soon.</span>
+          <span class="panel-subtitle" id="revenueSubtitle">Loading revenue…</span>
         </div>
 
         <div id="revenueContent">
@@ -593,7 +593,7 @@
             <div class="revenue-card">
               <div class="revenue-label">Total Earned</div>
               <div class="revenue-value" id="revTotal">$0.00</div>
-              <div class="revenue-sub">All-time commissions.</div>
+              <div class="revenue-sub">All-time commissions (paid cases only).</div>
             </div>
             <div class="revenue-card">
               <div class="revenue-label">This Month</div>
@@ -602,13 +602,13 @@
             </div>
             <div class="revenue-card">
               <div class="revenue-label">Commission Rate</div>
-              <div class="revenue-value" id="revRate">0%</div>
-              <div class="revenue-sub">Applied to eligible cases.</div>
+              <div class="revenue-value" id="revRate">70%</div>
+              <div class="revenue-sub">Applied to Stripe-paid cases.</div>
             </div>
             <div class="revenue-card">
-              <div class="revenue-label">Completed Cases</div>
-              <div class="revenue-value" id="revCompletedCases">0</div>
-              <div class="revenue-sub">Cases contributing to revenue.</div>
+              <div class="revenue-label">Paid Cases</div>
+              <div class="revenue-value" id="revPaidCases">0</div>
+              <div class="revenue-sub">Cases with confirmed payment.</div>
             </div>
           </div>
 
@@ -695,7 +695,10 @@
 
       <div class="modal-body">
         <div>
-          <div class="modal-section-title">Client Question</div>
+          <div class="modal-section-title">Case Title</div>
+          <div class="modal-block" id="modalCaseTitle"></div>
+
+          <div class="modal-section-title" style="margin-top:10px;">Client Question</div>
           <div class="modal-block" id="modalQuestion"></div>
 
           <div class="modal-section-title" style="margin-top:10px;">Message Thread</div>
@@ -846,17 +849,21 @@ async function loadMyCases() {
 
     const rawCases = data.cases || [];
 
-    myCases = rawCases.map(c => ({
-      caseId: c.caseId,
-      clientName: c.name,
-      clientEmail: c.email,
-      clientPhone: c.phone,
-      description: c.description,
-      status: c.status,
-      timestamp: "",   // not returned by backend handler
-      tier: "",        // not returned by backend handler
-      unreadCount: 0   // no unread tracking yet
-    }));
+    myCases = rawCases.map(c => {
+      const title = c.caseTitle || c.title || (c.description ? (String(c.description).slice(0, 80) + '…') : 'Untitled Case');
+      return {
+        caseId: c.caseId,
+        clientName: c.name,
+        clientEmail: c.email,
+        clientPhone: c.phone,
+        description: c.description,
+        status: c.status,
+        timestamp: c.timestamp || "",
+        tier: c.tier || "",
+        caseTitle: title,
+        unreadCount: 0
+      };
+    });
 
     filteredCases = [...myCases];
 
@@ -904,7 +911,7 @@ function applyCaseFilters() {
     if (statusFilter && c.status !== statusFilter) ok = false;
 
     if (search) {
-      const blob = (c.caseId + " " + (c.clientName || "") + " " + (c.description || "")).toLowerCase();
+      const blob = (c.caseId + " " + (c.clientName || "") + " " + (c.caseTitle || "") + " " + (c.description || "")).toLowerCase();
       if (!blob.includes(search)) ok = false;
     }
     return ok;
@@ -939,15 +946,16 @@ function renderMyCases() {
       <div class="case-card">
         <div class="case-header-line">
           <div>
-            <span class="case-title">Case #${c.caseId}</span>
+            <span class="case-title">${c.caseTitle || 'Untitled Case'}</span>
           </div>
           <div class="case-meta">${c.timestamp || ''}</div>
         </div>
         <div class="case-meta">
-          Client: ${c.clientName || 'Unknown'} • Email: ${c.clientEmail || 'N/A'}
+          Case ID: ${c.caseId} • Client: ${c.clientName || 'Unknown'} • Email: ${c.clientEmail || 'N/A'}
         </div>
         <div class="case-tags">
           <span class="badge ${statusClass}">${c.status || 'Unknown'}</span>
+          ${c.tier ? `<span class="badge badge-tier-${tierLevel(c.tier)}">${c.tier}</span>` : ``}
           ${unread > 0 ? `<span class="new-messages">${unread} new message(s)</span>` : ``}
         </div>
         <div class="case-actions">
@@ -958,6 +966,14 @@ function renderMyCases() {
       </div>
     `;
   }).join('');
+}
+
+function tierLevel(tier) {
+  const t = String(tier).toLowerCase();
+  if (t.includes("level 1")) return 1;
+  if (t.includes("level 2")) return 2;
+  if (t.includes("level 3")) return 3;
+  return 1;
 }
 
 function reloadCases() {
@@ -987,8 +1003,10 @@ async function openCaseModal(caseId) {
   const tagsEl = document.getElementById('modalTags');
   tagsEl.innerHTML = `
     <span class="badge ${statusBadgeClass(currentModalCase.status)}">${currentModalCase.status || 'Unknown'}</span>
+    ${currentModalCase.tier ? `<span class="badge badge-tier-${tierLevel(currentModalCase.tier)}">${currentModalCase.tier}</span>` : ``}
   `;
 
+  document.getElementById('modalCaseTitle').textContent = currentModalCase.caseTitle || 'Untitled Case';
   document.getElementById('modalQuestion').textContent = currentModalCase.description || '';
 
   const timelineEl = document.getElementById('modalTimeline');
@@ -1165,10 +1183,61 @@ async function markCaseCompleted() {
   }
 }
 
+async function loadRevenue() {
+  if (!currentAssociate.id) return;
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "getRevenue",
+        associateId: currentAssociate.id
+      })
+    });
+    const data = await res.json();
+    if (!data || !data.success) {
+      document.getElementById('revenueSubtitle').textContent = "Revenue unavailable.";
+      return;
+    }
+
+    const summary = data.summary || {};
+    const monthly = data.monthly || [];
+
+    document.getElementById('revTotal').textContent = formatMoney(summary.totalCommission || 0);
+    document.getElementById('revMonth').textContent = formatMoney(summary.thisMonthCommission || 0);
+    document.getElementById('revRate').textContent = (summary.commissionRate || 70) + "%";
+    document.getElementById('revPaidCases').textContent = summary.paidCases || 0;
+
+    const tbody = document.getElementById('revenueTableBody');
+    if (!monthly.length) {
+      tbody.innerHTML = "<tr><td colspan='4'>No revenue data yet.</td></tr>";
+    } else {
+      tbody.innerHTML = monthly.map(row => `
+        <tr>
+          <td>${row.month}</td>
+          <td>${row.cases}</td>
+          <td>${formatMoney(row.gross)}</td>
+          <td>${formatMoney(row.commission)}</td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('revenueSubtitle').textContent = "Revenue based on Stripe-paid cases only.";
+  } catch (e) {
+    console.error("Error loading revenue", e);
+    document.getElementById('revenueSubtitle').textContent = "Error loading revenue.";
+  }
+}
+
+function formatMoney(v) {
+  const n = Number(v) || 0;
+  return "$" + n.toFixed(2);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   getAssociateFromUrl();
   loadAssociateProfile();
   loadMyCases();
+  loadRevenue();
   showPanel('dashboard');
 });
 </script>
