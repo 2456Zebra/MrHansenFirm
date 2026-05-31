@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Associate Admin • MR. HANSEN FIRM</title>
-
   <style>
     :root {
       --green: #00ff88;
@@ -40,7 +39,8 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: 32px;
+      gap: 32px; /* more space between avatar block and back link */
+      gap: 32px; /* more space between associate info and back link */
     }
     .user-info { color: #ccc; font-size: 14px; text-align: right; }
     .user-name { font-weight: bold; color: var(--green); font-size: 18px; }
@@ -49,7 +49,8 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      justify-content: center;
+      justify-content: center; /* visually centers the associate info block */
+      justify-content: center; /* visually centers associate info block */
     }
     .user-avatar {
       width: 40px;
@@ -97,9 +98,9 @@
 
     .main {
       flex: 1;
-      padding: 22px 8px 22px 8px;
-      max-width: 1100px;
-      margin: 0 auto;
+      padding: 22px 8px 22px 8px; /* reduced left padding */
+      max-width: 1100px;          /* panels not full-page width */
+      margin: 0 auto;             /* center the “package” */
       overflow-y: auto;
     }
 
@@ -141,6 +142,7 @@
     .metric-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing:0.08em; }
     .metric-value { font-size: 32px; color: var(--green); font-weight: bold; }
     .metric-extra { font-size: 13px; color: #aaa; margin-top: 4px; }
+
     .filters-row {
       display: flex;
       flex-wrap: wrap;
@@ -464,6 +466,7 @@
       content:"• ";
       color:var(--green);
     }
+
     @media (max-width: 900px) {
       .container { flex-direction:column; }
       .sidebar {
@@ -494,7 +497,6 @@
     }
   </style>
 </head>
-
 <body>
   <div class="header">
     <div class="logo">MR. HANSEN FIRM • ASSOCIATE ADMIN</div>
@@ -526,26 +528,22 @@
           <span>Operational Overview</span>
           <span class="panel-subtitle" id="dashboardSubtitle">Loading metrics…</span>
         </div>
-
         <div class="metric-row">
           <div class="metric-tile">
             <div class="metric-label">Assigned Cases</div>
             <div class="metric-value" id="metricAssigned">0</div>
             <div class="metric-extra">Total cases currently linked to you.</div>
           </div>
-
           <div class="metric-tile">
             <div class="metric-label">Active Cases</div>
             <div class="metric-value" id="metricActive">0</div>
             <div class="metric-extra">Pending or open cases in progress.</div>
           </div>
-
           <div class="metric-tile">
             <div class="metric-label">Completed</div>
             <div class="metric-value" id="metricCompleted">0</div>
             <div class="metric-extra">Cases marked as completed.</div>
           </div>
-
           <div class="metric-tile">
             <div class="metric-label">Unread Messages</div>
             <div class="metric-value" id="metricUnread">0</div>
@@ -554,7 +552,7 @@
         </div>
       </div>
 
-      <!-- CASES PANEL -->
+      <!-- CASES -->
       <div id="panel-cases" class="panel" style="display:none;">
         <div class="panel-title">
           <span>My Cases</span>
@@ -564,7 +562,6 @@
         <div class="filters-row">
           <label>Search:</label>
           <input id="caseSearch" class="input" type="text" placeholder="Client, title, caseId…" oninput="applyCaseFilters()">
-
           <label>Status:</label>
           <select id="caseStatusFilter" onchange="applyCaseFilters()">
             <option value="">All</option>
@@ -573,7 +570,6 @@
             <option value="Declined">Declined</option>
             <option value="Completed">Completed</option>
           </select>
-
           <label>Sort:</label>
           <select id="caseSort" onchange="applyCaseFilters()">
             <option value="">No sorting</option>
@@ -581,17 +577,17 @@
             <option value="oldest">Oldest first</option>
             <option value="status">Status</option>
           </select>
-
           <button class="small-btn secondary" onclick="reloadCases()">⟳ Refresh</button>
         </div>
 
         <div id="caseList">Loading cases...</div>
       </div>
 
-      <!-- REVENUE PANEL -->
+      <!-- REVENUE -->
       <div id="panel-revenue" class="panel" style="display:none;">
         <div class="panel-title">
           <span>Revenue & Commissions</span>
+          <span class="panel-subtitle" id="revenueSubtitle">Coming soon.</span>
           <span class="panel-subtitle" id="revenueSubtitle">Loading revenue…</span>
         </div>
 
@@ -600,29 +596,32 @@
             <div class="revenue-card">
               <div class="revenue-label">Total Earned</div>
               <div class="revenue-value" id="revTotal">$0.00</div>
+              <div class="revenue-sub">All-time commissions.</div>
               <div class="revenue-sub">All-time commissions (paid cases only).</div>
             </div>
-
             <div class="revenue-card">
               <div class="revenue-label">This Month</div>
               <div class="revenue-value" id="revMonth">$0.00</div>
               <div class="revenue-sub">Current month earnings.</div>
             </div>
-
             <div class="revenue-card">
               <div class="revenue-label">Commission Rate</div>
+              <div class="revenue-value" id="revRate">0%</div>
+              <div class="revenue-sub">Applied to eligible cases.</div>
               <div class="revenue-value" id="revRate">70%</div>
               <div class="revenue-sub">Applied to Stripe-paid cases.</div>
             </div>
-
             <div class="revenue-card">
+              <div class="revenue-label">Completed Cases</div>
+              <div class="revenue-value" id="revCompletedCases">0</div>
+              <div class="revenue-sub">Cases contributing to revenue.</div>
               <div class="revenue-label">Paid Cases</div>
               <div class="revenue-value" id="revPaidCases">0</div>
               <div class="revenue-sub">Cases with confirmed payment.</div>
             </div>
           </div>
 
-          <table class="revenue-table">
+          <table class="revenue-table" id="revenueTable">
             <thead>
               <tr>
                 <th>Month</th>
@@ -638,7 +637,7 @@
         </div>
       </div>
 
-      <!-- PROFILE PANEL -->
+      <!-- PROFILE -->
       <div id="panel-profile" class="panel" style="display:none;">
         <div class="panel-title">
           <span>Profile</span>
@@ -659,22 +658,18 @@
                   <div class="profile-stat-label">HIR</div>
                   <div class="profile-stat-value" id="profileHIR">0.0</div>
                 </div>
-
                 <div class="profile-stat">
                   <div class="profile-stat-label">Rank</div>
                   <div class="profile-stat-value" id="profileRank">0</div>
                 </div>
-
                 <div class="profile-stat">
                   <div class="profile-stat-label">Cases Completed</div>
                   <div class="profile-stat-value" id="profileCasesCompleted">0</div>
                 </div>
-
                 <div class="profile-stat">
                   <div class="profile-stat-label">Client Rating</div>
                   <div class="profile-stat-value" id="profileClientRating">0.0</div>
                 </div>
-
                 <div class="profile-stat">
                   <div class="profile-stat-label">Community Rating</div>
                   <div class="profile-stat-value" id="profileCommunityRating">0.0</div>
@@ -691,10 +686,9 @@
           </div>
         </div>
       </div>
-      </div> <!-- end PROFILE panel -->
 
-    </div> <!-- end .main -->
-  </div> <!-- end .container -->
+    </div>
+  </div>
 
   <!-- CASE MODAL -->
   <div id="caseModal">
@@ -705,12 +699,12 @@
           <div class="modal-meta" id="modalMeta"></div>
           <div class="modal-tags" id="modalTags"></div>
         </div>
-
         <div class="timeline" id="modalTimeline"></div>
       </div>
 
       <div class="modal-body">
         <div>
+          <div class="modal-section-title">Client Question</div>
           <div class="modal-section-title">Case Title</div>
           <div class="modal-block" id="modalCaseTitle"></div>
 
@@ -728,7 +722,6 @@
           <div class="modal-block">
             <div class="reply-box">
               <textarea id="replyText" class="reply-textarea" placeholder="Write your answer here..."></textarea>
-
               <div style="display:flex; gap:8px; flex-wrap:wrap;">
                 <button class="small-btn" onclick="sendReplyFromModal()">Send Answer</button>
                 <button class="small-btn secondary" onclick="reloadCaseMessages()">⟳ Refresh Thread</button>
@@ -754,536 +747,523 @@
     </div>
   </div>
 
-  <!-- SCRIPT -->
-  <script>
-    const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
+<script>
+const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
 
-    let currentAssociate = {
-      id: null,
-      name: "Associate",
-      photoUrl: "",
-      specialty: "",
-      bio: "",
-      instagram: "",
-      HIR: 0,
-      rank: 0,
-      casesCompleted: 0,
-      avgClientRating: 0,
-      avgCommunityRating: 0
-    };
+let currentAssociate = {
+  id: null,
+  name: "Associate",
+  photoUrl: "",
+  specialty: "",
+  bio: "",
+  instagram: "",
+  HIR: 0,
+  rank: 0,
+  casesCompleted: 0,
+  avgClientRating: 0,
+  avgCommunityRating: 0
+};
 
-    let myCases = [];
-    let filteredCases = [];
-    let unreadCount = 0;
-    let currentModalCaseId = null;
-    let currentModalCase = null;
-    let currentCaseMessages = [];
+let myCases = [];
+let filteredCases = [];
+let unreadCount = 0;
+let currentModalCaseId = null;
+let currentModalCase = null;
+let currentCaseMessages = [];
 
-    function getAssociateFromUrl() {
-      const params = new URLSearchParams(window.location.search);
-      const rawId = params.get('id');
-      currentAssociate.id = rawId ? rawId.trim() : null;
+function getAssociateFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const rawId = params.get('id');
+  currentAssociate.id = rawId ? rawId.trim() : null;
 
-      if (!currentAssociate.id) {
-        document.getElementById('currentUser').textContent = "Unknown Associate";
-        document.getElementById('currentUserSub').textContent = "Missing associate ID in URL";
+  if (!currentAssociate.id) {
+    document.getElementById('currentUser').textContent = "Unknown Associate";
+    document.getElementById('currentUserSub').textContent = "Missing associate ID in URL";
+  } else {
+    document.getElementById('currentUser').textContent = currentAssociate.id;
+    document.getElementById('currentUserSub').textContent = "Associate Console";
+  }
+}
+
+async function loadAssociateProfile() {
+  if (!currentAssociate.id) return;
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "getAssociateProfile",
+        associateId: currentAssociate.id
+      })
+    });
+    const data = await res.json();
+    if (data && data.success && data.profile) {
+      const p = data.profile;
+      currentAssociate.name = p.name || currentAssociate.id;
+      currentAssociate.photoUrl = p.photoUrl || "";
+      currentAssociate.specialty = p.specialty || "";
+      currentAssociate.bio = p.bio || "";
+      currentAssociate.instagram = p.instagram || "";
+      currentAssociate.HIR = p.HIR || 0;
+      currentAssociate.rank = p.rank || 0;
+      currentAssociate.casesCompleted = p.casesCompleted || 0;
+      currentAssociate.avgClientRating = p.avgClientRating || 0;
+      currentAssociate.avgCommunityRating = p.avgCommunityRating || 0;
+
+      document.getElementById('currentUser').textContent = currentAssociate.name;
+      document.getElementById('currentUserSub').textContent = "Associate Console";
+
+      const avatarUrl = currentAssociate.photoUrl || "";
+      if (avatarUrl) {
+        document.getElementById('headerAvatar').src = avatarUrl;
+        document.getElementById('profileAvatar').src = avatarUrl;
+      }
+
+      document.getElementById('profileName').textContent = currentAssociate.name;
+      document.getElementById('profileRole').textContent = "Associate";
+      document.getElementById('profileSpecialty').textContent =
+        currentAssociate.specialty ? ("Specialty: " + currentAssociate.specialty) : "";
+      document.getElementById('profileBio').textContent = currentAssociate.bio || "No bio available.";
+
+      if (currentAssociate.instagram) {
+        document.getElementById('profileInstagram').innerHTML =
+          'Instagram: <a href="https://instagram.com/' + currentAssociate.instagram +
+          '" target="_blank">@' + currentAssociate.instagram + '</a>';
       } else {
-        document.getElementById('currentUser').textContent = currentAssociate.id;
-        document.getElementById('currentUserSub').textContent = "Associate Console";
-      }
-    }
-
-    async function loadAssociateProfile() {
-      if (!currentAssociate.id) return;
-      try {
-        const res = await fetch(BASE_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "getAssociateProfile",
-            associateId: currentAssociate.id
-          })
-        });
-
-        const data = await res.json();
-        if (data && data.success && data.profile) {
-          const p = data.profile;
-          currentAssociate.name = p.name || currentAssociate.id;
-          currentAssociate.photoUrl = p.photoUrl || "";
-          currentAssociate.specialty = p.specialty || "";
-          currentAssociate.bio = p.bio || "";
-          currentAssociate.instagram = p.instagram || "";
-          currentAssociate.HIR = p.HIR || 0;
-          currentAssociate.rank = p.rank || 0;
-          currentAssociate.casesCompleted = p.casesCompleted || 0;
-          currentAssociate.avgClientRating = p.avgClientRating || 0;
-          currentAssociate.avgCommunityRating = p.avgCommunityRating || 0;
-
-          document.getElementById('currentUser').textContent = currentAssociate.name;
-          document.getElementById('currentUserSub').textContent = "Associate Console";
-
-          if (currentAssociate.photoUrl) {
-            document.getElementById('headerAvatar').src = currentAssociate.photoUrl;
-            document.getElementById('profileAvatar').src = currentAssociate.photoUrl;
-          }
-
-          document.getElementById('profileName').textContent = currentAssociate.name;
-          document.getElementById('profileSpecialty').textContent =
-            currentAssociate.specialty ? ("Specialty: " + currentAssociate.specialty) : "";
-          document.getElementById('profileBio').textContent = currentAssociate.bio || "No bio available.";
-
-          if (currentAssociate.instagram) {
-            document.getElementById('profileInstagram').innerHTML =
-              'Instagram: <a href="https://instagram.com/' + currentAssociate.instagram +
-              '" target="_blank">@' + currentAssociate.instagram + '</a>';
-          }
-
-          document.getElementById('profileHIR').textContent = currentAssociate.HIR;
-          document.getElementById('profileRank').textContent = currentAssociate.rank;
-          document.getElementById('profileCasesCompleted').textContent = currentAssociate.casesCompleted;
-          document.getElementById('profileClientRating').textContent = currentAssociate.avgClientRating;
-          document.getElementById('profileCommunityRating').textContent = currentAssociate.avgCommunityRating;
-        }
-      } catch (e) {
-        console.error("Error loading associate profile", e);
-      }
-    }
-
-    async function loadMyCases() {
-      if (!currentAssociate.id) {
-        document.getElementById('caseList').innerHTML =
-          "<p style='color:#ff6666;'>No associate ID in URL.</p>";
-        return;
+        document.getElementById('profileInstagram').textContent = "";
       }
 
-      try {
-        const res = await fetch(BASE_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "getCasesForAssociate",
-            associateId: currentAssociate.id
-          })
-        });
-
-        const data = await res.json();
-        const rawCases = data.cases || [];
-
-        myCases = rawCases.map(c => {
-          const title = c.caseTitle || c.title || (c.description ? (String(c.description).slice(0, 80) + '…') : 'Untitled Case');
-          return {
-            caseId: c.caseId,
-            clientName: c.name,
-            clientEmail: c.email,
-            clientPhone: c.phone,
-            description: c.description,
-            status: c.status,
-            timestamp: c.timestamp || "",
-            tier: c.tier || "",
-            caseTitle: title,
-            unreadCount: 0
-          };
-        });
-
-        filteredCases = [...myCases];
-        renderDashboard();
-        applyCaseFilters();
-        document.getElementById('casesSubtitle').textContent = myCases.length + " total cases loaded.";
-      } catch (e) {
-        console.error(e);
-        document.getElementById('caseList').innerHTML =
-          "<p style='color:#ff6666;'>Error connecting to backend.</p>";
-      }
+      document.getElementById('profileHIR').textContent = currentAssociate.HIR;
+      document.getElementById('profileRank').textContent = currentAssociate.rank;
+      document.getElementById('profileCasesCompleted').textContent = currentAssociate.casesCompleted;
+      document.getElementById('profileClientRating').textContent = currentAssociate.avgClientRating;
+      document.getElementById('profileCommunityRating').textContent = currentAssociate.avgCommunityRating;
     }
-    function renderDashboard() {
-      const assigned = myCases.length;
-      const active = myCases.filter(c => c.status === "Pending" || c.status === "Accepted").length;
-      const completed = myCases.filter(c => c.status === "Completed").length;
-      const unread = myCases.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
+  } catch (e) {
+    console.error("Error loading associate profile", e);
+  }
+}
 
-      unreadCount = unread;
+async function loadMyCases() {
+  if (!currentAssociate.id) {
+    document.getElementById('caseList').innerHTML =
+      "<p style='color:#ff6666;'>No associate ID in URL. Example: associate-admin.html?id=assoc_1t7za9c9909</p>";
+    return;
+  }
 
-      document.getElementById('metricAssigned').textContent = assigned;
-      document.getElementById('metricActive').textContent = active;
-      document.getElementById('metricCompleted').textContent = completed;
-      document.getElementById('metricUnread').textContent = unread;
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "getCasesForAssociate", associateId: currentAssociate.id })
+    });
+    const data = await res.json();
 
-      document.getElementById('dashboardSubtitle').textContent =
-        "Assigned: " + assigned + " • Active: " + active + " • Completed: " + completed;
+    const rawCases = data.cases || [];
+
+    myCases = rawCases.map(c => ({
+      caseId: c.caseId,
+      clientName: c.name,
+      clientEmail: c.email,
+      clientPhone: c.phone,
+      description: c.description,
+      status: c.status,
+      timestamp: "",   // not returned by backend handler
+      tier: "",        // not returned by backend handler
+      unreadCount: 0   // no unread tracking yet
+    }));
+    myCases = rawCases.map(c => {
+      const title = c.caseTitle || c.title || (c.description ? (String(c.description).slice(0, 80) + '…') : 'Untitled Case');
+      return {
+        caseId: c.caseId,
+        clientName: c.name,
+        clientEmail: c.email,
+        clientPhone: c.phone,
+        description: c.description,
+        status: c.status,
+        timestamp: c.timestamp || "",
+        tier: c.tier || "",
+        caseTitle: title,
+        unreadCount: 0
+      };
+    });
+
+    filteredCases = [...myCases];
+
+    renderDashboard();
+    applyCaseFilters();
+    document.getElementById('casesSubtitle').textContent = myCases.length + " total cases loaded.";
+  } catch (e) {
+    document.getElementById('caseList').innerHTML =
+      "<p style='color:#ff6666;'>Error connecting to backend.</p>";
+    console.error(e);
+  }
+}
+
+function renderDashboard() {
+  const assigned = myCases.length;
+  const active = myCases.filter(c => c.status === "Pending" || c.status === "Accepted").length;
+  const completed = myCases.filter(c => c.status === "Completed").length;
+  const unread = myCases.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
+
+  unreadCount = unread;
+
+  document.getElementById('metricAssigned').textContent = assigned;
+  document.getElementById('metricActive').textContent = active;
+  document.getElementById('metricCompleted').textContent = completed;
+  document.getElementById('metricUnread').textContent = unread;
+
+  document.getElementById('dashboardSubtitle').textContent =
+    "Assigned: " + assigned + " • Active: " + active + " • Completed: " + completed;
+}
+
+function statusBadgeClass(status) {
+  if (status === "Pending") return "badge-status-pending";
+  if (status === "Accepted") return "badge-status-open";
+  if (status === "Completed") return "badge-status-completed";
+  return "";
+}
+
+function applyCaseFilters() {
+  const search = document.getElementById('caseSearch').value.toLowerCase();
+  const statusFilter = document.getElementById('caseStatusFilter').value;
+  const sort = document.getElementById('caseSort').value;
+
+  filteredCases = myCases.filter(c => {
+    let ok = true;
+    if (statusFilter && c.status !== statusFilter) ok = false;
+
+    if (search) {
+      const blob = (c.caseId + " " + (c.clientName || "") + " " + (c.description || "")).toLowerCase();
+      const blob = (c.caseId + " " + (c.clientName || "") + " " + (c.caseTitle || "") + " " + (c.description || "")).toLowerCase();
+      if (!blob.includes(search)) ok = false;
     }
+    return ok;
+  });
 
-    function statusBadgeClass(status) {
-      if (status === "Pending") return "badge-status-pending";
-      if (status === "Accepted") return "badge-status-open";
-      if (status === "Completed") return "badge-status-completed";
-      return "";
+  filteredCases.sort((a, b) => {
+    if (sort === "newest") {
+      return (b.timestamp || "").localeCompare(a.timestamp || "");
+    } else if (sort === "oldest") {
+      return (a.timestamp || "").localeCompare(b.timestamp || "");
+    } else if (sort === "status") {
+      return (a.status || "").localeCompare(b.status || "");
     }
+    return 0;
+  });
 
-    function applyCaseFilters() {
-      const search = document.getElementById('caseSearch').value.toLowerCase();
-      const statusFilter = document.getElementById('caseStatusFilter').value;
-      const sort = document.getElementById('caseSort').value;
+  renderMyCases();
+}
 
-      filteredCases = myCases.filter(c => {
-        let ok = true;
-        if (statusFilter && c.status !== statusFilter) ok = false;
+function renderMyCases() {
+  const container = document.getElementById('caseList');
+  if (!filteredCases || filteredCases.length === 0) {
+    container.innerHTML = "<p>No cases match your filters.</p>";
+    return;
+  }
 
-        if (search) {
-          const blob = (c.caseId + " " + (c.clientName || "") + " " + (c.caseTitle || "") + " " + (c.description || "")).toLowerCase();
-          if (!blob.includes(search)) ok = false;
-        }
-        return ok;
-      });
+  container.innerHTML = filteredCases.map(c => {
+    const statusClass = statusBadgeClass(c.status);
+    const unread = c.unreadCount || 0;
 
-      filteredCases.sort((a, b) => {
-        if (sort === "newest") {
-          return (b.timestamp || "").localeCompare(a.timestamp || "");
-        } else if (sort === "oldest") {
-          return (a.timestamp || "").localeCompare(b.timestamp || "");
-        } else if (sort === "status") {
-          return (a.status || "").localeCompare(b.status || "");
-        }
-        return 0;
-      });
+    return `
+      <div class="case-card">
+        <div class="case-header-line">
+          <div>
+            <span class="case-title">Case #${c.caseId}</span>
+            <span class="case-title">${c.caseTitle || 'Untitled Case'}</span>
+          </div>
+          <div class="case-meta">${c.timestamp || ''}</div>
+        </div>
+        <div class="case-meta">
+          Client: ${c.clientName || 'Unknown'} • Email: ${c.clientEmail || 'N/A'}
+          Case ID: ${c.caseId} • Client: ${c.clientName || 'Unknown'} • Email: ${c.clientEmail || 'N/A'}
+        </div>
+        <div class="case-tags">
+          <span class="badge ${statusClass}">${c.status || 'Unknown'}</span>
+          ${c.tier ? `<span class="badge badge-tier-${tierLevel(c.tier)}">${c.tier}</span>` : ``}
+          ${unread > 0 ? `<span class="new-messages">${unread} new message(s)</span>` : ``}
+        </div>
+        <div class="case-actions">
+          <button class="small-btn" onclick="acceptCase('${c.caseId}')">Accept</button>
+          <button class="small-btn reject" onclick="rejectCase('${c.caseId}')">Reject</button>
+          <button class="small-btn" onclick="openCaseModal('${c.caseId}')">View & Reply</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
 
-      renderMyCases();
-    }
+function tierLevel(tier) {
+  const t = String(tier).toLowerCase();
+  if (t.includes("level 1")) return 1;
+  if (t.includes("level 2")) return 2;
+  if (t.includes("level 3")) return 3;
+  return 1;
+}
 
-    function renderMyCases() {
-      const container = document.getElementById('caseList');
-      if (!filteredCases.length) {
-        container.innerHTML = "<p>No cases match your filters.</p>";
-        return;
-      }
+function reloadCases() {
+  loadMyCases();
+}
 
-      container.innerHTML = filteredCases.map(c => {
-        const statusClass = statusBadgeClass(c.status);
-        const unread = c.unreadCount || 0;
+function setActiveNav(el) {
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
 
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+  document.getElementById(`panel-${name}`).style.display = 'block';
+}
+
+async function openCaseModal(caseId) {
+  currentModalCaseId = caseId;
+  currentModalCase = myCases.find(x => x.caseId === caseId);
+  if (!currentModalCase) return;
+
+  document.getElementById('modalCaseId').textContent = currentModalCase.caseId;
+  document.getElementById('modalMeta').textContent =
+    (currentModalCase.clientName || 'Unknown') + " • " +
+    (currentModalCase.clientEmail || 'N/A');
+
+  const tagsEl = document.getElementById('modalTags');
+  tagsEl.innerHTML = `
+    <span class="badge ${statusBadgeClass(currentModalCase.status)}">${currentModalCase.status || 'Unknown'}</span>
+    ${currentModalCase.tier ? `<span class="badge badge-tier-${tierLevel(currentModalCase.tier)}">${currentModalCase.tier}</span>` : ``}
+  `;
+
+  document.getElementById('modalCaseTitle').textContent = currentModalCase.caseTitle || 'Untitled Case';
+  document.getElementById('modalQuestion').textContent = currentModalCase.description || '';
+
+  const timelineEl = document.getElementById('modalTimeline');
+  timelineEl.innerHTML = `<div class="timeline-item">Case created.</div>`;
+
+  document.getElementById('replyText').value = "";
+
+  await loadCaseMessages(caseId);
+
+  document.getElementById('caseModal').style.display = 'flex';
+  document.getElementById('modalFooterStatus').textContent = "Ready.";
+}
+
+function closeModal() {
+  document.getElementById('caseModal').style.display = 'none';
+  currentModalCaseId = null;
+  currentModalCase = null;
+  currentCaseMessages = [];
+}
+
+async function loadCaseMessages(caseId) {
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "getCaseMessages",
+        caseId: caseId
+      })
+    });
+    const data = await res.json();
+    currentCaseMessages = data.messages || [];
+
+    const threadEl = document.getElementById('modalThread');
+    if (!currentCaseMessages.length) {
+      threadEl.innerHTML = "<div class='msg msg-client'><div class='msg-body'>No messages yet. Your reply will start the thread.</div></div>";
+    } else {
+      threadEl.innerHTML = currentCaseMessages.map(m => {
+        const cls = m.sender === 'associate' ? 'msg msg-associate' : 'msg msg-client';
+        const who = m.sender === 'associate' ? currentAssociate.name : (currentModalCase.clientName || 'Client');
+        const when = m.timestamp || '';
         return `
-          <div class="case-card">
-            <div class="case-header-line">
-              <div>
-                <span class="case-title">${c.caseTitle || 'Untitled Case'}</span>
-              </div>
-              <div class="case-meta">${c.timestamp || ''}</div>
+          <div class="${cls}">
+            <div class="msg-header">
+              <span>${who}</span>
+              <span>${when}</span>
             </div>
-
-            <div class="case-meta">
-              Case ID: ${c.caseId} • Client: ${c.clientName || 'Unknown'} • Email: ${c.clientEmail || 'N/A'}
-            </div>
-
-            <div class="case-tags">
-              <span class="badge ${statusClass}">${c.status || 'Unknown'}</span>
-              ${c.tier ? `<span class="badge badge-tier-${tierLevel(c.tier)}">${c.tier}</span>` : ``}
-              ${unread > 0 ? `<span class="new-messages">${unread} new message(s)</span>` : ``}
-            </div>
-
-            <div class="case-actions">
-              <button class="small-btn" onclick="acceptCase('${c.caseId}')">Accept</button>
-              <button class="small-btn reject" onclick="rejectCase('${c.caseId}')">Reject</button>
-              <button class="small-btn" onclick="openCaseModal('${c.caseId}')">View & Reply</button>
-            </div>
+            <div class="msg-body">${(m.text || '').replace(/\n/g, '<br>')}</div>
           </div>
         `;
       }).join('');
     }
 
-    function tierLevel(tier) {
-      const t = String(tier).toLowerCase();
-      if (t.includes("level 1")) return 1;
-      if (t.includes("level 2")) return 2;
-      if (t.includes("level 3")) return 3;
-      return 1;
-    }
+    const threadDiv = document.getElementById('modalThread');
+    threadDiv.scrollTop = threadDiv.scrollHeight;
 
-    function reloadCases() {
-      loadMyCases();
-    }
+    document.getElementById('modalFooterStatus').textContent = "Thread updated.";
+  } catch (e) {
+    console.error("Error loading messages", e);
+    document.getElementById('modalFooterStatus').textContent = "Error loading messages.";
+  }
+}
 
-    function setActiveNav(el) {
-      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-      el.classList.add('active');
-    }
+function reloadCaseMessages() {
+  if (!currentModalCaseId) return;
+  loadCaseMessages(currentModalCaseId);
+}
 
-    function showPanel(name) {
-      document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
-      document.getElementById(`panel-${name}`).style.display = 'block';
-    }
+async function sendReplyFromModal() {
+  if (!currentModalCaseId) return;
+  const text = document.getElementById('replyText').value.trim();
+  if (!text) {
+    document.getElementById('modalFooterStatus').textContent = "Reply is empty.";
+    return;
+  }
 
-    async function openCaseModal(caseId) {
-      currentModalCaseId = caseId;
-      currentModalCase = myCases.find(x => x.caseId === caseId);
-      if (!currentModalCase) return;
-
-      document.getElementById('modalCaseId').textContent = currentModalCase.caseId;
-      document.getElementById('modalMeta').textContent =
-        (currentModalCase.clientName || 'Unknown') + " • " +
-        (currentModalCase.clientEmail || 'N/A');
-
-      const tagsEl = document.getElementById('modalTags');
-      tagsEl.innerHTML = `
-        <span class="badge ${statusBadgeClass(currentModalCase.status)}">${currentModalCase.status || 'Unknown'}</span>
-        ${currentModalCase.tier ? `<span class="badge badge-tier-${tierLevel(currentModalCase.tier)}">${currentModalCase.tier}</span>` : ``}
-      `;
-
-      document.getElementById('modalCaseTitle').textContent = currentModalCase.caseTitle || 'Untitled Case';
-      document.getElementById('modalQuestion').textContent = currentModalCase.description || '';
-
-      const timelineEl = document.getElementById('modalTimeline');
-      timelineEl.innerHTML = `<div class="timeline-item">Case created.</div>`;
-
-      document.getElementById('replyText').value = "";
-
-      await loadCaseMessages(caseId);
-
-      document.getElementById('caseModal').style.display = 'flex';
-      document.getElementById('modalFooterStatus').textContent = "Ready.";
-    }
-
-    function closeModal() {
-      document.getElementById('caseModal').style.display = 'none';
-      currentModalCaseId = null;
-      currentModalCase = null;
-      currentCaseMessages = [];
-    }
-
-    async function loadCaseMessages(caseId) {
-      try {
-        const res = await fetch(BASE_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "getCaseMessages",
-            caseId: caseId
-          })
-        });
-
-        const data = await res.json();
-        currentCaseMessages = data.messages || [];
-
-        const threadEl = document.getElementById('modalThread');
-
-        if (!currentCaseMessages.length) {
-          threadEl.innerHTML = "<div class='msg msg-client'><div class='msg-body'>No messages yet. Your reply will start the thread.</div></div>";
-        } else {
-          threadEl.innerHTML = currentCaseMessages.map(m => {
-            const cls = m.sender === 'associate' ? 'msg msg-associate' : 'msg msg-client';
-            const who = m.sender === 'associate' ? currentAssociate.name : (currentModalCase.clientName || 'Client');
-            const when = m.timestamp || '';
-            return `
-              <div class="${cls}">
-                <div class="msg-header">
-                  <span>${who}</span>
-                  <span>${when}</span>
-                </div>
-                <div class="msg-body">${(m.text || '').replace(/\n/g, '<br>')}</div>
-              </div>
-            `;
-          }).join('');
-        }
-
-        const threadDiv = document.getElementById('modalThread');
-        threadDiv.scrollTop = threadDiv.scrollHeight;
-
-        document.getElementById('modalFooterStatus').textContent = "Thread updated.";
-      } catch (e) {
-        console.error("Error loading messages", e);
-        document.getElementById('modalFooterStatus').textContent = "Error loading messages.";
-      }
-    }
-
-    function reloadCaseMessages() {
-      if (!currentModalCaseId) return;
-      loadCaseMessages(currentModalCaseId);
-    }
-
-    /* ⭐ FIXED REPLY FUNCTION ⭐ */
-    async function sendReplyFromModal() {
-      if (!currentModalCaseId) return;
-
-      const text = document.getElementById('replyText').value.trim();
-      if (!text) {
-        document.getElementById('modalFooterStatus').textContent = "Reply is empty.";
-        return;
-      }
-
-      try {
-        document.getElementById('modalFooterStatus').textContent = "Sending reply…";
-
-        const res = await fetch(BASE_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "addComment",
-            caseId: currentModalCaseId,
-            author: currentAssociate.name,
-            text: text
-          })
-        });
-
-        const data = await res.json();
-
-        if (data && data.success) {
-          document.getElementById('replyText').value = "";
-          await loadCaseMessages(currentModalCaseId);
-          await loadMyCases();
-          document.getElementById('modalFooterStatus').textContent = "Reply sent.";
-        } else {
-          console.error(data);
-          document.getElementById('modalFooterStatus').textContent = "Error sending reply.";
-        }
-      } catch (e) {
-        console.error("Error sending reply", e);
-        document.getElementById('modalFooterStatus').textContent = "Error sending reply.";
-      }
-    }
-
-    async function acceptCase(caseId) {
-      if (!caseId) return;
-      try {
-        const res = await fetch(BASE_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "acceptCase",
-            caseId: caseId
-          })
-        });
-
-        const data = await res.json();
-        if (data && data.success) {
-          await loadMyCases();
-          if (currentModalCaseId === caseId) {
-            document.getElementById('modalFooterStatus').textContent = "Case accepted.";
-          }
-        } else {
-          alert("Error accepting case.");
-        }
-      } catch (e) {
-        console.error("Error accepting case", e);
-        alert("Error accepting case.");
-      }
-    }
-
-    async function rejectCase(caseId) {
-      if (!caseId) return;
-      const reason = prompt("Optional: provide a brief reason for rejection (or leave blank).", "");
-
-      try {
-        const res = await fetch(BASE_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "declineCase",
-            caseId: caseId,
-            reason: reason || ""
-          })
-        });
-
-        const data = await res.json();
-        if (data && data.success) {
-          await loadMyCases();
-          if (currentModalCaseId === caseId) {
-            document.getElementById('modalFooterStatus').textContent = "Case rejected.";
-          }
-        } else {
-          alert("Error rejecting case.");
-        }
-      } catch (e) {
-        console.error("Error rejecting case", e);
-        alert("Error rejecting case.");
-      }
-    }
-
-    async function markCaseCompleted() {
-      if (!currentModalCaseId) return;
-
-      try {
-        const res = await fetch(BASE_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "completeCase",
-            caseId: currentModalCaseId
-          })
-        });
-
-        const data = await res.json();
-        if (data && data.success) {
-          await loadMyCases();
-          document.getElementById('modalFooterStatus').textContent = "Case marked completed.";
-        } else {
-          document.getElementById('modalFooterStatus').textContent = "Error marking completed.";
-        }
-      } catch (e) {
-        console.error("Error marking completed", e);
-        document.getElementById('modalFooterStatus').textContent = "Error marking completed.";
-      }
-    }
-
-    async function loadRevenue() {
-      if (!currentAssociate.id) return;
-
-      try {
-        const res = await fetch(BASE_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "getRevenue",
-            associateId: currentAssociate.id
-          })
-        });
-
-        const data = await res.json();
-        if (!data || !data.success) {
-          document.getElementById('revenueSubtitle').textContent = "Revenue unavailable.";
-          return;
-        }
-
-        const summary = data.summary || {};
-        const monthly = data.monthly || [];
-
-        document.getElementById('revTotal').textContent = formatMoney(summary.totalCommission || 0);
-        document.getElementById('revMonth').textContent = formatMoney(summary.thisMonthCommission || 0);
-        document.getElementById('revRate').textContent = (summary.commissionRate || 70) + "%";
-        document.getElementById('revPaidCases').textContent = summary.paidCases || 0;
-
-        const tbody = document.getElementById('revenueTableBody');
-
-        if (!monthly.length) {
-          tbody.innerHTML = "<tr><td colspan='4'>No revenue data yet.</td></tr>";
-        } else {
-          tbody.innerHTML = monthly.map(row => `
-            <tr>
-              <td>${row.month}</td>
-              <td>${row.cases}</td>
-              <td>${formatMoney(row.gross)}</td>
-              <td>${formatMoney(row.commission)}</td>
-            </tr>
-          `).join('');
-        }
-
-        document.getElementById('revenueSubtitle').textContent = "Revenue based on Stripe-paid cases only.";
-      } catch (e) {
-        console.error("Error loading revenue", e);
-        document.getElementById('revenueSubtitle').textContent = "Error loading revenue.";
-      }
-    }
-
-    function formatMoney(v) {
-      const n = Number(v) || 0;
-      return "$" + n.toFixed(2);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      getAssociateFromUrl();
-      loadAssociateProfile();
-      loadMyCases();
-      loadRevenue();
-      showPanel('dashboard');
+  try {
+    document.getElementById('modalFooterStatus').textContent = "Sending reply…";
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "submitAssociateReply",
+        caseId: currentModalCaseId,
+        associateId: currentAssociate.id,
+        replyText: text
+      })
     });
-  </script>
+    const data = await res.json();
+    if (data && data.success) {
+      document.getElementById('replyText').value = "";
+      await loadCaseMessages(currentModalCaseId);
+      await loadMyCases();
+      document.getElementById('modalFooterStatus').textContent = "Reply sent.";
+    } else {
+      document.getElementById('modalFooterStatus').textContent = "Error sending reply.";
+    }
+  } catch (e) {
+    console.error("Error sending reply", e);
+    document.getElementById('modalFooterStatus').textContent = "Error sending reply.";
+  }
+}
 
+async function acceptCase(caseId) {
+  if (!caseId) return;
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "acceptCase",
+        caseId: caseId
+      })
+    });
+    const data = await res.json();
+    if (data && data.success) {
+      await loadMyCases();
+      if (currentModalCaseId === caseId) {
+        document.getElementById('modalFooterStatus').textContent = "Case accepted.";
+      }
+    } else {
+      alert("Error accepting case.");
+    }
+  } catch (e) {
+    console.error("Error accepting case", e);
+    alert("Error accepting case.");
+  }
+}
+
+async function rejectCase(caseId) {
+  if (!caseId) return;
+  const reason = prompt("Optional: provide a brief reason for rejection (or leave blank).", "");
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "declineCase",
+        caseId: caseId,
+        reason: reason || ""
+      })
+    });
+    const data = await res.json();
+    if (data && data.success) {
+      await loadMyCases();
+      if (currentModalCaseId === caseId) {
+        document.getElementById('modalFooterStatus').textContent = "Case rejected.";
+      }
+    } else {
+      alert("Error rejecting case.");
+    }
+  } catch (e) {
+    console.error("Error rejecting case", e);
+    alert("Error rejecting case.");
+  }
+}
+
+async function markCaseCompleted() {
+  if (!currentModalCaseId) return;
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "completeCase",
+        caseId: currentModalCaseId
+      })
+    });
+    const data = await res.json();
+    if (data && data.success) {
+      await loadMyCases();
+      document.getElementById('modalFooterStatus').textContent = "Case marked completed.";
+    } else {
+      document.getElementById('modalFooterStatus').textContent = "Error marking completed.";
+    }
+  } catch (e) {
+    console.error("Error marking completed", e);
+    document.getElementById('modalFooterStatus').textContent = "Error marking completed.";
+  }
+}
+
+async function loadRevenue() {
+  if (!currentAssociate.id) return;
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "getRevenue",
+        associateId: currentAssociate.id
+      })
+    });
+    const data = await res.json();
+    if (!data || !data.success) {
+      document.getElementById('revenueSubtitle').textContent = "Revenue unavailable.";
+      return;
+    }
+
+    const summary = data.summary || {};
+    const monthly = data.monthly || [];
+
+    document.getElementById('revTotal').textContent = formatMoney(summary.totalCommission || 0);
+    document.getElementById('revMonth').textContent = formatMoney(summary.thisMonthCommission || 0);
+    document.getElementById('revRate').textContent = (summary.commissionRate || 70) + "%";
+    document.getElementById('revPaidCases').textContent = summary.paidCases || 0;
+
+    const tbody = document.getElementById('revenueTableBody');
+    if (!monthly.length) {
+      tbody.innerHTML = "<tr><td colspan='4'>No revenue data yet.</td></tr>";
+    } else {
+      tbody.innerHTML = monthly.map(row => `
+        <tr>
+          <td>${row.month}</td>
+          <td>${row.cases}</td>
+          <td>${formatMoney(row.gross)}</td>
+          <td>${formatMoney(row.commission)}</td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('revenueSubtitle').textContent = "Revenue based on Stripe-paid cases only.";
+  } catch (e) {
+    console.error("Error loading revenue", e);
+    document.getElementById('revenueSubtitle').textContent = "Error loading revenue.";
+  }
+}
+
+function formatMoney(v) {
+  const n = Number(v) || 0;
+  return "$" + n.toFixed(2);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  getAssociateFromUrl();
+  loadAssociateProfile();
+  loadMyCases();
+  loadRevenue();
+  showPanel('dashboard');
+});
+</script>
 </body>
 </html>
