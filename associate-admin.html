@@ -39,7 +39,7 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: 18px;
+      gap: 32px; /* more space between avatar block and back link */
     }
     .user-info { color: #ccc; font-size: 14px; text-align: right; }
     .user-name { font-weight: bold; color: var(--green); font-size: 18px; }
@@ -48,6 +48,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      justify-content: center; /* visually centers the associate info block */
     }
     .user-avatar {
       width: 40px;
@@ -93,7 +94,13 @@
       color: var(--green);
     }
 
-    .main { flex: 1; padding: 22px 18px; overflow-y: auto; }
+    .main {
+      flex: 1;
+      padding: 22px 8px 22px 8px; /* reduced left padding */
+      max-width: 1100px;          /* panels not full-page width */
+      margin: 0 auto;             /* center the “package” */
+      overflow-y: auto;
+    }
 
     .panel {
       background: var(--gray);
@@ -470,7 +477,7 @@
         border-bottom:1px solid var(--border);
       }
       .nav-item { flex:1 1 45%; text-align:center; }
-      .main { padding:16px 10px; }
+      .main { padding:16px 10px; max-width:100%; }
       .profile-grid, .modal-body {
         grid-template-columns: minmax(0, 1fr);
       }
@@ -557,22 +564,15 @@
           <select id="caseStatusFilter" onchange="applyCaseFilters()">
             <option value="">All</option>
             <option value="Pending">Pending</option>
-            <option value="open">Open</option>
-            <option value="completed">Completed</option>
-          </select>
-          <label>Tier:</label>
-          <select id="caseTierFilter" onchange="applyCaseFilters()">
-            <option value="">All</option>
-            <option value="Level 1 - Quick Read">Level 1 - Quick Read</option>
-            <option value="Level 2 - Deep Dive Analysis">Level 2 - Deep Dive Analysis</option>
-            <option value="Level 3 - Crisis Session">Level 3 - Crisis Session</option>
+            <option value="Accepted">Accepted</option>
+            <option value="Declined">Declined</option>
+            <option value="Completed">Completed</option>
           </select>
           <label>Sort:</label>
           <select id="caseSort" onchange="applyCaseFilters()">
             <option value="">No sorting</option>
             <option value="newest">Newest first</option>
             <option value="oldest">Oldest first</option>
-            <option value="tier">Tier</option>
             <option value="status">Status</option>
           </select>
           <button class="small-btn secondary" onclick="reloadCases()">⟳ Refresh</button>
@@ -585,7 +585,7 @@
       <div id="panel-revenue" class="panel" style="display:none;">
         <div class="panel-title">
           <span>Revenue & Commissions</span>
-          <span class="panel-subtitle" id="revenueSubtitle">Loading revenue…</span>
+          <span class="panel-subtitle" id="revenueSubtitle">Coming soon.</span>
         </div>
 
         <div id="revenueContent">
@@ -622,7 +622,7 @@
               </tr>
             </thead>
             <tbody id="revenueTableBody">
-              <tr><td colspan="4">Loading breakdown…</td></tr>
+              <tr><td colspan="4">No revenue data yet.</td></tr>
             </tbody>
           </table>
         </div>
@@ -757,7 +757,6 @@ let unreadCount = 0;
 let currentModalCaseId = null;
 let currentModalCase = null;
 let currentCaseMessages = [];
-let revenueData = null;
 
 function getAssociateFromUrl() {
   const params = new URLSearchParams(window.location.search);
@@ -784,17 +783,18 @@ async function loadAssociateProfile() {
       })
     });
     const data = await res.json();
-    if (data && data.success) {
-      currentAssociate.name = data.name || currentAssociate.id;
-      currentAssociate.photoUrl = data.photoUrl || "";
-      currentAssociate.specialty = data.specialty || "";
-      currentAssociate.bio = data.bio || "";
-      currentAssociate.instagram = data.instagram || "";
-      currentAssociate.HIR = data.HIR || 0;
-      currentAssociate.rank = data.rank || 0;
-      currentAssociate.casesCompleted = data.casesCompleted || 0;
-      currentAssociate.avgClientRating = data.avgClientRating || 0;
-      currentAssociate.avgCommunityRating = data.avgCommunityRating || 0;
+    if (data && data.success && data.profile) {
+      const p = data.profile;
+      currentAssociate.name = p.name || currentAssociate.id;
+      currentAssociate.photoUrl = p.photoUrl || "";
+      currentAssociate.specialty = p.specialty || "";
+      currentAssociate.bio = p.bio || "";
+      currentAssociate.instagram = p.instagram || "";
+      currentAssociate.HIR = p.HIR || 0;
+      currentAssociate.rank = p.rank || 0;
+      currentAssociate.casesCompleted = p.casesCompleted || 0;
+      currentAssociate.avgClientRating = p.avgClientRating || 0;
+      currentAssociate.avgCommunityRating = p.avgCommunityRating || 0;
 
       document.getElementById('currentUser').textContent = currentAssociate.name;
       document.getElementById('currentUserSub').textContent = "Associate Console";
@@ -840,11 +840,24 @@ async function loadMyCases() {
   try {
     const res = await fetch(BASE_URL, {
       method: "POST",
-      body: JSON.stringify({ action: "getMyCases", associateId: currentAssociate.id })
+      body: JSON.stringify({ action: "getCasesForAssociate", associateId: currentAssociate.id })
     });
     const data = await res.json();
 
-    myCases = data.cases || [];
+    const rawCases = data.cases || [];
+
+    myCases = rawCases.map(c => ({
+      caseId: c.caseId,
+      clientName: c.name,
+      clientEmail: c.email,
+      clientPhone: c.phone,
+      description: c.description,
+      status: c.status,
+      timestamp: "",   // not returned by backend handler
+      tier: "",        // not returned by backend handler
+      unreadCount: 0   // no unread tracking yet
+    }));
+
     filteredCases = [...myCases];
 
     renderDashboard();
@@ -859,8 +872,8 @@ async function loadMyCases() {
 
 function renderDashboard() {
   const assigned = myCases.length;
-  const active = myCases.filter(c => c.status === "Pending" || c.status === "open").length;
-  const completed = myCases.filter(c => c.status === "completed").length;
+  const active = myCases.filter(c => c.status === "Pending" || c.status === "Accepted").length;
+  const completed = myCases.filter(c => c.status === "Completed").length;
   const unread = myCases.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
 
   unreadCount = unread;
@@ -874,34 +887,24 @@ function renderDashboard() {
     "Assigned: " + assigned + " • Active: " + active + " • Completed: " + completed;
 }
 
-function tierBadgeClass(tier) {
-  if (!tier) return "";
-  if (tier.indexOf("Level 1") === 0) return "badge-tier-1";
-  if (tier.indexOf("Level 2") === 0) return "badge-tier-2";
-  if (tier.indexOf("Level 3") === 0) return "badge-tier-3";
-  return "";
-}
-
 function statusBadgeClass(status) {
   if (status === "Pending") return "badge-status-pending";
-  if (status === "open") return "badge-status-open";
-  if (status === "completed") return "badge-status-completed";
+  if (status === "Accepted") return "badge-status-open";
+  if (status === "Completed") return "badge-status-completed";
   return "";
 }
 
 function applyCaseFilters() {
   const search = document.getElementById('caseSearch').value.toLowerCase();
   const statusFilter = document.getElementById('caseStatusFilter').value;
-  const tierFilter = document.getElementById('caseTierFilter').value;
   const sort = document.getElementById('caseSort').value;
 
   filteredCases = myCases.filter(c => {
     let ok = true;
     if (statusFilter && c.status !== statusFilter) ok = false;
-    if (tierFilter && c.tier !== tierFilter) ok = false;
 
     if (search) {
-      const blob = (c.caseId + " " + (c.caseTitle || "") + " " + (c.clientName || "") + " " + (c.description || "")).toLowerCase();
+      const blob = (c.caseId + " " + (c.clientName || "") + " " + (c.description || "")).toLowerCase();
       if (!blob.includes(search)) ok = false;
     }
     return ok;
@@ -912,8 +915,6 @@ function applyCaseFilters() {
       return (b.timestamp || "").localeCompare(a.timestamp || "");
     } else if (sort === "oldest") {
       return (a.timestamp || "").localeCompare(b.timestamp || "");
-    } else if (sort === "tier") {
-      return (a.tier || "").localeCompare(b.tier || "");
     } else if (sort === "status") {
       return (a.status || "").localeCompare(b.status || "");
     }
@@ -932,7 +933,6 @@ function renderMyCases() {
 
   container.innerHTML = filteredCases.map(c => {
     const statusClass = statusBadgeClass(c.status);
-    const tierClass = tierBadgeClass(c.tier);
     const unread = c.unreadCount || 0;
 
     return `
@@ -940,7 +940,6 @@ function renderMyCases() {
         <div class="case-header-line">
           <div>
             <span class="case-title">Case #${c.caseId}</span>
-            <span class="case-meta"> • ${c.caseTitle || 'No Title'}</span>
           </div>
           <div class="case-meta">${c.timestamp || ''}</div>
         </div>
@@ -949,7 +948,6 @@ function renderMyCases() {
         </div>
         <div class="case-tags">
           <span class="badge ${statusClass}">${c.status || 'Unknown'}</span>
-          <span class="badge ${tierClass}">${c.tier || 'No Tier'}</span>
           ${unread > 0 ? `<span class="new-messages">${unread} new message(s)</span>` : ``}
         </div>
         <div class="case-actions">
@@ -966,51 +964,6 @@ function reloadCases() {
   loadMyCases();
 }
 
-async function loadRevenue() {
-  if (!currentAssociate.id) return;
-  try {
-    const res = await fetch(BASE_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "getRevenue",
-        associateId: currentAssociate.id
-      })
-    });
-    const data = await res.json();
-    revenueData = data || {};
-
-    const total = revenueData.totalCommission || 0;
-    const month = revenueData.monthCommission || 0;
-    const rate = revenueData.commissionRate || 0;
-    const completedCases = revenueData.completedCases || 0;
-
-    document.getElementById('revTotal').textContent = "$" + total.toFixed(2);
-    document.getElementById('revMonth').textContent = "$" + month.toFixed(2);
-    document.getElementById('revRate').textContent = rate + "%";
-    document.getElementById('revCompletedCases').textContent = completedCases;
-
-    const tbody = document.getElementById('revenueTableBody');
-    const breakdown = revenueData.breakdown || [];
-    if (!breakdown.length) {
-      tbody.innerHTML = '<tr><td colspan="4">No revenue data yet.</td></tr>';
-    } else {
-      tbody.innerHTML = breakdown.map(row => `
-        <tr>
-          <td>${row.month}</td>
-          <td>${row.cases}</td>
-          <td>$${row.gross.toFixed(2)}</td>
-          <td>$${row.commission.toFixed(2)}</td>
-        </tr>
-      `).join('');
-    }
-
-    document.getElementById('revenueSubtitle').textContent = "Revenue data loaded.";
-  } catch (e) {
-    console.error("Error loading revenue", e);
-    document.getElementById('revenueSubtitle').textContent = "Error loading revenue.";
-  }
-}
-
 function setActiveNav(el) {
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
   el.classList.add('active');
@@ -1019,10 +972,6 @@ function setActiveNav(el) {
 function showPanel(name) {
   document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
   document.getElementById(`panel-${name}`).style.display = 'block';
-
-  if (name === 'revenue') {
-    loadRevenue();
-  }
 }
 
 async function openCaseModal(caseId) {
@@ -1038,18 +987,12 @@ async function openCaseModal(caseId) {
   const tagsEl = document.getElementById('modalTags');
   tagsEl.innerHTML = `
     <span class="badge ${statusBadgeClass(currentModalCase.status)}">${currentModalCase.status || 'Unknown'}</span>
-    <span class="badge ${tierBadgeClass(currentModalCase.tier)}">${currentModalCase.tier || 'No Tier'}</span>
   `;
 
   document.getElementById('modalQuestion').textContent = currentModalCase.description || '';
 
   const timelineEl = document.getElementById('modalTimeline');
-  const timeline = currentModalCase.timeline || [];
-  if (timeline.length) {
-    timelineEl.innerHTML = timeline.map(t => `<div class="timeline-item">${t}</div>`).join('');
-  } else {
-    timelineEl.innerHTML = `<div class="timeline-item">Case created: ${currentModalCase.timestamp || 'Unknown time'}</div>`;
-  }
+  timelineEl.innerHTML = `<div class="timeline-item">Case created.</div>`;
 
   document.getElementById('replyText').value = "";
 
@@ -1072,8 +1015,7 @@ async function loadCaseMessages(caseId) {
       method: "POST",
       body: JSON.stringify({
         action: "getCaseMessages",
-        caseId: caseId,
-        associateId: currentAssociate.id
+        caseId: caseId
       })
     });
     const data = await res.json();
@@ -1127,7 +1069,7 @@ async function sendReplyFromModal() {
     const res = await fetch(BASE_URL, {
       method: "POST",
       body: JSON.stringify({
-        action: "sendAssociateReply",
+        action: "submitAssociateReply",
         caseId: currentModalCaseId,
         associateId: currentAssociate.id,
         replyText: text
@@ -1155,8 +1097,7 @@ async function acceptCase(caseId) {
       method: "POST",
       body: JSON.stringify({
         action: "acceptCase",
-        caseId: caseId,
-        associateId: currentAssociate.id
+        caseId: caseId
       })
     });
     const data = await res.json();
@@ -1181,9 +1122,8 @@ async function rejectCase(caseId) {
     const res = await fetch(BASE_URL, {
       method: "POST",
       body: JSON.stringify({
-        action: "rejectCase",
+        action: "declineCase",
         caseId: caseId,
-        associateId: currentAssociate.id,
         reason: reason || ""
       })
     });
@@ -1208,9 +1148,8 @@ async function markCaseCompleted() {
     const res = await fetch(BASE_URL, {
       method: "POST",
       body: JSON.stringify({
-        action: "markCaseCompleted",
-        caseId: currentModalCaseId,
-        associateId: currentAssociate.id
+        action: "completeCase",
+        caseId: currentModalCaseId
       })
     });
     const data = await res.json();
