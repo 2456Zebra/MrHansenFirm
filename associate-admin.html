@@ -135,23 +135,23 @@
 
       <div id="panel-cases" class="panel" style="display:none;">
         <div class="panel-title">My Cases</div>
-        <div id="caseList"></div>
+        <div id="caseList">Loading cases...</div>
       </div>
 
       <div id="panel-revenue" class="panel" style="display:none;">
         <div class="panel-title">Revenue & Commissions</div>
-        <div id="revenueContent">Loading your commissions...</div>
+        <div id="revenueContent">Coming soon...</div>
       </div>
 
       <div id="panel-profile" class="panel" style="display:none;">
         <div class="panel-title">Profile</div>
-        <div id="profileContent">Profile & Ratings coming soon...</div>
+        <div id="profileContent">Coming soon...</div>
       </div>
     </div>
   </div>
 
   <!-- Case Modal -->
-  <div id="caseModal" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); align-items:center; justify-content:center; z-index:2000;">
+  <div id="caseModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); align-items:center; justify-content:center; z-index:2000;">
     <div style="background:#111; border:2px solid var(--green); padding:25px; width:90%; max-width:920px; max-height:92vh; overflow-y:auto; border-radius:8px;">
       <h2 style="color:var(--green);">Case #<span id="modalCaseId"></span></h2>
       <div id="modalContent"></div>
@@ -163,38 +163,34 @@
 <script>
 const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
 
-let currentAssociate = {
-  id: null,
-  name: "Associate"
-};
-
+let currentAssociate = { id: null, name: "Associate" };
 let myCases = [];
 
-// Get associate from URL or default
 function getAssociateFromUrl() {
   const params = new URLSearchParams(window.location.search);
-  const id = params.get('id');
-  if (id) currentAssociate.id = id;
-  // You can map IDs to names later
-  document.getElementById('currentUser').textContent = currentAssociate.name || "Associate";
+  currentAssociate.id = params.get('id');
+  document.getElementById('currentUser').textContent = currentAssociate.id ? currentAssociate.id : "Unknown Associate";
 }
 
 async function loadMyCases() {
-  if (!currentAssociate.id) return;
-  
+  if (!currentAssociate.id) {
+    document.getElementById('caseList').innerHTML = "<p style='color:#ff6666;'>No associate ID in URL. Example: associate-admin.html?id=assoc_1t7za9c9909</p>";
+    return;
+  }
+
   try {
     const res = await fetch(BASE_URL, {
       method: "POST",
-      body: JSON.stringify({
-        action: "getMyCases",
-        associateId: currentAssociate.id
-      })
+      body: JSON.stringify({ action: "getMyCases", associateId: currentAssociate.id })
     });
     const data = await res.json();
+
     myCases = data.cases || [];
+    
     renderDashboard();
     renderMyCases();
   } catch(e) {
+    document.getElementById('caseList').innerHTML = "<p style='color:#ff6666;'>Error connecting to backend.</p>";
     console.error(e);
   }
 }
@@ -203,7 +199,7 @@ function renderDashboard() {
   const assigned = myCases.length;
   const active = myCases.filter(c => c.status === "Pending" || c.status === "open").length;
   const completed = myCases.filter(c => c.status === "completed").length;
-  const unread = myCases.filter(c => c.hasNewMessages).length; // Backend can add this flag
+  const unread = 0; // Will improve later
 
   document.getElementById('metricAssigned').textContent = assigned;
   document.getElementById('metricActive').textContent = active;
@@ -213,37 +209,27 @@ function renderDashboard() {
 
 function renderMyCases() {
   const container = document.getElementById('caseList');
+  if (myCases.length === 0) {
+    container.innerHTML = "<p>No cases assigned to you yet.</p>";
+    return;
+  }
+
   container.innerHTML = myCases.map(c => `
     <div class="case-card">
-      <strong>Case #${c.caseId}</strong> — ${c.caseTitle}<br>
+      <strong>Case #${c.caseId}</strong> — ${c.caseTitle || 'No Title'}<br>
       Client: ${c.clientName}<br>
       Status: ${c.status} | Tier: ${c.tier}
-      ${c.associateReply ? `<br><small>Reply sent</small>` : ''}
-      ${c.hasNewMessages ? `<span class="new-messages"> ● New messages waiting</span>` : ''}
       <div style="margin-top:12px;">
         <button class="small-btn" onclick="acceptCase('${c.caseId}')">Accept</button>
         <button class="small-btn reject" onclick="rejectCase('${c.caseId}')">Reject</button>
         <button class="small-btn" onclick="openCaseModal('${c.caseId}')">View & Reply</button>
-        ${(c.status === 'Pending' || c.status === 'open') ? `<button class="small-btn" onclick="markCompleted('${c.caseId}')">Mark Completed</button>` : ''}
       </div>
     </div>
   `).join('');
 }
 
-async function acceptCase(caseId) {
-  await postAction({ action: "updateCaseStatus", caseId, status: "Accepted", associateId: currentAssociate.id });
-  loadMyCases();
-}
-
-async function rejectCase(caseId) {
-  await postAction({ action: "updateCaseStatus", caseId, status: "Rejected", associateId: currentAssociate.id });
-  loadMyCases();
-}
-
-async function markCompleted(caseId) {
-  await postAction({ action: "markCaseCompleted", caseId, associateId: currentAssociate.id });
-  loadMyCases();
-}
+function acceptCase() { alert("Accept function ready - backend needed"); }
+function rejectCase() { alert("Reject function ready - backend needed"); }
 
 function openCaseModal(caseId) {
   const c = myCases.find(x => x.caseId === caseId);
@@ -255,36 +241,13 @@ function openCaseModal(caseId) {
     <p><strong>Question:</strong> ${c.description}</p>
     <textarea id="replyText" style="width:100%; height:140px; background:#000; color:#ddd; border:1px solid var(--green); padding:10px;" placeholder="Write your answer here..."></textarea>
     <br><br>
-    <button class="small-btn" onclick="sendReply('${caseId}')">Send Answer to Client</button>
+    <button class="small-btn" onclick="sendReply('${caseId}')">Send Answer</button>
   `;
   document.getElementById('caseModal').style.display = 'flex';
 }
 
-async function sendReply(caseId) {
-  const text = document.getElementById('replyText').value.trim();
-  if (!text) return;
-
-  await postAction({
-    action: "postCaseReply",
-    caseId,
-    associateId: currentAssociate.id,
-    reply: text
-  });
-
-  alert("Answer sent and will appear on the public case view.");
-  closeModal();
-  loadMyCases();
-}
-
-function closeModal() {
-  document.getElementById('caseModal').style.display = 'none';
-}
-
-async function postAction(payload) {
-  try {
-    await fetch(BASE_URL, { method: "POST", body: JSON.stringify(payload) });
-  } catch(e) { console.error(e); }
-}
+function sendReply() { alert("Reply function ready - backend needed"); }
+function closeModal() { document.getElementById('caseModal').style.display = 'none'; }
 
 function setActiveNav(el) {
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -294,11 +257,9 @@ function setActiveNav(el) {
 function showPanel(name) {
   document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
   document.getElementById(`panel-${name}`).style.display = 'block';
-  if (name === 'dashboard') renderDashboard();
-  if (name === 'cases') renderMyCases();
 }
 
-// Initialize
+// Init
 document.addEventListener('DOMContentLoaded', () => {
   getAssociateFromUrl();
   loadMyCases();
