@@ -16,6 +16,7 @@
             align-items: center;
             min-height: 100vh;
         }
+
         .login-container {
             background: #1a1a1a;
             padding: 40px 30px;
@@ -24,28 +25,109 @@
             width: 100%;
             max-width: 420px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s forwards;
         }
-        h2 { text-align: center; margin-bottom: 30px; color: #fff; }
-        label { display: block; margin: 15px 0 6px; color: #ccc; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            color: #fff; 
+        }
+
+        label { 
+            display: block; 
+            margin: 15px 0 6px; 
+            color: #ccc; 
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 8px;
+        }
+
         input {
             width: 100%;
-            padding: 12px;
+            padding: 12px 40px 12px 12px;
             background: #222;
             border: 1px solid #555;
             border-radius: 6px;
             color: #fff;
             font-size: 16px;
+            box-sizing: border-box;
         }
+
         input:focus {
             border-color: #00ff88;
             outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
         }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px;
+        }
+
+        .toggle-password:hover {
+            color: #00ff88;
+        }
+
         .error-message {
             color: #ff6666;
             font-size: 0.9em;
             margin-top: 4px;
+            min-height: 20px;
+        }
+
+        .general-error {
+            color: #ff6666;
+            background: rgba(255, 102, 102, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            margin: 15px 0;
             display: none;
         }
+
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 12px 0 20px;
+            font-size: 0.95em;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ccc;
+        }
+
+        .forgot-link {
+            color: #00ff88;
+            text-decoration: none;
+        }
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
         button {
             width: 100%;
             padding: 14px;
@@ -54,30 +136,80 @@
             border: none;
             border-radius: 6px;
             font-size: 17px;
-            margin-top: 25px;
-            cursor: pointer;
             font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
         }
-        button:hover { background: #33ffaa; }
-        .back-link { text-align: center; margin-top: 20px; }
-        .back-link a { color: #888; text-decoration: none; }
+
+        button:hover:not(:disabled) { 
+            background: #33ffaa; 
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.3);
+            border-top: 3px solid #000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .back-link { 
+            text-align: center; 
+            margin-top: 25px; 
+        }
+        
+        .back-link a { 
+            color: #888; 
+            text-decoration: none; 
+        }
         .back-link a:hover { color: #ddd; }
     </style>
 </head>
 <body>
     <div class="login-container">
         <h2>Login to Mr. Hansen Firm</h2>
-       
+      
         <form id="loginForm" autocomplete="off">
             <label for="email">Email</label>
-            <input type="email" id="email" autocomplete="off" placeholder="your@email.com">
+            <div class="input-group">
+                <input type="email" id="email" autocomplete="off" placeholder="your@email.com">
+            </div>
             <div id="emailError" class="error-message"></div>
 
             <label for="password">Password</label>
-            <input type="password" id="password" autocomplete="new-password" placeholder="Enter password">
+            <div class="input-group">
+                <input type="password" id="password" autocomplete="new-password" placeholder="Enter password">
+                <button type="button" class="toggle-password" id="togglePassword">👁</button>
+            </div>
             <div id="passwordError" class="error-message"></div>
 
-            <button type="submit">Sign In</button>
+            <div class="options">
+                <label class="remember-me">
+                    <input type="checkbox" id="rememberMe">
+                    Remember me
+                </label>
+                <a href="forgot-password.html" class="forgot-link">Forgot Password?</a>
+            </div>
+
+            <div id="generalError" class="general-error"></div>
+
+            <button type="submit" id="loginButton">
+                Sign In
+            </button>
         </form>
 
         <div class="back-link">
@@ -90,12 +222,55 @@ const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk
 
 function showError(fieldId, message) {
     const errorDiv = document.getElementById(fieldId + 'Error');
+    if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+}
+
+function showGeneralError(message) {
+    const errorDiv = document.getElementById('generalError');
     errorDiv.textContent = message;
     errorDiv.style.display = 'block';
 }
 
 function clearErrors() {
-    document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.error-message').forEach(el => {
+        el.style.display = 'none';
+        el.textContent = '';
+    });
+    document.getElementById('generalError').style.display = 'none';
+}
+
+function setLoading(isLoading) {
+    const button = document.getElementById('loginButton');
+    if (isLoading) {
+        button.disabled = true;
+        button.innerHTML = `<span class="spinner"></span> Signing in...`;
+    } else {
+        button.disabled = false;
+        button.textContent = 'Sign In';
+    }
+}
+
+// Load remembered email
+function loadRememberedEmail() {
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    const rememberCheckbox = document.getElementById('rememberMe');
+    
+    if (savedEmail) {
+        document.getElementById('email').value = savedEmail;
+        rememberCheckbox.checked = true;
+    }
+}
+
+// Save / Clear remembered email
+function handleRememberMe(email) {
+    if (document.getElementById('rememberMe').checked) {
+        localStorage.setItem('rememberedEmail', email);
+    } else {
+        localStorage.removeItem('rememberedEmail');
+    }
 }
 
 async function loginUser(email, password) {
@@ -113,12 +288,14 @@ async function loginUser(email, password) {
         const data = await res.json();
 
         if (!data.success) {
-            alert(data.error || "Invalid login credentials.");
+            showGeneralError(data.error || "Invalid email or password.");
             return;
         }
 
-        const role = data.role;
+        // Save remembered email if checked
+        handleRememberMe(email);
 
+        const role = data.role;
         if (role === "firm_admin") {
             window.location.href = "firm-admin.html";
         } else if (role === "associate") {
@@ -128,15 +305,27 @@ async function loginUser(email, password) {
         } else if (role === "community_user") {
             window.location.href = "community.html";
         } else {
-            alert("Your account role is not properly configured.");
+            showGeneralError("Your account role is not properly configured.");
         }
-
     } catch (err) {
         console.error(err);
-        alert("Connection error. Please try again.");
+        showGeneralError("Connection error. Please check your internet and try again.");
     }
 }
 
+// Password visibility toggle
+document.getElementById('togglePassword').addEventListener('click', function() {
+    const passwordInput = document.getElementById('password');
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        this.textContent = '🙈';
+    } else {
+        passwordInput.type = 'password';
+        this.textContent = '👁';
+    }
+});
+
+// Form submit
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     clearErrors();
@@ -147,8 +336,13 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     if (!email) return showError('email', 'Please enter your email');
     if (!password) return showError('password', 'Please enter your password');
 
+    setLoading(true);
     await loginUser(email, password);
+    setLoading(false);
 });
+
+// Initialize remembered email
+window.addEventListener('load', loadRememberedEmail);
 </script>
 </body>
 </html>
