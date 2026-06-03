@@ -31,10 +31,7 @@
         }
 
         @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h2 { 
@@ -42,12 +39,17 @@
             margin-bottom: 30px; 
             color: #00ff88;
             font-size: 28px;
-            text-shadow: 0 0 8px #00ff88;   /* Single soft glow - no blur */
-            overflow: hidden;
+            text-shadow: 0 0 8px #00ff88;
             white-space: nowrap;
             border-right: 3px solid #00ff88;
             animation: typewriter 3.2s steps(32, end) forwards,
                        blink-caret 0.75s step-end infinite;
+
+            /* Prevent caret bleed */
+            height: 32px;
+            line-height: 32px;
+            overflow: hidden;
+            display: inline-block;
         }
 
         @keyframes typewriter {
@@ -80,7 +82,13 @@
             color: #fff;
             font-size: 16px;
             box-sizing: border-box;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            transition: border-color 0.2s ease;
+            position: relative;
+            z-index: 5;
+        }
+
+        input:hover {
+            border-color: #777;
         }
 
         input:focus {
@@ -89,33 +97,59 @@
             outline: none;
         }
 
-        /* Clean hover for both fields */
-        input:hover {
-            border-color: #666;
+        /* Autofill neutralizer */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0 1000px #222 inset !important;
+            box-shadow: 0 0 0 1000px #222 inset !important;
+            -webkit-text-fill-color: #fff !important;
+            caret-color: #fff !important;
         }
 
-        /* Password field specific - no green blob */
         #password:hover {
-            border-color: #666;
-            box-shadow: none;
+            border-color: #777 !important;
         }
 
+        #password:focus {
+            border-color: #00ff88 !important;
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.15) !important;
+        }
+
+        /* ⭐ FINAL FIX: Tight hitbox, no overlap */
         .toggle-password {
             position: absolute;
             right: 12px;
             top: 50%;
             transform: translateY(-50%);
-            background: none;
-            border: none;
+
+            width: 24px;
+            height: 24px;
+            padding: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: none !important;
+            border: none !important;
             color: #888;
             cursor: pointer;
-            font-size: 18px;
-            padding: 4px;
+
             z-index: 10;
+
+            outline: none !important;
+            box-shadow: none !important;
+            -moz-focus-inner: 0 !important;
         }
 
         .toggle-password:hover {
             color: #00ff88;
+        }
+
+        .toggle-password:focus {
+            outline: none !important;
+            box-shadow: none !important;
         }
 
         .error-message {
@@ -154,9 +188,7 @@
             color: #00ff88;
             text-decoration: none;
         }
-        .forgot-link:hover {
-            text-decoration: underline;
-        }
+        .forgot-link:hover { text-decoration: underline; }
 
         button {
             width: 100%;
@@ -172,7 +204,6 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            transition: all 0.2s;
         }
 
         button:hover:not(:disabled) { 
@@ -187,7 +218,7 @@
         .spinner {
             width: 20px;
             height: 20px;
-            border: 3px solid rgba(0, 0, 0, 0.3);
+            border: 3px solid rgba(0,0,0,0.3);
             border-top: 3px solid #000;
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -265,10 +296,7 @@ function showGeneralError(message) {
 }
 
 function clearErrors() {
-    document.querySelectorAll('.error-message').forEach(el => {
-        el.style.display = 'none';
-        el.textContent = '';
-    });
+    document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
     document.getElementById('generalError').style.display = 'none';
 }
 
@@ -324,11 +352,10 @@ async function loginUser(email, password) {
         else showGeneralError("Your account role is not properly configured.");
     } catch (err) {
         console.error(err);
-        showGeneralError("Connection error. Please check your internet and try again.");
+        showGeneralError("Connection error. Please try again.");
     }
 }
 
-// Password toggle
 document.getElementById('togglePassword').addEventListener('click', function() {
     const pw = document.getElementById('password');
     if (pw.type === 'password') {
@@ -340,7 +367,6 @@ document.getElementById('togglePassword').addEventListener('click', function() {
     }
 });
 
-// Form submit
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     clearErrors();
