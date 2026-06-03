@@ -40,7 +40,24 @@
         h2 { 
             text-align: center; 
             margin-bottom: 30px; 
-            color: #fff; 
+            color: #00ff88;
+            font-size: 28px;
+            text-shadow: 0 0 8px #00ff88;   /* Single soft glow - no blur */
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid #00ff88;
+            animation: typewriter 3.2s steps(32, end) forwards,
+                       blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typewriter {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #00ff88; }
         }
 
         label { 
@@ -63,12 +80,24 @@
             color: #fff;
             font-size: 16px;
             box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         input:focus {
             border-color: #00ff88;
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.15);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        /* Clean hover for both fields */
+        input:hover {
+            border-color: #666;
+        }
+
+        /* Password field specific - no green blob */
+        #password:hover {
+            border-color: #666;
+            box-shadow: none;
         }
 
         .toggle-password {
@@ -82,6 +111,7 @@
             cursor: pointer;
             font-size: 18px;
             padding: 4px;
+            z-index: 10;
         }
 
         .toggle-password:hover {
@@ -253,18 +283,14 @@ function setLoading(isLoading) {
     }
 }
 
-// Load remembered email
 function loadRememberedEmail() {
     const savedEmail = localStorage.getItem('rememberedEmail');
-    const rememberCheckbox = document.getElementById('rememberMe');
-    
     if (savedEmail) {
         document.getElementById('email').value = savedEmail;
-        rememberCheckbox.checked = true;
+        document.getElementById('rememberMe').checked = true;
     }
 }
 
-// Save / Clear remembered email
 function handleRememberMe(email) {
     if (document.getElementById('rememberMe').checked) {
         localStorage.setItem('rememberedEmail', email);
@@ -280,11 +306,7 @@ async function loginUser(email, password) {
         formData.append("email", email);
         formData.append("password", password);
 
-        const res = await fetch(BASE_URL, {
-            method: "POST",
-            body: formData
-        });
-
+        const res = await fetch(BASE_URL, { method: "POST", body: formData });
         const data = await res.json();
 
         if (!data.success) {
@@ -292,35 +314,28 @@ async function loginUser(email, password) {
             return;
         }
 
-        // Save remembered email if checked
         handleRememberMe(email);
 
         const role = data.role;
-        if (role === "firm_admin") {
-            window.location.href = "firm-admin.html";
-        } else if (role === "associate") {
-            window.location.href = `associate-admin.html?id=${encodeURIComponent(data.associateId || '')}`;
-        } else if (role === "client" || role === "client_admin") {
-            window.location.href = "client-admin.html";
-        } else if (role === "community_user") {
-            window.location.href = "community.html";
-        } else {
-            showGeneralError("Your account role is not properly configured.");
-        }
+        if (role === "firm_admin") window.location.href = "firm-admin.html";
+        else if (role === "associate") window.location.href = `associate-admin.html?id=${encodeURIComponent(data.associateId || '')}`;
+        else if (role === "client" || role === "client_admin") window.location.href = "client-admin.html";
+        else if (role === "community_user") window.location.href = "community.html";
+        else showGeneralError("Your account role is not properly configured.");
     } catch (err) {
         console.error(err);
         showGeneralError("Connection error. Please check your internet and try again.");
     }
 }
 
-// Password visibility toggle
+// Password toggle
 document.getElementById('togglePassword').addEventListener('click', function() {
-    const passwordInput = document.getElementById('password');
-    if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
+    const pw = document.getElementById('password');
+    if (pw.type === 'password') {
+        pw.type = 'text';
         this.textContent = '🙈';
     } else {
-        passwordInput.type = 'password';
+        pw.type = 'password';
         this.textContent = '👁';
     }
 });
@@ -341,7 +356,6 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     setLoading(false);
 });
 
-// Initialize remembered email
 window.addEventListener('load', loadRememberedEmail);
 </script>
 </body>
