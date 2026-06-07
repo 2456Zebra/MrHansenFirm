@@ -1,29 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Community Access</title>
-
+  <meta charset="UTF-8">
+  <title>Community Signup – MR. HANSEN FIRM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
+      margin: 0;
       font-family: "Consolas", "Courier New", monospace;
       background: #000;
       color: #00ff88;
-      padding: 40px;
-      max-width: 700px;
-      margin: auto;
-      overflow-x: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
       position: relative;
+      overflow: hidden;
     }
-
     body::before {
       content: "";
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       pointer-events: none;
       background: repeating-linear-gradient(
         rgba(0, 255, 136, 0.05) 0px,
@@ -33,196 +31,212 @@
       );
       z-index: 999;
     }
-
-    .typing {
-      font-size: 28px;
-      margin-bottom: 30px;
-      text-shadow: 0 0 10px #00ff88;
-      display: inline-block;
-      white-space: nowrap;
-      overflow: hidden;
-      clip-path: inset(0 100% 0 0);
-      animation: reveal 3s steps(40) forwards, cursorBlink 0.7s infinite;
-      border-right: 2px solid #00ff88;
+    .shell {
+      background: #0a0a0a;
+      border: 1px solid #00ff88;
+      border-radius: 10px;
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+      position: relative;
+      z-index: 1;
     }
-
-    @keyframes reveal {
-      from { clip-path: inset(0 100% 0 0); }
-      to { clip-path: inset(0 0 0 0); }
-    }
-
-    @keyframes cursorBlink {
-      50% { border-color: transparent; }
-    }
-
-    @media (max-width: 480px) {
-      .typing { font-size: 20px; }
-    }
-
-    .subtitle {
-      margin-top: 5px;
-      margin-bottom: 25px;
+    h1 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       color: #00ff88;
-      font-size: 15px;
-      opacity: 0.9;
+      text-shadow: 0 0 10px #00ff88;
     }
-
+    .subtitle {
+      font-size: 13px;
+      color: #00ff88;
+      opacity: 0.85;
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
     label {
       display: block;
-      margin-top: 20px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #00ff88;
+      margin-bottom: 5px;
       font-weight: bold;
-      font-size: 15px;
-      text-shadow: 0 0 8px #00ff88;
+      text-shadow: 0 0 6px #00ff88;
     }
-
     input, textarea {
       width: 100%;
-      padding: 12px;
-      margin-top: 8px;
-      border-radius: 6px;
+      box-sizing: border-box;
+      background: #000;
       border: 1px solid #00ff88;
-      background: #0a0a0a;
+      border-radius: 6px;
+      padding: 10px 12px;
       color: #00ff88;
-      font-size: 15px;
-      box-shadow: 0 0 10px #00ff88 inset;
-      transition: 0.2s;
-    }
-
-    input:focus, textarea:focus {
+      font-size: 14px;
+      margin-bottom: 14px;
       outline: none;
+      box-shadow: 0 0 8px rgba(0, 255, 136, 0.2) inset;
+    }
+    input:focus, textarea:focus {
+      border-color: #00ffaa;
       box-shadow: 0 0 18px #00ff88;
     }
-
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
     #preview {
-      margin-top: 15px;
-      width: 120px;
-      height: 120px;
+      margin-top: 8px;
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
       border-radius: 6px;
       border: 1px solid #00ff88;
-      object-fit: cover;
-      display: none;
       box-shadow: 0 0 12px #00ff88;
+      display: none;
     }
-
+    .row {
+      display: flex;
+      gap: 12px;
+    }
+    .row > div {
+      flex: 1;
+    }
     button {
-      margin-top: 35px;
       width: 100%;
-      padding: 14px;
-      background: #00ff88;
-      border: none;
+      padding: 12px 14px;
       border-radius: 6px;
+      border: none;
+      background: #00ff88;
       color: #000;
-      font-size: 18px;
       font-weight: bold;
+      font-size: 15px;
       cursor: pointer;
+      margin-top: 10px;
       letter-spacing: 1px;
       box-shadow: 0 0 15px #00ff88;
-      transition: 0.2s ease-in-out;
+      transition: all 0.2s;
     }
-
-    button:hover {
+    button:hover:not(:disabled) {
       background: #00ffaa;
       box-shadow: 0 0 25px #00ffaa;
       transform: scale(1.02);
     }
-
-    #status {
-      margin-top: 20px;
-      font-size: 14px;
-      color: #00ff88;
-      min-height: 1.5em;
-      text-shadow: 0 0 8px #00ff88;
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
     }
-
-    .back-btn {
-      margin-top: 30px;
-      display: block;
+    .status {
+      margin-top: 14px;
+      font-size: 13px;
+      min-height: 20px;
+      white-space: pre-line;
+      text-shadow: 0 0 6px #00ff88;
+    }
+    .success { color: #00ff88; }
+    .error { color: #ff3366; }
+    .nav {
+      margin-top: 20px;
+      font-size: 13px;
       text-align: center;
       color: #00ff88;
-      text-decoration: none;
-      font-size: 15px;
-      text-shadow: 0 0 6px #00ff88;
-      transition: 0.2s;
+      opacity: 0.8;
     }
-
-    .back-btn:hover {
+    .nav a {
       color: #00ffaa;
-      text-shadow: 0 0 10px #00ffaa;
-      transform: translateY(-2px);
+      text-decoration: none;
+    }
+    .nav a:hover {
+      text-shadow: 0 0 8px #00ffaa;
+      text-decoration: underline;
     }
   </style>
 </head>
-
 <body>
+  <div class="shell">
+    <h1>COMMUNITY ACCESS</h1>
+    <div class="subtitle">
+      Create a public profile to join discussions, comment, and access your community dashboard.
+    </div>
 
-  <div class="typing">INITIALIZING COMMUNITY ACCESS TERMINAL...</div>
-  <div class="subtitle">
-    Create a Community profile to join discussions, comment, and return to your personal community dashboard.
+    <form id="communityForm">
+      <label for="displayName">Display Name</label>
+      <input type="text" id="displayName" required>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" required>
+
+      <label for="password">Create Password</label>
+      <input type="password" id="password" minlength="6" required>
+
+      <label for="bio">Short Bio</label>
+      <textarea id="bio" required></textarea>
+
+      <div class="row">
+        <div>
+          <label for="instagram">Instagram (optional)</label>
+          <input type="text" id="instagram" placeholder="@username">
+        </div>
+        <div>
+          <label for="photo">Avatar</label>
+          <input type="file" id="photo" accept="image/*" required>
+          <img id="preview" alt="Preview">
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn">CREATE COMMUNITY ACCESS</button>
+    </form>
+
+    <div class="status" id="status"></div>
+
+    <div class="nav">
+      Already have an account? <a href="login.html">Log in</a><br>
+      <a href="/index.html" style="margin-top:8px;display:inline-block;">← Back to Home</a>
+    </div>
   </div>
 
-  <form id="communityForm">
-    <label>Display Name</label>
-    <input type="text" id="displayName" required />
-
-    <label>Email</label>
-    <input type="email" id="email" required />
-
-    <label>Create Password</label>
-    <input type="password" id="password" required />
-
-    <label>Short Bio</label>
-    <textarea id="bio" rows="3" required></textarea>
-
-    <label>Instagram Handle (optional)</label>
-    <input type="text" id="instagram" placeholder="instagram username" />
-
-    <label>Upload Photo / Avatar</label>
-    <input type="file" id="photo" accept="image/*" required />
-
-    <img id="preview" />
-
-    <div id="status"></div>
-    <button type="submit" id="submitBtn">CREATE COMMUNITY ACCESS</button>
-  </form>
-
-  <a href="/index.html" class="back-btn">← BACK TO HOME</a>
-
   <script>
-    // Backend endpoint (auth-enabled, dynamic)
     const BASE_URL = "https://script.google.com/macros/s/AKfycbyz_Gb33dArNmP5MoSK3Pk4JpkR7i_MAo_gNDzh2tNOOqsY7kgk_IVkoNTZXOQMGu1k/exec";
 
     let photoBase64 = null;
 
     function cleanInstagramHandle(input) {
       if (!input) return "";
-      return input
-        .trim()
+      return input.trim()
         .replace(/^@/, "")
         .replace(/https?:\/\/(www\.)?instagram\.com\//, "")
         .replace(/\/$/, "")
         .replace(/\s+/g, "");
     }
 
-    // Photo preview + Base64 conversion
+    // Photo preview
     document.getElementById("photo").addEventListener("change", function () {
       const file = this.files[0];
-      if (file) {
-        const preview = document.getElementById("preview");
-        preview.src = URL.createObjectURL(file);
-        preview.style.display = "block";
+      if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = () => {
-          photoBase64 = reader.result;
-        };
-        reader.readAsDataURL(file);
+      if (file.size > 5 * 1024 * 1024) {
+        setStatus("Image too large. Max 5MB.", "error");
+        return;
       }
+
+      const preview = document.getElementById("preview");
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = "block";
+
+      const reader = new FileReader();
+      reader.onload = () => photoBase64 = reader.result;
+      reader.readAsDataURL(file);
     });
 
-    function setStatus(msg, color = "#00ff88") {
+    function setStatus(msg, type = "default") {
       const statusEl = document.getElementById("status");
-      statusEl.style.color = color;
       statusEl.textContent = msg;
+      if (type === "success") statusEl.style.color = "#00ff88";
+      else if (type === "error") statusEl.style.color = "#ff3366";
+      else statusEl.style.color = "#00ff88";
     }
 
     document.getElementById("communityForm").addEventListener("submit", async (e) => {
@@ -232,23 +246,23 @@
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
       const bio = document.getElementById("bio").value.trim();
-      let instagram = cleanInstagramHandle(document.getElementById("instagram").value);
+      const instagram = cleanInstagramHandle(document.getElementById("instagram").value);
 
       if (!displayName || !email || !password || !bio || !photoBase64) {
-        setStatus("Please complete all required fields.", "#ff3366");
+        setStatus("Please fill all required fields.", "error");
         return;
       }
-
       if (password.length < 6) {
-        setStatus("Password must be at least 6 characters.", "#ff3366");
+        setStatus("Password must be at least 6 characters.", "error");
         return;
       }
 
-      document.getElementById("submitBtn").disabled = true;
+      const btn = document.getElementById("submitBtn");
+      btn.disabled = true;
       setStatus("CREATING COMMUNITY PROFILE...");
 
       const payload = {
-        action: "communitySignup", // backend handler should match this
+        action: "communitySignup",
         name: displayName,
         email: email,
         password: password,
@@ -260,33 +274,32 @@
       try {
         const res = await fetch(BASE_URL, {
           method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          redirect: "follow"
         });
 
         const data = await res.json();
 
         if (!data.success) {
-          setStatus("Error creating community access: " + (data.error || "Unknown error"), "#ff3366");
-          document.getElementById("submitBtn").disabled = false;
+          setStatus("Error: " + (data.error || "Unknown error"), "error");
+          btn.disabled = false;
           return;
         }
 
-        const communityId = data.communityId || "";
-        setStatus("Community access ready. Redirecting...", "#00ff88");
+        setStatus("✅ Profile created successfully! Redirecting...", "success");
 
         setTimeout(() => {
-          if (communityId) {
-            window.location.href = "/community-admin.html?id=" + encodeURIComponent(communityId);
-          } else {
-            window.location.href = "/community-admin.html";
-          }
-        }, 1500);
+          const id = data.communityId || "";
+          window.location.href = id 
+            ? `/community-admin.html?id=${encodeURIComponent(id)}` 
+            : "/community-admin.html";
+        }, 1200);
 
       } catch (err) {
         console.error(err);
-        setStatus("Error creating community access.", "#ff3366");
-        document.getElementById("submitBtn").disabled = false;
+        setStatus("Connection error. Please try again.", "error");
+        btn.disabled = false;
       }
     });
   </script>
