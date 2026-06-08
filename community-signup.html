@@ -210,7 +210,6 @@
         .replace(/\s+/g, "");
     }
 
-    // Photo preview
     document.getElementById("photo").addEventListener("change", function () {
       const file = this.files[0];
       if (!file) return;
@@ -259,27 +258,20 @@
       btn.disabled = true;
       setStatus("CREATING COMMUNITY PROFILE...");
 
-      const payload = {
-        action: "communitySignup",
-        name: displayName,
-        email: email,
-        password: password,
-        bio: bio,
-        instagram: instagram || "",
-        photoBase64: photoBase64
-      };
-
       try {
+        const formData = new FormData();
+        formData.append("action", "communitySignup");
+        formData.append("name", displayName);
+        formData.append("email", email);
+        formData.append("password", password);
+        formData.append("bio", bio);
+        formData.append("instagram", instagram || "");
+        formData.append("photoBase64", photoBase64);
+
         const res = await fetch(BASE_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-          redirect: "follow"
+          body: formData
         });
-
-        if (!res.ok) {
-          throw new Error(`Server responded with status ${res.status}`);
-        }
 
         const data = await res.json();
 
