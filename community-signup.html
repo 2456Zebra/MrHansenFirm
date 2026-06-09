@@ -57,7 +57,6 @@
       opacity: 0.85;
       margin-bottom: 24px;
       line-height: 1.4;
-      text-shadow: none;
     }
     label {
       display: block;
@@ -81,7 +80,6 @@
       margin-bottom: 14px;
       outline: none;
       box-shadow: 0 0 8px rgba(0, 255, 136, 0.2) inset;
-      text-shadow: none;
     }
     input:focus, textarea:focus {
       border-color: #00ffaa;
@@ -135,19 +133,31 @@
     .status {
       margin-top: 14px;
       font-size: 14px;
-      min-height: 20px;
+      min-height: 24px;
       white-space: pre-line;
-      text-shadow: none;
+      text-align: center;
     }
     .success { color: #00ff88; }
     .error { color: #ff3366; }
+    .loader {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #00ff88;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 10px auto;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
     .nav {
       margin-top: 20px;
       font-size: 14px;
       text-align: center;
       color: #00ff88;
       opacity: 0.9;
-      text-shadow: none;
     }
     .nav a {
       color: #00eaff;
@@ -189,10 +199,13 @@
       </div>
       <button type="submit" id="submitBtn">CREATE COMMUNITY ACCESS</button>
     </form>
+
+    <div class="loader" id="loader"></div>
     <div class="status" id="status"></div>
+
     <div class="nav">
       Already have an account? <a href="login.html">Log in</a><br>
-      <a href="/index.html" style="margin-top:8px;display:inline-block;">← Back to Home</a>
+      <a href="/cases.html" style="margin-top:8px;display:inline-block;">← Back to Cases</a>
     </div>
   </div>
 
@@ -236,6 +249,10 @@
       else statusEl.style.color = "#00ff88";
     }
 
+    function showLoading(show) {
+      document.getElementById("loader").style.display = show ? "block" : "none";
+    }
+
     document.getElementById("communityForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -256,6 +273,7 @@
 
       const btn = document.getElementById("submitBtn");
       btn.disabled = true;
+      showLoading(true);
       setStatus("CREATING COMMUNITY PROFILE...");
 
       try {
@@ -278,22 +296,25 @@
         if (!data.success) {
           setStatus("Error: " + (data.error || "Unknown error"), "error");
           btn.disabled = false;
+          showLoading(false);
           return;
         }
 
         setStatus("✅ Profile created successfully! Redirecting...", "success");
+        showLoading(false);
 
         setTimeout(() => {
           const id = data.communityId || "";
           window.location.href = id 
             ? `/community-admin.html?id=${encodeURIComponent(id)}` 
             : "/community-admin.html";
-        }, 1200);
+        }, 1400);
 
       } catch (err) {
         console.error(err);
         setStatus("Connection error. Please try again.", "error");
         btn.disabled = false;
+        showLoading(false);
       }
     });
   </script>
